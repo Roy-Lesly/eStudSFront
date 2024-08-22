@@ -1,6 +1,5 @@
 import React from 'react'
 import { Metadata } from 'next';
-import NotificationError from '@/section-h/common/NotificationError';
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 import PreFormHigher from '../SectionHigher/PreFormHigher';
@@ -28,17 +27,17 @@ const page = async ({
     },
   });
 
+  console.log(data);
+
   return (
     <>
-      {sp && <NotificationError errorMessage={sp} />}
-
       <div className="flex flex-col gap-4 h-screen md:p-4 p-2 text-slate-900">
 
         <div className='flex flex-col gap-2 w-full'>
-          {section === "higher" ? <PreFormHigher source='student' data={data} params={p} /> : null }
-          {section === "secondary" ? <PreFormSecondary params={{ domain, section }} source='student' data={data} /> : null }
-          {section === "primary" ? <PreFormPrimary params={{ domain, section }} source='student' data={data} /> : null }
-          {section === "vocational" ? <PreFormVocational source='student' data={data} /> : null }
+          {section === "higher" ? <PreFormHigher source='student' data={data} params={p} /> : null}
+          {section === "secondary" ? <PreFormSecondary params={{ domain, section }} source='student' data={data} /> : null}
+          {section === "primary" ? <PreFormPrimary params={{ domain, section }} source='student' data={data} /> : null}
+          {section === "vocational" ? <PreFormVocational source='student' data={data} /> : null}
         </div>
       </div>
 
@@ -132,7 +131,7 @@ const GET_DATA_SECONDARY = gql`
   ) {
     edges {
       node {
-        id name classroom
+        id name level
       }
     }
   }

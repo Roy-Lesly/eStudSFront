@@ -16,7 +16,7 @@ type SubmitOptions = {
   returnResponseObject?: boolean;
   actionLabel?: "processing" | "creating" | "updating" | "deleting";
   reload?: boolean;
-  getFileMap?: (item: any) => Record<string, File>; // file map callback
+  getFileMap?: (item: any) => Record<string, File>;
 };
 
 export const ApiFactory = async ({

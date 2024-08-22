@@ -7,7 +7,7 @@ import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TransactionTotalsByStudent } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import ExcelExporter from '@/ExcelExporter';

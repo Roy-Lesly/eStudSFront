@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import { Metadata } from 'next';
 import ServerError from '@/ServerError';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyModal from '@/MyModals/MyModal';
 import ModalCUDCourse from '@/MyModals/ModalCUDCourse';

@@ -5,7 +5,7 @@ import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -36,7 +36,7 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
 
 const List = (
     { params, dataResults, sp }:
-    { params: any, dataResults: EdgeResult[], sp: any }
+        { params: any, dataResults: EdgeResult[], sp: any }
 ) => {
 
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);

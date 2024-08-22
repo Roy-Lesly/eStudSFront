@@ -9,7 +9,7 @@ import DefaultLayout from '@/DefaultLayout';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import { EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 
 
 export const metadata: Metadata = {

@@ -3,10 +3,10 @@
 import React from 'react';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 
 const Courses = ({ data, params }: { data: EdgeCourse[], params: any }) => {
-console.log(data);
+  console.log(data);
   const Columns: TableColumn<EdgeCourse>[] = [
     { header: "#", align: "center", render: (_item: EdgeCourse, index: number) => index + 1, },
     { header: "Code", accessor: "node.courseCode", align: "left" },
@@ -29,14 +29,14 @@ console.log(data);
 
 
   return (
-   <div>
+    <div>
       <div>
-        <MyTableComp 
+        <MyTableComp
           data={data}
           columns={Columns}
         />
       </div>
-   </div>
+    </div>
   );
 };
 

@@ -51,7 +51,7 @@ type FormData = {
     session: string;
     stream: string;
     series_one: string;
-    series_two: string;
+    // series_two: string;
     status: "PENDING";
     admission_status: false;
   };
@@ -63,7 +63,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [count, setCount] = useState<number>(0);
-  const [schoolSystem, setschoolSystem] = useState<string>("");
+  const [schoolSystem, setschoolSystem] = useState<string>(params?.locale === "fr" ? "French Section" : "English Section");
   const [optionsSeriesFix, setOptionsSeriesFix] = useState<{ id: number, name: string }[]>();
   const [optionsSeries, setOptionsSeries] = useState<{ id: number, name: string }[]>();
   const [optionsCampuses, setOptionsCampuses] = useState<{ id: number, name: string }[]>();
@@ -111,7 +111,6 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
     },
   });
 
-  console.log(formData);
 
   const [stepValidation, setStepValidation] = useState<boolean[]>(
     new Array(steps.length).fill(false)
@@ -166,7 +165,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
   useEffect(() => {
     if (count === 2) {
       if (data && data.allSeries?.edges?.length && formData.classAssignment.level) {
-        const s = data.allSeries.edges.filter((s: EdgeSeries) => s.node.classroom === formData.classAssignment.level.replace("_", " ")).map((item: EdgeSeries) => {
+        const s = data.allSeries.edges.filter((s: EdgeSeries) => s.node.level === formData.classAssignment.level.replace("_", " ")).map((item: EdgeSeries) => {
           return { "id": decodeUrlID(item.node.id), "name": `${item.node.name}` }
         })?.sort((a: any, b: any) => a.name > b.name ? 1 : a.name < b.name ? -1 : 0)
         if (s && s.length) { setOptionsSeries(s); setOptionsSeriesFix(s); }
@@ -174,7 +173,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
           setOptionsSeries([]);
           setOptionsSeriesFix([]);
           handleChange('classAssignment', 'series_one', "")
-          handleChange('classAssignment', 'series_two', "")
+          // handleChange('classAssignment', 'series_two', "")
         }
       }
       setCount(3)
@@ -185,7 +184,6 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
     if (count === 4) {
       if (data && optionsSeries && formData.classAssignment.series_one) {
         const filteredSeriesOneOut: any = optionsSeriesFix?.filter((item: any) => (item.id !== formData.classAssignment.series_one))
-        console.log(filteredSeriesOneOut);
         if (filteredSeriesOneOut) { setOptionsSeries(filteredSeriesOneOut) }
       }
       setCount(5)
@@ -264,7 +262,6 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
       stream: formData.classAssignment.stream,
       session: formData.classAssignment.session,
       seriesOneId: formData.classAssignment.series_one,
-      seriesTwoId: formData.classAssignment.series_two,
       status: "PENDING",
       admissionStatus: false,
       action: "CREATING",
@@ -275,7 +272,6 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
     if ([newData].length > 0) {
       for (let index = 0; index < [newData].length; index++) {
         const dataToSubmit = [newData][index];
-        console.log(dataToSubmit);
 
         try {
           const resUserId = await mutationCreateUpdatePreInscription({
@@ -582,7 +578,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
                   placeholder={t("Select a School System")}
                   value={schoolSystem}
                   onChange={(e) => setschoolSystem(e.target.value)}
-                  options={["English Section", "French Section"]}
+                  options={[ params.locale === "fr" ? "French Section" : "English Section"]}
                 />
                 <MyInputField
                   id="stream"
@@ -611,23 +607,12 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
                 <MyInputField
                   id="series_one"
                   name="series_one"
-                  label={t("Series - 1st Choice")}
+                  label={t("Series")}
                   type="select"
-                  placeholder={t("1st Choice Series")}
+                  placeholder={t("Select Series")}
                   value={formData.classAssignment.series_one}
                   onChange={(e) => handleChange('classAssignment', 'series_one', e.target.value)}
                   options={optionsSeriesFix}
-                />
-
-                <MyInputField
-                  id="series_two"
-                  name="series_two"
-                  label={t("Series - 2nd Choice")}
-                  type="select"
-                  placeholder={t("2nd Choice Series")}
-                  value={formData.classAssignment.series_two}
-                  onChange={(e) => handleChange('classAssignment', 'series_two', e.target.value)}
-                  options={optionsSeries}
                 />
               </div>
 

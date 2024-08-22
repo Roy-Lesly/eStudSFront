@@ -40,6 +40,7 @@ const EditPage = async ({
         data={data?.allSubjectsSec?.edges}
         apiYears={data?.allAcademicYearsSec}
         apiLevels={data?.getLevelsSec}
+        apiSeries={data?.allSeries?.edges}
         sp={sp}
       />
     </div>
@@ -83,5 +84,12 @@ const GET_DATA = gql`
     }
     allAcademicYearsSec
     getLevelsSec
+    allSeries {
+      edges {
+        node {
+          id name level
+        }
+      }
+    }
   }
 `;

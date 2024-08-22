@@ -1,5 +1,7 @@
 'use client';
-import { NodeSubjectSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import MySelectField from '@/components/MySelectField';
+import { EdgeCustomUser } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeMainSubject, NodeSubjectSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { decodeUrlID } from '@/utils/functions';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
@@ -18,11 +20,14 @@ const subjectTypeChoices = [
 
 type SubjectField = keyof Pick<
   NodeSubjectSec,
-  'subjectType' | 'subjectCoefficient' | 'compulsory'
+  'subjectType' | 'subjectCoefficient' | 'compulsory' | 'assignedTo'
 >;
 
 
-const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any }) => {
+const EditableSubjectTable = (
+  { data, sp, p, apiTeachers }:
+    { data: EdgeMainSubject[], sp: any, p: any, apiTeachers: EdgeCustomUser[] }
+) => {
 
   const { t } = useTranslation("common");
   const router = useRouter();
@@ -30,15 +35,22 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
   const user: JwtPayload | null = token ? jwtDecode(token) : null
 
   const [subjects, setSubjects] = useState(() =>
-    data?.map(item => ({
-      mainSubjectId: item.node.id,
+  data?.map(item => {
+    const teacher = apiTeachers?.find((t: EdgeCustomUser) =>
+      t.node.fullName?.toLowerCase().includes("system")
+    );
+
+    return {
+      classroomsecId: parseInt(sp?.classId),
+      mainsubjectId: decodeUrlID(item.node.id),
+      assignedTo: teacher ? decodeUrlID(teacher.node.id) : "0",
       subjectName: item.node.subjectName,
-      subjectCode: '',
-      subjectType: 'THEORY',
+      subjectType: "THEORY",
       subjectCoefficient: 1,
       compulsory: false,
-    }))
-  );
+    };
+  })
+);
 
   const handleChange = (index: number, field: SubjectField, value: any) => {
     setSubjects(prev => {
@@ -51,15 +63,16 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
   const removeSubject = (msid: string) => {
     const ids = JSON.parse(sp?.ids)
     const submittedId = decodeUrlID(msid)
-    setSubjects(prev => prev.filter(s => s.mainSubjectId !== msid));
-    router.push(`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageSubjects/fill/?classId=${sp?.classId}&ids=${JSON.stringify(ids.filter((i: string) => i != submittedId))}`)
+    setSubjects(prev => prev.filter(s => s.mainsubjectId !== msid));
+    router.push(`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageSubjects/fill/?seriesId=${sp?.seriesId}&classId=${sp?.classId}&ids=${JSON.stringify(ids.filter((i: string) => i != submittedId))}`)
   };
 
   const handleSubmit = async () => {
 
     const isValid = subjects.every(sub =>
       sub.subjectType &&
-      Number(sub.subjectCoefficient) > 0
+      Number(sub.subjectCoefficient) > 0 &&
+      Number(sub.assignedTo) > 0
     );
 
     if (!isValid) {
@@ -72,8 +85,7 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
     for (const sub of subjects) {
       const payload = {
         ...sub,
-        mainsubjectId: parseInt(decodeUrlID(sub.mainSubjectId)),
-        classroomsecId: parseInt(decodeUrlID(sp?.classId)),
+        mainsubjectId: parseInt(sub.mainsubjectId),
         subjectCoefficient: Number(sub.subjectCoefficient),
         compulsory: Boolean(sub.compulsory),
         createdById: user?.user_id,
@@ -98,22 +110,35 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
           actionLabel: "processing",
         });
 
-        console.log(res);
-
         if (res?.length > 5) {
           count += 1;
-          removeSubject(payload.mainSubjectId)
+          removeSubject(payload.mainsubjectId.toString())
         }
       } catch (error) {
         errorLog(error);
       }
-      console.log(count);
     }
     if (count) {
-      alert(t("Subject submissions completed"));
+      alert(t("Subject submissions completed ✅"));
     }
 
 
+  };
+
+  const returnTeachers = (idx: number) => {
+    const teacherId = subjects[idx]?.assignedTo;
+
+    if (!teacherId || teacherId === "0") {
+      return null; // no teacher selected yet
+    }
+
+    const teacher = apiTeachers.find(
+      (t) => decodeUrlID(t.node.id) === teacherId
+    );
+
+    return teacher
+      ? { value: teacherId, label: teacher.node.fullName }
+      : { value: teacherId, label: teacherId }; // fallback if teacher not found
   };
 
 
@@ -121,18 +146,19 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
     <div className="p-4 bg-white shadow rounded space-y-4">
       <h2 className="font-bold text-lg text-center">{t("Setup Subjects")}</h2>
 
-      <table className="w-full table-auto border-collapse border border-gray-300">
+      <table className="w-full table-auto border-collapse border border-slate-300">
         <thead>
-          <tr className="bg-gray-100">
+          <tr className="bg-slate-100">
             <th className="border p-2">{t("Subject Name")}</th>
             <th className="border p-2">{t("Type")}</th>
-            <th className="border p-2">{t("Coefficient")}</th>
+            <th className="border p-2">{t("Coef")}</th>
+            <th className="border p-2">{t("Teacher")}</th>
             <th className="border p-2">{t("Compulsory")}</th>
           </tr>
         </thead>
         <tbody>
           {subjects?.map((subj, idx) => (
-            <tr key={subj?.mainSubjectId} className="border-b">
+            <tr key={subj?.mainsubjectId} className="border-b">
               <td className="border p-2">{subj.subjectName}</td>
               <td className="border p-2">
                 <select
@@ -145,13 +171,36 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
                   ))}
                 </select>
               </td>
-              <td className="border p-2">
+              <td className="p-2 flex justify-center items-center">
                 <input
                   type="number"
                   min={1}
                   value={subj.subjectCoefficient}
                   onChange={(e) => handleChange(idx, 'subjectCoefficient', parseInt(e.target.value))}
+                  className="w-16 border p-1 rounded"
+                />
+              </td>
+              <td className="border p-2">
+                {/* <select
+                  value={subj.assignedTo}
+                  onChange={(e) => handleChange(idx, 'assignedTo', e.target.value)}
                   className="w-full border p-1 rounded"
+                >
+                  {apiTeachers.map((teacher: EdgeCustomUser, idx: number) => (
+                    <option key={idx} value={decodeUrlID(teacher.node.id)}>{teacher.node.fullName}</option>
+                  ))}
+                </select> */}
+                <MySelectField
+                  isMulti='select-single'
+                  id="assignedTo"
+                  name="assignedTo"
+                  label=""
+                  placeholder={t("Select Teacher")}
+                  value={returnTeachers(idx)}
+                  options={apiTeachers?.map((teacher: EdgeCustomUser) => {
+                    return { value: decodeUrlID(teacher.node.id), label: teacher.node.fullName }
+                  })}
+                  onChange={(e: any) => handleChange(idx, 'assignedTo', e.value)}
                 />
               </td>
               <td className="border p-2 text-center">
@@ -168,7 +217,7 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
 
       <div className="flex justify-between gap-3">
         <button
-          onClick={() => router.push(`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageSubjects/assign/?classId=${sp?.classId})}`)}
+          onClick={() => router.push(`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageSubjects/assign/?classId=${sp?.classId}&seriesId=${sp?.seriesId})}`)}
           className="flex gap-2 bg-red hover:bg-slate-500 text-white px-4 py-2 rounded"
         >
           <FaArrowLeftLong size={25} color='white' /> {t("Reset")}
@@ -179,7 +228,7 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
         >
           {t("Submit Subjects")}
         </button>
-        
+
       </div>
     </div>
   );
@@ -194,6 +243,7 @@ export const query = gql`
         $id: ID,
         $mainsubjectId: ID!,
         $classroomsecId: ID!,
+        $assignedTo: ID!,
         $subjectType: String!,
         $subjectCoefficient: Int!,
         $compulsory: Boolean!,
@@ -205,6 +255,7 @@ export const query = gql`
             id: $id,
             mainsubjectId: $mainsubjectId,
             classroomsecId: $classroomsecId,
+            assignedToId: $assignedTo,
             subjectType: $subjectType,
             subjectCoefficient: $subjectCoefficient,
             compulsory: $compulsory,

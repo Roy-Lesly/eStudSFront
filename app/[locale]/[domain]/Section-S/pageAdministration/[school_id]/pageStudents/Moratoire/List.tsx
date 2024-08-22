@@ -4,14 +4,14 @@ import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { EdgeMoratoire, NodeMoratoire } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import MyTabs from '@/MyTabs';
 import { useTranslation } from 'react-i18next';
 import ServerError from '@/ServerError';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import ModalDecision from './ModalDecision';
 import ComingSoon from '@/components/ComingSoon';
 

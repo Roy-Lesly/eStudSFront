@@ -1,7 +1,7 @@
 'use client';
 import { EdgeTenant } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import ServerError from '@/ServerError';
 import { gql, useQuery } from '@apollo/client';
 import { useParams, usePathname, useRouter } from 'next/navigation';
@@ -56,7 +56,7 @@ const SelectTenant = ({ params }: { params: any }) => {
         <span className="text-black text-xl">Loading Tenants ...</span>
         <span className={`border-bluedash animate-spin border-6  border-t-transparent flex h-[96px] rounded-full w-[96px]`}>.</span>
     </div>;
-        console.log(data)
+    console.log(data)
     if (error) return <p>Error: {error.message}</p>;
 
     const OnSelect = (tenant_name: string, tenant_id: string) => {

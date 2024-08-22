@@ -30,7 +30,7 @@ export interface NodeUserProfilePrim {
 export interface NodeSeries {
   id: string;
   name: string;
-  classroom: string;
+  level: string;
   subjects: { edges: EdgeMainSubject[] };
 }
 

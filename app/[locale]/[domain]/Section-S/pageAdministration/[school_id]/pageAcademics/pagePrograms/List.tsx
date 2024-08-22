@@ -9,11 +9,11 @@ import { Metadata } from 'next';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeProgram } from '@/Domain/schemas/interfaceGraphql';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyModal from '@/MyModals/MyModal';
 import ModalCUDProgram from '@/MyModals/ModalCUDProgram';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 
 
 export const metadata: Metadata = {

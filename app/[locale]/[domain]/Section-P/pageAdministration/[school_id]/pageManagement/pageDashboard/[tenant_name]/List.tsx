@@ -8,7 +8,7 @@ import { GetMenuAdministration as MenuHigher } from '@/section-h/Sidebar/MenuAdm
 import { GetMenuAdministration as MenuSecondary } from '@/section-s/Sidebar/MenuAdministration';
 import { GetMenuAdministration as MenuPrimary } from '@/section-p/Sidebar/MenuAdministration';
 import { GetMenuAdministration as MenuVocational } from '@/section-h/Sidebar/MenuAdministration';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { motion } from "framer-motion";
 import {
     Chart as ChartJS,
@@ -40,7 +40,7 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
 
 const List = (
     { params, searchParams, tenant, section }:
-    { params: any, searchParams: any, tenant: EdgeTenant, section: string }
+        { params: any, searchParams: any, tenant: EdgeTenant, section: string }
 ) => {
 
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -59,7 +59,7 @@ const List = (
             sidebar={
                 <Sidebar
                     params={params}
-                    menuGroups={ section === "H" ? MenuHigher() : section === "S" ? MenuSecondary() : section === "P" ? MenuPrimary() : MenuVocational()}
+                    menuGroups={section === "H" ? MenuHigher() : section === "S" ? MenuSecondary() : section === "P" ? MenuPrimary() : MenuVocational()}
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                 />
@@ -115,13 +115,13 @@ const List = (
                         Last 6 Months
                     </button>
                     <div className='  rounded-md w-full '>
-                        <SearchMultiple 
-                            names={[ "dateAfter"]}
+                        <SearchMultiple
+                            names={["dateAfter"]}
                             link=''
                             extraSearch={searchParams}
                             select={[
                                 // { type: 'date', name: 'dateAfter', dataSelect: ['MALE', 'FEMALE'] },
-                              ]}
+                            ]}
                         />
                     </div>
                 </div>

@@ -7,12 +7,12 @@ import Header from '@/section-h/Header/Header';
 import { Metadata } from 'next';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeDomain, EdgeMainCourse, EdgeCourse, EdgeLevel, EdgeSpecialty, EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import MyTabs from '@/MyTabs';
 import ExcelExporter from '@/ExcelExporter';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import MyModal from '@/MyModals/MyModal';
 import { FaPlus } from 'react-icons/fa';
 import { FaRightLong } from 'react-icons/fa6';
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 const List = (
   { params, data, searchParams, users }:
-  { params: any; data: any, searchParams: any, users: EdgeCustomUser[] }
+    { params: any; data: any, searchParams: any, users: EdgeCustomUser[] }
 ) => {
 
   const router = useRouter();

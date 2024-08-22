@@ -6,7 +6,7 @@ import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { useTranslation } from 'react-i18next';
 import { EdgeClassRoomPrim, NodeClassRoomPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';

@@ -14,7 +14,7 @@ import { gql } from '@apollo/client';
 const CreateLecturer = ({
     params, role, actionType, selectedItem, openModal, setOpenModal, depts
 }: {
-    params: any, role: "teacher" | "admin", actionType: "update" | "create", selectedItem: EdgeCustomUser | null, openModal: boolean, setOpenModal: any, depts: EdgeDepartment[]
+    params: any, role: "teacher" | "admin", actionType: "update" | "create" | "delete", selectedItem: EdgeCustomUser | null, openModal: boolean, setOpenModal: any, depts: EdgeDepartment[]
 }) => {
 
     const { t } = useTranslation("common");
@@ -23,6 +23,7 @@ const CreateLecturer = ({
     const dept: EdgeDepartment | null = depts ? depts?.filter((d: EdgeDepartment) => d.node.name.toLowerCase().includes(role === "admin" ? "admin" : "lecturer"))[0] : null;
 
     const [formData, setFormData] = useState({
+        id: selectedItem && actionType === "update" ? parseInt(decodeUrlID(selectedItem.node.id)) : null,
         role: role,
         firstName: selectedItem && actionType === "update" ? selectedItem.node.firstName : '',
         lastName: selectedItem && actionType === "update" ? selectedItem.node.lastName : '',
@@ -41,7 +42,7 @@ const CreateLecturer = ({
         prefix: '',
         deptIds: [parseInt(decodeUrlID(dept?.node.id || ""))],
         schoolIds: [params.school_id],
-        delete: false,
+        delete: actionType === "delete" ? true : false,
     })
 
     const client = getApolloClient(params.domain)
@@ -88,8 +89,6 @@ const CreateLecturer = ({
         if (actionType === "update" && selectedItem) {
             dataToSubmit = {
                 ...formData,
-                id: parseInt(decodeUrlID(selectedItem.node.id)),
-                sex: capitalizeFirstLetter(formData.sex),
                 delete: actionType === "update" ? false : true,
             }
         }
@@ -104,23 +103,6 @@ const CreateLecturer = ({
             alert(t("Operation Successful") + " " + `✅`)
             window.location.reload();
         }
-
-        // await ApiFactory({
-        //     newData: dataToSubmit,
-        //     editData: dataToSubmit,
-        //     mutationName: "createUpdateDeleteCustomuser",
-        //     modelName: "customuser",
-        //     successField: "id",
-        //     query,
-        //     router: null,
-        //     params,
-        //     redirect: false,
-        //     reload: true,
-        //     redirectPath: ``,
-        //     actionLabel: "processing",
-        // });
-
-
     };
 
     return (
@@ -176,7 +158,7 @@ const CreateLecturer = ({
                             label="Gender"
                             placeholder="sex"
                             type='select'
-                            options={["Male", "Female"]}
+                            options={["MALE", "FEMALE"]}
                             required
                         />
                         <MyInputField

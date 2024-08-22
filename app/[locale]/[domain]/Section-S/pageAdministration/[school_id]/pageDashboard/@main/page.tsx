@@ -1,8 +1,8 @@
-import GenderGraph from './GenderGraph';
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 import { getAcademicYear } from '@/utils/functions';
-import YearlyStudentGraph from './YearlyStudentGraph';
+import GenderGraph from '@/app/[locale]/[domain]/SectionAll/Dashboard/GenderGraph';
+import YearlyStudentGraph from '@/app/[locale]/[domain]/SectionAll/Dashboard/YearlyStudentGraph';
 
 
 const page = async (
@@ -10,66 +10,69 @@ const page = async (
     { params: any }
 ) => {
 
-  const { domain, school_id } = await params;
+  const p = await params;
 
   const data = await queryServerGraphQL({
-    domain,
+    domain: p.domain,
     query: GET_DATA,
     variables: {
       academicYear: getAcademicYear(),
-      schoolId: parseInt(school_id)
+      schoolId: parseInt(p.school_id),
+      schoolId2: parseInt(p.school_id),
     },
   });
 
   return (
-
     <div className="flex flex-col md:flex-row gap-4">
 
       <GenderGraph
         title="Staff"
-        genderData={data?.getStatsGenderChart?.staff}
+        data={data?.allStatistics?.edges[0]?.node?.countUserCampus}
       />
 
       <GenderGraph
         title="Students"
-        genderData={data?.getStatsGenderChart?.students}
+        data={data?.allStatistics?.edges[0]?.node?.countUserCampus}
       />
 
       <YearlyStudentGraph
-        data={data?.getStatsGenderChart?.yearlyStudentCount}
+        data={data?.allSchoolInfos?.edges[0]?.node}
       />
 
     </div>
-
   );
 };
 
 export default page;
 
 
-
 const GET_DATA = gql`
  query GetData(
-  $schoolId: ID!,
+  $schoolId: Decimal!,
+  $schoolId2: ID!,
   $academicYear: String!,
 ) {
-    getStatsGenderChart (
-      schoolId: $schoolId,
-      academicYear: $academicYear,
-      schoolType: "S"
-    ) {
-        yearlyStudentCount { 
-          academicYear
-          active
-          inactive
-        }
-        staff {
-          name
-          count
-        }
-        students {
-          name
-          count
-        }
+   allStatistics (
+    academicYear: $academicYear,
+    schoolId: $schoolId
+  ) {
+    edges {
+      node {
+        academicYear
+        school { id campus }
+        countUserCampus
+        updatedAt
+        updatedBy { id fullName }
       }
-  }`;
+    }
+  }
+  allSchoolInfos (
+    id: $schoolId2,
+  ) {
+    edges {
+      node {
+        infoData
+      }
+    }
+  }
+}`;

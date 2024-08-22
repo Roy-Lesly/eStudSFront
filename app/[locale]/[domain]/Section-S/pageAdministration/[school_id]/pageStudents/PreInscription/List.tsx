@@ -5,13 +5,13 @@ import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import MyTabs from '@/MyTabs';
 import ServerError from '@/ServerError';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgePreInscription } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,7 @@ import { FaPlus } from 'react-icons/fa';
 
 const List = (
   { params, dataYears, dataPending, sp }:
-  { params: any, dataYears: string[], dataPending: EdgePreInscription[], sp: any }) => {
+    { params: any, dataYears: string[], dataPending: EdgePreInscription[], sp: any }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -96,7 +96,7 @@ const List = (
       <div className="bg-gray-50 flex flex-col items-center justify-center gap-2">
 
         <div className='flex justify-end items-center w-full'>
-         
+
           <Link
             className='w-1/2 md:w-1/4 rounded-lg shadow-lg bg-teal-100 px-4 py-2 cursor-pointer flex items-center justify-center gap-2 font-bold text-xl'
             href={`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/pageNewPreinscription`}

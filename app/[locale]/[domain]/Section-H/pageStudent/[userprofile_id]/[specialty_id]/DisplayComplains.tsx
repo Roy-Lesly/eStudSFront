@@ -5,7 +5,7 @@ import { EdgeComplain, EdgeUserProfile } from '@/utils/Domain/schemas/interfaceG
 import { useTranslation } from 'react-i18next';
 import { TableColumn } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
-import MyTableComp from '@/components/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import ModalCUDComplain from '@/components/MyModals/ModalCUDComplain';
 import MyModal from '@/components/MyModals/MyModal';
 import { decodeUrlID } from '@/utils/functions';

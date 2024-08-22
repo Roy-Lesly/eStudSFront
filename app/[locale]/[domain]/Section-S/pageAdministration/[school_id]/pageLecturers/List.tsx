@@ -8,9 +8,9 @@ import Header from '@/section-s/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
 import { Metadata } from 'next';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
 import MyTabs from '@/MyTabs';
 import { FaPlus } from 'react-icons/fa';
@@ -43,7 +43,8 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
   const [showModal, setShowModal] = useState<{ show: boolean, type: "admin" | "teacher" }>();
 
   const Columns: TableColumn<EdgeCustomUser>[] = [
-    { header: '#', align: 'left',
+    {
+      header: '#', align: 'left',
       render: (_item: EdgeCustomUser, index: number) => index + 1,
       responsiveHidden: true
     },
@@ -51,7 +52,8 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
     { header: 'Gender', accessor: 'node.sex', align: 'center', responsiveHidden: true },
     { header: 'Address', accessor: 'node.address', align: 'left', responsiveHidden: true },
     { header: 'Telephone', accessor: 'node.telephone', align: 'center', responsiveHidden: true },
-    { header: 'Dob / Pob', align: 'left', responsiveHidden: true, hideColumn: activeTab !== 2,
+    {
+      header: 'Dob / Pob', align: 'left', responsiveHidden: true, hideColumn: activeTab !== 2,
       render: (item: EdgeCustomUser, index: number) => <div className='flex gap-2'>
         <span>{item.node.dob}</span>
         <span>{item.node.pob}</span>

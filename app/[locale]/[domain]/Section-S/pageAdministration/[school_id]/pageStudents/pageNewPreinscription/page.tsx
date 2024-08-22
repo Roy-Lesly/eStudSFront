@@ -61,7 +61,7 @@ const GET_DATA = gql`
     allSeries {
       edges {
         node {
-          id classroom name
+          id level name
         }
       }
     }

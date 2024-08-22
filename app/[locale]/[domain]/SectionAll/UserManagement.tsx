@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { motion } from "framer-motion";
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { gql, useQuery } from '@apollo/client';
 import Loader from '@/section-h/common/Loader';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
 import { FaRightLong } from 'react-icons/fa6';

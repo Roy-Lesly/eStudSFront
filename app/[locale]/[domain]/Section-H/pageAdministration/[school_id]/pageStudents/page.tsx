@@ -41,7 +41,6 @@ const page = async ({
     variables: {
       ...removeEmptyFields(paginationParams),
       role: "STUDENT",
-      timestamp: new Date().getTime()
     },
   });
 

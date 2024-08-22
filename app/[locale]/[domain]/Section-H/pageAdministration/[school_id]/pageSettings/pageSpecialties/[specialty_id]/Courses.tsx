@@ -3,7 +3,7 @@
 import React from 'react';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 
 const Courses = ({ data }: { data: EdgeCourse[], p: any }) => {
 
@@ -29,14 +29,14 @@ const Courses = ({ data }: { data: EdgeCourse[], p: any }) => {
 
 
   return (
-   <div>
+    <div>
       <div>
-        <MyTableComp 
+        <MyTableComp
           data={data}
           columns={Columns}
         />
       </div>
-   </div>
+    </div>
   );
 };
 

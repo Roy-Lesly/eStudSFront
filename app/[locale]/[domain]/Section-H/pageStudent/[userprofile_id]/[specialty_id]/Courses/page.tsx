@@ -4,7 +4,7 @@ import NotificationError from '@/section-h/common/NotificationError';
 import { gql } from '@apollo/client';
 import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import List from './List';

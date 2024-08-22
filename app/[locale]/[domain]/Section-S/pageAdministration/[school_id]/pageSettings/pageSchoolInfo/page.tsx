@@ -57,7 +57,7 @@ const GET_DATA = gql`
           id
           campus schoolName schoolType shortName mainSchool
           country address region town
-          email telephone seqLimit examLimit
+          email telephone seqLimit examSecLimit
           emailNotification
           smsNotification
           waNotification

@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import React, { Suspense } from 'react'
 import NotificationError from '@/section-h/common/NotificationError';
 import { gql } from '@apollo/client';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import List from './List';

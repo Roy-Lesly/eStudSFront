@@ -5,11 +5,11 @@ import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgeMainSubject, EdgeSeries, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import ExcelExporter from '@/ExcelExporter';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import { useRouter } from 'next/navigation';
 import MyModal from '@/MyModals/MyModal';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +32,7 @@ const List = (
         {
             header: `${t("Class")} / ${t("Series")}`, align: "left", render: (e: EdgeSeries) => (
                 <div className='flex justify-between gap-2'>
-                    <span>{e?.node?.classroom}</span>
+                    <span>{e?.node?.level}</span>
                     <span>{e?.node?.name}</span>
                 </div>
             )
@@ -115,8 +115,8 @@ const List = (
                                 columns={Columns}
                                 data={
                                     data.sort((a: EdgeSeries, b: EdgeSeries) => {
-                                        const classroomA = a.node.classroom.toLowerCase();
-                                        const classroomB = b.node.classroom.toLowerCase();
+                                        const classroomA = a.node.level.toLowerCase();
+                                        const classroomB = b.node.level.toLowerCase();
                                         return classroomA.localeCompare(classroomB);
                                     })}
                                 table_title={t("Series")}
@@ -135,10 +135,9 @@ const List = (
                         sp={sp}
                         isOpen={showModal?.show || false}
                         selectedSeries={selectedItem?.node}
-                        onClose={() =>setShowModal({ show: false, type: "create" })}
+                        onClose={() => setShowModal({ show: false, type: "create" })}
                         actionType={showModal?.type || "create"}
                         apiLevel={apiLevel}
-                        // apiMainSubjects={apiMainSubjects}
                     />}
                     openState={showModal?.show || false}
                     onClose={() => setShowModal({ show: false, type: "create" })}

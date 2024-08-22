@@ -209,6 +209,7 @@ export interface NodeSchoolHigherInfo {
   seqLimit: number;
   caLimit: number;
   examLimit: number;
+  examSecLimit: number;
   resitLimit: number;
   bgLogoSlip: string;
   bgLogoTranscript: string;
@@ -217,6 +218,7 @@ export interface NodeSchoolHigherInfo {
   emailNotification: boolean;
   smsNotification: boolean;
   waNotification: boolean;
+  infoData: string | any;
 }
 
 

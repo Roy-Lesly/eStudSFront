@@ -42,17 +42,17 @@ export const ModalSeries = ({
 
     const [formData, setFormData] = useState({
         name: selectedSeries ? selectedSeries.name : '',
-        classroom: selectedSeries ? selectedSeries.classroom : '',
+        level: selectedSeries ? selectedSeries.level : '',
     });
 
     useEffect(() => {
         if (selectedSeries) {
             setFormData({
                 name: selectedSeries.name?.toString() || '',
-                classroom: selectedSeries.classroom || '',
+                level: selectedSeries.level || '',
             });
         } else {
-            setFormData({ name: '', classroom: '', });
+            setFormData({ name: '', level: '', });
         }
     }, [selectedSeries]);
 
@@ -73,6 +73,7 @@ export const ModalSeries = ({
 
     const [listSubjectsInSeries, setListSubjectsInSeries] = useState<EdgeMainSubject[] | undefined>(selectedSeries?.mainsubjects?.edges)
     const [listSubjectsInDB, setListSubjectsInDB] = useState<EdgeMainSubject[]>()
+    const [filteredSubjects, setFilteredSubjects] = useState<EdgeMainSubject[]>(); // 👈 new state
     const [getMainSubjects, { loading, data: mainSubjectsData }] = useLazyQuery(GET_MAIN_SUBJECTS);
     const [searchText, setSearchText] = useState<string>();
 
@@ -98,6 +99,18 @@ export const ModalSeries = ({
         }
     }, [searchText])
 
+    useEffect(() => {
+        if (listSubjectsInDB) {
+            const filtered = listSubjectsInDB?.filter(
+                (dbSubj) =>
+                    !listSubjectsInSeries?.some((seriesSubj) => seriesSubj.node.id === dbSubj.node.id)
+            );
+            setFilteredSubjects(filtered);
+        }
+    }, [listSubjectsInSeries, listSubjectsInDB]);
+
+    console.log(filteredSubjects?.length);
+
 
     const handleSubmit = async (deleteFlag = false) => {
 
@@ -110,7 +123,7 @@ export const ModalSeries = ({
 
         const newData = {
             name: formData.name?.toUpperCase(),
-            classroom: formData.classroom?.toUpperCase(),
+            level: formData.level?.toUpperCase(),
             mainsubjectsIds: mainsubjectsIds,
             delete: deleteFlag,
         };
@@ -192,8 +205,8 @@ export const ModalSeries = ({
                                     id="name"
                                     label="Select Class"
                                     name="name"
-                                    value={{ value: formData.classroom, label: formData.classroom }}
-                                    onChange={(e: any) => setFormData({ ...formData, classroom: e.value })}
+                                    value={{ value: formData.level, label: formData.level }}
+                                    onChange={(e: any) => setFormData({ ...formData, level: e.value })}
                                     placeholder={t("Select Class")}
                                     options={apiLevel.slice(section[0], section[1]).map((lev: string) => { return { value: lev, label: lev } })}
                                 />
@@ -218,17 +231,20 @@ export const ModalSeries = ({
                                         />
                                     </div>
                                     <div className="max-h-48 overflow-y-auto space-y-1">
-                                        {listSubjectsInDB && listSubjectsInDB
+                                        {/* {listSubjectsInDB && listSubjectsInDB */}
+                                        {filteredSubjects && filteredSubjects
                                             .filter(subj => subj?.node.subjectName.toLowerCase().includes(searchText ? searchText.toLowerCase() : ""))
-                                            .slice(0, 10)
+                                            // .slice(0, 10)
                                             .map(subj => (
                                                 <li key={subj?.node.id} className="flex justify-between items-center border p-1 rounded">
-                                                    <span>{subj?.node.subjectName}</span>
-                                                    <span>{subj?.node?.subjectCode}</span>
+                                                    <div className='flex justify-between'>
+                                                        <span className='text-left mr-2'>{subj?.node?.subjectCode}</span>
+                                                        <span className='text-left'>{subj?.node.subjectName}</span>
+                                                    </div>
                                                     <button
                                                         onClick={() => {
                                                             setSearchText("");
-                                                            setListSubjectsInDB(prev => (prev ?? []).filter(s => s.node.id !== subj.node.id));
+                                                            // setListSubjectsInDB(prev => (prev ?? []).filter(s => s.node.id !== subj.node.id));
                                                             setListSubjectsInSeries(prev => {
                                                                 const exists = (prev ?? []).some(s => s.node.id === subj.node.id);
                                                                 return exists ? prev : [...(prev ?? []), subj];
@@ -252,15 +268,18 @@ export const ModalSeries = ({
                                     <ul className="space-y-1">
                                         {!loading && listSubjectsInSeries ? listSubjectsInSeries.map((subj: EdgeMainSubject) => (
                                             <li key={subj.node.id} className="flex justify-between items-center border p-1 rounded">
-                                                <span>{subj.node.subjectName}</span>
+                                                <div className='flex justify-between'>
+                                                    <span className='text-left mr-2'>{subj?.node?.subjectCode}</span>
+                                                    <span className='text-left'>{subj?.node.subjectName}</span>
+                                                </div>
                                                 <button
                                                     onClick={() => {
                                                         setSearchText("");
                                                         setListSubjectsInSeries(prev => (prev ?? []).filter(s => s.node.id !== subj.node.id));
-                                                        setListSubjectsInDB(prev => {
-                                                            const exists = (prev ?? []).some(s => s.node.id === subj.node.id);
-                                                            return exists ? prev : [...(prev ?? []), subj];
-                                                        });
+                                                        // setListSubjectsInDB(prev => {
+                                                        //     const exists = (prev ?? []).some(s => s.node.id === subj.node.id);
+                                                        //     return exists ? prev : [...(prev ?? []), subj];
+                                                        // });
                                                     }}
                                                     className="text-red-500 hover:text-red-700"
                                                     title="Remove"
@@ -273,15 +292,15 @@ export const ModalSeries = ({
                                 </div>
 
 
-                                {/* 
-                                {listSubjectsInSeries && listSubjectsInSeries?.length > 11 ? <div className='md:flex items-center hidden'>
+
+                                {listSubjectsInSeries && listSubjectsInSeries?.length > 10 ? <div className='md:flex items-center hidden'>
                                     <button
                                         onClick={() => handleSubmit()}
                                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                                     >
                                         <CheckCircle2 size={18} /> {selectedSeries ? 'Update' : 'Submit'}
                                     </button>
-                                </div> : null} */}
+                                </div> : null}
 
 
 
@@ -289,7 +308,6 @@ export const ModalSeries = ({
                         </div>
 
 
-                        {/* Actions */}
                         <div className="flex justify-between gap-3 pt-4">
                             {actionType === "delete" ? <button
                                 onClick={deleteData}
@@ -298,13 +316,13 @@ export const ModalSeries = ({
                                 <XCircle size={18} /> {t("Delete")}
                             </button>
                                 :
-                                (formData.name?.length && formData.classroom?.length) ? <button
+                                (formData.name?.length && formData.level?.length) ? <button
                                     onClick={() => handleSubmit()}
                                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                                 >
                                     <CheckCircle2 size={18} /> {selectedSeries ? 'Update' : 'Submit'}
                                 </button> : null
-                                }
+                            }
 
 
                         </div>
@@ -321,14 +339,14 @@ const query = gql`
   mutation Create(
     $id: ID
     $name: String!
-    $classroom: String!
+    $level: String!
     $mainsubjectsIds: [ID!]!
     $delete: Boolean!
   ) {
     createUpdateDeleteSeries (
         id: $id
         name: $name
-        classroom: $classroom
+        level: $level
         mainsubjectsIds: $mainsubjectsIds
         delete: $delete
     ) {
@@ -349,7 +367,7 @@ const GET_MAIN_SUBJECTS = gql`
       ) {
           edges {
               node {
-                  id subjectName
+                  id subjectName subjectCode
               }
           }
       }

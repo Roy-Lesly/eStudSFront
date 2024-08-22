@@ -5,11 +5,11 @@ import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-s/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
-import { EdgeSubjectSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import MyTableComp from '@/components/Table/MyTableComp';
+import { EdgeSeries, EdgeSubjectSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
+import SearchMultiple from '@/Search/SearchMultiple';
 import ExcelExporter from '@/ExcelExporter';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import MyModal from '@/MyModals/MyModal';
@@ -18,8 +18,8 @@ import ModalSelectProperties from './ModalSelectProperties';
 
 
 const List = (
-  { params, data, sp, apiYears, apiLevels }:
-  { params: any; data: any, sp: any, apiYears: any, apiLevels: string[] }
+  { params, data, sp, apiYears, apiLevels, apiSeries }:
+    { params: any; data: any, sp: any, apiYears: any, apiLevels: string[], apiSeries: EdgeSeries[] }
 ) => {
 
   const { t } = useTranslation();
@@ -27,8 +27,6 @@ const List = (
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
   const router = useRouter();
   const [selectedItem, setSelectedItem] = useState<EdgeSubjectSec | null>(null);
-
-  console.log(data);
 
   const Columns: TableColumn<EdgeSubjectSec>[] = [
     { header: "#", align: "center", render: (_item: EdgeSubjectSec, index: number) => index + 1, },
@@ -128,6 +126,7 @@ const List = (
               params={params}
               apiYears={apiYears}
               apiLevels={apiLevels}
+              apiSeries={apiSeries}
               setOpenModal={setShowModal}
             />
           }

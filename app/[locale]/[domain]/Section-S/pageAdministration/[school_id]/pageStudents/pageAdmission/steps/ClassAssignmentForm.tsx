@@ -37,7 +37,7 @@ const ClassAssignmentForm = (
                 const cls = dataClassroomsSec?.find((item: EdgeClassRoomSec) => decodeUrlID(item.node.id) == classAssignment?.classroomsecId)
                 getSeries({
                     variables: {
-                        classroom: cls?.node?.level || myClassroom.level
+                        level: cls?.node?.level || myClassroom.level
                     },
                 });
             }
@@ -46,7 +46,7 @@ const ClassAssignmentForm = (
         if (count == 2 && seriesData?.allSeries?.edges) {
             const options = seriesData?.allSeries?.edges.map(({ node }: EdgeSeries) => ({
                 value: decodeUrlID(node.id),
-                label: `${node.name} - ${node.classroom}`
+                label: `${node.name} - ${node.level}`
             }));
             if (options?.length) {
                 const matchedSeries = options?.find((item: any) => item.value == classAssignment?.seriesId);
@@ -184,14 +184,14 @@ export default ClassAssignmentForm;
 
 export const GET_SERIES = gql`
     query GetData (
-        $classroom: String!
+        $level: String!
     ) {
         allSeries(
-            classroom: $classroom
+            level: $level
         ) {
             edges {
                 node {
-                    id name classroom
+                    id name level
                 }
             }
         }

@@ -241,7 +241,7 @@ const Info = (
                       selectedImage ||
                       (data?.node.userprofile.customuser.photo
                         ? `https://api${params.domain}.e-conneq.com/media/` + data?.node?.userprofile.customuser.photo
-                        : "")
+                        : "/")
                     }
                     alt="Photo"
                     className={`bg-white border object-cover rounded-md cursor-pointer`}
@@ -530,7 +530,7 @@ const Info = (
 
           {/* Submit Button */}
           <motion.div variants={sectionVariants} className="flex justify-end">
-            <ButtonUpdate handleUpdate={handleSubmit} dataToSubmit={[student]} />
+            {/* <ButtonUpdate handleUpdate={handleSubmit} dataToSubmit={[student]} /> */}
           </motion.div>
         </motion.form>}
 

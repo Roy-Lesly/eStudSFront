@@ -99,14 +99,16 @@ const List = (
                 subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation`}
             />
 
-            <div className='flex flex-col-reverse gap-10 md:flex-row w-full bg-white shadow-lg rounded md:p-2'>
+            <div className='flex flex-col-reverse gap-10 md:flex-row w-full bg-slate-100 shadow-lg text-black rounded md:p-2'>
 
 
 
                 {page === 1 ? <div className="w-full p-4">
 
-                    <h1 className='text-center w-full text-xl font-semibold pb-2'>{("Multiple Course Assignment")} - {t("Semester").toUpperCase()} {searchParams?.semester}</h1>
-                    <h1 className='text-center w-full text-xl font-semibold pb-2'>{apiSpecialty?.node?.mainSpecialty.specialtyName} - {apiSpecialty?.node?.academicYear} - {apiSpecialty?.node?.level?.level}</h1>
+                    <div className='flex flex-col gap-2 mb-4 shadow-xl px-4 md:px-6 py-1 bg-white rounded-lg'>
+                        <h1 className='text-center w-full text-xl font-semibold'>{("Multiple Course Assignment")} - {t("Semester").toUpperCase()} {searchParams?.semester}</h1>
+                        <h1 className='text-center w-full text-xl font-semibold'>{apiSpecialty?.node?.mainSpecialty.specialtyName} - {apiSpecialty?.node?.academicYear} - {apiSpecialty?.node?.level?.level}</h1>
+                    </div>
 
                     <div className={`flex flex-col md:flex-row gap-4 transition-all duration-300 ${selectedCourses ? "md:flex-row" : ""
                         }`}>
@@ -122,21 +124,21 @@ const List = (
                                 className="mb-4 w-full px-2 py-1 border rounded"
                             />
 
-                            <div className="bg-white rounded-lg shadow p-2 overflow-auto max-h-[70vh] text-black">
+                            <div className="bg-white rounded-lg shadow-lg p-2 overflow-auto max-h-[70vh] text-black">
                                 <table className="w-full text-sm text-left">
                                     <thead>
-                                        <tr className="border-b">
-                                            <th className="p-2">{t("Course Name")}</th>
+                                        <tr className="border-b bg-teal-100 rounded-lg">
+                                            <th className="px-2 py-1 text-lg">{t("Course Name")}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {filteredCourses?.map(({ node }) => (
                                             <tr
                                                 key={node.id}
-                                                className="hover:bg-gray-100 font-medium tracking-wide cursor-pointer"
+                                                className="hover:bg-slate-200 font-medium cursor-pointer"
                                                 onClick={() => handleSelectCourse(node)}
                                             >
-                                                <td className="p-2">{node.courseName}</td>
+                                                <td className="p-2 tracking-wide">{node.courseName}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -152,12 +154,12 @@ const List = (
                                 exit={{ opacity: 0, x: 50 }}
                                 className="md:w-1/2 bg-white rounded-lg shadow p-4 text-black overflow-auto max-h-[70vh]"
                             >
-                                <h2 className="text-lg font-semibold mb-4">{t("Selected Courses")}</h2>
-                                <ul className="space-y-1">
+                                <h2 className="text-lg font-semibold mb-4">{t("Selected Courses")} - {selectedCourses.length}</h2>
+                                <ul className="space-y-1 font-semibold tracking-wide">
                                     {selectedCourses.map((course) => (
                                         <li
                                             key={course.mainCourseId}
-                                            className="cursor-pointer flex bg-gray-100 px-3 py-1 rounded shadow-sm hover:bg-gray-200 justify-between"
+                                            className="cursor-pointer flex bg-slate-50 px-3 py-1 rounded shadow-sm hover:bg-slate-200 justify-between"
                                             onClick={() => handleUnselectCourse(course.mainCourseId)}
                                         >
                                             <span>{course.courseName}</span>

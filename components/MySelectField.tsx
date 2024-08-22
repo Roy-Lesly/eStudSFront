@@ -5,7 +5,7 @@ type OptionType = { value: string | number; label: string };
 type SelectFieldProps = {
   id: string;
   name: string;
-  value: SingleValue<OptionType> | MultiValue<OptionType>; // for react-select
+  value: SingleValue<OptionType> | MultiValue<OptionType>;
   onChange: (value: SingleValue<OptionType> | MultiValue<OptionType>, action: any) => void;
   label: string;
   placeholder: string;
@@ -35,7 +35,6 @@ const MySelectField: React.FC<SelectFieldProps> = ({
 }) => {
 
   const multi = isMulti === "select-multiple";
-  console.log(multi);
 
   return (
     <div className="mt-2 w-full">

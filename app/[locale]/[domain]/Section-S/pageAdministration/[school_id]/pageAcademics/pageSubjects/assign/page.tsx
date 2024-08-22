@@ -23,7 +23,8 @@ const EditPage = async ({
     domain: p.domain,
     query: GET_DATA_SUBJECTS,
     variables: {
-      classroomsecId: parseInt(decodeUrlID(sp?.classId)),
+      classroomsecId: parseInt(sp?.classId),
+      seriesId: parseInt(sp?.seriesId),
       schoolId: p.school_id,
     },
   });
@@ -32,25 +33,32 @@ const EditPage = async ({
     domain: p.domain,
     query: GET_DATA_CLASSROOM_SEC,
     variables: {
-      id: parseInt(decodeUrlID(sp?.classId)),
+      id: parseInt(sp?.classId),
       schoolId: p.school_id,
     },
   });
 
-  const dataMainSubjects = await queryServerGraphQL({
+  const dataSeriesMainSubjects = await queryServerGraphQL({
     domain: p.domain,
-    query: GET_DATA_MAIN_SUBJECTS
+    query: GET_DATA_SERIES_SUBJECTS,
+    variables: {
+      seriesId: parseInt(sp?.seriesId),
+    },
   });
 
   return (
     <div>
-      {/* <pre>
-            {JSON.stringify(data?.allClassroomsSec?.edges?.[0], null, 2)}
-        </pre> */}
+      {/* <pre> */}
+      {/* {JSON.stringify(data?.allClassroomsSec?.edges?.[0], null, 2)} */}
+      {/* {JSON.stringify(dataSeriesMainSubjects?.allSeries?.edges?.[0], null, 2)} */}
+      {/* {JSON.stringify(dataSeriesMainSubjects?.allSeries?.edges?.[0].mainsubjects, null, 2)} */}
+      {/* {JSON.stringify(dataSeriesMainSubjects?.allSeries?.edges?.[0]?.node.mainsubjects?.edges, null, 2)} */}
+      {/* </pre> */}
       <List
         params={p}
-        data={data?.allSubjectsSec?.edges}
-        allMainSubjects={dataMainSubjects?.allMainSubjectSec?.edges}
+        // data={data?.allSubjectsSec?.edges}
+        apiLevel={data?.getLevelsSec}
+        selectedSeries={dataSeriesMainSubjects?.allSeries?.edges?.[0]?.node}
         dataAssignedSubjects={dataAssignedSubjects?.allSubjectsSec?.edges}
         sp={sp}
       />
@@ -70,26 +78,34 @@ export const metadata: Metadata = {
 
 
 
-const GET_DATA_MAIN_SUBJECTS = gql`
- query GetData {
-    allMainSubjectSec(
-      last: 200
-    ){
+const GET_DATA_SERIES_SUBJECTS = gql`
+ query GetData (
+  $seriesId: ID!
+ ) {
+    allSeries(
+      id: $seriesId
+    ) {
       edges {
         node {
-          id subjectName subjectCode
+          id name level subjectList 
+          mainsubjects {
+            edges { node { id subjectName subjectCode }}
+          }
         }
       }
     }
   }
 `;
 
+
 const GET_DATA_SUBJECTS = gql`
  query GetData (
     $classroomsecId: Decimal! 
+    $seriesId: Decimal! 
  ) {
     allSubjectsSec (
       classroomsecId: $classroomsecId
+      seriesId: $seriesId
       last: 200
     ){
       edges {
@@ -114,6 +130,7 @@ const GET_DATA_CLASSROOM_SEC = gql`
    $academicYear: String,
    $level: String,
   ) {
+    getLevelsSec
     allClassroomsSec(
       last: 100,
       id: $id

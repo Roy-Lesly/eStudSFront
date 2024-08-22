@@ -100,7 +100,7 @@ const GET_DATA = gql`
           nationality regionOfOrigin
           fatherName motherName fatherTelephone motherTelephone parentAddress
         }
-        classroomsec { academicYear level stream }
+        classroomsec { academicYear level stream classType }
         programsec
       }
     }

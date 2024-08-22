@@ -8,10 +8,10 @@ import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
 import { decodeUrlID } from '@/functions';
 import { Metadata } from 'next';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 const List = (
     { params, data, searchParams }: { params: any; data: any, searchParams: any }
 ) => {
-    
+
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
     return (

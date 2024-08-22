@@ -6,10 +6,10 @@ import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 // import MyModal from '@/MyModals/MyModal';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import { useTranslation } from 'react-i18next';
 import { EdgeNotificationPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 // import ModalCUDNotification from '@/components/MyModals/ModalCUDNotification';
@@ -17,7 +17,7 @@ import { EdgeNotificationPrim } from '@/utils/Domain/schemas/interfaceGraphqlPri
 
 const List = (
   { p, data, sp, apiYears, apiTarget, apiLevels }:
-  { p: any; data: EdgeNotificationPrim[], sp: any, apiYears: string[], apiTarget: string[], apiLevels: string[] }
+    { p: any; data: EdgeNotificationPrim[], sp: any, apiYears: string[], apiTarget: string[], apiLevels: string[] }
 ) => {
 
   const { t } = useTranslation("common");
@@ -32,10 +32,12 @@ const List = (
     { header: `${t("Message")}`, accessor: "node.message", align: "left" },
     { header: `${t("Recipients")}`, accessor: "node.recipients", align: "left" },
     { header: `${t("Year")}`, accessor: "node.academicYear", align: "left" },
-    { header: `${t("Date")}`, align: "left", render: ((item: EdgeNotificationPrim) => <div className='flex flex-col'>
-      <span>{item.node.scheduledFor.slice(0, 10)}</span>
-      <span>{item.node.scheduledFor.slice(11, 16)}</span>
-    </div>) },
+    {
+      header: `${t("Date")}`, align: "left", render: ((item: EdgeNotificationPrim) => <div className='flex flex-col'>
+        <span>{item.node.scheduledFor.slice(0, 10)}</span>
+        <span>{item.node.scheduledFor.slice(11, 16)}</span>
+      </div>)
+    },
     { header: `${t("Type")}`, accessor: "node.notificationType", align: "left" },
 
     {

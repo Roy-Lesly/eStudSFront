@@ -3,7 +3,7 @@
 import React from 'react';
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { JwtPayload } from '@/serverActions/interfaces';

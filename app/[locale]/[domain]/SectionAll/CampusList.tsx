@@ -8,7 +8,7 @@ import { GetMenuAdministration as MenuSecondary } from '@/section-s/Sidebar/Menu
 import { GetMenuAdministration as MenuPrimary } from '@/section-p/Sidebar/MenuAdministration';
 import { GetMenuAdministration as MenuVocational } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { motion } from "framer-motion";
 
 
@@ -61,7 +61,7 @@ const CampusList = (
             sidebar={
                 <Sidebar
                     params={params}
-                    menuGroups={ section === "H" ? MenuHigher() : section === "S" ? MenuSecondary() : section === "P" ? MenuPrimary() : MenuVocational()}
+                    menuGroups={section === "H" ? MenuHigher() : section === "S" ? MenuSecondary() : section === "P" ? MenuPrimary() : MenuVocational()}
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                 />

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react'
-import { removeEmptyFields } from '@/functions';
+import { getAcademicYear, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
@@ -21,7 +21,7 @@ const EditPage = async ({
 
   paginationParams.stream = sp?.stream
   paginationParams.level = sp?.level
-  // paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : `${new Date().getFullYear()}`
+  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : `${getAcademicYear()}`
 
   const data = await queryServerGraphQL({
     domain: p.domain,
@@ -31,6 +31,8 @@ const EditPage = async ({
       schoolId: p.school_id,
     },
   });
+
+  console.log(data);
 
   return (
     <div>
@@ -79,10 +81,29 @@ const GET_DATA_CLASSROOM_SEC = gql`
           id 
           academicYear
           school { id }
+          series { id name }
           level stream select cycle classType
           registration tuition paymentOne paymentTwo paymentThree
           school { campus}
           studentCount
+        }
+      }
+    }
+    allCustomusers (
+      isActive: true
+      roleIn: ["admin", "teacher"]
+      last: 300
+    ) {
+      edges {
+        node {
+          id fullName
+        }
+      }
+    }
+    allSeries {
+      edges {
+        node {
+          id name level
         }
       }
     }

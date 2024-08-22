@@ -4,12 +4,12 @@ import { TableColumn } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import React, { useState } from 'react';
 import MyInputField from '../MyInputField';
 import { decodeUrlID } from '@/utils/functions';
-import ButtonUpdate from '../section-h/Buttons/ButtonUpdate';
+import ButtonUpdate from '../Buttons/ButtonUpdate';
 import { JwtPayload } from '@/utils/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 import { gql } from '@apollo/client';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
-import MyTableComp from '../section-h/Table/MyTableComp';
+import MyTableComp from '../Table/MyTableComp';
 
 
 const FillMarksComponent = (

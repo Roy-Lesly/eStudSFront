@@ -6,10 +6,10 @@ import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { EdgeTranscriptApplications } from '@/Domain/schemas/interfaceGraphql';
 import { useRouter } from 'next/navigation';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import ExcelExporter from '@/ExcelExporter';
@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 
 
 const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: { params: any; dataPending: any, dataApproved: any, dataPrinted: any, searchParams: any }) => {
-  
+
   const { t } = useTranslation("common");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const router = useRouter();
@@ -42,7 +42,7 @@ const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: 
     },
     {
       header: "Action", align: "center", hideColumn: activeTab > 0 ? true : false,
-      render: (item) => <button 
+      render: (item) => <button
         onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageTranscript/${item.node.userprofile.schoolfees.id}/all`)}
         className='flex items-center justify-center w-full'
       >

@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; 
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-s/Header/Header';
 import { Metadata } from 'next';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { FaPlus } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgeUserProfileSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import ServerError from '@/ServerError';
@@ -33,10 +33,11 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
     { header: `${t("Full Name")}`, accessor: "node.customuser.fullName", align: "left" },
     { header: `${t("Gender")}`, accessor: "node.customuser.sex", align: "center" },
     {
-      header: `${t("Year / Level")}`, align: "left", render: (item) => <button
-        className=""
+      header: `${t("Year / Classroom")}`, align: "left", render: (item) => <button
+        className="justify-between items-center flex w-full"
       >
-        {item.node.classroomsec?.academicYear} / {item.node.classroomsec?.level}
+        <span>{item.node.classroomsec?.academicYear}</span>
+        <span>{item.node.classroomsec?.level} - {item.node.classroomsec?.classType}</span>
       </button>,
     },
     // { header: `${t("Class")}`, accessor: "node.stream", align: "left" },

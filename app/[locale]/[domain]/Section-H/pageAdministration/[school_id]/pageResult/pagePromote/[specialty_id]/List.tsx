@@ -10,7 +10,7 @@ import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeSpecialty, EdgeUserProfile } from '@/Domain/schemas/interfaceGraphql';
 import { FaRightLong } from 'react-icons/fa6';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaCheck } from 'react-icons/fa';
 import ModalPromote from './ModalPromote';
@@ -47,20 +47,20 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
       render: (item) => {
         const isSelected = profilesToPromote.some((profile) => profile.node.id === item.node.id);
         const info = item.node.infoData ? JSON.parse(item.node.infoData.toString()) : {}; // Parse the info JSON field
-        const isPromoted = info.status === "promoted";        
+        const isPromoted = info.status === "promoted";
         const foundInNext = dataNextSpec?.allUserProfiles?.edges.some(
           (nextItem: EdgeUserProfile) => nextItem.node.customuser.fullName === item.node.customuser.fullName
         );
         return (isPromoted || foundInNext) ?
           <span className="font-semibold text-green-500">{t("Promotted")}</span>
-        :
+          :
           <button
             onClick={() => toggleProfileSelection(item)}
             className={`p-1 rounded-full ${isSelected ? 'bg-green-500' : 'bg-green-200'}`}
           >
             {isSelected ? <FaCheck color="white" size={21} /> : <FaRightLong color="green" size={21} />}
           </button>
-        ;
+          ;
       },
     },
   ];

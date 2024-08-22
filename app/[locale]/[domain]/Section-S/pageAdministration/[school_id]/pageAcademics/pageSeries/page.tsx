@@ -3,6 +3,7 @@ import List from './List'
 import { removeEmptyFields } from '@/utils/functions';
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
+import { Metadata } from 'next';
 
 const page = async ({
   params,
@@ -28,7 +29,7 @@ const page = async ({
 
     },
   });
-
+  
 
   return (
     <List
@@ -45,6 +46,14 @@ export default page
 
 
 
+export const metadata: Metadata = {
+  title:
+    "Series-Settings",
+  description: "e-conneq School System. Series-Settings Page",
+};
+
+
+
 const GET_DATA = gql`
  query GetData (
   $level: String
@@ -52,11 +61,11 @@ const GET_DATA = gql`
     getLevelsSec
     allSeries(
       last: 100,
-      classroom: $level
+      level: $level
     ) {
       edges {
         node {
-          id name classroom subjectList 
+          id name level subjectList 
           mainsubjects {
             edges { node { id subjectName subjectCode }}
           }

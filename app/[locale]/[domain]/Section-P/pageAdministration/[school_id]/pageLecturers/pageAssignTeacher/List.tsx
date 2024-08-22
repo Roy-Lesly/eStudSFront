@@ -6,10 +6,10 @@ import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import { decodeUrlID } from '@/functions';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
@@ -82,12 +82,14 @@ const DataTable = ({ data, params }: { data: EdgeCustomUser[], params: any }) =>
   const Columns: TableColumn<EdgeCustomUser>[] = [
     { header: "#", align: "center", responsiveHidden: true, render: (_item: EdgeCustomUser, index: number) => index + 1, },
     { header: `${t("Full Name")}`, accessor: "node.fullName", align: "left", },
-    { header: `${t("Assigned Classes")}`, responsiveHidden: true, align: "left", render: (item: EdgeCustomUser) => <>
-      {item.node.classroomprim?.map((c: NodeClassRoomPrim) => <div key={c.id} className='flex justify-between'>
-        <span>{c?.level}</span>
-      <span>{c?.academicYear}</span>
-      </div>)}
-    </> },
+    {
+      header: `${t("Assigned Classes")}`, responsiveHidden: true, align: "left", render: (item: EdgeCustomUser) => <>
+        {item.node.classroomprim?.map((c: NodeClassRoomPrim) => <div key={c.id} className='flex justify-between'>
+          <span>{c?.level}</span>
+          <span>{c?.academicYear}</span>
+        </div>)}
+      </>
+    },
     {
       header: "Actions",
       align: "center",

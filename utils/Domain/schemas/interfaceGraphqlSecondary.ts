@@ -30,7 +30,7 @@ export interface NodeUserProfileSec {
 export interface NodeSeries {
   id: string;
   name: string;
-  classroom: string;
+  level: string;
   mainsubjects: { edges: EdgeMainSubject[] };
   subjectList: string[];
 }
@@ -39,6 +39,7 @@ export interface NodeSeries {
 export interface NodeClassRoomSec {
   id: string;
   school: NodeSchoolHigherInfo;
+  series: NodeSeries;
   stream: string;
   cycle: string;
   level: string;

@@ -1,16 +1,17 @@
 import { Metadata } from 'next';
-import React, { FC } from 'react'
+import React from 'react'
 import { removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
+
 
 const EditPage = async ({
   params,
   searchParams,
 }: {
-    params: any;
-    searchParams: any;
+  params: any;
+  searchParams: any;
 }) => {
   const p = await params;
   const sp = await searchParams;
@@ -21,70 +22,42 @@ const EditPage = async ({
   paginationParams.registrationNumber = sp?.registrationNumber
   paginationParams.academicYear = sp?.academicYear
 
-  const client = getApolloClient(p.domain);
-  let dataPending;
-  let dataAdmitted;
-  let data;
+  const dataPending = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_PREINSCRIPTION,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      admissionStatus: false,
+    },
+  });
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_PREINSCRIPTION,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        admissionStatus: false,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataPending = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    dataPending = null;
-  }
+  const dataAdmitted = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_PREINSCRIPTION,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      admissionStatus: true,
+    },
+  });
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_PREINSCRIPTION,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        admissionStatus: true,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataAdmitted = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    dataAdmitted = null;
-  }
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      admissionStatus: true,
+      schoolId: parseInt(p?.school_id),
+    },
+  });
 
-
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        admissionStatus: true,
-        schoolId: parseInt(p?.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
-
-  console.log(dataPending?.allPreinscriptionsSec?.edges);
 
   return (
     <div>
-      <List 
-        params={p} 
+      <List
+        params={p}
         dataPending={dataPending?.allPreinscriptionsSec?.edges}
-        dataYears={data?.allAcademicYears} 
-        sp={sp} 
+        dataYears={data?.allAcademicYears}
+        sp={sp}
       />
     </div>
   )

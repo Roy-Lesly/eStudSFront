@@ -6,10 +6,10 @@ import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgeMainSubject, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyModal from '@/MyModals/MyModal';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import ModalCUDMainSubject from '@/components/MyModals/ModalCUDMainSubject';
 import { useTranslation } from 'react-i18next';
 

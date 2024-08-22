@@ -6,14 +6,14 @@ import Sidebar from '@/section-p/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import { Metadata } from 'next';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { useRouter } from 'next/navigation';
 import { FaRightLong } from 'react-icons/fa6';
 import ExcelExporter from '@/ExcelExporter';
 import ServerError from '@/ServerError';
 import { useTranslation } from 'react-i18next';
 import { EdgeUserProfilePrim, TableColumn } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
-import MyTableComp from '@/components/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import Link from 'next/link';
 import { FaPlus } from 'react-icons/fa';
 

@@ -5,7 +5,7 @@ import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { motion } from "framer-motion";
 
 
@@ -115,13 +115,13 @@ const List = ({ params, searchParams, tenant }: { params: any, searchParams: any
                         Last 6 Months
                     </button>
                     <div className='  rounded-md w-full '>
-                        <SearchMultiple 
-                            names={[ "dateAfter"]}
+                        <SearchMultiple
+                            names={["dateAfter"]}
                             link=''
                             extraSearch={searchParams}
                             select={[
                                 // { type: 'date', name: 'dateAfter', dataSelect: ['MALE', 'FEMALE'] },
-                              ]}
+                            ]}
                         />
                     </div>
                 </div>

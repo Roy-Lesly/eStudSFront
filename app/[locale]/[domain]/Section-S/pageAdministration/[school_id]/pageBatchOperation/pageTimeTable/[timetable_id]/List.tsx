@@ -7,7 +7,7 @@ import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import { Metadata } from 'next';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { EdgeCourse, EdgeHall, EdgeTimeTable } from '@/Domain/schemas/interfaceGraphql';
 import { useRouter } from 'next/navigation';
 import TimeTableCard from './TimeTableCard';

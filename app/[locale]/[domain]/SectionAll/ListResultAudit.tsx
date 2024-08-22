@@ -8,7 +8,7 @@ import { GetMenuAdministration as MenuSecondary } from '@/section-s/Sidebar/Menu
 import { GetMenuAdministration as MenuPrimary } from '@/section-p/Sidebar/MenuAdministration';
 import { GetMenuAdministration as MenuVocational } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -85,10 +85,10 @@ const ListResultAudit = (
                         <SearchMultiple
                             names={
                                 section === "H" ? ['fullName', 'specialty', 'courseName', 'semester', 'academicYear'] :
-                                section === "S" ? ['fullName', 'level', 'subjectName', 'academicYear'] :
-                                section === "P" ? ['fullName', 'level', 'subjectName', 'academicYear'] :
-                                section === "V" ? ['fullName', 'level', 'subjectName', 'academicYear'] :
-                                []
+                                    section === "S" ? ['fullName', 'level', 'subjectName', 'academicYear'] :
+                                        section === "P" ? ['fullName', 'level', 'subjectName', 'academicYear'] :
+                                            section === "V" ? ['fullName', 'level', 'subjectName', 'academicYear'] :
+                                                []
                             }
                             extraSearch={sp}
                             link={`/${params.domain}/Section-${section}/pageAdministration/${params.school_id}/pageManagement/pageResultAudit/${params.tenant_name}`}

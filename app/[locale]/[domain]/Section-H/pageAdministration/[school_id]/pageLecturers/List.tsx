@@ -8,9 +8,9 @@ import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
 import { Metadata } from 'next';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
 import MyTabs from '@/MyTabs';
 import { FaPlus } from 'react-icons/fa';
@@ -38,7 +38,7 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
 const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) ||  0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) || 0);
   const [selectedItem, setSelectedItem] = useState<EdgeCustomUser | null>(null);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "admin" | "teacher" }>();
 

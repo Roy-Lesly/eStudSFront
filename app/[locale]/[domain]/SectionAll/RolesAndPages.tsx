@@ -2,7 +2,7 @@ import React from 'react'
 import { motion } from "framer-motion";
 import { gql, useQuery } from '@apollo/client';
 import Loader from '@/section-h/common/Loader';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 

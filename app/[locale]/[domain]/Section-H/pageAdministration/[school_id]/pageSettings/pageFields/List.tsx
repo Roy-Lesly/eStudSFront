@@ -9,12 +9,12 @@ import { Metadata } from 'next';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeDomain, EdgeField } from '@/Domain/schemas/interfaceGraphql';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import MyModal from '@/MyModals/MyModal';
 import ModalCUDField from '@/MyModals/ModalCUDField';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import { useTranslation } from 'react-i18next';
 
 

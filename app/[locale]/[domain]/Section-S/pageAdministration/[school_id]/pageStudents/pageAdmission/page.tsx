@@ -116,7 +116,6 @@ const GET_DATA = gql`
           level academicYear stream
           program
           seriesOne { id name }
-          seriesTwo { id name }
           nationality highestCertificate regionOfOrigin yearObtained
           campus { id campus }
         }
@@ -132,7 +131,7 @@ const GET_DATA = gql`
     allSeries {
       edges {
         node {
-          id name
+          id name level
         }
       }
     }

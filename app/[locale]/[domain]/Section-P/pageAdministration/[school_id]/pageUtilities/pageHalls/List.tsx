@@ -6,9 +6,9 @@ import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgeCustomUser, EdgeHall } from '@/Domain/schemas/interfaceGraphql';
 import MyModal from '@/MyModals/MyModal';
 import ModalCUDHall from '@/MyModals/ModalCUDHall';
@@ -40,18 +40,18 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     { header: 'Name', accessor: 'node.name', align: 'left', },
     { header: 'Capacity', accessor: 'node.capacity', align: 'right', },
     { header: 'Campus', accessor: 'node.school.campus', align: 'center', },
-  {
-        header: 'Select',
-        align: 'center',
-        render: (item: EdgeHall) => (
-          <button
-            onClick={() => {setShowModal({ type: "update", show: true }); setSelectedItem(item)}}
-            className="bg-green-200 p-2 rounded-full"
-          >
-            <FaRightLong color="green" size={23} />
-          </button>
-        ),
-      },
+    {
+      header: 'Select',
+      align: 'center',
+      render: (item: EdgeHall) => (
+        <button
+          onClick={() => { setShowModal({ type: "update", show: true }); setSelectedItem(item) }}
+          className="bg-green-200 p-2 rounded-full"
+        >
+          <FaRightLong color="green" size={23} />
+        </button>
+      ),
+    },
   ];
 
   return (

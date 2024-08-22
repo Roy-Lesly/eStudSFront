@@ -1,27 +1,32 @@
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
-import Display from './Display';
 import { getAcademicYear } from '@/utils/functions';
+import DashboardCount from '@/app/[locale]/[domain]/SectionAll/Dashboard/DashboardCount';
+
 
 const page = async (
   { params }:
     { params: any }
 ) => {
 
-  const { domain, school_id } = await params;
+  const p = await params;
 
   const data = await queryServerGraphQL({
-    domain,
+    domain: p.domain,
     query: GET_DATA,
     variables: {
       academicYear: getAcademicYear(),
-      schoolId: parseInt(school_id)
+      schoolId: parseInt(p.school_id),
     },
   });
 
-  return (<Display
-    data={data?.getStatsUserCount}
-  />
+  console.log(data);
+
+  return (
+    <DashboardCount
+      p={p}
+      data={data?.allStatistics?.edges[0]}
+    />
   );
 };
 
@@ -30,16 +35,22 @@ export default page;
 
 const GET_DATA = gql`
  query GetData(
-  $schoolId: ID!,
+  $schoolId: Decimal!,
   $academicYear: String!,
 ) {
-    getStatsUserCount(
-      schoolId: $schoolId,
-      academicYear: $academicYear,
-      schoolType: "P"
-    ) {
-        staffs { active inactive }
-        teachers { active inactive }
-        students { active inactive }
+  allStatistics (
+    academicYear: $academicYear,
+    schoolId: $schoolId
+  ) {
+    edges {
+      node {
+        academicYear
+        school { id campus }
+        countUserCampus
+        updatedAt
+        updatedBy { id fullName }
       }
-  }`;
+    }
+  }
+}`;
+

@@ -30,6 +30,7 @@ const EditPage = async ({
       <List
         params={p}
         data={data?.allMainSubjectSec?.edges}
+        apiTeachers={data?.allCustomusers?.edges}
         sp={sp}
       />
 
@@ -52,16 +53,27 @@ const GET_DATA = gql`
  query GetData(
     $ids: [ID!]
   ) {
-  allMainSubjectSec(
-    ids: $ids
-  ) {
-    edges {
-      node {
-        id
-        subjectName
-        subjectCode
+    allCustomusers (
+      isActive: true
+      roleIn: ["admin", "teacher"]
+      last: 300
+    ) {
+      edges {
+        node {
+          id fullName
+        }
+      }
+    }
+    allMainSubjectSec(
+      ids: $ids
+    ) {
+      edges {
+        node {
+          id
+          subjectName
+          subjectCode
+        }
       }
     }
   }
-}
 `;

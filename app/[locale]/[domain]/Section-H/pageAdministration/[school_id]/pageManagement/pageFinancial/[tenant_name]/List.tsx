@@ -5,7 +5,7 @@ import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -37,8 +37,8 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
 
 const List = (
     { params, dataPlatformPaid, dataPlatformPending, dataTransactions, sp }
-    : 
-    { params: any, dataPlatformPaid: EdgeSchoolFees[], dataPlatformPending: EdgeSchoolFees[], dataTransactions: EdgeTransactions[], sp: any }
+        :
+        { params: any, dataPlatformPaid: EdgeSchoolFees[], dataPlatformPending: EdgeSchoolFees[], dataTransactions: EdgeTransactions[], sp: any }
 ) => {
 
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);

@@ -8,12 +8,12 @@ import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeDomain, EdgeMainSpecialty, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import MyTabs from '@/MyTabs';
 import ExcelExporter from '@/ExcelExporter';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { FaPlus } from 'react-icons/fa';
@@ -206,8 +206,8 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               setOpenModal={setShowModal}
               actionType={showModal?.type || "create"}
               selectedItem={selectedItem}
-              extraData={{ 
-                mainSpecialties: data?.allMainSpecialties?.edges, 
+              extraData={{
+                mainSpecialties: data?.allMainSpecialties?.edges,
                 levels: data?.allLevels?.edges,
                 programs: data?.allPrograms?.edges
               }}

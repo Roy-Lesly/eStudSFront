@@ -5,11 +5,11 @@ import Sidebar from '@/section-p/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import ExcelExporter from '@/ExcelExporter';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import MyModal from '@/MyModals/MyModal';
@@ -20,7 +20,7 @@ import { EdgeSubjectPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary'
 
 const List = (
   { params, data, sp, apiYears, apiLevels }:
-  { params: any; data: any, sp: any, apiYears: any, apiLevels: string[] }
+    { params: any; data: any, sp: any, apiYears: any, apiLevels: string[] }
 ) => {
 
   const { t } = useTranslation();
@@ -115,7 +115,7 @@ const List = (
                 table_title={t("Assigned Subjects")}
                 button_type={"add"}
                 button_action={() => { setShowModal({ show: true, type: "create" }) }}
-                setActionType={() => {}}
+                setActionType={() => { }}
               />
               :
               null

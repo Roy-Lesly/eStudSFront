@@ -5,16 +5,16 @@ import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
 import { EdgeClassRoomSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import ExcelExporter from '@/ExcelExporter';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import MyModal from '@/MyModals/MyModal';
 import { useTranslation } from 'react-i18next';
 import ModalCUDClassroomSec from '@/components/MyModals/ModalCUDClassroomSec';
+import MyTableComp from '@/components/Table/MyTableComp';
 
 
 const List = (
@@ -28,15 +28,14 @@ const List = (
   const [selectedItem, setSelectedItem] = useState<EdgeClassRoomSec | null>(null);
   const router = useRouter();
 
-  console.log(data);
-
   const Columns: TableColumn<EdgeClassRoomSec>[] = [
     { header: "#", align: "center", render: (_item: EdgeClassRoomSec, index: number) => index + 1, },
-    { header: `${t("Class")}`, align: "left", render: (item: EdgeClassRoomSec) => <div className='flex justify-between items-center'>
-      <span>{item?.node?.level}</span>
+    { header: `${t("Class")}`, align: "left", render: (item: EdgeClassRoomSec) => <div className='flex justify-between gap-2 items-center'>
+      <span className='w-full'>{item?.node?.level}</span>
       <span>{item?.node?.classType}</span>
       <span></span>
     </div> },
+    { header: `${t("Series")}`, accessor: "node.series.name", align: "left" },
     { header: `${t("Section")}`, accessor: "node.stream", align: "center" },
     { header: `${t("Year")}`, accessor: "node.academicYear", align: "center" },
     { header: `${t("Fees")}`, accessor: "node.tuition", align: "center" },
@@ -113,6 +112,7 @@ const List = (
                 data?.allClassroomsSec?.edges.sort((a: EdgeClassRoomSec, b: EdgeClassRoomSec) => {
                   const levelA = a.node.level.toLowerCase();
                   const levelB = b.node.level.toLowerCase();
+
                   return levelA.localeCompare(levelB);
                 })}
               table_title={t("Classrooms")}
@@ -133,6 +133,7 @@ const List = (
             selectedItem={selectedItem}
             apiLevel={apiLevel}
             apiClassType={apiClassType}
+            apiSeries={data.allSeries?.edges}
           />}
           openState={showModal?.show || false}
           onClose={() => setShowModal({ show: false, type: "create" })}

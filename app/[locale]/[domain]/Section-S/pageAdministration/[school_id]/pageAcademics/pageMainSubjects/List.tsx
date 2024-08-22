@@ -5,13 +5,13 @@ import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgeMainSubject, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyModal from '@/MyModals/MyModal';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Buttons/ButtonAction';
 import ModalCUDMainSubject from '@/components/MyModals/ModalCUDMainSubject';
 import { useTranslation } from 'react-i18next';
-import SearchMultiple from '@/components/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/components/Search/SearchMultiple';
 
 
 const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
@@ -46,11 +46,11 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
         />
       }
       searchComponent={
-                <SearchMultiple
-                    names={['subjectName', 'subjectCode']}
-                    link={`/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageMainSubjects`}
-                />
-            }
+        <SearchMultiple
+          names={['subjectName', 'subjectCode']}
+          link={`/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageMainSubjects`}
+        />
+      }
       headerbar={
         <Header
           sidebarOpen={sidebarOpen}
@@ -67,7 +67,21 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
         <div className="bg-white mx-auto rounded shadow w-full">
           {data ?
             <MyTableComp
-              data={data.sort((a: EdgeMainSubject, b: EdgeMainSubject) => a.node.subjectName > b.node.subjectName ? 1 : a.node.subjectName < b.node.subjectName ? -1 : 0)}
+              data={
+                data.sort((a: EdgeMainSubject, b: EdgeMainSubject) => {
+                  const subjectNameA = a.node.subjectName;
+                  const subjectNameB = b.node.subjectName;
+                  const codeA = a.node.subjectCode.toLowerCase();
+                  const codeB = b.node.subjectCode.toLowerCase();
+
+                  if (subjectNameA > subjectNameB) return 1;
+                  if (subjectNameA < subjectNameB) return -1;
+                  // if (codeA > codeB) return 1;
+                  // if (codeA < codeB) return -1;
+
+                  return codeA.localeCompare(codeB);
+                  // return subjectNameA.localeCompare(subjectNameB);
+                })}
               columns={Columns}
               table_title={t("Subject List")}
               button_type={"add"}

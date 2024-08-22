@@ -5,7 +5,7 @@ import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import MyTabs from '@/MyTabs';
 import ServerError from '@/ServerError';
 import { EdgePreInscription } from '@/Domain/schemas/interfaceGraphql';
@@ -14,7 +14,7 @@ import { FaArrowRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { decodeUrlID } from '@/utils/functions';
-import MyTableComp from '@/components/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { FaPlus } from 'react-icons/fa';
 import Link from 'next/link';
 

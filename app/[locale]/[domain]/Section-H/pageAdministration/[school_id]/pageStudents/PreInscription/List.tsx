@@ -5,10 +5,10 @@ import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import MyTabs from '@/MyTabs';
 import ServerError from '@/ServerError';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { EdgePreInscription } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaArrowRightLong } from 'react-icons/fa6';
@@ -19,7 +19,7 @@ import { decodeUrlID } from '@/utils/functions';
 
 const List = (
   { params, dataYears, dataPending, sp }:
-  { params: any, dataYears: string[], dataPending: EdgePreInscription[], sp: any }
+    { params: any, dataYears: string[], dataPending: EdgePreInscription[], sp: any }
 ) => {
 
   const { t } = useTranslation();

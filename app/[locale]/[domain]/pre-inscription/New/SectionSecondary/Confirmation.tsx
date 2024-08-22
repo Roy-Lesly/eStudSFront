@@ -129,19 +129,20 @@ const Confirmation = ({
         {renderRow(t('Section'), formData.classAssignment.stream)}
         {renderRow(t('Classroom'), formData.classAssignment.level)}
         {renderRow(
-          t('Series (1st Choice)'),
+          // t('Series (1st Choice)'),
+          t('Series'),
           data.allSeries.edges.find(
             (item: EdgeSeries) =>
               decodeUrlID(item.node.id) === formData.classAssignment.series_one
           )?.node.name
         )}
-        {renderRow(
+        {/* {renderRow(
           t('Series (2nd Choice)'),
           data.allSeries.edges.find(
             (item: EdgeSeries) =>
               decodeUrlID(item.node.id) === formData.classAssignment.series_two
           )?.node.name
-        )}
+        )} */}
         {renderRow(t('Program'), formData.classAssignment.program)}
         {renderRow(t('Session'), formData.classAssignment.session)}
       </section>

@@ -1,8 +1,8 @@
 'use client';
 import DefaultLayout from "@/DefaultLayout";
-import Sidebar from "@/section-s/Sidebar/Sidebar";
-import { GetMenuAdministration } from "@/section-s/Sidebar/MenuAdministration";
-import Header from "@/section-s/Header/Header";
+import Sidebar from "@/section-h/Sidebar/Sidebar";
+import { GetMenuAdministration } from "@/section-h/Sidebar/MenuAdministration";
+import Header from "@/section-h/Header/Header";
 import { useState } from "react";
 
 
@@ -16,7 +16,7 @@ const List = ({
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
-
+  
 
   return (
     <DefaultLayout

@@ -34,6 +34,7 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
     telephone: data?.node?.telephone || '',
     seqLimit: data?.node?.seqLimit || 0,
     examLimit: data?.node?.examLimit || 0,
+    examSecLimit: data?.node?.examSecLimit || 0,
     caLimit: data?.node?.caLimit || 0,
     resitLimit: data?.node?.resitLimit || 0,
     emailNotification: data?.node?.emailNotification || false,
@@ -70,8 +71,8 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
     setSchool((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const limits: (keyof NodeSchoolHigherInfo)[] = ["seqLimit", "examLimit", "caLimit", "resitLimit"];
-  const limits: (keyof NodeSchoolHigherInfo)[] = ["seqLimit", "examLimit"];
+  // const limits: (keyof NodeSchoolHigherInfo)[] = ["seqLimit", "examSecLimit", "caLimit", "resitLimit"];
+  const limits: (keyof NodeSchoolHigherInfo)[] = ["seqLimit", "examSecLimit"];
   const notificationKeys: (keyof NodeSchoolHigherInfo)[] = [
     "emailNotification",
     "smsNotification",
@@ -85,7 +86,7 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
       ...school,
       schoolIdentificationId: parseInt(decodeUrlID(school.schoolIdentification.id)),
       seqLimit: parseInt(school.seqLimit.toString()),
-      examLimit: parseInt(school.examLimit.toString()),
+      examSecLimit: parseInt(school.examSecLimit.toString()),
       // caLimit: parseInt(school.caLimit.toString()),
       // resitLimit: parseInt(school.resitLimit.toString()),
       radius: parseInt(school.radius.toString()),
@@ -290,7 +291,7 @@ export const query = gql`
     $email: String
     $telephone: String
     $caLimit: Int
-    $examLimit: Int
+    $examSecLimit: Int
     $seqLimit: Int
     $resitLimit: Int
     $emailNotification: Boolean
@@ -328,7 +329,7 @@ export const query = gql`
       email: $email
       telephone: $telephone
       caLimit: $caLimit
-      examLimit: $examLimit
+      examSecLimit: $examSecLimit
       seqLimit: $seqLimit
       resitLimit: $resitLimit
       emailNotification: $emailNotification

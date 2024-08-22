@@ -7,7 +7,7 @@ interface CardProps {
   children?: React.ReactNode;
 }
 
-const Card: React.FC<CardProps> = ({ title, values, icon, children }) => {
+const CountCard: React.FC<CardProps> = ({ title, values, icon, children }) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-4 justify-between flex flex-row gap-2 min-w-[150px]">
       <div className="flex flex-col items-center justify-between">
@@ -23,4 +23,4 @@ const Card: React.FC<CardProps> = ({ title, values, icon, children }) => {
   );
 };
 
-export default Card;
+export default CountCard;

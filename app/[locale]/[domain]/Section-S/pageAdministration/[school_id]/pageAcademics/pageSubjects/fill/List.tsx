@@ -5,12 +5,13 @@ import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; 
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeMainSubject } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import EditableSubjectTable from './EditableSubjectTable';
+import { EdgeCustomUser } from '@/utils/Domain/schemas/interfaceGraphql';
 
 
 
 const List = (
-    { params, data, sp }:
-        { params: any, data: EdgeMainSubject[], sp: any }
+    { params, data, sp, apiTeachers }:
+        { params: any, data: EdgeMainSubject[], sp: any , apiTeachers: EdgeCustomUser[]}
 ) => {
 
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -25,6 +26,7 @@ const List = (
             <div>
                 <EditableSubjectTable
                     data={data}
+                    apiTeachers={apiTeachers}
                     sp={sp}
                     p={params}
                 />

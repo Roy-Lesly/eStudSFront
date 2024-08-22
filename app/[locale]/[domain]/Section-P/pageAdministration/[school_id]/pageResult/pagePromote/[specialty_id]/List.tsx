@@ -10,7 +10,7 @@ import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeSpecialty, EdgeUserProfile } from '@/Domain/schemas/interfaceGraphql';
 import { FaRightLong } from 'react-icons/fa6';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaCheck } from 'react-icons/fa';
 import ModalPromote from './ModalPromote';

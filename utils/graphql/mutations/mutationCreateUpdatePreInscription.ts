@@ -72,7 +72,6 @@ export const mutationCreateUpdatePreInscription = async (
     stream: formData?.stream,
     session: formData?.session,
     seriesOneId: formData?.seriesOneId,
-    seriesTwoId: formData?.seriesTwoId,
     status: formData?.status,
     admissionStatus: formData?.admissionStatus,
 
@@ -267,7 +266,6 @@ const queryPreInscriptionSec = gql`
     $stream: String!
     $session: String!
     $seriesOneId: ID!
-    $seriesTwoId: ID!
     $status: String!
     $admissionStatus: Boolean!
     $delete: Boolean!
@@ -300,7 +298,6 @@ const queryPreInscriptionSec = gql`
       stream: $stream
       session: $session
       seriesOneId: $seriesOneId
-      seriesTwoId: $seriesTwoId
       status: $status
       admissionStatus: $admissionStatus
       delete: $delete

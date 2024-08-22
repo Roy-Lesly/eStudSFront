@@ -7,10 +7,10 @@ import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import SearchMultiple from '@/Search/SearchMultiple';
 import { EdgeLevel, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
 import { useRouter } from 'next/navigation';
-import MyTableComp from '@/section-h/Table/MyTableComp';
+import MyTableComp from '@/components/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import MyInputField from '@/MyInputField';
@@ -24,7 +24,7 @@ const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtr
   const [activeTab, setActiveTab] = useState(0);
   const [level, setLevel] = useState<number>(0);
   const [academicYear, setAcademicYear] = useState<string>('');
-  
+
   const Columns: TableColumn<EdgeSpecialty>[] = [
     { header: "#", align: "center", render: (_item: EdgeSpecialty, index: number) => index + 1, },
     { header: "Class", accessor: "node.mainSpecialty.specialtyName", align: "left" },
@@ -53,7 +53,7 @@ const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtr
     } else if (academicYear) {
       q["academicYear"] = academicYear
     }
-    
+
     if (q && Object.keys(q).length) {
       const query = new URLSearchParams(q).toString();
       router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageIDCard?${query}`)
@@ -122,18 +122,18 @@ const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtr
         </div>
 
         {Object.keys(searchParams).length ?
-        data ?
-          <MyTableComp
-            data={data.allSpecialties?.edges}
-            columns={Columns}
-          />
-          :
-            <ServerError type="notFound" item="ID Card" />
+          data ?
+            <MyTableComp
+              data={data.allSpecialties?.edges}
+              columns={Columns}
+            />
             :
-            <>
+            <ServerError type="notFound" item="ID Card" />
+          :
+          <>
             <div className='py-4 font-semibold text-lg italic text-red'>Select Year and Level Above !!!</div>
             <NoDataPage />
-            </>
+          </>
         }
 
 
