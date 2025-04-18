@@ -1,0 +1,41 @@
+{
+    "name":"The Best University",
+    "short_name":"The Brains",
+    "description":"This is The Best University Application",
+    "theme_color":"#8936FF",
+    "background_color":"#2EC6FE",
+    "display": "standalone",
+    "orientation": "any",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "http://127.0.0.1:3000/images/logo/LogoEconneq512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any"
+        },
+        {
+            "src": "http://127.0.0.1:3000/images/logo/LogoEconneq512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "http://127.0.0.1:3000/images/logo/LogoEconneq512.png",
+            "sizes": "512x512",
+            "type":"image/png",
+            "form_factor": "narrow",
+            "label": "Wonder Widgets"
+        },
+        {
+            "src": "http://127.0.0.1:3000/images/logo/LogoEconneq512.png",
+            "sizes": "512x512",
+            "type":"image/png",
+            "form_factor": "wide",
+            "label": "Wonder Widgets"
+        }
+    ]
+}

@@ -1,0 +1,277 @@
+import { EdgeCourse, EdgeCustomUser, EdgeMainCourse, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
+import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
+import MyInputField from '@/MyInputField';
+import { JwtPayload } from '@/serverActions/interfaces';
+import { gql, useMutation } from '@apollo/client';
+import { jwtDecode } from 'jwt-decode';
+import { motion } from 'framer-motion';
+import React, { useState } from 'react'
+
+
+interface FormData {
+  mainCourseId: number
+  specialtyId: number
+  courseCode: string
+  courseCredit: number
+  courseType: string
+  semester: string
+  hours: number
+  hoursLeft: number
+  assigned: boolean
+  assignedToId: string
+  delete: boolean
+}
+
+const ModalCUDCourse = (
+  { setOpenModal, selectedItem, actionType, extraData }
+    :
+    {
+      setOpenModal: any, selectedItem: EdgeCourse, actionType: "create" | "update" | "delete" | string,
+      extraData: { specialties?: EdgeSpecialty[], mainCourses?: EdgeMainCourse[], teachers?: EdgeCustomUser[] }
+    }
+) => {
+
+  const token = localStorage.getItem('token');
+  const user: JwtPayload = jwtDecode(token ? token : "");
+
+  const [formData, setFormData] = useState<FormData>({
+    mainCourseId: selectedItem ? parseInt(decodeUrlID(selectedItem.node.mainCourse.id)) : 0,
+    specialtyId: selectedItem ? parseInt(decodeUrlID(selectedItem.node.specialty.id)) : 0,
+    courseCode: selectedItem ? selectedItem.node.courseCode : "",
+    courseCredit: selectedItem ? selectedItem.node.courseCredit : 0,
+    courseType: selectedItem ? selectedItem.node.courseType : "",
+    semester: selectedItem ? selectedItem.node.semester : "",
+    hours: selectedItem ? selectedItem.node.hours : 0,
+    hoursLeft: selectedItem ? selectedItem.node.hoursLeft : 0,
+    assigned: selectedItem ? selectedItem.node.assigned : false,
+    assignedToId: selectedItem ? decodeUrlID(selectedItem.node?.assignedTo?.id) : "0",
+    delete: selectedItem && actionType === "delete" ? true : false,
+  });
+
+  const handleChange = <K extends keyof FormData>(
+    field: K,
+    value: FormData[K]
+  ) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: typeof value === 'string'
+        ? /^[a-zA-Z]+$/.test(value) || /^[IVXLCDM]+$/i.test(value) // Check if purely alphabetic or Roman numeral
+          ? value.toUpperCase() // Keep as uppercase string
+          : /^[0-9]+$/.test(value) // Check if numeric
+            ? parseInt(value, 10) // Convert to number
+            : value // Leave other strings as-is
+        : typeof value === 'boolean'
+          ? value // Leave booleans unchanged
+          : value,
+    }));
+  };
+
+  const [createUpdateDeleteCourse] = useMutation(CREATE_UPDATE_DELETE_COURSE);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const confirmCreate = window.confirm(`Are you sure you want to proceed?`);
+    if (!confirmCreate) {
+      return;
+    }
+    let dataToSubmit: any = formData
+    if (actionType === "create" && selectedItem) {
+      dataToSubmit = {
+        ...formData,
+        createdById: user.user_id,
+      }
+    }
+    if ((actionType === "update" || actionType === "delete") && selectedItem) {
+      dataToSubmit = {
+        ...formData,
+        id: parseInt(decodeUrlID(selectedItem.node.id)),
+        updatedById: user.user_id,
+      }
+    }
+
+    try {
+      const result = await createUpdateDeleteCourse({
+        variables: { 
+          ...dataToSubmit,
+          hoursLeft: parseInt(dataToSubmit.hoursLeft),
+         }
+      });
+      if (
+        (actionType !== "delete" && result.data.createUpdateDeleteCourse.course.id) ||
+        (actionType === "delete" && result.data.createUpdateDeleteCourse)
+      ) {
+        setOpenModal(false);
+        window.location.reload()
+      };
+    } catch (err) {
+      alert(`error domain:, ${err}`)
+    }
+  };
+
+  console.log(selectedItem)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: true ? 1 : 0 }}
+      transition={{ duration: 0.3 }}
+      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity ${true ? 'visible' : 'invisible'}`}
+    >
+      <motion.div
+        initial={{ scale: 0.9 }}
+        animate={{ scale: true ? 1 : 0.9 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white max-w-lg p-6 rounded-lg shadow-lg w-full"
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-2xl">{actionType?.toUpperCase()}</h2>
+          <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl">X</button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <MyInputField
+            id="mainCourseId"
+            name="mainCourseId"
+            label={`${selectedItem && selectedItem.node.mainCourse.courseName}`}
+            type="select"
+            placeholder="Select Course"
+            value={formData.mainCourseId.toString()}
+            options={extraData?.mainCourses?.map((item: EdgeMainCourse) => { return { id: decodeUrlID(item.node.id), name: item.node.courseName } })}
+            onChange={(e) => handleChange('mainCourseId', parseInt(e.target.value))}
+          />
+          <MyInputField
+            id="specialtyId"
+            name="specialtyId"
+            label="Specialty"
+            type="select"
+            placeholder="Select Course"
+            value={formData.specialtyId.toString()}
+            options={extraData?.specialties?.sort((a: EdgeSpecialty, b: EdgeSpecialty) => a.node.academicYear < b.node.academicYear ? 1 : a.node.academicYear > b.node.academicYear ? -1 : 0).map((item: EdgeSpecialty) => {
+              return { id: decodeUrlID(item.node.id.toString()), name: `${item.node?.mainSpecialty?.specialtyName}-${item.node?.level?.level}-${item.node?.academicYear}` }
+            })}
+            onChange={(e) => handleChange('specialtyId', parseInt(e.target.value))}
+          />
+
+          <div className='flex flex-row gap-2 justify-between'>
+            <MyInputField
+              id="hours"
+              name="hours"
+              label="Hours"
+              type="number"
+              placeholder="Enter Hours"
+              value={formData.hours.toString()}
+              onChange={(e) => handleChange('hours', parseInt(e.target.value))}
+            />
+            <MyInputField
+              id="semester"
+              name="semester"
+              label="Semester"
+              type="select"
+              placeholder="Enter semester"
+              value={formData.semester}
+              options={["I", "II"]}
+              onChange={(e) => handleChange('semester', e.target.value)}
+            />
+            <MyInputField
+              id="courseCredit"
+              name="courseCredit"
+              label="Course Credit"
+              type="number"
+              placeholder="Enter course Credit"
+              value={formData.courseCredit.toString()}
+              onChange={(e) => handleChange('courseCredit', parseInt( e.target.value))}
+            />
+          </div>
+          <div className='flex flex-row gap-2 justify-between'>
+            <MyInputField
+              id="courseCode"
+              name="courseCode"
+              label="Course Code"
+              type="text"
+              placeholder="Enter course Code"
+              value={formData.courseCode}
+              onChange={(e) => handleChange('courseCode', e.target.value)}
+            />
+            <MyInputField
+              id="courseType"
+              name="courseType"
+              label="Course Type"
+              type="select"
+              placeholder="Enter course Type"
+              value={capitalizeFirstLetter(formData.courseType)}
+              options={["Fundamental", "Transversal", "Professional"]}
+              onChange={(e) => handleChange('courseType', e.target.value)}
+            />
+          </div>
+
+          <MyInputField
+            id="assignedToId"
+            name="assignedToId"
+            label="Lecturer"
+            type="select"
+            placeholder="Enter course Type"
+            value={formData.assignedToId}
+            options={extraData?.teachers?.map((item: EdgeCustomUser) => { return { id: decodeUrlID(item.node.id.toString()), name: item.node.fullName } })}
+            onChange={(e) => handleChange('assignedToId', e.target.value)}
+          />
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            className={`${actionType === "update" ? "bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
+          >
+            Confirm & {capitalizeFirstLetter(actionType)}
+          </motion.button>
+        </form>
+
+      </motion.div>
+    </motion.div>
+  )
+}
+
+export default ModalCUDCourse
+
+
+
+
+const CREATE_UPDATE_DELETE_COURSE = gql`
+  mutation Update(
+    $id: ID,
+    $mainCourseId: ID!,
+    $specialtyId: ID!,
+    $courseCode: String!,
+    $courseCredit: Int!,
+    $courseType: String!,
+    $semester: String!,
+    $hours: Int!,
+    $hoursLeft: Int!,
+    $assigned: Boolean,
+    $assignedToId: ID,
+    $delete: Boolean!,
+    $createdById: ID,
+    $updatedById: ID
+
+  ) {
+    createUpdateDeleteCourse(
+      id: $id
+      mainCourseId: $mainCourseId
+      specialtyId: $specialtyId
+      courseCode: $courseCode
+      courseCredit: $courseCredit
+      courseType: $courseType
+      semester: $semester
+      hours: $hours
+      hoursLeft: $hoursLeft
+      assigned: $assigned
+      assignedToId: $assignedToId
+      delete: $delete
+      createdById: $createdById
+      updatedById: $updatedById
+    ) {
+      course {
+        id 
+      }
+    }
+  }
+`;

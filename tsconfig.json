@@ -1,0 +1,62 @@
+{
+  "compilerOptions": {
+    
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "downlevelIteration": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./app/*",
+        "./app/pageAdministration/*",
+        "./app/pageAccounting/*",
+        "./app/pageAuthentication/*",
+        "./app/pageLecturer/*",
+        "./app/section-h/*",
+        "./app/section-s/*",
+        "./app/section-p/*",
+        "./app/section-v/*",
+        "./styles/*",
+        "./components/*",
+        "./utils/*",
+        "./locales/*",
+        "./i18nConfig",
+        "./i18n"
+      ]
+    },
+    "target": "ES2017"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    ".next/types/**/*.ts"
+, "app/[locale]/[domain]/Section-H/pageAdministration/[school_id]/pageManagement/pageFinancial"  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "typeRoots": [
+    "../node_modules/@types",
+    "../@types"
+  ]
+}

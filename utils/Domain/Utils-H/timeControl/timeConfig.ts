@@ -1,0 +1,15 @@
+import { RootApi } from "@/config";
+
+export const TimeTableWeekUrl = RootApi + "/higher/higher_time_control/timetableweek"
+export const TimeTableDayUrl = RootApi + "/higher/higher_time_control/timetableday"
+export const TimeSlotUrl = RootApi + "/higher/higher_time_control/timeslot"
+export const GetTimeTableWeekUrl = RootApi + "/higher/higher_time_control/get-timetableweek"
+export const GetTimeTableDayUrl = RootApi + "/higher/higher_time_control/get-timetableday"
+export const GetTimeSlotUrl = RootApi + "/higher/higher_time_control/get-timeslot"
+// export const MondayUrl = ConfigData + "/time/monday"
+// export const TuesdayUrl = ConfigData + "/time/tuesday"
+// export const WednesdayUrl = ConfigData + "/time/wednesday"
+// export const ThursdayUrl = ConfigData + "/time/thursday"
+// export const FridayUrl = ConfigData + "/time/friday"
+// export const SaturdayUrl = ConfigData + "/time/saturday"
+// export const SundayUrl = ConfigData + "/time/sunday"

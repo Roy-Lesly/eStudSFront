@@ -1,0 +1,145 @@
+{
+    "PageLanding": {
+        "Pre Enrollment": "Pre-Enrollment",
+        "ID Card": "ID Card",
+        "Login": "Login"
+    },
+
+    "PageEnrollment": {
+        "Welcome to the Pre-Enrollment Portal": "Welcome to the Pre-Enrollment Portal",
+        "Check Status": "Check Status",
+        "to begin your application": "to begin your application",
+        "Click On": "Click On",
+        "Start your journey with us! This portal is designed to guide you through the **pre-enrollment** process smoothly. Follow the simple steps below to secure your place in our institution": "Start your journey with us! This portal is designed to guide you through the **pre-enrollment** process smoothly. Follow the simple steps below to secure your place in our institution",
+        "How to Get Started": "How to Get Started",
+        "Begin Enrollment": "Begin Enrollment",
+        "Fill out the required details and submit your information": "Fill out the required details and submit your information",
+        "Check your application status anytime using the **Check** option": "Check your application status anytime using the **Check** option",
+        "Make sure your details are correct before submission": "Make sure your details are correct before submission"
+    },
+
+    "PageLogin": {
+        "Welcome Back": "Welcome Back",
+        "Login": "Login",
+        "Login In": "Login In",
+        "Matricle": "Matricle",
+        "or": "or",
+        "Username": "Username",
+        "Enter Matricle or Username": "Enter Matricle or Username",
+        "Password": "Password",
+        "Forgot Password": "Forgot Password",
+        "Enter Token": "Entrer le code",
+        "Contact Support": "Contact Support",
+        "Check User": "Check User",
+        "Login Successfully": "Login Successfully",
+        "No Campus Assigned To User": "No Campus Assigned To User",
+        "No Campus Found In Database": "No Campus Found In Database"
+    },
+
+    "PageStudent": {
+        "select": {
+            "Select Class": "Select Class",
+            "Back": "Back",
+            "No Class Assigned": "No Class Assigned",
+            "Contact Administration": "Contact Administration"
+        },
+        "menu": {
+            "Matricle": "Matricle",
+            "Overall Performance": "Overall Performance",
+            "CA": "CA",
+            "Exam": "Exam",
+            "Resit": "Resit",
+            "Result": "Result",
+            "Fees": "Fees",
+            "Courses": "Courses",
+            "TimeTable": "TimeTable",
+            "Transcript": "Transcript",
+            "News": "News",
+            "Feedback": "Feedback",
+            "Online Help": "Online Help"
+        },
+        "CaExamResult": { 
+            "activate": "Activate",          
+            "No Data Available": "No Data Available",
+            "Semester": "Semester",
+            "Course": "Course Name",
+            "ca": "CA",
+            "exam": "Exam",
+            "resit": "Resit",
+            "result": "Result",
+            "final": "Final",
+            "Status": "Etat",
+            "Sorry, Your Account is not Activated Yet. Contact School Administrator": "Sorry, Your Account is not Activated Yet. Contact School Administrator",
+            "Sorry, you cannot Access Results. Minimum Fee requirement not reached": "Sorry, you cannot Access Results. Minimum Fee requirement not reached",
+            "Sorry, Results Not Published Yet. Contact System Administrator": "Sorry, Results Not Published Yet. Contact System Administrator"
+        },
+        "Result": {           
+            "No Data Available": "No Data",
+            "Semester": "Semestre",
+            "Course": "Course",
+            "ca": "CC",
+            "exam": "SN",
+            "resit": "RTP",
+            "result": "Resultat",
+            "final": "Final",
+            "activate": "Activate",
+            "grade": "GD"
+        }
+    },
+    "PageSideBar": {
+        "Management": "Management",
+        "Dashboard": "Dashboard",
+        "User Management": "User Management",
+        "Audit Finance": "Audit Finance",
+        "Audit Results": "Audit Results",
+        "System Updates": "System Updates",
+        "Result": "Result",
+        "Marks Entry": "Marks Entry",
+        "Publish Control": "Publish Control",
+        "Portal Control": "Portal Control",
+        "Promotion": "Promotion",
+        "Documents": "Documents",
+        "Transcript": "Transcript",
+        "ID Card": "ID Card",
+        "Batch Operations": "Batch Operations",
+        "Course Assignment": "Course Assignment",
+        "Time Table": "Time Table",
+        "Import": "Import",
+        "Lecturers": "Lecturers",
+        "View": "View",
+        "Students": "Students",
+        "Un-Assigned": "Un-Assigned",
+        "Pre-Enrollment": "Pre-Enrollment",
+        "Duplicates": "Duplicates",
+        "Moratoire": "Moratoire",
+        "Users": "Users",
+        "Settings": "Settings",
+        "Domains": "Domains",
+        "Fields": "Fields",
+        "Classes": "Classes",
+        "Courses": "Courses",
+        "Levels": "Levels",
+        "Programs": "Programs",
+        "Halls": "Halls",
+        "Utility": "Utility",
+        "Fees Transactions": "Fees Transactions",
+        "Activation": "Activation",
+        "Password Tokens": "Password Tokens"
+    },
+    "PageAdmin": {
+        "PageStudent": {
+            "Details": "Details",
+            "List": "List",
+            "Student Details": "Student Details",
+            "Info": "Infos",
+            "Classes": "Classes",
+            "Moratoire": "Moratoire",
+            "Fees": "Fees",
+            "Results": "Results",
+            "Student Info": "Student Info",
+            "Pending": "Pending",
+            "Approved": "Approved",
+            "Rejected": "Rejected"
+        }
+    }
+}
