@@ -60,21 +60,15 @@ const ModalDecision: React.FC<Props> = ({ moratoire, tab, onClose }) => {
 
             };
 
-            console.log("Submitting:", updatedMoratoire);
-            console.log("Submitting:", status);
-            // return
             try {
                 const result = await createMoratoire({ variables: updatedMoratoire });
-                console.log(result, 47)
                 const t = result?.data?.createUpdateMoratoire?.moratoire
                 if (t?.id) {
                     alert(`Transaction Successful`)
                     window.location.reload()
                 };
             } catch (err: any) {
-                console.log(err)
                 alert(`error creating:, ${err}`);
-                // setClicked(false)
             }
         }
     };
@@ -82,13 +76,13 @@ const ModalDecision: React.FC<Props> = ({ moratoire, tab, onClose }) => {
 
     return (
         <motion.div
-            className="bg-black bg-opacity-50 fixed flex inset-0 items-center justify-center z-50"
+            className="bg-black bg-opacity-50 fixed flex inset-0 items-center justify-center pt-20 z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
         >
             <motion.div
-                className="bg-white max-w-lg p-4 relative rounded-lg shadow-lg w-full text-slate-800"
+                className="bg-white max-w-[700px] p-4 relative rounded-lg shadow-lg w-full text-slate-800"
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
@@ -115,7 +109,7 @@ const ModalDecision: React.FC<Props> = ({ moratoire, tab, onClose }) => {
                     fontFamily: 'Arial, sans-serif',
                     background: '#fff'
                 }}>
-                    <h2 className='font-bold text-2xl text-center mb-4'>Moratoire Review</h2>
+                    <h2 className='font-bold text-2xl text-center mb-2'>Moratoire Review</h2>
                     <p className='gap-4 flex'><strong className='font-bold text-lg tracking-wide italic'>Matricle:</strong>{moratoire.userprofile.user.matricle}</p>
                     <p className='gap-4 flex'><strong className='font-bold text-lg tracking-wide italic'>Student:</strong>{moratoire.userprofile.user.fullName}</p>
                     <p className='gap-4 flex'><strong className='font-bold text-lg tracking-wide italic'>Reason:</strong> {moratoire.reason}</p>
@@ -156,7 +150,7 @@ const ModalDecision: React.FC<Props> = ({ moratoire, tab, onClose }) => {
                         />
                     </div>
 
-                    {tab < 1 ? <div className='flex justify-between mt-10 gap-10'>
+                    {tab < 1 ? <div className='flex justify-between mt-4 gap-10'>
                         <button onClick={() => { handleSubmit("approve"); }} style={{ padding: '0.75rem 1.5rem', background: 'green', color: 'white', border: 'none', borderRadius: '6px' }}>Approve</button>
                         <button onClick={() => { handleSubmit("reject"); }} style={{ padding: '0.75rem 1.5rem', background: 'red', color: 'white', border: 'none', borderRadius: '6px' }}>Reject</button>
                     </div>

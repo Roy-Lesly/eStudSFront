@@ -28,7 +28,7 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
       name: "MENU",
       menuItems: [
 
-          ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("MANAGEMENT")
+          ...(user?.page.map((item: string) => item.toUpperCase()).includes("MANAGEMENT")
           ? [
             {
               icon: <FaCog />,
@@ -127,14 +127,19 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
           route: "#",
           children: [
             { label: `${t("PageSideBar.View")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents`, icon: <FaCog /> },
-            { label: `${t("PageSideBar.Un-Assigned")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/UnAssigned`, icon: <FaCog /> },
+            // { label: `${t("PageSideBar.Un-Assigned")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/UnAssigned`, icon: <FaCog /> },
             { label: `${t("PageSideBar.Pre-Enrollment")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`, icon: <FaCog /> },
-            { label: `${t("PageSideBar.Moratoire")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Moratoire`, icon: <FaCog /> },
+            ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("MORATOIRE") ?
+              [
+                { label: `${t("PageSideBar.Moratoire")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Moratoire`, icon: <FaCog /> },
+              ]
+              :
+              []),
             { label: `${t("PageSideBar.Duplicates")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Duplicates`, icon: <FaCog /> },
           ],
         },
 
-        ...(user?.is_superuser || user?.page.map((item: string) => item.toUpperCase()).includes("USER") ?
+        ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("USER") ?
           [
             {
               icon: <FaChartPie />,

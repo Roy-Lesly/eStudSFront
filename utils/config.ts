@@ -259,7 +259,7 @@ export const ConfigData: any = {
             timeSlots: TimeSlotsList
         },
     },
-    stjohn: {
+    john: {
         school: "Saint John's Schools",
         contact_number: "693358642",
         landing_page: ["Welcome To", "Saint John's Schools"],

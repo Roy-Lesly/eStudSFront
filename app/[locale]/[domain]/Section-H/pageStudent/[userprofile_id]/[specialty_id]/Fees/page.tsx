@@ -34,7 +34,7 @@ const GET_DATA = gql`
           balance
           platformPaid
           userprofile {
-            id
+            id info
             session
             user { 
               id matricle firstName lastName fullName

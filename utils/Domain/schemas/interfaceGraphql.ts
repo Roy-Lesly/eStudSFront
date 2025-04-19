@@ -8,11 +8,6 @@ interface PageInfo {
 }
 
 
-interface NodeInfo {
-  [key: string]: number | null; // Keys like "ca", "exam", etc., with numeric or null values
-}
-
-
 export interface NodeTenant {
   id: string;
   schemaName: string;
@@ -98,7 +93,7 @@ export interface NodeUserProfile {
   specialty: NodeSpecialty;
   program: NodeProgram;
   code: string;
-  info: NodeInfo;
+  info: string | any;
 }
 
 // Level interface
@@ -251,7 +246,7 @@ export interface NodeResult {
   id: string;
   student: NodeUserProfile,
   course: NodeCourse,
-  info: NodeInfo | any; // JSONField structure
+  info: string | any; // JSONField structure
   logs: any; // JSONField structure
   ca: number
   exam: number

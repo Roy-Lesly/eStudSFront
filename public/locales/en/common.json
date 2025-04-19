@@ -84,6 +84,24 @@
             "final": "Final",
             "activate": "Activate",
             "grade": "GD"
+        },
+        "Fees": {
+            "Academic Year": "Academic Year",
+            "Level": "Level",
+            "Tuition": "Tuition",
+            "First Payment": "1st Payment",
+            "Second Payment": "2nd Payment",
+            "Third Payment": "3rd Payment",
+            "All Transactions": "All Transactions",
+            "No": "No",
+            "Reason": "Reason",
+            "Amount": "Amount",
+            "No Fee Transactions": "No Fee Transactions",
+            "Total Paid": "Total Paid",
+            "Balance": "Balance",
+            "Account Status": "Account Status",
+            "Activate": "Activate",
+            "Request Moratorium": "Request Moratorium"
         }
     },
     "PageSideBar": {

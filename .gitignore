@@ -5,3 +5,12 @@ node_modules/
 .env
 dist/
 .DS_Store
+
+
+
+# core: → for setup or non-feature changes
+# feat: → for new features
+# fix: → for bug fixes
+# patch: → for minor fixes
+# refactor: → for code restructuring
+# docs: → for documentation updates

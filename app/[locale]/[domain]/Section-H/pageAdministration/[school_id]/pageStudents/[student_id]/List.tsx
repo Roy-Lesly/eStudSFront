@@ -85,12 +85,19 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                         content: <Fees data={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]} />
                       }
                     ] : []),
-                  ...(user?.is_superuser || user?.page.map((item: string) => item.toUpperCase()).includes("RESULT") ?
+                  ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("MORATOIRE") ?
                     [
                       {
                         label: t("PageAdmin.PageStudent.Moratoire"),
-                        content: <Moratoire data={data?.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]} params={params} />
+                        content: <Moratoire
+                          results={data.allResults?.edges.sort((a: EdgeResult, b: EdgeResult) => a.node.course.mainCourse.courseName > b.node.course.mainCourse.courseName ? 1 : a.node.course.mainCourse.courseName < b.node.course.mainCourse.courseName ? -1 : 0)}
+                          data={data?.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]}
+                          params={params}
+                        />
                       },
+                    ] : []),
+                  ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("RESULT") ?
+                    [
                       {
                         label: t("PageAdmin.PageStudent.Results"),
                         content: <Results

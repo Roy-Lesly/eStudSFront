@@ -82,6 +82,24 @@
             "final": "Finale",
             "activate": "Activate",
             "Sorry, Results Not Published Yet. Contact System Administrator": "Sorry, Results Not Published Yet. Contact System Administrator"
+        },
+        "Fees": {
+            "Academic Year": "Année académique",
+            "Level": "Niveau",
+            "Tuition": "Frais de Scolarité",
+            "First Payment": "1er Versement",
+            "Second Payment": "2è Versement",
+            "Third Payment": "3è Versement",
+            "All Transactions": "Toutes les transactions",
+            "No": "N°",
+            "Reason": "Motif",
+            "Amount": "Montant",
+            "No Fee Transactions": "Aucune transaction de frais",
+            "Total Paid": "Total payé",
+            "Balance": "Solde",
+            "Account Status": "Statut du compte",
+            "Activate": "Activer",
+            "Request Moratorium": "Demande Moratoire"
         }
     },
     "PageSideBar": {

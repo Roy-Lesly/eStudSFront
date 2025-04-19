@@ -8,14 +8,6 @@ import ResultSlip from '@/[locale]/[domain]/Section-H/pageStudent/[userprofile_i
 const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolFees, params: any }) => {
   const [selectedSemester, setSelectedSemester] = useState<string>('I');
 
-  const rowVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.1 },
-    }),
-  };
   const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSemester(e.target.value);
   };
@@ -45,13 +37,13 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7 }}
         >
-          Class: {data?.[0]?.node?.student?.specialty?.mainSpecialty?.specialtyName}
+          Class: {fees?.node?.userprofile?.specialty?.mainSpecialty?.specialtyName}
         </motion.h2>
         <div className="text-gray-700 text-lg">
-          Level: {data?.[0]?.node?.student?.specialty?.level.level || "N/A"}
+          Level: {fees?.node?.userprofile?.specialty?.level.level || "N/A"}
         </div>
         <div>
-          Year: {data?.[0]?.node?.student.specialty.academicYear || "N/A"}
+          Year: {fees?.node?.userprofile.specialty.academicYear || "N/A"}
         </div>
       </div>
 

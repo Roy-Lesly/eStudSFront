@@ -6,13 +6,10 @@ import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { EdgeMoratoire, NodeMoratoire } from '@/Domain/schemas/interfaceGraphql';
-import { useRouter } from 'next/navigation';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import MyTabs from '@/MyTabs';
 import { useTranslation } from 'react-i18next';
-import { JwtPayload } from '@/serverActions/interfaces';
-import { jwtDecode } from 'jwt-decode';
 import ServerError from '@/ServerError';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import ModalDecision from './ModalDecision';
@@ -88,7 +85,6 @@ export default List;
 
 const Applied = ({ data, activeTab }: { data: any, activeTab: number }) => {
 
-  const token = localStorage.getItem("token");
   const [showModal, setShowModal] = useState<{ state: boolean, selectedItem: NodeMoratoire | null }>({ state: false, selectedItem: null })
 
   const Columns: TableColumn<EdgeMoratoire>[] = [
