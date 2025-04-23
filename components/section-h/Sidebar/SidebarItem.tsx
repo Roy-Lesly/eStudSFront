@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SidebarDropdown from "./SidebarDropdown";
+import { MdWifiProtectedSetup } from "react-icons/md";
+import Moratoire from "@/[locale]/[domain]/Section-H/pageAdministration/[school_id]/pageStudents/[student_id]/Moratoire";
 
 const SidebarItem = ({ item, pageName, setPageName, params }: any) => {
   const handleClick = () => {

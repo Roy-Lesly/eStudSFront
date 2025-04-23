@@ -9,7 +9,7 @@ import { gql, useMutation } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import React, { useState } from 'react'
 
-const ResultsEdit = ({ data }: { data: EdgeResult[] }) => {
+const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }) => {
     const [dataToSubmit, setDataToSubmit] = useState<any[]>([]);
     const token = localStorage.getItem("token")
     const user: JwtPayload | null = token ? jwtDecode(token) : null
@@ -188,7 +188,7 @@ const ResultsEdit = ({ data }: { data: EdgeResult[] }) => {
                         rowKey={(item, index) => item.node.id || index}
                     />
                 </div>}
-            {dataToSubmit.length > 0 ? (
+            {canEdit && dataToSubmit.length > 0 ? (
                 <ButtonUpdate handleUpdate={handleSubmit} dataToSubmit={dataToSubmit} />
             ) : null}
         </div>

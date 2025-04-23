@@ -141,7 +141,7 @@ const GET_DATA_LECTURERS = gql`
   ) {
     edges {
       node {
-        id fullName username sex dob pob address telephone email lastLogin
+        id matricle fullName username sex dob pob address telephone email lastLogin
       }
     }
   }
@@ -166,7 +166,7 @@ const GET_DATA_ADMIN = gql`
   ) {
     edges {
       node {
-        id fullName username sex dob pob address telephone email lastLogin
+        id matricle fullName username sex dob pob address telephone email lastLogin
       }
     }
   }

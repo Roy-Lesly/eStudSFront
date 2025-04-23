@@ -12,6 +12,8 @@ import { FaLeftLong, FaRightLong } from 'react-icons/fa6';
 import IDComp from '../../pageResult/pageIDCard/[specialty_id]/IDComp';
 import { CertificateOptions } from '@/constants';
 import { useTranslation } from 'react-i18next';
+import PasswordResetModal from '@/PasswordModal';
+
 
 const Info = ({ data, params, searchParams }: { data: EdgeSchoolFees, params: any, searchParams: any }) => {
   const { t } = useTranslation();
@@ -47,7 +49,7 @@ const Info = ({ data, params, searchParams }: { data: EdgeSchoolFees, params: an
     deptNames: string[];
     delete: boolean;
     prefix: string;
-}>({
+  }>({
     role: data.node.userprofile.user.role || '',
     photo: data.node.userprofile.user?.photo || '',
     firstName: data.node.userprofile.user.firstName || '',
@@ -156,6 +158,7 @@ const Info = ({ data, params, searchParams }: { data: EdgeSchoolFees, params: an
   };
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [passwordState, setPasswordState] = useState<"reset" | "change" | null>(null);
 
 
   return (
@@ -244,18 +247,26 @@ const Info = ({ data, params, searchParams }: { data: EdgeSchoolFees, params: an
               </div>
 
 
-              <div className=''>
-                <label className="font-semibold text-lg text-slate-800 tracking-widest">Matricle</label>
-                <input
-                  type="text"
-                  name="x"
-                  value={data.node.userprofile.user.matricle}
-                  onChange={handleChange}
-                  className="border p-2 rounded w-full"
-                  required
-                  readOnly
-                />
+              <div className='flex flex-col gap-6'>
+                {/* <div className='flex gap-10'>
+                  <label className="font-semibold text-xl text-slate-800 tracking-widest w-full">Reset or Change Password:</label>
+                  <button onClick={() => setPasswordState("change")} type='button' className='w-32 text-lg font-semibold bg-teal-800 text-white tracking-wider rounded-lg border px-5 py-2'>Change</button>
+                  <button onClick={() => setPasswordState("reset")} type='button' className='w-32 text-lg font-semibold bg-red text-white tracking-wider rounded-lg border px-5 py-2'>Reset</button>
+                </div> */}
+                <div className=''>
+                  <label className="font-semibold text-lg text-slate-800 tracking-widest">Matricle</label>
+                  <input
+                    type="text"
+                    name="x"
+                    value={data.node.userprofile.user.matricle}
+                    onChange={handleChange}
+                    className="border p-2 rounded w-full"
+                    required
+                    readOnly
+                  />
+                </div>
               </div>
+
               <div>
                 <label className="text-gray-600 text-sm">First Name</label>
                 <input
@@ -439,6 +450,13 @@ const Info = ({ data, params, searchParams }: { data: EdgeSchoolFees, params: an
             <ButtonUpdate handleUpdate={handleSubmit} dataToSubmit={[student]} />
           </motion.div>
         </motion.form>}
+
+        <PasswordResetModal
+          action={passwordState}
+          onClose={() => setPasswordState(null)}
+          id={parseInt(decodeUrlID(data?.node?.userprofile?.user?.id))}
+        />
+
     </>
   );
 };

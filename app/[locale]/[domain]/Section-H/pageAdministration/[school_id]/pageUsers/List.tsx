@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
@@ -13,9 +12,9 @@ import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
-import { useRouter } from 'next/navigation';
-import { decodeUrlID } from '@/functions';
 import MyTabs from '@/MyTabs';
+import PasswordResetModal from '@/PasswordModal';
+import { decodeUrlID } from '@/functions';
 
 
 export const metadata: Metadata = {
@@ -39,7 +38,9 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const router = useRouter();
+  const [passwordState, setPasswordState] = useState<"reset" | "change" | null>(null);
+  const [selectedId, setSelectedId] = useState<number>(0);
+
   const [activeTab, setActiveTab] = useState(0);
 
 
@@ -49,6 +50,11 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       align: 'left',
       render: (_item: EdgeCustomUser, index: number) => index + 1,
       responsiveHidden: true
+    },
+    {
+      header: 'Username',
+      accessor: 'node.matricle',
+      align: 'left',
     },
     {
       header: 'Full Name',
@@ -83,27 +89,35 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         <span>{item.node.pob}</span>
       </div>,
     },
-    // {
-    //   header: 'Select',
-    //   align: 'center',
-    //   render: (item: EdgeCourse) => (
-    //     <button
-    //       onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageMarksEntry/details/${decodeUrlID(item.node.id.toString())}?lec=${params.lecturer_id}&sem=${item.node.semester}&spec=${item.node.specialty.id}`)}
-    //       className="bg-green-200 p-2 rounded-full"
-    //     >
-    //       <FaRightLong color="green" size={23} />
-    //     </button>
-    //   ),
-    // },
+    {
+      header: 'Change',
+      align: 'center',
+      render: (item: EdgeCustomUser) => (
+        <div
+          className="flex gap-2 flex-row w-full justify-between"
+        >
+          <button onClick={() => { setSelectedId(parseInt(decodeUrlID(item?.node?.id))); setPasswordState("change")}} className='text-white font-medium bg-green-600 rounded-xl px-2 py-1'>Change</button>
+          <button onClick={() => { setSelectedId(parseInt(decodeUrlID(item?.node?.id))); setPasswordState("reset")}} className='text-white font-medium bg-red rounded-xl px-2 py-1'>Reset</button>
+          <button onClick={() => { setSelectedId(parseInt(decodeUrlID(item?.node?.id))); }} className='bg-slate-600 text-white font-medium rounded-xl px-2 py-1'>Status</button>
+        </div>
+      ),
+    },
   ];
 
-  const DataComp = ({ data, title }: { data: any, title: string }) => {
+  const DataComp = ({ data, title }: { data: EdgeCustomUser[], title: string }) => {
     return <div className='flex flex-col gap-2 w-full'>
       <MyTableComp
         data={data}
         columns={Columns}
         rowKey={(item, index) => item.node.id || index}
       />
+
+      <PasswordResetModal
+        action={passwordState}
+        onClose={() => setPasswordState(null)}
+        id={selectedId}
+      />
+
     </div>
   }
 
@@ -164,6 +178,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         ) : (
           <ServerError type="network" item="Users" />
         )}
+
 
       </div>
     </DefaultLayout >

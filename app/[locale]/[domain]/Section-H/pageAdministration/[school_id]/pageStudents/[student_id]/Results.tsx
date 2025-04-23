@@ -92,9 +92,8 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
           semester={selectedSemester}
           link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${params.student_id}`}
         >
-          {/* Dynamic Table Rendering Based on Selected Semester */}
-          {selectedSemester === 'I' ? <ResultsEdit data={data.filter((item) => item.node.course.semester === "I")} /> : null}
-          {selectedSemester === 'II' ? <ResultsEdit data={data.filter((item) => item.node.course.semester === "II")} /> : null}
+          {selectedSemester === 'I' ? <ResultsEdit canEdit={true} data={data.filter((item) => item.node.course.semester === "I")} /> : null}
+          {selectedSemester === 'II' ? <ResultsEdit canEdit={true} data={data.filter((item) => item.node.course.semester === "II")} /> : null}
 
         </FeesCheck>
 

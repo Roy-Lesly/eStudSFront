@@ -18,7 +18,7 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
     const approvedSchedule = info?.moratoire?.approvedSchedule ?? null;
     const cumulativeTotalMoratoire = sumTotalAmounts(approvedSchedule)
     const cumulativeBalanceMoratoire = sumDueAmounts(approvedSchedule)
-    const respectPayment = (cumulativeTotalMoratoire - cumulativeBalanceMoratoire) == balance
+    const respectPayment = (cumulativeTotalMoratoire - cumulativeBalanceMoratoire) >= balance
 
      const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedSemester(e.target.value);
@@ -40,11 +40,11 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
             <div className='flex flex-col gap-2 text-slate-800'>
                 <div className='w-full my-1 justify-between flex'>
                     <div className='flex gap-6 md:gap-10'>
-                        <span>Application: {statusMoratoire ? "Yes" : "-"}</span>
-                        <span>Status: {statusMoratoire ? statusMoratoire : "-"}</span>
+                        <div>Application: <span className='mx-2 text-lg font-medium'>{statusMoratoire ? "Yes" : "-"}</span></div>
+                        <div>Status: <span className='mx-2 text-lg font-medium'>{statusMoratoire ? statusMoratoire : "-"}</span></div>
                     </div>
-                    <div className='flex flex-row items-center gap-4 justify-center'>Upto Date: {respectPayment ? <GrStatusGood color='green' size={25} /> : <FaTimes color='red' size={25} />}</div>
-                    <div className='flex flex-row items-center gap-4 justify-center'>Account Status: {statusPlatform ? <GrStatusGood color='green' size={25} /> : <FaTimes color='red' size={25} />}</div>
+                    <div className='flex flex-row items-center gap-4 justify-center'>Upto Date: {respectPayment ? <GrStatusGood color='green' size={28} /> : <FaTimes color='red' size={25} />}</div>
+                    <div className='flex flex-row items-center gap-4 justify-center'>Account Status: {statusPlatform ? <GrStatusGood color='green' size={28} /> : <FaTimes color='red' size={25} />}</div>
                 </div>
             </div>
 
@@ -109,8 +109,8 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     statusMoratoire={statusMoratoire}
                     respectPayment={respectPayment}
                 >
-                    {selectedSemester === 'I' ? <ResultsEdit data={results.filter((item) => item.node.course.semester === "I")} /> : null}
-                    {selectedSemester === 'II' ? <ResultsEdit data={results.filter((item) => item.node.course.semester === "II")} /> : null}
+                    {selectedSemester === 'I' ? <ResultsEdit canEdit={false} data={results.filter((item) => item.node.course.semester === "I")} /> : null}
+                    {selectedSemester === 'II' ? <ResultsEdit canEdit={false} data={results.filter((item) => item.node.course.semester === "II")} /> : null}
                 </MoratoireCheck>
 
             </div>

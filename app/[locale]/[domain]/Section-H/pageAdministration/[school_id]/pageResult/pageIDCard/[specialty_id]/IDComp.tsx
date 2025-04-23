@@ -76,6 +76,9 @@ const IDPDFs = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
     </div>;
   }
 
+  console.log(fetchedData)
+  // console.log(studentData)
+
   return <Document>
     <Page
       size={fetchedData?.length > 1 ? "A4" : { width: 241, height: 153 }}
@@ -119,7 +122,7 @@ const IDPDFs = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
                 <View style={[styles.code]}>
                   <Image
                     src={studentData?.node.userprofile?.code
-                      ? `https://api${params.domain}.e-conneq.com/media/${studentData?.node.userprofile.code}`
+                      ? `https://api${params.domain}.e-conneq.com/media/code/${studentData?.node.userprofile.code}`
                       : "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"}
                     style={{ height: "100%" }}
                   />

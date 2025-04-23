@@ -5,9 +5,13 @@ import { motion } from 'framer-motion';
 import { FaTimes, FaMoneyBillWave, FaReceipt, FaEdit } from 'react-icons/fa';
 import { decodeUrlID } from '@/functions';
 import { gql, useMutation } from '@apollo/client';
+import { JwtPayload } from '@/serverActions/interfaces';
+import { jwtDecode } from 'jwt-decode';
 
 const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any }) => {
 
+  const token = localStorage.getItem("token");
+  const user: JwtPayload | null = token ? jwtDecode(token) : null
   const [clicked, setClicked] = useState<boolean>(false)
 
   const [formData, setFormData] = useState({
@@ -39,12 +43,13 @@ const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any
       amount: parseInt(formData.amount),
       account: formData.reason,
       operationType: "income",
+      userId: user?.user_id,
+      ref: formData.ref ? formData.ref : new Date().toISOString(),
       delete: false
     }
 
     try {
       const result = await createTransaction({ variables: newFormData });
-      console.log(result, 47)
       const t = result?.data?.createUpdateDeleteTransaction?.transaction
       if (t?.id) {
         alert(`Success creating:, ${t?.reason}-${t?.amount}`)
@@ -149,6 +154,7 @@ const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any
             <input
               type="text"
               name="ref"
+              required
               value={formData.ref}
               onChange={handleChange}
               placeholder="Enter reference (optional)"
@@ -208,6 +214,7 @@ const CREATE_DATA = gql`
       $origin: String!
       $account: String!
       $status: String!
+      $userId: ID!
       $delete: Boolean!
     ) {
       createUpdateDeleteTransaction(
@@ -222,6 +229,7 @@ const CREATE_DATA = gql`
         origin: $origin
         account: $account
         status: $status
+        userId: $userId
         delete: $delete
       ) {
         transaction {
