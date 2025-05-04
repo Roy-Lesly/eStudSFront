@@ -33,9 +33,7 @@ const page = async ({
     dataAllTimeTables = result.data;
   } catch (error: any) {
     console.log(error, 81)
-    if (error.networkError && error.networkError.result) {
-      console.error('GraphQL Error Details:', error.networkError.result.errors);
-    }
+    
     dataAllTimeTables = null;
   }
 

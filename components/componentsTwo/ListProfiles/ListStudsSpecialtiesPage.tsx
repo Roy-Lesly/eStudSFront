@@ -75,9 +75,7 @@ const ListStudsSpecialtiesPage = async ({ params, data }: { params: any, data: E
     apiMyProfiles = result.data;
   } catch (error: any) {
 
-    if (error.networkError && error.networkError.result) {
-      console.error('GraphQL Error Details:', error.networkError.result.errors);
-    }
+    
     apiMyProfiles = null;
   }
 

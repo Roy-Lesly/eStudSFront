@@ -1,6 +1,5 @@
 'use client';
 import { motion } from 'framer-motion';
-import { GetSchoolIdentificationInter } from '@/Domain/Utils-H/appControl/appInter';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import MyInputField from '@/MyInputField';
 import React, { useEffect, useState } from 'react'

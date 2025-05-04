@@ -57,15 +57,15 @@ const List = (
           <MyTabs
             tabs={[
               {
-                label: t("PageAdmin.PageStudent.Pending"),
+                label: t("PageAdmin.Pending"),
                 content: <Applied data={dataPending} activeTab={activeTab} />
               },
               {
-                label: t("PageAdmin.PageStudent.Approved"),
+                label: t("PageAdmin.Approved"),
                 content: <Applied data={dataApproved} activeTab={activeTab} />
               },
               {
-                label: t("PageAdmin.PageStudent.Rejected"),
+                label: t("PageAdmin.Rejected"),
                 content: <Applied data={dataRejected} activeTab={activeTab} />
               },
             ]}

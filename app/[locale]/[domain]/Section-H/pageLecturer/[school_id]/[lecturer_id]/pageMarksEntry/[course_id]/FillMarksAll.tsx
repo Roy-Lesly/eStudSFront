@@ -11,10 +11,12 @@ import { decodeUrlID } from "@/functions";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "@/serverActions/interfaces";
 import SearchMultiple from "@/section-h/Search/SearchMultiple";
+import { useTranslation } from "react-i18next";
 
 
 const FillMarksAll = ({ values, data, params, schoolInfo, searchParams }: { values: any, data: EdgeResult[], params: any, schoolInfo: EdgeSchoolHigherInfo, searchParams: any }) => {
-
+      const { t } = useTranslation();
+    
     const tableVariants = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.5 } },
@@ -109,7 +111,6 @@ const FillMarksAll = ({ values, data, params, schoolInfo, searchParams }: { valu
                         idx === existingIndex ? newData : record
                     );
                 } else {
-                    // Add new record
                     return [...prevDataToSubmit, newData];
                 }
             });
@@ -171,19 +172,18 @@ const FillMarksAll = ({ values, data, params, schoolInfo, searchParams }: { valu
             render: (item, index: number) => { return <span>{index + 1}</span> }
         },
         {
-            header: 'Student Name',
+            header: `${t("Student Name")}`,
             accessor: 'node.student.user.fullName',
             align: 'left', // Corrected to one of "left", "center", "right"
         },
         {
-            header: 'Results',
+            header: `${t("Results")}`,
             align: 'center', // Corrected to one of "left", "center", "right"
             render: (item, index: number) => {
                 const semFields = ['ca', 'exam', 'resit'].filter((item: string) => item === values.pageType)
 
                 return (
                     <div className="flex gap-2 justify-center">
-                        {/* Create input fields dynamically for each term */}
                         {semFields.map((field, idx) => (
                             <MyInputField
                                 id={field}
@@ -242,7 +242,7 @@ const FillMarksAll = ({ values, data, params, schoolInfo, searchParams }: { valu
 
 
                             <h2 className="hidden md:flex tracking-wide uppercase">
-                                Lecturer: {formData[0].node.course?.assignedTo?.fullName}
+                            {t("Lecturer")}: {formData[0].node.course?.assignedTo?.fullName}
                             </h2>
                         </motion.div>
 
@@ -252,7 +252,7 @@ const FillMarksAll = ({ values, data, params, schoolInfo, searchParams }: { valu
                             className="flex flex-row items-center justify-between mt-2"
                         >
                             <h2 className="font-semibold md:flex text-slate-950 tracking-wide uppercase">
-                                Course: {formData[0].node.course?.mainCourse.courseName}
+                            {t("Course")}: {formData[0].node.course?.mainCourse.courseName}
                             </h2>
                             {/* Title */}
                             <motion.h2
@@ -282,7 +282,6 @@ const FillMarksAll = ({ values, data, params, schoolInfo, searchParams }: { valu
 
                     <MyTableComp
                         columns={Columns}
-                        // data={formData}
                         data={formData.sort((a: EdgeResult, b: EdgeResult) => a.node.student.user.fullName > b.node.student.user.fullName ? 1 : a.node.student.user.fullName < b.node.student.user.fullName ? -1 : 0)}
                         rowKey={(item, index) => item.node.id || index}
                     />

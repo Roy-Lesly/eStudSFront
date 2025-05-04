@@ -1,13 +1,12 @@
 'use client';
-
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
-import { PDFViewer, Text } from "@react-pdf/renderer";
-import TranscriptOne from './TranscriptOne';
+import { PDFViewer } from "@react-pdf/renderer";
+import TransOneYear from './Comps/TransOneYear';
 
 
 const List = ({ params, dataTrans, searchParams }: { params: any; dataTrans: any, searchParams: any }) => {
@@ -57,7 +56,7 @@ const List = ({ params, dataTrans, searchParams }: { params: any; dataTrans: any
                   maxWidth: "1200px",
                 }}
               >
-                <TranscriptOne
+                <TransOneYear
                   dataResult={dataTrans?.resultDataSpecialtyTranscript?.filter((item: any) => item.platform)}
                   params={params}
                   dataHeader={dataTrans?.specialtyAndSchoolInfo}

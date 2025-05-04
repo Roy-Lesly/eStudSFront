@@ -19,9 +19,7 @@ const Home = async ({ params }: { params: { locale: string; domain: string } }) 
       });
       data = result.data;
     } catch (error: any) {
-      if (error.networkError && error.networkError.result) {
-        console.error('GraphQL Error Details:', error.networkError.result.errors);
-      }
+      
       data = null;
     }
 

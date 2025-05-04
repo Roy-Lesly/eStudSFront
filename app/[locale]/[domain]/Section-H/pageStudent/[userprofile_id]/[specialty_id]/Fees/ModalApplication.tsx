@@ -4,6 +4,7 @@ import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaPlus, FaTimes } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 
 interface Props {
@@ -17,24 +18,24 @@ type MilestoneType = {
 }
 
 const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
-
+    const { t } = useTranslation()
     const [reason, setReason] = useState<string>()
     const [milestone, setMilestone] = useState<MilestoneType[]>([])
     const [createMoratoire] = useMutation(CREATE_DATA)
 
     const handleSubmit = async (status: "apply") => {
         if (!milestone || milestone.length === 0) {
-            alert("Please add at least one milestone.");
+            alert(t("Please add at least one milestone"));
             return;
         }
 
         // 1. Total Amount Validation
         const totalAmount = milestone.reduce((sum, m) => sum + Number(m.amount), 0);
         if (totalAmount !== schoolFee?.balance) {
-            alert(`Total milestone amount must be exactly ${schoolFee.balance.toLocaleString()} F. Current total: ${totalAmount.toLocaleString()} F`);
+            alert(`${t("Total milestone amount must be exactly")} ${schoolFee.balance.toLocaleString()} F. ${t("Current total")}: ${totalAmount.toLocaleString()} F`);
             return;
         }
-        if (!reason || (reason && reason?.length < 10)) { alert("Reason / Motif Required !!!"); return; }
+        if (!reason || (reason && reason?.length < 10)) { alert(t("Reason / Motif Required !!!")); return; }
 
         // 2. Due Date Validation (not more than 7 months from now)
         const acadYear = schoolFee.userprofile.specialty.academicYear.slice(5, 9)
@@ -138,13 +139,13 @@ const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
                     fontFamily: 'Arial, sans-serif',
                     background: '#fff'
                 }}>
-                    <h2 className='font-bold text-2xl text-center mb-2'>Moratoire Application</h2>
-                    <p className='gap-4 flex items-center'><strong className='font-bold text-lg tracking-wide italic'>Class:</strong>{schoolFee.userprofile.specialty?.mainSpecialty?.specialtyName}</p>
-                    <p className='gap-4 flex items-center'><strong className='font-bold text-lg tracking-wide italic'>Year / Level:</strong>{schoolFee.userprofile.specialty?.academicYear} - {schoolFee.userprofile.specialty?.level?.level}</p>
-                    <p className='gap-4 flex items-center'><strong className='font-bold text-lg tracking-wide italic'>Balance:</strong> {schoolFee.balance.toLocaleString()} F</p>
+                    <h2 className='font-bold text-2xl text-center mb-2'>{t("Moratoire Application")}</h2>
+                    <p className='gap-4 flex items-center'><strong className='font-bold text-lg tracking-wide italic'>{t("Class")}:</strong>{schoolFee.userprofile.specialty?.mainSpecialty?.specialtyName}</p>
+                    <p className='gap-4 flex items-center'><strong className='font-bold text-lg tracking-wide italic'>{t("Year")} / {t("Level")}:</strong>{schoolFee.userprofile.specialty?.academicYear} - {schoolFee.userprofile.specialty?.level?.level}</p>
+                    <p className='gap-4 flex items-center'><strong className='font-bold text-lg tracking-wide italic'>{t("Balance")}:</strong> {schoolFee.balance.toLocaleString()} F</p>
 
                     <div className=''>
-                        <h3 className='text-lg font-bold text-center my-2'>Requested Schedule</h3>
+                        <h3 className='text-lg font-bold text-center my-2'>{t("Requested Schedule")}</h3>
 
                         {milestone.map((m, i) => (
                             <div key={i} className="flex gap-2 items-center mb-2">
@@ -181,7 +182,7 @@ const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
                         <textarea
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
-                            placeholder="Type Your Motif Here"
+                            placeholder={t("Type Your Motif Here")}
                             rows={3}
                             style={{ width: '100%', padding: '0.3rem', borderRadius: '6px', border: '1px solid #ccc' }}
                         />
@@ -192,7 +193,7 @@ const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
                             className='tracking-widest rounded-lg text-lg px-6 py-2 font-semibold bg-green-700 text-white'
                             onClick={() => { handleSubmit("apply"); }}
                         >
-                            Apply
+                            {t("Apply")}
                         </button>
                     </div>
                 </div>

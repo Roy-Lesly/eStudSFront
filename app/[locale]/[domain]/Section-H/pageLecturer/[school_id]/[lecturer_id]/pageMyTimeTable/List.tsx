@@ -12,6 +12,7 @@ import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { getMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { useTranslation } from 'react-i18next';
+import ComingSoon from '@/ComingSoon';
 
 export const metadata: Metadata = {
   title: "Assigned Subjects Page",
@@ -53,12 +54,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
 
 
       <div className="bg-gray-50 flex flex-col items-center justify-center py-2 space-y-4">
-        {data ?
-          <DataTable data={data?.allCourses?.edges} />
-          :
-          <ServerError type="network" item={t("MyCourses")} />
-        }
-
+        <ComingSoon />
 
       </div>
     </DefaultLayout>
@@ -66,65 +62,3 @@ const List = ({ params, data }: { params: any; data: any }) => {
 };
 
 export default List;
-
-
-const DataTable = ({ data }: { data: EdgeCourse[] }) => {
-  const { t } = useTranslation()
-
-  const Columns: TableColumn<EdgeCourse>[] = [
-    {
-      header: "#",
-      align: "center",
-      responsiveHidden: true,
-      render: (_item: EdgeCourse, index: number) => index + 1,
-    },
-    {
-      header: `${t("CourseCode")}`,
-      accessor: "node.courseCode",
-      responsiveHidden: true,
-      align: "left",
-    },
-    {
-      header: `${t("CourseName")}`,
-      accessor: "node.mainCourse.courseName",
-      align: "left",
-    },
-    {
-      header: `${t("Semester")}`,
-      accessor: "node.semester",
-      align: "center",
-    },
-    {
-      header: `${t("Credit")}`,
-      accessor: "node.courseCredit",
-      responsiveHidden: true,
-      align: "center",
-    },
-    {
-      header: `${t("CourseType")}`,
-      accessor: "node.courseType",
-      responsiveHidden: true,
-      align: "left",
-    },
-    {
-      header: `${t("Lecturer")}`,
-      accessor: "node.assignedTo.fullName",
-      responsiveHidden: true,
-      align: "left",
-    },
-
-  ];
-
-  return <div className='w-full'>
-    {data?.length ? (
-      <MyTableComp
-        columns={Columns}
-        data={data.sort((a: EdgeCourse, b: EdgeCourse) => a.node.mainCourse.courseName > b.node.mainCourse.courseName ? 1 : a.node.mainCourse.courseName < b.node.mainCourse.courseName ? -1 : 0)}
-        rowKey={(item, index) => item.node.id || index}
-        table_title={`${t("My Courses Long")}`}
-      />
-    ) : (
-      <div>{t("No data available")}</div> // Optional: Show a fallback message when no data is present.
-    )}
-  </div>
-}

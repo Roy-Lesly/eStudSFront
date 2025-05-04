@@ -1,5 +1,6 @@
 'use client';
-import { ConfigData } from '@/config';
+import { protocol, RootApi } from '@/config';
+import { gql, useQuery } from '@apollo/client';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation';
@@ -8,14 +9,23 @@ import React from 'react'
 
 const LogoHeader = ({ trigger, sidebarOpen, setSidebarOpen, home }: any) => {
 
-  const domain = useParams().domain
+  const { domain, school_id } = useParams()
+  const parsedSchoolId = Array.isArray(school_id) ? school_id[0] : school_id;
+
+  const { data, loading } = useQuery(GET_DATA, {
+    variables: {
+      id: parseInt(parsedSchoolId),
+    }
+  });
+
   return (
     <div className="flex gap-2 items-center justify-center mt-2">
-      <Link href={home} className="hidden md:flex rounded-full">
+      {!loading ? <>
+        <Link href={home} className="hidden md:flex rounded-full">
         <Image
           width={100}
           height={100}
-          src={domain ? ConfigData[`${domain}`]['higher'].logo512 : ConfigData["local"]['higher'].logo512 }
+          src={`${protocol}api${domain}${RootApi}/media/` + data?.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
           alt="Logo"
           style={{ borderRadius: 50, backgroundColor: "white" }}
           priority
@@ -25,12 +35,16 @@ const LogoHeader = ({ trigger, sidebarOpen, setSidebarOpen, home }: any) => {
         <Image
           width={70}
           height={70}
-          src={domain ? ConfigData[`${domain}`]['higher'].logo256 : ConfigData["local"]['higher'].logo256 }
+          src={`${protocol}api${domain}${RootApi}/media/` + data?.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
           alt="Logo"
           style={{ borderRadius: 50, backgroundColor: "white" }}
           priority
         />
       </Link>
+      </>
+      :
+      <div className="animate-spin border-4 border-primary border-solid border-t-transparent h-16 rounded-full w-16"></div>
+      }
 
       <button
         ref={trigger}
@@ -58,3 +72,19 @@ const LogoHeader = ({ trigger, sidebarOpen, setSidebarOpen, home }: any) => {
 }
 
 export default LogoHeader
+
+
+const GET_DATA = gql`
+  query GetData (
+    $id: ID!
+  ) {
+    allSchoolInfos (
+      id: $id
+    ) {
+      edges {
+        node {
+          id campus address schoolName schoolIdentification { id logo }
+        }
+      }
+    }
+  }`

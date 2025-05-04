@@ -15,7 +15,12 @@ import { useTranslation } from 'react-i18next';
 import PasswordResetModal from '@/PasswordModal';
 
 
-const Info = ({ data, params, searchParams }: { data: EdgeSchoolFees, params: any, searchParams: any }) => {
+const Info = (
+  { data, params, searchParams, hasMark }
+  :
+  { data: EdgeSchoolFees, params: any, searchParams: any, hasMark: boolean }
+) => {
+
   const { t } = useTranslation();
   const [showId, setShowId] = useState(false);
   const [user, setUser] = useState<JwtPayload | null>(null);
@@ -170,7 +175,7 @@ const Info = ({ data, params, searchParams }: { data: EdgeSchoolFees, params: an
               onClick={() => { setShowId(false); }}
               className='bg-blue-800 flex flex-row font-bold gap-2 m-2 px-6 py-2 rounded-lg text-white'
             >
-              Back <FaLeftLong color='red' size={27} />
+              {t("Back")} <FaLeftLong color='red' size={27} />
             </button>
           </div>
           <IDComp
@@ -248,11 +253,12 @@ const Info = ({ data, params, searchParams }: { data: EdgeSchoolFees, params: an
 
 
               <div className='flex flex-col gap-6'>
-                {/* <div className='flex gap-10'>
-                  <label className="font-semibold text-xl text-slate-800 tracking-widest w-full">Reset or Change Password:</label>
-                  <button onClick={() => setPasswordState("change")} type='button' className='w-32 text-lg font-semibold bg-teal-800 text-white tracking-wider rounded-lg border px-5 py-2'>Change</button>
-                  <button onClick={() => setPasswordState("reset")} type='button' className='w-32 text-lg font-semibold bg-red text-white tracking-wider rounded-lg border px-5 py-2'>Reset</button>
-                </div> */}
+                
+                <div className='flex items-center justify-center italic gap-4'>
+                  <span>Has Results ?:</span>
+                  <span className={`${hasMark ? "text-green-600" : "text-red"} font-semibold text-lg tracking-widest`}>{hasMark ? "Yes" : "No"}</span>
+                  </div>
+
                 <div className=''>
                   <label className="font-semibold text-lg text-slate-800 tracking-widest">Matricle</label>
                   <input

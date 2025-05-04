@@ -78,8 +78,11 @@ export const ConstSpecialtyList = [
     "BEAUTY ESTHETICS", "FASHION CLOTHING AND TEXTILE", "BAKERY AND FOOD PROCESSING", "OTHERS/AUTRE", "AUXILLAIRE EN PHARMACIE", "VENDEUR EN PHARMACY"
 ]
 export const ConstProgramList = [
-    "HND", "BTS", "BSC", "LICENSE", "MASTERS", "DPQ", "OND", "DQP"
+    "HND", "BTS", "BSC", "LICENSE", "MASTERS", "DOCTORAT", "PhD", "DPQ", "OND", "DQP"
 ]
 
-export const CertificateOptions = [ "Primary Certificate", "Vocational", "Ordinary Level", "Advanced Level", "Associate", "HND", "Bachelor", "Master", "Phd", "Other", ];
+export const CertificateOptions = [ 
+    "Vocational", "Ordinary Level", "B.E.P.C", "Advanced Level", "Baccalaureat", 
+    "HND", "BTS", "Bachelor", "LICENCE", "Master", "Phd", "DOCTORAT", "Other", 
+];
 export const RegionList = ["Littoral", "Center", "West", "South West", "South", "North West", "Est", "Adamawa", "North", "Far North", "Other"]

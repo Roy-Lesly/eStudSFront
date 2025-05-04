@@ -35,9 +35,7 @@ const EditPage = async ({
         data = result.data;
     } catch (error: any) {
       console.log(error)
-      if (error.networkError && error.networkError.result) {
-        console.error('GraphQL Error Details:', error.networkError.result.errors);
-      }
+      
       data = null;
     }
       console.log(data, 42)

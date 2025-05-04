@@ -18,7 +18,6 @@ import { jwtDecode } from 'jwt-decode';
 import Moratoire from './Moratoire';
 import { useTranslation } from 'react-i18next';
 import { JwtPayload } from '@/serverActions/interfaces';
-// import ServerError from '@/ServerError';
 import ServerError from '@/ServerError';
 
 
@@ -34,6 +33,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState(0);
+  const hasMark = hasAnyMarks(data?.allResults?.edges);
 
   return (
     <DefaultLayout
@@ -57,9 +57,9 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       }
     >
       <Breadcrumb
-        department={t("PageAdmin.PageStudent.Details")}
-        subRoute={t("PageAdmin.PageStudent.List")}
-        pageName={t("PageAdmin.PageStudent.Student Details")}
+        department={t("PageAdmin.Details")}
+        subRoute={t("PageAdmin.List")}
+        pageName={t("PageAdmin.Student Details")}
         mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
         subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
       />
@@ -71,24 +71,29 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               <MyTabs
                 tabs={[
                   {
-                    label: t("PageAdmin.PageStudent.Info"),
-                    content: <Info searchParams={searchParams} data={data.allSchoolFees.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]} params={params} />
+                    label: t("PageAdmin.Info"),
+                    content: <Info 
+                    searchParams={searchParams} 
+                    data={data.allSchoolFees.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]} 
+                    params={params}
+                    hasMark={hasMark}
+                    />
                   },
                   {
-                    label: t("PageAdmin.PageStudent.Classes"),
+                    label: t("PageAdmin.Classes"),
                     content: <Classes data={data?.allSchoolFees?.edges} params={params} />
                   },
                   ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("FEES") ?
                     [
                       {
-                        label: t("PageAdmin.PageStudent.Fees"),
+                        label: t("PageAdmin.Fees"),
                         content: <Fees data={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]} />
                       }
                     ] : []),
                   ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("MORATOIRE") ?
                     [
                       {
-                        label: t("PageAdmin.PageStudent.Moratoire"),
+                        label: t("PageAdmin.Moratoire"),
                         content: <Moratoire
                           results={data.allResults?.edges.sort((a: EdgeResult, b: EdgeResult) => a.node.course.mainCourse.courseName > b.node.course.mainCourse.courseName ? 1 : a.node.course.mainCourse.courseName < b.node.course.mainCourse.courseName ? -1 : 0)}
                           data={data?.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]}
@@ -99,7 +104,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                   ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("RESULT") ?
                     [
                       {
-                        label: t("PageAdmin.PageStudent.Results"),
+                        label: t("PageAdmin.Results"),
                         content: <Results
                           params={params}
                           fees={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]}
@@ -112,7 +117,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 setActiveTab={setActiveTab}
               />
               :
-              <ServerError type="notFound" item={t("PageAdmin.PageStudent.Student Info")} />
+              <ServerError type="notFound" item={t("PageAdmin.Student Info")} />
             :
             <ServerError type="network" item='' />}
         </div>
@@ -122,3 +127,20 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 };
 
 export default List;
+
+
+function hasAnyMarks(results: EdgeResult[]) {
+  return results.some(result => {
+    try {
+      const info = JSON.parse(result.node.info);
+      return (
+        info.hasOwnProperty("ca") ||
+        info.hasOwnProperty("exam") ||
+        info.hasOwnProperty("average")
+      );
+    } catch (e) {
+      console.error("Invalid JSON:", result.node.info);
+      return false;
+    }
+  });
+}

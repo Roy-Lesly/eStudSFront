@@ -53,7 +53,7 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
           setCount(4);
         } else {
           Swal.fire({
-            title: `${t("PageLogin.NoCampusAssignedToUser")}`,
+            title: `${t("NoCampusAssignedToUser")}`,
             timer: 5000,
             timerProgressBar: true,
             showConfirmButton: false,
@@ -62,7 +62,7 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
         }
       } else {
         Swal.fire({
-          title: `${t("PageLogin.NoCampusFoundInDatabase")}`,
+          title: `${t("NoCampusFoundInDatabase")}`,
           timer: 5000,
           timerProgressBar: true,
           showConfirmButton: false,
@@ -73,7 +73,7 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
 
     const handleSuccessfulLogin = () => {
       Swal.fire({
-        title: `${t("PageLogin.Login Successfully")}`,
+        title: `${t("Login Successfully")}`,
         timer: 4000,
         timerProgressBar: true,
         showConfirmButton: false,
@@ -173,7 +173,7 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
 
       {!loginSucess ? <div className="bg-white hover:scale-105 max-w-md p-4 md:p-6 rounded-xl shadow-lg transform transition w-full">
         <h2 className="font-bold mb-6 text-3xl text-center text-gray-800">
-          {t("PageLogin.Welcome Back")}
+          {t("Welcome Back")}
         </h2>
         <form
           className="space-y-6"
@@ -185,20 +185,20 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
         >
           <div className="space-y-1">
             <label htmlFor="username" className="block font-medium text-gray-800">
-              {t("PageLogin.Matricle")} {t("PageLogin.or")} {t("PageLogin.Username")}
+              {t("Matricle")} {t("or")} {t("Username")}
             </label>
             <input
               type="text"
               name="username"
               id="username"
               required
-              placeholder={t("PageLogin.Enter Matricle or Username")}
+              placeholder={t("Enter Matricle or Username")}
               className="border focus:ring focus:ring-indigo-300 px-6 py-3 rounded-lg text-gray-900 text-lg sm:text-2xl font-semibold w-full"
             />
           </div>
           <div className="space-y-1">
             <label htmlFor="password" className="block font-medium text-gray-700">
-              {t("PageLogin.Password")}
+              {t("Password")}
             </label>
             <input
               type="password"
@@ -211,10 +211,10 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
           </div>
           <div className="flex justify-between text-indigo-600">
             <a href="/pageAuthentication/ResetPassword" className="hover:underline">
-              {t("PageLogin.Forgot Password")}?
+              {t("Forgot Password")}?
             </a>
             <a href={`/${params.domain}/pageAuthentication/PasswordAndToken`} className="hover:underline">
-              {t("PageLogin.Enter Token")}
+              {t("Enter Token")}
             </a>
           </div>
           <button
@@ -225,7 +225,7 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
               }`}
             disabled={loading}
           >
-            {loading ? `${t("PageLogin.Login In")} ...` : `${t("PageLogin.Login")}`}
+            {loading ? `${t("Login In")} ...` : `${t("Login")}`}
           </button>
         </form>
 
@@ -238,12 +238,12 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t("PageLogin.Contact Support")}
+              {t("Contact Support")}
             </a>
           </div>
 
           <div className="text-center text-gray-500">
-            <Link href={`/${params.domain}/pageAuthentication/CheckUser`}>{t("PageLogin.Check User")}</Link>
+            <Link href={`/${params.domain}/pageAuthentication/CheckUser`}>{t("Check User")}</Link>
           </div>
         </div>
       </div>

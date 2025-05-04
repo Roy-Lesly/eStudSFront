@@ -86,6 +86,8 @@ export interface ResultTranscript {
     courseCode: string;
     courseCredit: number;
     courseName: string;
+    ca: number;
+    exam: number;
     average: number;
     WP: number;
     GP: number;

@@ -12,9 +12,9 @@ import { useRouter } from 'next/navigation';
 import { CertificateOptions, RegionList } from '@/constants';
 import countryList from "react-select-country-list";
 import Select from "react-select";
+import { useTranslation } from 'react-i18next';
 
 
-const steps = ['Personal Info', 'Role / Department', 'Class Assignment', 'Confirmation'];
 const CountryList = countryList().getData();
 
 type FormData = {
@@ -52,6 +52,14 @@ type FormData = {
 
 
 const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpecialties: any, params: { domain: string, school_id: string } }) => {
+  const { t } = useTranslation();
+  const steps = [
+    `${t("Personal Info")}`, 
+    `${t("Role / Dept")}`, 
+    `${t("Class Assignment")}`, 
+    `${t("Confirmation")}`
+  ];
+
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [optionsSpecialties, setOptionsSpecialties] = useState<{ id: string, name: string }[]>();
@@ -279,8 +287,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
       };
   
       const profileResult = await createUpdateUserProfile({ variables: newFormDataProfile });
-      console.log(profileResult);
-  
+    
       if (!profileResult.data?.createUpdateDeleteUserProfile?.userprofile?.id) {
         throw new Error("Failed to create user profile");
       }
@@ -355,7 +362,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="font-bold text-xl">Personal Information</h2>
+            <h2 className="font-bold text-xl">{t("Personal Information")}</h2>
 
             <div className="mb-10 space-y-2">
 
@@ -363,18 +370,18 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 <MyInputField
                   id="firstName"
                   name="firstName"
-                  label="First Name"
+                  label={t("First Name")}
                   type="text"
-                  placeholder="First Name"
+                  placeholder={t("First Name")}
                   value={formData.personalInfo.firstName}
                   onChange={(e) => handleChange('personalInfo', 'firstName', e.target.value)}
                 />
                 <MyInputField
                   id="lastName"
                   name="lastName"
-                  label="Last Name"
+                  label={t("Last Name")}
                   type="text"
-                  placeholder="Last Name"
+                  placeholder={t("Last Name")}
                   value={formData.personalInfo.lastName}
                   onChange={(e) => handleChange('personalInfo', 'lastName', e.target.value)}
                 />
@@ -394,9 +401,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 <MyInputField
                   id="address"
                   name="address"
-                  label="Address"
+                  label={t("Address")}
                   type="text"
-                  placeholder="Address"
+                  placeholder={t("Address")}
                   value={formData.personalInfo.address}
                   onChange={(e) => handleChange('personalInfo', 'address', e.target.value)}
                 />
@@ -406,18 +413,18 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 <MyInputField
                   id="dob"
                   name="dob"
-                  label="Date of Birth"
+                  label={t("Date of Birth")}
                   type="date"
-                  placeholder="Date of Birth"
+                  placeholder={t("Date of Birth")}
                   value={formData.personalInfo.dob}
                   onChange={(e) => handleChange('personalInfo', 'dob', e.target.value)}
                 />
                 <MyInputField
                   id="pob"
                   name="pob"
-                  label="Place of Birth"
+                  label={t("Place of Birth")}
                   type="text"
-                  placeholder="Place of Birth"
+                  placeholder={t("Place of Birth")}
                   value={formData.personalInfo.pob}
                   onChange={(e) => handleChange('personalInfo', 'pob', e.target.value)}
                 />
@@ -425,7 +432,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
 
             </div>
 
-            <h2 className="font-bold text-xl">Contact Information</h2>
+            <h2 className="font-bold text-xl">{t("Contact Information")}</h2>
 
             <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
               <MyInputField
@@ -452,18 +459,18 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
               <MyInputField
                 id="parent"
                 name="parent"
-                label="Parent Name"
+                label={t("Parent Name")}
                 type="text"
-                placeholder="Parent Name"
+                placeholder={t("Parent Name")}
                 value={formData.personalInfo.parent}
                 onChange={(e) => handleChange('personalInfo', 'parent', e.target.value)}
               />
               <MyInputField
                 id="parentTelephone"
                 name="parentTelephone"
-                label="Parent Telephone"
+                label={t("Parent Telephone")}
                 type="number"
-                placeholder="Parent Telephone"
+                placeholder={t("Parent Telephone")}
                 value={formData.personalInfo.parentTelephone}
                 onChange={(e) => handleChange('personalInfo', 'parentTelephone', e.target.value)}
               />
@@ -478,7 +485,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="font-bold text-xl">Role and Department</h2>
+            <h2 className="font-bold text-xl">{t("Role and Department")}</h2>
             <div className="space-y-2">
               <div className='flex flex-col gap-4 md:flex-row'>
 
@@ -518,19 +525,19 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 <MyInputField
                   id="regionOfOrigin"
                   name="regionOfOrigin"
-                  label="Region Of Origin"
+                  label={t("Region Of Origin")}
                   type="select"
                   options={RegionList}
-                  placeholder="Region Of Origin"
+                  placeholder={t("Region Of Origin")}
                   value={formData.medicalHistory.regionOfOrigin}
                   onChange={(e) => handleChange('medicalHistory', 'regionOfOrigin', e.target.value)}
                 />
                 {formData.medicalHistory.regionOfOrigin === "Other" ? <MyInputField
                   id="regionOfOriginOther"
                   name="regionOfOriginOther"
-                  label="Region Of Origin"
+                  label={t("Region Of Origin")}
                   type="text"
-                  placeholder="Region Of Origin"
+                  placeholder={t("Region Of Origin")}
                   value={formData.medicalHistory.regionOfOriginOther}
                   onChange={(e) => handleChange('medicalHistory', 'regionOfOriginOther', e.target.value)}
                 /> : null}
@@ -540,9 +547,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 <MyInputField
                   id="highestCertificate"
                   name="highestCertificate"
-                  label="Highest Certificate"
+                  label={t("Highest Certificate")}
                   type="select"
-                  placeholder="Highest Certificate"
+                  placeholder={t("Highest Certificate")}
                   value={formData.medicalHistory.highestCertificate}
                   onChange={(e) => handleChange('medicalHistory', 'highestCertificate', e.target.value)}
                   options={CertificateOptions}
@@ -550,9 +557,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 {formData.medicalHistory.regionOfOrigin === "Other" ? <MyInputField
                   id="highestCertificateOther"
                   name="highestCertificateOther"
-                  label="Other Certificate"
+                  label={t("Other Certificate")}
                   type="text"
-                  placeholder="Other Certificate / Diploma"
+                  placeholder={t("Other Certificate / Diploma")}
                   value={formData.medicalHistory.highestCertificateOther}
                   onChange={(e) => handleChange('medicalHistory', 'highestCertificateOther', e.target.value)}
                 /> : null}
@@ -560,31 +567,31 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 <MyInputField
                   id="yearObtained"
                   name="yearObtained"
-                  label="Year Obtained"
+                  label={t("Year Obtained")}
                   type="text"
-                  placeholder="Year Obtained"
+                  placeholder={t("Year Obtained")}
                   value={formData.medicalHistory.yearObtained}
                   onChange={(e) => handleChange('medicalHistory', 'yearObtained', e.target.value)}
                 />
               </div>
 
               <br />
-              <h2 className="font-bold text-xl">Medical History</h2>
+              <h2 className="font-bold text-xl">{t("Medical History")}</h2>
               <MyInputField
                 id="allergies"
                 name="allergies"
-                label="Allergies"
+                label={t("Allergies")}
                 type="textArea"
-                placeholder="Allergies"
+                placeholder={t("Allergies")}
                 value={formData.medicalHistory.allergies}
                 onChange={(e) => handleChange('medicalHistory', 'allergies', e.target.value)}
               />
               <MyInputField
                 id="medicalHistory"
                 name="medicalHistory"
-                label="Medical History"
+                label={t("Medical History")}
                 type="textArea"
-                placeholder="Medical History"
+                placeholder={t("Medical History")}
                 value={formData.medicalHistory.medicalHistory}
                 onChange={(e) => handleChange('medicalHistory', 'medicalHistory', e.target.value)}
               />
@@ -598,15 +605,15 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="font-bold mb-4 text-xl">Class Assigment</h2>
+            <h2 className="font-bold mb-4 text-xl">{t("Class Assigment")}</h2>
 
             <div className='flex flex-row justify-between text-black'>
               <div className="flex gap-2">
-                <span>Choice 1:</span>
+                <span>{t("Choice 1")}:</span>
                 <span className='font-medium italic'>{data.allMainSpecialties?.edges?.filter((item: EdgeMainSpecialty) => parseInt(decodeUrlID(item.node.id)) === parseInt(data?.allPreinscriptions?.edges[0].node?.specialtyOne))[0]?.node.specialtyName}</span>
               </div>
               <div className="flex gap-2">
-                <span>Choice 2:</span>
+                <span>{t("Choice 2")}:</span>
                 <span className='font-medium italic'>{data.allMainSpecialties?.edges?.filter((item: EdgeMainSpecialty) => parseInt(decodeUrlID(item.node.id)) === parseInt(data?.allPreinscriptions?.edges[0].node?.specialtyTwo))[0]?.node.specialtyName}</span>
               </div>
             </div>
@@ -615,9 +622,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
               <MyInputField
                 id="specialtyId"
                 name="specialtyId"
-                label="Specialty"
+                label={t("Specialty")}
                 type="select"
-                placeholder="specialty"
+                placeholder={t("Specialty")}
                 value={formData.classAssignment.specialtyId}
                 onChange={(e) => { handleChange('classAssignment', 'specialtyId', e.target.value); }}
                 options={optionsSpecialties}
@@ -625,9 +632,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
               <MyInputField
                 id="level"
                 name="level"
-                label="Level"
+                label={t("Level")}
                 type="select"
-                placeholder="level"
+                placeholder={t("Level")}
                 value={selectedLevel ? selectedLevel : ""}
                 onChange={(e) => { filterSpeciaties(e.target.value) }}
                 options={optionsLevels}
@@ -635,9 +642,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
               <MyInputField
                 id="programId"
                 name="programId"
-                label="Program"
+                label={t("Program")}
                 type="select"
-                placeholder="Program"
+                placeholder={t("Program")}
                 value={formData.classAssignment.programId}
                 onChange={(e) => { handleChange('classAssignment', 'programId', e.target.value); }}
                 options={optionsPrograms}
@@ -645,9 +652,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
               <MyInputField
                 id="session"
                 name="session"
-                label="Session"
+                label={t("Session")}
                 type="select"
-                placeholder="Session"
+                placeholder={t("Session")}
                 value={capitalizeFirstLetter(formData.classAssignment.session)}
                 onChange={(e) => handleChange('classAssignment', 'session', e.target.value)}
                 options={["Morning", "Evening"]}
@@ -655,9 +662,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
               <MyInputField
                 id="password"
                 name="password"
-                label="Password (Optional)"
+                label={t("Password (Optional)")}
                 type="password"
-                placeholder="password"
+                placeholder={t("password")}
                 value={formData.personalInfo.password}
                 onChange={(e) => handleChange('personalInfo', 'password', e.target.value)}
               />
@@ -672,34 +679,34 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
             transition={{ duration: 0.5 }}
           >
             <h2 className="font-bold mb-6 text-2xl text-blue-600 text-center">
-              Confirm Your Information
+              {t("Confirm Your Information")}
             </h2>
             <div className="bg-gray-100 p-6 rounded-lg shadow-lg space-y-4">
               <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-lg">Personal Information</h3>
-                <p><strong>First Name:</strong> {formData.personalInfo.firstName || 'N/A'}</p>
-                <p><strong>Last Name:</strong> {formData.personalInfo.lastName || 'N/A'}</p>
-                <p><strong>Sex:</strong> {formData.personalInfo.sex || 'N/A'}</p>
-                <p><strong>Address:</strong> {formData.personalInfo.address || 'N/A'}</p>
-                <p><strong>Date of Birth:</strong> {formData.personalInfo.dob || 'N/A'}</p>
-                <p><strong>Place of Birth:</strong> {formData.personalInfo.pob || 'N/A'}</p>
+                <h3 className="font-semibold text-gray-700 text-xl">{t("Personal Information")}</h3>
+                <p><strong>{t("First Name")}:</strong> {formData.personalInfo.firstName || 'N/A'}</p>
+                <p><strong>{t("Last Name")}:</strong> {formData.personalInfo.lastName || 'N/A'}</p>
+                <p><strong>{t("Sex")}:</strong> {formData.personalInfo.sex || 'N/A'}</p>
+                <p><strong>{t("Address")}:</strong> {formData.personalInfo.address || 'N/A'}</p>
+                <p><strong>{t("Date of Birth")}:</strong> {formData.personalInfo.dob || 'N/A'}</p>
+                <p><strong>{t("Place of Birth")}:</strong> {formData.personalInfo.pob || 'N/A'}</p>
               </div>
               {/* <hr className="border-gray" /> */}
               <br />
 
               <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-lg">Contact Information</h3>
+                <h3 className="font-semibold text-gray-700 text-lg">{t("Contact Information")}</h3>
                 <p><strong>Telephone:</strong> {formData.personalInfo.telephone || 'N/A'}</p>
                 <p><strong>Email:</strong> {formData.personalInfo.email || 'N/A'}</p>
-                <p><strong>Parent's Name:</strong> {formData.personalInfo.parent || 'N/A'}</p>
+                <p><strong>{t("Parent's Name")}:</strong> {formData.personalInfo.parent || 'N/A'}</p>
                 <p className='flex items-center justify-between'>
-                  <span><strong>Parent's Telephone:</strong> {formData.personalInfo.parentTelephone || 'N/A'}</span>
+                  <span><strong>{t("Parent's Telephone")}:</strong> {formData.personalInfo.parentTelephone || 'N/A'}</span>
                   <span>
                     <button
                       onClick={() => setCurrentStep(currentStep - 3)}
                       className="bg-gray border hover:bg-gray-400 ml-4 my-0 px-6 py-2 rounded-lg shadow-md text-gray-800"
                     >
-                      Edit Information
+                      {t("Edit Information")}
                     </button>
 
                   </span>
@@ -707,24 +714,24 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
               </div>
               <hr className="border-gray-300" />
               <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-lg">Medical History</h3>
+                <h3 className="font-semibold text-gray-700 text-lg">{t("Medical History")}</h3>
                 <div className='flex flex-col gap-4 md:flex-row md:gap-10'>
-                  <p><strong>Nationality:</strong> {formData.medicalHistory.nationality || 'N/A'}</p>
-                  <p><strong>Region Of Origin:</strong> {(formData.medicalHistory.regionOfOrigin === "Other" ? capitalizeFirstLetter(formData.medicalHistory.regionOfOriginOther.toLowerCase()) : formData.medicalHistory.regionOfOrigin) || 'N/A'}</p>
+                  <p><strong>{t("Nationality")}:</strong> {formData.medicalHistory.nationality || 'N/A'}</p>
+                  <p><strong>{t("Region Of Origin")}:</strong> {(formData.medicalHistory.regionOfOrigin === "Other" ? capitalizeFirstLetter(formData.medicalHistory.regionOfOriginOther.toLowerCase()) : formData.medicalHistory.regionOfOrigin) || 'N/A'}</p>
                 </div>
                 <div className='flex flex-col gap-4 md:flex-row md:gap-10'>
-                  <p><strong>Highest Certificate:</strong> {(formData.medicalHistory.highestCertificate === "Other" ? (formData.medicalHistory.highestCertificateOther.toLowerCase()) : formData.medicalHistory.highestCertificate) || 'N/A'}</p>
-                  <p><strong>Year Obtained:</strong> {formData.medicalHistory.yearObtained || 'N/A'}</p>
+                  <p><strong>{t("Highest Certificate")}:</strong> {(formData.medicalHistory.highestCertificate === "Other" ? (formData.medicalHistory.highestCertificateOther.toLowerCase()) : formData.medicalHistory.highestCertificate) || 'N/A'}</p>
+                  <p><strong>{t("Year Obtained")}:</strong> {formData.medicalHistory.yearObtained || 'N/A'}</p>
                   <p><strong>Allergies:</strong> {formData.medicalHistory.allergies || 'N/A'}</p>
                 </div>
                 <p className='flex items-center justify-between'>
-                  <span><strong>Medical History:</strong> {formData.medicalHistory.medicalHistory || 'N/A'}</span>
+                  <span><strong>{t("Medical History")}:</strong> {formData.medicalHistory.medicalHistory || 'N/A'}</span>
                   <span>
                     <button
                       onClick={() => setCurrentStep(currentStep - 2)}
                       className="bg-gray border hover:bg-gray-400 ml-4 my-0 px-6 py-2 rounded-lg shadow-md text-gray-800"
                     >
-                      Edit Information
+                      {t("Edit Information")}
                     </button>
 
                   </span>
@@ -733,18 +740,18 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
               <hr className="border-gray-300" />
               <div className="space-y-2">
 
-                <h3 className="font-semibold text-gray-700 text-lg">Class Assignment</h3>
+                <h3 className="font-semibold text-gray-700 text-lg">{t("Class Assignment")}</h3>
 
-                <p><strong>Class:</strong> {optionsSpecialties?.find((item) => item.id === formData.classAssignment.specialtyId)?.name || 'N/A'}</p>
+                <p><strong>{t("Class")}:</strong> {optionsSpecialties?.find((item) => item.id === formData.classAssignment.specialtyId)?.name || 'N/A'}</p>
                 <p className='flex items-center justify-between'>
-                  <p><strong>Program:</strong> {optionsPrograms?.find((item) => item.id === formData.classAssignment.programId)?.name || 'N/A'}</p>
+                  <p><strong>{t("Program")}:</strong> {optionsPrograms?.find((item) => item.id === formData.classAssignment.programId)?.name || 'N/A'}</p>
                   <span> <strong>Session:</strong> {formData.classAssignment.session || 'N/A'} </span>
                   <span>
                     <button
                       onClick={() => setCurrentStep(currentStep - 1)}
                       className="bg-gray border hover:bg-gray-400 ml-4 my-0 px-6 py-2 rounded-lg shadow-md text-gray-800"
                     >
-                      Edit Information
+                      {t("Edit Information")}
                     </button>
 
                   </span>
@@ -802,21 +809,21 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
           disabled={currentStep === 0}
           className="bg-red disabled:opacity-50 font-medium hover:bg-slate-500 px-4 py-2 rounded text-white"
         >
-          Previous
+          {t("Previous")}
         </button>
         {currentStep === steps.length - 1 ? (
           <button
             onClick={handleSubmit}
             className="bg-green-600 hover:bg-blue-700 px-4 py-2 rounded text-white"
           >
-            Confirm and Submit
+            {t("Confirm and Submit")}
           </button>
         ) : (
           <button
             onClick={handleNext}
             className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white"
           >
-            Next
+            {t("Next")}
           </button>
         )}
       </div>

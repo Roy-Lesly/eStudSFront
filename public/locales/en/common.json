@@ -2,7 +2,8 @@
     "PageLanding": {
         "Pre Enrollment": "Pre-Enrollment",
         "ID Card": "ID Card",
-        "Login": "Login"
+        "Login": "Login",
+        "Welcome": "Welcome"
     },
 
     "PageEnrollment": {

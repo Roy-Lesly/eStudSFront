@@ -22,15 +22,8 @@ const client = getApolloClient(params.domain);
         });
         data = result.data;
     } catch (error: any) {
-      if (error.networkError && error.networkError.result) {
-        console.error('GraphQL Error Details:', error.networkError.result.errors);
-        data = null
-      }
-      else if (error.message === "Not Authenticated") {
-        data = { 'error': error.message}
-      } else {
-        data = null;
-      }
+      data = null; console.log(error)
+      
     }
 
   return (

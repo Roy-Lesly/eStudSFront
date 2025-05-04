@@ -5,37 +5,35 @@ import Image from 'next/image';
 import getApolloClient from '@/functions';
 import { protocol, RootApi } from '@/config';
 import { gql } from '@apollo/client';
+import initTranslations from '@/initTranslations';
 
 
 const Page = async ({
   params
 }: {
-  params: { school_id: string; domain: string };
+  params: { school_id: string; domain: string, locale: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
 
+  const { t } = await initTranslations(params.locale, ["common"])
   const { domain, school_id } = params;
 
-  // const session = await getSession();
   const client = getApolloClient(params.domain);
-    let data;
-    try {
-      const result = await client.query<any>({
-        query: GET_DATA,
-        variables: {
-          id: school_id,
-          timestamp: new Date().getTime()
-        },
-        fetchPolicy: 'no-cache'
-      });
-      data = result.data;
-    } catch (error: any) {
-      console.log(error)
-      if (error.networkError && error.networkError.result) {
-        console.error('GraphQL Error Details:', error.networkError.result.errors);
-      }
-      data = null;
-    }
+  let data;
+  try {
+    const result = await client.query<any>({
+      query: GET_DATA,
+      variables: {
+        id: school_id,
+        timestamp: new Date().getTime()
+      },
+      fetchPolicy: 'no-cache'
+    });
+    data = result.data;
+  } catch (error: any) {
+    console.log(error)
+    data = null;
+  }
 
 
   return (
@@ -47,7 +45,7 @@ const Page = async ({
             <Image
               width={200}
               height={200}
-              src={ `${protocol}api${domain}${RootApi}/media/`+data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
+              src={`${protocol}api${domain}${RootApi}/media/` + data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
               alt={`${data.allSchoolInfos?.edges[0].node?.schoolName || 'School'} Logo`}
               className="hidden md:block rounded-full"
               priority
@@ -55,7 +53,7 @@ const Page = async ({
             <Image
               width={130}
               height={130}
-              src={ `${protocol}api${domain}${RootApi}/media/`+data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
+              src={`${protocol}api${domain}${RootApi}/media/` + data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
               alt={`${data.allSchoolInfos?.edges[0].node?.schoolName || 'School'} Logo`}
               className="block md:hidden rounded-full"
               priority
@@ -64,7 +62,7 @@ const Page = async ({
 
           {/* Welcome Message */}
           <div className="flex flex-col font-bold gap-10 items-center text-center">
-            <h1 className="md:text-4xl text-2xl">WELCOME TO</h1>
+            <h1 className="md:text-4xl text-2xl">{t("Welcome").toUpperCase()}</h1>
             <h2 className="md:text-4xl text-2xl">{data.allSchoolInfos?.edges[0].node?.schoolName || 'School Name'}</h2>
           </div>
 

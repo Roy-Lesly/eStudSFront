@@ -80,7 +80,7 @@ const HomePageContent = ({
           href={`/${params.domain}/pageAuthentication/Login`}
           className="bg-white block font-semibold hover:bg-blue-100 px-6 py-3 rounded-lg shadow-lg text-blue-600 text-center text-xl tracking-widest uppercase w-full"
         >
-          {t('PageLanding.Login')}
+          {t('Login')}
         </Link>
       </motion.div>
 
@@ -102,7 +102,7 @@ const HeaderLinks = ({ params }: { params: any }) => {
   >
     <LanguageSwitcher currentLocale={params?.locale} />
     <Link href={`/${params.domain}/pre-inscription`} className="hover:underline">
-    {t('PageLanding.Pre Enrollment')}
+    {t('Pre Enrollment')}
     </Link>
   </motion.div>)
 };

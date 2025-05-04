@@ -59,7 +59,7 @@ const SelectDept = () => {
           <LanguageSwitcher currentLocale={Array.isArray(params.locale) ? params.locale[0] : params.locale} />
           </div>
 
-        <div className='font-semibold items-center justify-center md:mb-4 md:text-4xl text-center text-xl'>{t("PageStudent.select.Select Class")}</div>
+        <div className='font-semibold items-center justify-center md:mb-4 md:text-4xl text-center text-xl'>{t("Select Class")}</div>
 
         <div className='bg-white px-6 rounded'>
           {myProfiles && myProfiles.length > 0 ?
@@ -78,15 +78,15 @@ const SelectDept = () => {
             :
 
             <div className='flex flex-col font-medium gap-4 justify-center text-center text-lg tracking-wide w-full'>
-              <div className='flex items-center justify-center text-center text-red'>{t("PageStudent.select.No Class Assigned")} !!!</div>
-              <div className='flex items-center justify-center text-center'><code>{t("PageStudent.select.Contact Administration")}</code></div>
+              <div className='flex items-center justify-center text-center text-red'>{t("No Class Assigned")} !!!</div>
+              <div className='flex items-center justify-center text-center'><code>{t("Contact Administration")}</code></div>
             </div>
 
           }
         </div>
 
           <div className="my-10">
-            <button onClick={() => { router.back() }} className='bg-greendark font-medium px-6 py-1 rounded text-lg text-white'>{t("PageStudent.select.Back")}</button>
+            <button onClick={() => { router.back() }} className='bg-greendark font-medium px-6 py-1 rounded text-lg text-white'>{t("Back")}</button>
           </div>
 
       </div>

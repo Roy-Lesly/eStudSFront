@@ -16,8 +16,7 @@ const ResultDisplay = async (
     :
     { params: { locale: string, userprofile_id: string, domain: string, specialty_id: string }, resultType: "ca" | "exam" | "resit" | "result", title: string }
 ) => {
-  const { t: trans } = await initTranslations(params.locale, ['common'])
-  const t = trans("PageStudent")["CaExamResult"];
+  const { t } = await initTranslations(params.locale, ['common'])
 
   const client = getApolloClient(params.domain);
   let data;
@@ -52,7 +51,7 @@ const ResultDisplay = async (
       <div className='h-screen mx-1 my-16 p-1 rounded text-black'>
 
         <div className='flex font-semibold items-center justify-center mb-2 text-xl uppercase'>
-          {t[`${title}`]} - {t["result"]}
+          {t(title)} - {t("result")}
         </div>
 
 
@@ -167,14 +166,14 @@ const ResultDisplay = async (
                     url: `${params.domain}/Section-H/pageStudent/${params.userprofile_id}/${params.specialty_id}/CA`,
                     reason: 'platform_charges',
                   }}
-                  buttonTitle={`${t['activate']}`}
+                  buttonTitle={`${t('activate')}`}
                   customClassName='flex gap-2 border bg-bluedash px-6 py-2 rounded text-white font-medium capitalize cursor-pointer'
                 />
               </div>
             )
           ) : (
             <div className="flex flex-col items-center justify-center my-20 mx-10 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
-              <p className="text-2xl text-center">🚫 {t["No Data Available"]}.</p>
+              <p className="text-2xl text-center">🚫 {t("No Data Available")}.</p>
             </div>
           )}
         </div>
@@ -198,8 +197,7 @@ const CaExamResit = async (
   const caLim = fees ? fees[0].node.userprofile.specialty.school.caLimit / 2 : 0;
   const examLim = fees ? fees[0].node.userprofile.specialty.school.examLimit / 2 : 0;
   const resitLim = fees ? fees[0].node.userprofile.specialty.school.resitLimit / 2 : 0;
-  const { t: trans } = await initTranslations(params.locale, ['common'])
-  const t = trans("PageStudent")["CaExamResult"];
+  const { t } = await initTranslations(params.locale, ['common'])
 
   if (resultType === "resit") {
     data = data.filter(
@@ -216,16 +214,16 @@ const CaExamResit = async (
       ) &&
         <div className="mt-8">
           <h2 className="font-semibold mb-4 text-2xl text-center">
-            {t["Semester"]} {semester}
+            {t("Semester")} {semester}
           </h2>
 
           <div className="overflow-x-auto">
             <table className="border-collapse rounded-lg shadow-md table-auto w-full">
               <thead className="bg-blue-950 text-white">
                 <tr>
-                  <th className="px-1 py-2 text-left w-8/12">{t["Course"]}</th>
-                  <th className="px-1 py-2 text-center w-2/12">{t[`${resultType}`]?.toUpperCase()}</th>
-                  <th className="px-1 py-2 text-center w-2/12">{t["Status"]}</th>
+                  <th className="px-1 py-2 text-left w-8/12">{t("Course")}</th>
+                  <th className="px-1 py-2 text-center w-2/12">{t(resultType)?.toUpperCase()}</th>
+                  <th className="px-1 py-2 text-center w-2/12">{t("Status")}</th>
                 </tr>
               </thead>
               <tbody className="bg-white">

@@ -29,9 +29,7 @@ const ClassManagementPage = async ({
     data = result.data;
   } catch (error: any) {
     console.log(error, 30)
-    if (error.networkError && error.networkError.result) {
-      console.error('GraphQL Error Details:', error.networkError.result.errors);
-    }
+    
     data = null;
   }
   if (searchParams && searchParams?.trans == "true"){
@@ -48,7 +46,6 @@ const ClassManagementPage = async ({
       dataTrans = result.data;
     } catch (error: any) {
       console.log(error, 49)
-      console.error('GraphQL Error Details:', error.networkError.result.errors);
       dataTrans = null;
     }
   }

@@ -16,19 +16,18 @@ const page = async (
 
   const profile: GetUserProfileInter[] = await getData(protocol + "api" + params.domain + GetUserProfileUrl, { id: params.userprofile_id, nopage: true }, params.domain);
 
-  const { t: trans } = await initTranslations(params.locale, ['common'])
-  const t = trans("PageStudent").menu
+  const { t } = await initTranslations(params.locale, ['common'])
 
   const menuList = [
-    { id: 1, link: "CA", label: t?.CA, icon: "/images/ca.svg", notification: false },
-    { id: 2, link: "Exam", label: t?.Exam, icon: "/images/resit.svg", notification: false },
-    { id: 3, link: "Resit", label: t?.Resit, icon: "/images/exam.svg", notification: false },
-    { id: 4, link: "Result", label: t?.Result, icon: "/images/course.svg", notification: false },
-    { id: 5, link: "Fees", label: t?.Fees, icon: "/images/fees.svg", notification: false },
-    { id: 6, link: "Courses", label: t?.Courses, icon: "/images/news.svg", notification: false },
-    // { id: 6, link: "", label: t.menu.TimeTable, icon: "/images/news.svg", notification: false },
-    { id: 7, link: "Transcript", label: t?.Transcript, icon: "/images/course.svg", notification: true },
-    { id: 8, link: "News", label: t?.News, icon: "/images/news.svg", notification: true },
+    { id: 1, link: "CA", label: `${t("CA")}`, icon: "/images/ca.svg", notification: false },
+    { id: 2, link: "Exam", label: `${t("Exam")}`, icon: "/images/resit.svg", notification: false },
+    { id: 3, link: "Resit", label: `${t("Resit")}`, icon: "/images/exam.svg", notification: false },
+    { id: 4, link: "Result", label: `${t("Result")}`, icon: "/images/course.svg", notification: false },
+    { id: 5, link: "Fees", label: `${t("Fees")}`, icon: "/images/fees.svg", notification: false },
+    { id: 6, link: "Courses", label: `${t("Courses")}`, icon: "/images/news.svg", notification: false },
+    // { id: 6, link: "", label: t.TimeTable, icon: "/images/news.svg", notification: false },
+    { id: 7, link: "Transcript", label: `${t("Transcript")}`, icon: "/images/course.svg", notification: true },
+    { id: 8, link: "News", label: `${t("News")}`, icon: "/images/news.svg", notification: true },
   ]
 
   return (
@@ -52,7 +51,7 @@ const page = async (
 
                 <div className="flex flex-row gap-2">
                   <div className="flex gap-2 justify-between">
-                  {capitalizeFirstLetter(t?.Matricle)}: <span className="font-old italic tracking-widest">{profile[0].matricle}</span>
+                  {capitalizeFirstLetter(t("Matricle"))}: <span className="font-old italic tracking-widest">{profile[0].matricle}</span>
                   </div>    
                 </div>
 
@@ -76,7 +75,7 @@ const page = async (
 
           <div className="mt-2">
             <div className="flex justify-between text-white">
-              <p className="text-[12px]">{capitalizeFirstLetter(t["Overall Performance"])}</p>
+              <p className="text-[12px]">{capitalizeFirstLetter(t("Overall Performance"))}</p>
               <p className="text-[12px]">70%</p>
             </div>
             <div className="before:absolute before:bg-white before:h-[4px] before:left-0 before:rounded-lg before:top-0 before:w-[70%] bg-[#D9D9D9] h-[4px] relative rounded-lg w-full"></div>
@@ -99,10 +98,10 @@ const page = async (
 
         <div className="flex flex-col px-6 text-sm tracking-widest">
           <Link href={'https://forms.gle/HCTB8EXXAQUQJRA5A'} passHref target="_blank" className="font-medium italic text-blue-800 text-center w-full">
-            {capitalizeFirstLetter(t?.Feedback)}
+            {capitalizeFirstLetter(t("Feed Back"))}
           </Link>
           <Link href={`https://wa.me/+237${ConfigData.help_number}`} passHref target="_blank" className="font-medium italic text-blue-800 text-center w-full">
-            {capitalizeFirstLetter(t["Online Help"])}
+            {capitalizeFirstLetter(t("Online Help"))}
           </Link>
         </div>
 

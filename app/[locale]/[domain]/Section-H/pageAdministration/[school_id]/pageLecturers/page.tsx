@@ -36,9 +36,7 @@ const page = async ({
     });
     dataAdmins = result.data;
   } catch (error: any) {
-    if (error.networkError && error.networkError.result) {
-      console.error('GraphQL Error Details:', error.networkError.result.errors);
-    }
+    
     dataAdmins = null;
   }
 
@@ -57,9 +55,7 @@ const page = async ({
     dataLects = result.data;
   } catch (error: any) {
     console.log(error)
-    if (error.networkError && error.networkError.result) {
-      console.error('GraphQL Error Details:', error.networkError.result.errors);
-    }
+    
     dataLects = null;
   }
 

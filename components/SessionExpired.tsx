@@ -8,9 +8,10 @@ import { protocol } from '@/config';
 import { LoginUrl } from '@/Domain/configDom';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
+import { useTranslation } from 'react-i18next';
 
 const SessionExpired = ({ domain }: { domain: string }) => {
-
+    const { t } = useTranslation();
     const [showLogin, setShowLogin] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -35,7 +36,7 @@ const SessionExpired = ({ domain }: { domain: string }) => {
                 icon: 'warning',
             });
         }
-        if (response.refresh && response.access){
+        if (response.refresh && response.access) {
             Cookies.set('token', response.access, { expires: 7, secure: true });
             Cookies.set('refresh', response.refresh, { expires: 7, secure: true });
             localStorage.setItem('session', response.access);
@@ -46,7 +47,7 @@ const SessionExpired = ({ domain }: { domain: string }) => {
 
         setLoading(false);
     }
-    
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -61,7 +62,7 @@ const SessionExpired = ({ domain }: { domain: string }) => {
                 className="bg-white dark:bg-gray-900 flex flex-col gap-4 items-center justify-center max-w-sm p-8 rounded-2xl shadow-2xl text-center w-full"
             >
                 <h1 className="dark:text-white font-extrabold text-2xl text-slate-800">
-                    Login
+                    {t("Login")}
                 </h1>
 
                 <form
@@ -74,7 +75,7 @@ const SessionExpired = ({ domain }: { domain: string }) => {
                 >
                     <div className="space-y-1">
                         <label htmlFor="username" className="block font-medium text-gray-700 text-sm">
-                            Matricle or Username
+                            {t("Matricle")} {t("or")} {t("Username")}
                         </label>
                         <input
                             type="text"
@@ -87,7 +88,7 @@ const SessionExpired = ({ domain }: { domain: string }) => {
                     </div>
                     <div className="space-y-1">
                         <label htmlFor="password" className="block font-medium text-gray-700 text-sm">
-                            Password
+                            {t("Password")}
                         </label>
                         <input
                             type="password"
@@ -107,7 +108,7 @@ const SessionExpired = ({ domain }: { domain: string }) => {
                         type='submit'
                         className="bg-blue-600 duration-300 flex font-semibold gap-2 hover:bg-blue-700 items-center justify-center mt-6 px-6 py-2 rounded-lg shadow-md text-white transition w-full"
                     >
-                        {loading ? 'Logging in...' : 'Login'}
+                        {loading ? `${t("Login in")}...` : `${t("Login")}`}
                     </motion.button>
                 </form>
 
@@ -131,13 +132,13 @@ const SessionExpired = ({ domain }: { domain: string }) => {
                         <FaHourglassEnd className="mb-4 text-6xl text-red-500" />
                     </motion.div>
                     <h1 className="dark:text-white font-extrabold text-2xl text-gray-800">
-                        Session Expired
+                        {t("Session Expired")}
                     </h1>
                     <p className="dark:text-gray-300 text-base text-gray-600">
-                        Your session has timed out due to inactivity.
+                        {t("Your session has timed out due to inactivity")}.
                     </p>
-                    <p className="dark:text-gray-300 text-gray-600 text-sm">
-                        Please log in again to continue using the application.
+                    <p className="dark:text-gray-300 text-gray-600 text">
+                        {t("Please log in again to continue using the application")}.
                     </p>
                     <motion.button
                         whileHover={{ scale: 1.1 }}
@@ -146,7 +147,7 @@ const SessionExpired = ({ domain }: { domain: string }) => {
                         className="bg-blue-600 duration-300 flex font-semibold gap-2 hover:bg-blue-700 items-center px-6 py-2 rounded-lg shadow-md text-white transition"
                     >
                         <IoReload className="text-lg" />
-                        Re-login
+                        {t("Re-login")}
                     </motion.button>
                 </motion.div>
 

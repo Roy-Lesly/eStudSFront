@@ -3,18 +3,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import DefaultLayout from '@/DefaultLayout';
-import Sidebar from '@/section-s/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
-import Header from '@/section-s/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { gql, useMutation } from '@apollo/client';
 import Modal from './Modal';
 import { decodeUrlID } from '@/functions';
 import { Metadata } from 'next';
 import { EdgeCustomUser, NodeCustomUser } from '@/Domain/schemas/interfaceGraphql';
-import ButtonAction from '@/section-s/Buttons/ButtonAction';
-import SearchMultiple from '@/section-s/Search/SearchMultiple';
 import ComingSoon from '@/ComingSoon';
+import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import Sidebar from '@/section-h/Sidebar/Sidebar';
+import Header from '@/section-h/Header/Header';
+import SearchMultiple from '@/section-h/Search/SearchMultiple';
+import ButtonAction from '@/section-h/Buttons/ButtonAction';
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",

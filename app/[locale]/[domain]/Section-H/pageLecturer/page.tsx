@@ -25,11 +25,7 @@ const client = getApolloClient(params.domain);
       if (error.networkError && error.networkError.result) {
         data = null
       }
-      else if (error.message === "Not Authenticated") {
-        data = { 'error': error.message}
-      } else {
-        data = null;
-      }
+      
     }
 
   return (

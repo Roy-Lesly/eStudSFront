@@ -207,7 +207,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    padding: 2,
+    marginHorizontal: 5,
+    marginBottom: 4,
+    paddingVertical: 1
   },
   gpaSection: {
     flex: 7,

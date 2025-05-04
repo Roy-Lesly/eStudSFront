@@ -42,9 +42,7 @@ const page = async ({
     }
   } catch (error: any) {
     console.log(error, 44)
-    if (error.networkError && error.networkError.result) {
-      console.error('GraphQL Error Details:', error.networkError.result.errors);
-    }
+    
     data = null;
   }
   

@@ -11,7 +11,9 @@ const SectionBodyOne = ({ results, semester }: { results: ResultTranscript[], se
       <View style={[styles.row, styles.header]}>
         <Text style={styles.cell}>CODE</Text>
         <Text style={[styles.cell, styles.courseName]}>COURSE NAME</Text>
-        <Text style={styles.cell}>Marks</Text>
+        {/* <Text style={styles.cell}>Marks</Text> */}
+        <Text style={styles.cell}>CA</Text>
+        <Text style={styles.cell}>EXAMS</Text>
         <Text style={styles.cell}>CV</Text>
         <Text style={styles.cell}>GP</Text>
         <Text style={styles.cell}>WP</Text>
@@ -22,11 +24,13 @@ const SectionBodyOne = ({ results, semester }: { results: ResultTranscript[], se
       {results?.map((result, index) => (
         <View key={index} style={styles.row}>
           <Text style={styles.cell}>{result?.courseCode}</Text>
-          <Text style={[styles.cell, styles.courseName]}>{result?.courseName}</Text>
-          <Text style={styles.cell}>{result?.average || "-"}</Text>
+          <Text style={[styles.cell, styles.courseName]}>{result?.courseName.slice(0, 36)}</Text>
+          {/* <Text style={styles.cell}>{result?.average || "-"}</Text> */}
+          <Text style={styles.cell}>{result?.ca || "-"}</Text>
+          <Text style={styles.cell}>{result?.exam || "-"}</Text>
           <Text style={styles.cell}>{result?.courseCredit || "-"}</Text>
           <Text style={styles.cell}>{result?.GP == 0 ? 0 : result?.GP ? result?.GP : "-"}</Text>
-          <Text style={styles.cell}>{result?.WP == 0 ? 0 : result?.GP ? result?.GP : "-"}</Text>
+          <Text style={styles.cell}>{result?.WP == 0 ? 0 : result?.WP ? result?.WP : "-"}</Text>
           <Text style={styles.cell}>
             {result?.GD || "-"}
             {result?.resit && <Text style={styles.redStar}> *</Text>}
@@ -40,8 +44,7 @@ const SectionBodyOne = ({ results, semester }: { results: ResultTranscript[], se
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    paddingHorizontal: 1,
-    paddingVertical: 3,
+    padding: 1,
     height: "32.65%",
     fontSize: 10,
   },
@@ -67,10 +70,10 @@ const styles = StyleSheet.create({
   cell: {
     flex: 1,
     textAlign: "center",
-    padding: 2,
+    padding: 1,
   },
   courseName: {
-    flex: 5,
+    flex: 6,
     textAlign: "left",
     paddingLeft: 4,
   },
