@@ -113,8 +113,8 @@ const PayPlatFormAndIdCardForm = ({
                                     if ( index == data.length - 1){
                                         router.push(`/${extra_data?.url}/?customsuccess=Activated !!!`);
                                     }
-                                } catch (err) {
-                                    console.error("74 Mutation error:", err);
+                                } catch (error: any) {
+                                    console.error("74 Mutation error:", error);
                                     if (typeof errorCreating == "object" && errorCreating.name) { }
                                     // alert("Failed to submit application. Please try again.");
                                 }
@@ -151,7 +151,7 @@ const PayPlatFormAndIdCardForm = ({
             {data ?
                 <form className="flex flex-col gap-4" onSubmit={onSubmit}>
                     {data.length > 1 ? <div className="font-bold items-center justify-center text-2xl text-center">Total Accounts - {data.length}</div> : null}
-                    {data.length == 1 ? <div className="font-bold items-center justify-center text-2xl text-center"> {data[0].node.userprofile.user.fullName} - {data[0].node.userprofile.user.matricle}</div> : null}
+                    {data.length == 1 ? <div className="font-bold items-center justify-center text-2xl text-center"> {data[0].node.userprofile.customuser.fullName} - {data[0].node.userprofile.customuser.matricle}</div> : null}
 
                     <div className="flex flex-col gap-4 justify-between">
                         <SelectField

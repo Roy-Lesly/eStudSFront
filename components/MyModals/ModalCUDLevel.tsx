@@ -6,6 +6,8 @@ import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { EdgeLevel } from '@/Domain/schemas/interfaceGraphql';
+import { useTranslation } from 'react-i18next';
+import { FaTimes } from 'react-icons/fa';
 
 
 const ModalCUDLevel = ({
@@ -14,6 +16,7 @@ const ModalCUDLevel = ({
     params: any,  actionType: "update" | "create" | "delete", selectedItem: EdgeLevel | null, setOpenModal: any
 }) => {
 
+    const { t } = useTranslation();
     const token = localStorage.getItem('token');
     const user: JwtPayload = jwtDecode(token ? token : "");
 
@@ -63,8 +66,8 @@ const ModalCUDLevel = ({
                 setOpenModal(false);
                 window.location.reload()
             };
-        } catch (err) {
-            alert(`error domain:, ${err}`)
+        } catch (error: any) {
+            alert(`error domain:, ${error}`)
         }
     };
 
@@ -83,8 +86,8 @@ const ModalCUDLevel = ({
                 className="bg-white max-w-lg p-6 rounded-lg shadow-lg w-full"
             >
                 <div className="flex items-center justify-between">
-                    <h2 className="font-semibold text-2xl">{actionType?.toUpperCase()}</h2>
-                    <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl">X</button>
+                    <h2 className="font-semibold text-2xl">{t(actionType)?.toUpperCase()}</h2>
+                    <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl"><FaTimes color='red' /></button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
@@ -95,8 +98,8 @@ const ModalCUDLevel = ({
                             name="level"
                             value={formData.level}
                             onChange={handleChange}
-                            label="Level"
-                            placeholder="Level"
+                            label={t("Level")}
+                            placeholder={t("Level")}
                             type='number'
                             required
                         />
@@ -108,7 +111,7 @@ const ModalCUDLevel = ({
                         type="submit"
                         className={`${actionType === "update" ?"bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
                     >
-                        Confirm & {capitalizeFirstLetter(actionType)}
+                        {t("Confirm")} & {t(capitalizeFirstLetter(actionType))}
                     </motion.button>
 
                 </form>

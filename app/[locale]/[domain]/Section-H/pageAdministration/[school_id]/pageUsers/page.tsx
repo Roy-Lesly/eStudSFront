@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { getData, removeEmptyFields } from '@/functions'
+import getApolloClient, { errorLog, getData, removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 
@@ -8,18 +8,26 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams?: any;
 }) => {
+
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.fullName = searchParams?.fullName ? searchParams.fullName : ""
-  paginationParams.telephone = searchParams?.telephone ? searchParams.telephone : ""
-  paginationParams.sex = searchParams?.sex ? searchParams.sex : ""
+  paginationParams.fullName = sp?.fullName ? sp.fullName : ""
+  paginationParams.telephone = sp?.telephone ? sp.telephone : ""
+  paginationParams.sex = sp?.sex ? sp.sex : ""
+  paginationParams.isActive = sp?.fullName ? "" : true
 
-  const t = removeEmptyFields(paginationParams)
-  const client = getApolloClient(params.domain);
+  const removed = removeEmptyFields(paginationParams)
+  console.log(removed);
+  console.log(removed);
+  console.log(removed);
+  console.log(removed);
+  const client = getApolloClient(p.domain);
   let dataAdmins;
   let dataLects;
   let dataStuds;
@@ -28,8 +36,8 @@ const page = async ({
     const result = await client.query<any>({
       query: GET_DATA_ADMIN,
       variables: {
-        ...t,
-        schoolId: parseInt(params.school_id),
+        ...removed,
+        schoolId: parseInt(p.school_id),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
@@ -45,16 +53,16 @@ const page = async ({
     const result = await client.query<any>({
       query: GET_DATA_STUDENTS,
       variables: {
-        ...t,
+        ...removed,
         orRole: ["admin", "teacher"],
-        schoolId: parseInt(params.school_id),
+        schoolId: parseInt(p.school_id),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     dataStuds = result.data;
   } catch (error: any) {
-    
+    errorLog(error)
     dataStuds = null;
   }
 
@@ -63,23 +71,22 @@ const page = async ({
     const result = await client.query<any>({
       query: GET_DATA_LECTURERS,
       variables: {
-        ...t,
-        schoolId: parseInt(params.school_id),
+        ...removed,
+        schoolId: parseInt(p.school_id),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     dataLects = result.data;
   } catch (error: any) {
-    console.log(error, 81)
+    errorLog(error)
     
     dataLects = null;
   }
 
-
   return (
     <div>
-      <List params={params} data={ {"admins": dataAdmins, studs: dataStuds, lects: dataLects} } searchParams={searchParams} />
+      <List params={p} data={ {"admins": dataAdmins, studs: dataStuds, lects: dataLects} } searchParams={sp} />
     </div>
   )
 }
@@ -97,10 +104,11 @@ const GET_DATA_STUDENTS = gql`
   $schoolId: Decimal!,
   $fullName: String,
   $telephone: String,
-  $sex: UserControlCustomUserSexChoices,
+  $sex: String,
+  $isActive: Boolean,
 ) {
   allCustomUsers(
-    isActive: true
+    isActive: $isActive
     schoolId: $schoolId
     last: 150
     fullName: $fullName
@@ -110,7 +118,7 @@ const GET_DATA_STUDENTS = gql`
   ) {
     edges {
       node {
-        id fullName matricle sex dob pob address telephone email lastLogin
+        id fullName matricle sex dob pob address telephone email lastLogin isActive
       }
     }
   }
@@ -122,20 +130,21 @@ const GET_DATA_LECTURERS = gql`
   $schoolId: Decimal!,
   $fullName: String,
   $telephone: String,
-  $sex: UserControlCustomUserSexChoices,
+  $sex: String,
+  $isActive: Boolean,
 ) {
   allCustomUsers(
-    isActive: true
     schoolId: $schoolId
     last: 300
     fullName: $fullName
     telephone: $telephone
     sex: $sex
     role: "teacher"
+    isActive: $isActive
   ) {
     edges {
       node {
-        id matricle fullName username sex dob pob address telephone email lastLogin
+        id matricle fullName username sex dob pob address telephone email lastLogin isActive
       }
     }
   }
@@ -147,10 +156,11 @@ const GET_DATA_ADMIN = gql`
   $schoolId: Decimal!,
   $fullName: String,
   $telephone: String,
-  $sex: UserControlCustomUserSexChoices,
+  $sex: String,
+  $isActive: Boolean,
 ) {
   allCustomUsers(
-    isActive: true
+    isActive: $isActive
     schoolId: $schoolId
     last: 100
     fullName: $fullName
@@ -161,7 +171,7 @@ const GET_DATA_ADMIN = gql`
   ) {
     edges {
       node {
-        id matricle fullName username sex dob pob address telephone email lastLogin
+        id matricle fullName username sex dob pob address telephone email lastLogin isActive
       }
     }
   }

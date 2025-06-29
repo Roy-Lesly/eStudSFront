@@ -119,8 +119,8 @@ const TimeTableCard = (
                 if (result.data.createUpdateDeleteTimeTable.timetable.id) {
                     window.location.reload()
                 };
-            } catch (err) {
-                alert(`error domain:, ${err}`)
+            } catch (error: any) {
+                alert(`error domain:, ${error}`)
             }
 
             setEditMode(false);
@@ -132,15 +132,12 @@ const TimeTableCard = (
     };
 
     const removePeriod = (date: string) => {
-        console.log(date)
-        console.log(editedTimetable)
         setEditedTimetable((prev) => ({
             ...prev,
             period: prev.node.period.filter((p) => p.date !== date),
         }));
     };
 
-    console.log(editedTimetable.node)
 
     const shouldRenderButton = (slots: Slot[]) => slots.every((slot) => !["Completed", "LoggedIn", "LoggedOut"].includes(slot.status));
     
@@ -214,9 +211,6 @@ const formatData = (data: NodeTimeTable | any) => {
     const token = localStorage.getItem('token');
     const user: JwtPayload = jwtDecode(token ? token : "");
     let formatedData: any = {}
-    console.log(data)
-    console.log(parseInt(decodeUrlID(data?.specialty?.id)))
-    console.log((data?.specialty?.id))
     formatedData = {
         specialtyId: data?.specialty?.id ? parseInt(decodeUrlID(data.specialty.id)) : parseInt(data.specialtyId.toString()),
         year: data.year,

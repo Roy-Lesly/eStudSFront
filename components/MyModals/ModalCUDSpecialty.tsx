@@ -2,10 +2,15 @@ import { EdgeCustomUser, EdgeLevel, EdgeMainSpecialty, EdgeSpecialty } from '@/D
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import MyInputField from '@/MyInputField';
 import { JwtPayload } from '@/serverActions/interfaces';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react'
+import { FaTimes } from 'react-icons/fa';
+import Select from "react-select"
+// import MySelectField from '../MySelectField';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { useRouter } from 'next/navigation';
 
 
 interface FormData {
@@ -26,15 +31,16 @@ const ModalCUDSpecialty = (
   { params, setOpenModal, selectedItem, actionType, extraData }
     :
     {
-      params: { school_id: string}, setOpenModal: any, selectedItem: EdgeSpecialty, actionType: "create" | "update" | "delete" | string,
+      params: { school_id: string, locale: string, domain: string }, setOpenModal: any, selectedItem: EdgeSpecialty, actionType: "create" | "update" | "delete" | string,
       extraData: { levels?: EdgeLevel[], mainSpecialties?: EdgeMainSpecialty[], teachers?: EdgeCustomUser[] }
     }
 ) => {
 
-  
+
   const currentYear = new Date().getFullYear();
   const token = localStorage.getItem('token');
   const user: JwtPayload = jwtDecode(token ? token : "");
+  const router = useRouter();
 
   const [formData, setFormData] = useState<FormData>({
     schoolId: selectedItem ? parseInt(decodeUrlID(selectedItem.node.school.id)) : parseInt(params.school_id),
@@ -49,8 +55,7 @@ const ModalCUDSpecialty = (
     paymentThree: selectedItem ? selectedItem.node.paymentThree : 0,
     delete: selectedItem && actionType === "delete" ? true : false,
   });
-  console.log(formData)
-  console.log(params)
+  
 
   const handleChange = <K extends keyof FormData>(
     field: K,
@@ -70,7 +75,7 @@ const ModalCUDSpecialty = (
     }));
   };
 
-  const [createUpdateDeleteSpecialty] = useMutation(CREATE_UPDATE_DELETE_SPECIALTY);
+  // const [createUpdateDeleteSpecialty] = useMutation(CREATE_UPDATE_DELETE_SPECIALTY);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,24 +98,44 @@ const ModalCUDSpecialty = (
       }
     }
 
-    try {
+    // try {
 
-      const result = await createUpdateDeleteSpecialty({
-        variables: { 
-          ...dataToSubmit,
-         }
-      });
-      if (
-        (actionType !== "delete" && result.data.createUpdateDeleteSpecialty.specialty.id) ||
-        (actionType === "delete" && result.data.createUpdateDeleteSpecialty)
-      ) {
-        setOpenModal(false);
-        window.location.reload()
-      };
-    } catch (err) {
-      alert(`error domain:, ${err}`)
-    }
+    //   const result = await createUpdateDeleteSpecialty({
+    //     variables: {
+    //       ...dataToSubmit,
+    //     }
+    //   });
+    //   if (
+    //     (actionType !== "delete" && result.data.createUpdateDeleteSpecialty.specialty.id) ||
+    //     (actionType === "delete" && result.data.createUpdateDeleteSpecialty)
+    //   ) {
+    //     setOpenModal(false);
+    //     window.location.reload()
+    //   };
+    // } catch (error: any) {
+    //   alert(`error domain:, ${error}`)
+    // }
+
+    await ApiFactory({
+      newData: dataToSubmit,
+      mutationName: "createUpdateDeleteSpecialty",
+      modelName: "specialty",
+      successField: "id",
+      query,
+      params,
+      router,
+      redirect: true,
+      redirectPath: `/${params.locale}/${params.domain}/Section-H/pageAdministration/${params?.school_id}/pageSettings/pageSpecialties/`,
+      actionLabel: "creating",
+      // getFileMap: (item) => ({
+      //     file: item.file!,
+      // }),
+    });
   };
+
+  const mainSpecialtyOptions = extraData?.mainSpecialties?.map((item: EdgeMainSpecialty) => { return { value: decodeUrlID(item.node.id.toString()), label: item.node.specialtyName } });
+  const selectedMainSpecialty = mainSpecialtyOptions?.find(option => parseInt(option.value) === formData.mainSpecialtyId);
+
 
   return (
     <motion.div
@@ -125,13 +150,33 @@ const ModalCUDSpecialty = (
         transition={{ duration: 0.3 }}
         className="bg-white max-w-lg p-6 rounded-lg shadow-lg w-full"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-2xl">{actionType?.toUpperCase()}</h2>
-          <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl">X</button>
+          <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl"><FaTimes color='red' /></button>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-          <MyInputField
+
+          <div className="mt-2 w-full">
+            <label htmlFor={"s"} className="block font-medium mt-1 text-black text-gray-700 tracking-wide">
+              Main Specialty
+            </label>
+            <Select
+              // defaultValue={FormattedSkills}
+              value={selectedMainSpecialty}
+              isMulti={false}
+              name="mainSpecialtyId"
+              options={mainSpecialtyOptions}
+              // options={skillOptions}
+              className="form-group basic-multi-select text-black font-medium"
+              classNamePrefix="select"
+              required
+              placeholder="Select Specialty"
+              onChange={(e) => handleChange('mainSpecialtyId', parseInt(e?.value || ""))}
+            />
+          </div>
+
+          {/* <MyInputField
             id="mainSpecialtyId"
             name="mainSpecialtyId"
             label="Main Specialty"
@@ -140,13 +185,13 @@ const ModalCUDSpecialty = (
             value={formData.mainSpecialtyId?.toString()}
             options={extraData?.mainSpecialties?.map((item: EdgeMainSpecialty) => { return { id: decodeUrlID(item.node.id.toString()), name: item.node.specialtyName } })}
             onChange={(e) => handleChange('mainSpecialtyId', parseInt(e.target.value))}
-          />
+          /> */}
 
           <div className='flex flex-row gap-2 justify-between'>
             <MyInputField
               id="academicYear"
               name="academicYear"
-              label="academicYear"
+              label="Academic Year"
               type="select"
               placeholder="Enter Academic Year"
               value={formData.academicYear}
@@ -156,7 +201,7 @@ const ModalCUDSpecialty = (
             <MyInputField
               id="levelId"
               name="levelId"
-              label="level"
+              label="Level"
               type="select"
               placeholder="Enter level"
               value={formData.levelId?.toString()}
@@ -185,7 +230,7 @@ const ModalCUDSpecialty = (
               onChange={(e) => handleChange('tuition', parseInt(e.target.value))}
             />
           </div>
-          
+
           <div className='flex flex-row gap-2 justify-between'>
             <MyInputField
               id="paymentOne"
@@ -249,7 +294,7 @@ export default ModalCUDSpecialty
 
 
 
-const CREATE_UPDATE_DELETE_SPECIALTY = gql`
+const query = gql`
   mutation Function(
     $id: ID,
     $schoolId: ID!,

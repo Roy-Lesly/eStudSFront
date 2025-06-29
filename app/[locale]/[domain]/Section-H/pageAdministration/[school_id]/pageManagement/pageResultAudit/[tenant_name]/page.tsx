@@ -8,11 +8,14 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string, tenant_name: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const client = getApolloClient(`${params.tenant_name}`, true);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(`${p.tenant_name}`, true);
   let data;
 
   try {
@@ -20,27 +23,26 @@ const page = async ({
       query: GET_DATA_RESULT,
       variables: {
         // schoolId: parseInt(params.school_id),
-        fullName: searchParams?.fullName || "",
-        courseName: searchParams?.courseName || "",
-        semester: searchParams?.semester || "",
-        academicYear: searchParams?.academicYear || "",
+        fullName: sp?.fullName || "",
+        courseName: sp?.courseName || "",
+        semester: sp?.semester || "",
+        academicYear: sp?.academicYear || "",
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error, 81)
+    errorLog(error);
     data = null;
   }
 
-  console.log(data, 65)
 
   return (
     <List
-      params={params}
+      params={p}
       dataResults={data?.allResults?.edges}
-      sp={searchParams}
+      sp={sp}
     />
   )
 }

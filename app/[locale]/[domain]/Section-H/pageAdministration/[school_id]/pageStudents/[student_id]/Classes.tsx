@@ -6,13 +6,13 @@ import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { decodeUrlID } from '@/functions';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 const Classes = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
 
     const router = useRouter();
+    const { t } = useTranslation("common");
     const thisUserprofile = data.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) == decodeUrlID(params.student_id))[0].node?.userprofile
-    // const thisUserprofile = data.filter((item: EdgeSchoolFees) => item.node.userprofile.id == params.student_id)
-    console.log(thisUserprofile, 14)
 
     const sectionVariants = {
         hidden: { opacity: 0, y: 50 },
@@ -35,16 +35,16 @@ const Classes = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
             className="bg-white overflow-x-auto rounded-lg shadow-md"
         >
 
-<div className='gap-2 mb-4 p-4'>
-    <h1>Present Class</h1>
-    <div className='flex justify-between'>
-        <span>{thisUserprofile.specialty.mainSpecialty.specialtyName}</span>
-        <span>{thisUserprofile.specialty.academicYear}</span>
-        <span>{thisUserprofile.specialty.level.level}</span>
-    </div>
-</div>
+            <div className='gap-2 mb-4 p-4'>
+                <h1>{t("Present Class")}</h1>
+                <div className='flex justify-between'>
+                    <span>{thisUserprofile.specialty.mainSpecialty.specialtyName}</span>
+                    <span>{thisUserprofile.specialty.academicYear}</span>
+                    <span>{thisUserprofile.specialty.level.level}</span>
+                </div>
+            </div>
 
-            <h2 className="font-semibold mb-2 text-2xl text-center">My Other Classes</h2>
+            <h2 className="font-semibold mb-2 text-2xl text-center">{t("My Other Classes")}</h2>
 
             <motion.table
                 className="bg-gray-100 border-collapse min-w-full"
@@ -71,9 +71,9 @@ const Classes = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
                             <td className="px-4 py-2">{sch.node.userprofile.specialty.school?.campus}</td>
                             <td className="px-4 py-2">
                                 <button
-                                    onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${sch.node.userprofile.id}/?user=${sch.node.userprofile.user.id}`)}
+                                    onClick={() => router.push(`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${sch.node.userprofile.id}/?user=${sch.node.userprofile.customuser.id}`)}
                                     className="bg-green-200 p-1 rounded-full"
-                                    >
+                                >
                                     <FaRightLong color="green" size={21} />
                                 </button>
                             </td>

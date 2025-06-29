@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, getData, removeEmptyFields } from '@/functions';
+import getApolloClient, { decodeUrlID, errorLog, getData, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 
@@ -8,16 +8,19 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, lecturer_id: string, course_id: string, domain: string };
-  searchParams?: any
+  params: any;
+  searchParams: any;
 }) => {
+
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = { };
 
   const date =  new Date().getFullYear()
   
-  paginationParams.domainName = searchParams?.domainName
-    const client = getApolloClient(params.domain);
+  paginationParams.domainName = sp?.domainName
+    const client = getApolloClient(p.domain);
     let data;
     try {
         const result = await client.query<any>({
@@ -30,7 +33,7 @@ const EditPage = async ({
         });
         data = result.data;
     } catch (error: any) {
-      console.log(error)
+      errorLog(error);
       
       data = null;
     }
@@ -38,7 +41,7 @@ const EditPage = async ({
   return (
     <div>
     <List 
-      params={params} 
+      params={p} 
       data={data}
     />
   </div>

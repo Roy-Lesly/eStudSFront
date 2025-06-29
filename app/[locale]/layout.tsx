@@ -21,18 +21,20 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({
   children,
-  params: { locale },
+  params,
 }: {
   children: ReactNode;
-  params: { locale: string };
+  params: any;
 }) {
 
-  const { t, resources } = await initTranslations(locale, ["common", "home", "student"]);
+  const p = await params;
+
+  const { t, resources } = await initTranslations(p.locale, ["common", "home", "student"]);
 
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <ClientLayout locale={locale} resources={resources}>
+        <ClientLayout locale={p.locale} resources={resources}>
           {children}
         </ClientLayout>
       </body>

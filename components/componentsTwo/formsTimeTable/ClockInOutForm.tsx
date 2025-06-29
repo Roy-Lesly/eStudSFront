@@ -73,9 +73,7 @@ const ClockInOutForm = ({
         navigator.geolocation.getCurrentPosition(({ coords }) => {
           const { latitude, longitude, accuracy } = coords;
           var d = getDistanceBetweenTwoPoints(latitude, longitude, myCampusCords[0], myCampusCords[1])
-          console.log(latitude, longitude, accuracy)
-          console.log(myCampusCords, "myCampusCords")
-          console.log(d, "distance")
+
           setAccuracy(accuracy)
           setDistance(d)
         })

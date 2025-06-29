@@ -6,10 +6,10 @@ import Header from '@/section-h/Header/Header';
 import { Metadata } from 'next';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
-import FillMarksAll from './FillMarksAll';
 import { EdgePublish } from '@/Domain/schemas/interfaceGraphql';
-import { getMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
+import { GetMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
 import { useTranslation } from 'react-i18next';
+import FillMarksAll from '@/components/componentsOne/FillMarksAll';
 
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuLecturer(params)}
+          menuGroups={GetMenuLecturer(params)}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -56,11 +56,10 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 :
                 data.allResults && data.allResults.edges.length ?
                   data.allSchoolInfos.edges.length ?
-                    <FillMarksAll 
+                    <FillMarksAll
                       values={selectedType} 
                       data={data.allResults.edges} 
                       params={params} 
-                      searchParams={searchParams} 
                       schoolInfo={data.allSchoolInfos.edges[0]} 
                     />
                     :

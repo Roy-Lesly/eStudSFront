@@ -14,24 +14,26 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { locale: string, domain: string, registration_number: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  console.log(params)
+  const p = await params;
+  const sp = await searchParams;
 
-  const apiPreInscription: GetPreInscriptionInter[] | any = await getDataNotProtected(protocol + "api" + params.domain + OpenGetPreInscriptionUrl, { 
-    nopage: true, name: params.domain, registration_number: params.registration_number 
-  }, params.domain)
+
+  const apiPreInscription: GetPreInscriptionInter[] | any = await getDataNotProtected(protocol + "api" + p.domain + OpenGetPreInscriptionUrl, { 
+    nopage: true, name: p.domain, registration_number: p.registration_number 
+  }, p.domain)
 
   return (
     <>
-      {searchParams && <NotificationError errorMessage={searchParams} />}
+      {sp && <NotificationError errorMessage={sp} />}
 
         <div className='flex flex-col gap-2 w-full'>
           <h1 className='flex item-center justify-center'>PRE-INSCRIPTION</h1>
 
-          {apiPreInscription && apiPreInscription.length && <PreInscriptionForm params={params} data={apiPreInscription[0]} />}
+          {apiPreInscription && apiPreInscription.length && <PreInscriptionForm params={p} data={apiPreInscription[0]} />}
 
         </div>
     </>

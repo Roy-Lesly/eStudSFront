@@ -3,22 +3,20 @@
 import React, { useEffect, useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
-import { EdgeLevel, EdgeSpecialty, EdgeTranscriptApplications, EdgeUserProfile } from '@/Domain/schemas/interfaceGraphql';
-import { FaPlus } from 'react-icons/fa';
+import { EdgeLevel, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
 import { useRouter } from 'next/navigation';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
-import ExcelExporter from '@/ExcelExporter';
-import MyTabs from '@/MyTabs';
-import MessageModal from '@/componentsTwo/MessageModal';
 import MyInputField from '@/MyInputField';
 import { decodeUrlID } from '@/functions';
+import NoDataPage from '@/components/componentsTwo/lib/NoDataPage';
+
 
 const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtra: any; data: any, searchParams: any }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -26,8 +24,7 @@ const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtr
   const [activeTab, setActiveTab] = useState(0);
   const [level, setLevel] = useState<number>(0);
   const [academicYear, setAcademicYear] = useState<string>('');
-
-
+  
   const Columns: TableColumn<EdgeSpecialty>[] = [
     { header: "#", align: "center", render: (_item: EdgeSpecialty, index: number) => index + 1, },
     { header: "Class", accessor: "node.mainSpecialty.specialtyName", align: "left" },
@@ -44,6 +41,8 @@ const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtr
     },
   ];
 
+
+
   useEffect(() => {
     let q = searchParams
     if (level && academicYear) {
@@ -54,8 +53,11 @@ const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtr
     } else if (academicYear) {
       q["academicYear"] = academicYear
     }
-    const query = new URLSearchParams(q).toString();
-    router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageIDCard?${query}`)
+    
+    if (q && Object.keys(q).length) {
+      const query = new URLSearchParams(q).toString();
+      router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageIDCard?${query}`)
+    }
   }, [level, academicYear])
 
   return (
@@ -72,7 +74,7 @@ const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtr
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -119,16 +121,19 @@ const List = ({ params, data, dataExtra, searchParams }: { params: any, dataExtr
           />
         </div>
 
-        {data ?
+        {Object.keys(searchParams).length ?
+        data ?
           <MyTableComp
             data={data.allSpecialties?.edges}
             columns={Columns}
           />
           :
-          searchParams ?
-            <ServerError type="network" item="ID Card" />
-            :
             <ServerError type="notFound" item="ID Card" />
+            :
+            <>
+            <div className='py-4 font-semibold text-lg italic text-red'>Select Year and Level Above !!!</div>
+            <NoDataPage />
+            </>
         }
 
 

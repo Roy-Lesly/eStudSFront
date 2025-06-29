@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'; // Importing icons
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
@@ -38,7 +38,7 @@ const List = ({ params, data, dataAdmin, searchParams }: { params: any; data: an
             sidebar={
                 <Sidebar
                     params={params}
-                    menuGroups={getMenuAdministration(params)}
+                    menuGroups={GetMenuAdministration()}
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                 />

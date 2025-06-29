@@ -8,11 +8,14 @@ const page = async ({
     params,
     searchParams,
   }: {
-    params: { school_id: string, domain: string, tenant_name: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
-  }) => {
+  params: any;
+  searchParams: any;
+}) => {
 
-  const client = getApolloClient(`${params.tenant_name}`, true);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(`${p.tenant_name}`, true);
       let dataLogins;
 
     try {
@@ -30,10 +33,8 @@ const page = async ({
       dataLogins = null;
     }
 
-    console.log(dataLogins, 33)
-
   return (
-    <List params={params} searchParams={searchParams} />
+    <List params={p} searchParams={sp} />
   )
 }
 

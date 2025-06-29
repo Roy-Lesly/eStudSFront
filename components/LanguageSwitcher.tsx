@@ -29,7 +29,6 @@ export default function LanguageSwitcher({ currentLocale }: { currentLocale: str
     }
     setIsOpen(false);
   };
-
   return (
     <div className="border rounded-lg relative inline-block">
       <motion.button
@@ -39,8 +38,12 @@ export default function LanguageSwitcher({ currentLocale }: { currentLocale: str
         animate={{ rotate: isOpen ? 180 : 0 }}
         transition={{ duration: 0.2 }}
       >
-        <Image src={flags[currentLocale as "en" | "fr"]} alt={currentLocale} width={24} height={24} className="rounded-xl" />
-        <span className="text-sm font-semibold">{currentLocale.toUpperCase()}</span>
+        <Image 
+        src={flags[currentLocale as "en" | "fr"] || ""} 
+        alt={currentLocale} width={24} height={24} 
+        className="rounded-xl" 
+        />
+        <span className="text-sm font-semibold">{currentLocale?.toUpperCase()}</span>
       </motion.button>
 
       <motion.div

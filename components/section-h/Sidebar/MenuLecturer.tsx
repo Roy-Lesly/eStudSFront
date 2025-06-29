@@ -18,7 +18,7 @@ type MenuSection = {
 };
 
 
-export const getMenuLecturer = (params: { school_id: string, domain: string, pageTitle: string, lecturer_id: string }): MenuSection[] => {
+export const GetMenuLecturer = (params: { school_id: string, domain: string, pageTitle: string, lecturer_id: string }): MenuSection[] => {
   const { t } = useTranslation()
   const token = localStorage.getItem("token");
   const user: JwtPayload | null = token ? jwtDecode(token) : null;
@@ -34,6 +34,12 @@ export const getMenuLecturer = (params: { school_id: string, domain: string, pag
           icon: <FaChartPie />,
           label: `${t("Dashboard")}`,
           route: `/${params.domain}/Section-H/pageLecturer/${params.school_id}/${params.lecturer_id}/pageDashboard`,
+        },
+
+        {
+          icon: <FaChartPie />,
+          label: `${t("My Profile")}`,
+          route: `/${params.domain}/Section-H/pageLecturer/${params.school_id}/${params.lecturer_id}/pageProfile`,
         },
 
         {

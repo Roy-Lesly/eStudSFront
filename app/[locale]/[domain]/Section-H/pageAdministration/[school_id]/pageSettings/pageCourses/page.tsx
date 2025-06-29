@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react'
-import getApolloClient, { removeEmptyFields } from '@/functions';
+import getApolloClient, { errorLog, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 
@@ -8,17 +8,18 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, lecturer_id: string, course_id: string, domain: string };
-  searchParams?: any
-}) => {
+    params: any;
+    searchParams: any;
+}) => { const p = await params; const sp = await searchParams;
 
   const paginationParams: Record<string, any> = { };
   
-  paginationParams.courseName = searchParams?.courseName
-  paginationParams.specialtyName = searchParams?.specialtyName
-  paginationParams.domainName = searchParams?.domainName
-  paginationParams.academicYear = searchParams?.academicYear ? searchParams?.academicYear :`${new Date().getFullYear()}` 
-    const client = getApolloClient(params.domain);
+  paginationParams.courseName = sp?.courseName
+  paginationParams.specialtyName = sp?.specialtyName
+  paginationParams.level = sp?.level
+  paginationParams.domainName = sp?.domainName
+  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear :`${new Date().getFullYear()}` 
+    const client = getApolloClient(p.domain);
     let data;
     let dataAdmin;
     try {
@@ -26,20 +27,20 @@ const EditPage = async ({
           query: GET_DATA,
           variables: {
             ...removeEmptyFields(paginationParams),
-            schoolId: params.school_id,
+            schoolId: p.school_id,
             timestamp: new Date().getTime()
           },
           fetchPolicy: 'no-cache'
         });
         data = result.data;
     } catch (error: any) {
-      console.log(error, 35)
+      errorLog(error)
     }
     try {
         const result = await client.query<any>({
           query: GET_DATA_ADMIN,
           variables: {
-            schoolId: params.school_id,
+            schoolId: p.school_id,
             timestamp: new Date().getTime()
           },
           fetchPolicy: 'no-cache'
@@ -52,7 +53,7 @@ const EditPage = async ({
 
   return (
     <div>
-    <List params={params} data={data} searchParams={searchParams} admins={dataAdmin} />
+    <List params={p} data={data} searchParams={sp} admins={dataAdmin} />
   </div>
   )
 }

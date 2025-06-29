@@ -1,25 +1,25 @@
 import { Metadata } from 'next';
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import getApolloClient from '@/functions';
+import getApolloClient, { errorLog } from '@/functions';
 import { protocol, RootApi } from '@/config';
 import { gql } from '@apollo/client';
 import initTranslations from '@/initTranslations';
 import Continue from './Continue';
 
 
-const Page = async ({
+const page = async ({
   params
 }: {
-  params: { school_id: string; domain: string, locale: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
 }) => {
 
-  const { t } = await initTranslations(params.locale, ["common"])
-  const { domain, school_id } = params;
+  const p = await params
 
-  const client = getApolloClient(params.domain);
+  const { t } = await initTranslations(p.locale, ["common"])
+  const { domain, school_id } = p;
+
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<any>({
@@ -32,7 +32,7 @@ const Page = async ({
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error);
     data = null;
   }
 
@@ -69,8 +69,7 @@ const Page = async ({
 
           {/* Continue Button */}
           <Continue
-            domain={domain}
-            params={params}
+            params={p}
           />
         </main>
       )}
@@ -78,7 +77,7 @@ const Page = async ({
   );
 };
 
-export default Page;
+export default page;
 
 export const metadata: Metadata = {
   title: 'Admin Page | School Management',

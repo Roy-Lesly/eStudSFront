@@ -1,6 +1,7 @@
 'use client';
 import { JwtPayload } from "@/serverActions/interfaces";
 import { jwtDecode } from "jwt-decode";
+import { useParams } from "next/navigation";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FaCog, FaChartPie } from "react-icons/fa"; // Example icons
@@ -18,8 +19,9 @@ type MenuSection = {
   menuItems: MenuItem[];
 };
 
-export const getMenuAdministration = (params: { school_id: string; domain: string; pageTitle: string }): MenuSection[] => {
-  const { t } = useTranslation()
+export const GetMenuAdministration = () => {
+  const { t } = useTranslation();
+  const { school_id, domain } = useParams();
   const token = localStorage.getItem("token");
   const user: JwtPayload | null = token ? jwtDecode(token) : null;
 
@@ -35,11 +37,11 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
               label: `${t("Management")}`,
               route: "#",
               children: [
-                { label: `${t("Dashboard")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageManagement/pageDashboard`, icon: <FaCog /> },
-                { label: `${t("User Management")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageManagement/pageUserManagement`, icon: <FaCog /> },
-                { label: `${t("Audit Finance")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageManagement/pageFinancial`, icon: <FaCog /> },
-                { label: `${t("Audit Results")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageManagement/pageResultAudit`, icon: <FaCog /> },
-                { label: `${t("System Updates")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageManagement/pageSystemUpdates`, icon: <FaCog /> },
+                { label: `${t("Dashboard")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageDashboard`, icon: <FaCog /> },
+                { label: `${t("User Management")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageUserManagement`, icon: <FaCog /> },
+                { label: `${t("Audit Finance")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageFinancial`, icon: <FaCog /> },
+                { label: `${t("Audit Results")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageResultAudit`, icon: <FaCog /> },
+                { label: `${t("System Updates")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageSystemUpdates`, icon: <FaCog /> },
               ],
             },
           ]
@@ -48,7 +50,7 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
         {
           icon: <FaChartPie />,
           label: `${t("Dashboard")}`,
-          route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageDashboard`,
+          route: `/${domain}/Section-H/pageAdministration/${school_id}/pageDashboard`,
         },
 
         ...((user?.page.map((item: string) => item.toUpperCase()).includes("RESULT") || user?.is_staff)
@@ -58,10 +60,10 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
               label: `${t("Result")}`,
               route: "#",
               children: [
-                // { label: "School Performance", route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/Performance`, icon: <FaCog /> },
-                { label: `${t("Publish Control")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pagePublish`, icon: <FaCog /> },
-                { label: `${t("Portal Control")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pagePortals`, icon: <FaCog /> },
-                { label: `${t("Promotion")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pagePromote`, icon: <FaCog /> },
+                // { label: "School Performance", route: `/${domain}/Section-H/pageAdministration/${school_id}/pageResult/Performance`, icon: <FaCog /> },
+                { label: `${t("Publish Control")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageResult/pagePublish`, icon: <FaCog /> },
+                { label: `${t("Portal Control")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageResult/pagePortals`, icon: <FaCog /> },
+                { label: `${t("Promotion")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageResult/pagePromote`, icon: <FaCog /> },
               ],
             },
           ]
@@ -75,8 +77,8 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
               label: `${t("Documents")}`,
               route: "#",
               children: [
-                { label: `${t("Transcript")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageTranscript`, icon: <FaCog /> },
-                { label: `${t("ID Card")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageIDCard`, icon: <FaCog /> },
+                { label: `${t("Transcript")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageResult/pageTranscript`, icon: <FaCog /> },
+                { label: `${t("ID Card")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageResult/pageIDCard`, icon: <FaCog /> },
               ],
             },
           ]
@@ -90,13 +92,13 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
 
             ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("MARKENTRY") ?
               [
-                { label: `${t("Marks Entry")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageMarksEntry`, icon: <FaCog /> },
+                { label: `${t("Marks Entry")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageBatchOperation/pageMarksEntry`, icon: <FaCog /> },
               ]
               :
               []),
-            { label: `${t("Course Assignment")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageCourseAssignment/`, icon: <FaCog /> },
-            { label: `${t("Time Table")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageTimeTable`, icon: <FaCog /> },
-            { label: `${t("Import")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageImport`, icon: <FaCog /> },
+            { label: `${t("Course Assignment")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageBatchOperation/pageCourseAssignment/`, icon: <FaCog /> },
+            { label: `${t("Time Table")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageBatchOperation/pageTimeTable`, icon: <FaCog /> },
+            { label: `${t("Import")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageBatchOperation/pageImport`, icon: <FaCog /> },
           ],
         },
 
@@ -105,7 +107,7 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
         //   label: "Notifications",
         //   route: "#",
         //   children: [
-        //     { label: "Announcements", route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/BatchOperations/pageNotifications/pageAnnouncements`, icon: <FaCog /> },
+        //     { label: "Announcements", route: `/${domain}/Section-H/pageAdministration/${school_id}/BatchOperations/pageNotifications/pageAnnouncements`, icon: <FaCog /> },
         //   ],
         // },
       ],
@@ -118,7 +120,7 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
           label: `${t("Lecturers")}`,
           route: "#",
           children: [
-            { label: `${t("View")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageLecturers`, icon: <FaCog /> },
+            { label: `${t("View")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageLecturers`, icon: <FaCog /> },
           ],
         },
         {
@@ -126,16 +128,16 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
           label: `${t("Students")}`,
           route: "#",
           children: [
-            { label: `${t("View")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents`, icon: <FaCog /> },
-            // { label: `${t("Un-Assigned")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/UnAssigned`, icon: <FaCog /> },
-            { label: `${t("Pre-Enrollment")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`, icon: <FaCog /> },
+            { label: `${t("View")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageStudents`, icon: <FaCog /> },
+            // { label: `${t("Un-Assigned")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageStudents/UnAssigned`, icon: <FaCog /> },
+            { label: `${t("Pre-Enrollment")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageStudents/PreInscription`, icon: <FaCog /> },
             ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("MORATOIRE") ?
               [
-                { label: `${t("Moratoire")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Moratoire`, icon: <FaCog /> },
+                { label: `${t("Moratoire")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageStudents/Moratoire`, icon: <FaCog /> },
               ]
               :
               []),
-            { label: `${t("Duplicates")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Duplicates`, icon: <FaCog /> },
+            { label: `${t("Duplicates")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageStudents/Duplicates`, icon: <FaCog /> },
           ],
         },
 
@@ -144,7 +146,7 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
             {
               icon: <FaChartPie />,
               label: `${t("Users")}`,
-              route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUsers`,
+              route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUsers`,
             },]
           :
           []),
@@ -158,13 +160,13 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
           label: `${t("Settings")}`,
           route: "#",
           children: [
-            { label: `${t("Domains")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageDomains`, icon: <FaCog /> },
-            { label: `${t("Fields")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageFields`, icon: <FaCog /> },
-            { label: `${t("Classes")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties`, icon: <FaCog /> },
-            { label: `${t("Courses")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageCourses`, icon: <FaCog /> },
-            { label: `${t("Levels")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageLevels`, icon: <FaCog /> },
-            { label: `${t("Programs")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms`, icon: <FaCog /> },
-            { label: `${t("Halls")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUtilities/pageHalls`, icon: <FaCog /> },
+            { label: `${t("Domain")}s`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageSettings/pageDomains`, icon: <FaCog /> },
+            { label: `${t("Field")}s`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageSettings/pageFields`, icon: <FaCog /> },
+            { label: `${t("Classe")}s`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageSettings/pageSpecialties`, icon: <FaCog /> },
+            { label: `${t("Course")}s`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageSettings/pageCourses`, icon: <FaCog /> },
+            { label: `${t("Level")}s`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageSettings/pageLevels`, icon: <FaCog /> },
+            { label: `${t("Program")}s`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageSettings/pagePrograms`, icon: <FaCog /> },
+            { label: `${t("Hall")}s`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pageHalls`, icon: <FaCog /> },
           ],
         },
         {
@@ -172,9 +174,11 @@ export const getMenuAdministration = (params: { school_id: string; domain: strin
           label: `${t("Utility")}`,
           route: "#",
           children: [
-            { label: `${t("Fees Transactions")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUtilities/pageFeeTransactions`, icon: <FaCog /> },
-            { label: `${t("Activation")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUtilities/pagePlatformActivation`, icon: <FaCog /> },
-            { label: `${t("Password Tokens")}`, route: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUtilities/pageResetTokens`, icon: <FaCog /> },
+            { label: `${t("Fees Transactions")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pageFeeTransactions`, icon: <FaCog /> },
+            { label: `${t("Activation")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pagePlatformActivation`, icon: <FaCog /> },
+            { label: `${t("ID Cards")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pageIDPLAT/ID`, icon: <FaCog /> },
+            { label: `${t("Platform")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pageIDPLAT/PLATFORM`, icon: <FaCog /> },
+            { label: `${t("Password Tokens")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pageResetTokens`, icon: <FaCog /> },
           ],
         },
       ],

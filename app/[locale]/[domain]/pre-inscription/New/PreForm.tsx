@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
-import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
+import { capitalizeFirstLetter, decodeUrlID, errorLog, getAcademicYear } from '@/functions';
 import MyInputField from '@/MyInputField';
 import React, { useEffect, useState } from 'react'
 import { EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
@@ -8,8 +8,8 @@ import Select from "react-select";
 import countryList from "react-select-country-list";
 import { CertificateOptions, RegionList } from '@/constants';
 import { gql, useMutation } from '@apollo/client';
-
-
+import { useTranslation } from 'react-i18next';
+import Confirmation from './Confirmation';
 
 
 const steps = ['Personal Info', 'Role / Dept', 'Specialty', 'Confirmation'];
@@ -53,6 +53,7 @@ type FormData = {
 
 const PreForm = ({ data, source, params, link }: { params: any, source: "admin" | "student", data?: any, link: string }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [count, setCount] = useState<number>(0);
   const [optionsSpecialties, setOptionsSpecialties] = useState<{ id: number, name: string }[]>();
@@ -106,7 +107,7 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
         const { first_name, last_name, sex, address, dob, pob, telephone, email, } = formData.personalInfo;
         return [first_name, last_name, sex, address, dob, pob, telephone, email,].every((field) => String(field).trim() !== '');
       case 1:
-        const { campus, nationality, highest_certificate, year_obtained, region_of_origin } = formData.medicalHistory;
+        const { campus, nationality, highest_certificate, year_obtained, region_of_origin, emergency_name, emergency_telephone } = formData.medicalHistory;
         return [nationality, highest_certificate, year_obtained, region_of_origin, campus.toString()].every((field) => String(field.trim()) !== '');
       case 2:
         const { academic_year, program, level, session, specialty_one } = formData.classAssignment;
@@ -142,11 +143,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
         if (f) { setOptionsPrograms(f) }
       }
       if (data && data?.allSchoolInfos?.edges.length) {
-        console.log(data.allSchoolInfos, 146)
         const f = data.allSchoolInfos.edges.map((item: EdgeSchoolHigherInfo) => {
-          return { "id": decodeUrlID(item.node.id), "name": `${item.node.campus.replace("_", "-")}` }
+          return { "id": decodeUrlID(item.node.id), "name": `${item.node.campus.replace("_", "-")} - ${item.node?.town} - ${item.node?.address}` }
         })
-        console.log(f, 150)
 
         if (f) { setOptionsCampuses(f) }
       }
@@ -240,9 +239,10 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
           const result = await createUpdateDeletePreInsription({
             variables: {
               ...res,
-              // id: parseInt(decodeUrlID(data.node.userprofile.user.id)),
+              // id: parseInt(decodeUrlID(data.node.userprofile.customuser.id)),
               sex: capitalizeFirstLetter(newData.sex),
               email: newData.email.toLowerCase(),
+              campus: source === "admin" ? data.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus : formData.medicalHistory.campus.toString(),
             }
           });
 
@@ -251,8 +251,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
               `${result.data.createUpdateDeletePreinscription.preinscription.firstName}`
             );
           }
-        } catch (err: any) {
-          errorMessages.push(`Error updating ${newData.firstName}: ${err.message}`);
+        } catch (error: any) {
+          errorLog(error);;
+          errorMessages.push(`Error Creating ${newData.firstName}: ${error.message}`);
         }
       }
 
@@ -288,18 +289,18 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 <MyInputField
                   id="first_name"
                   name="first_name"
-                  label="First Name"
+                  label={t("First Name")}
                   type="text"
-                  placeholder="First Name"
+                  placeholder={t("First Name")}
                   value={formData.personalInfo.first_name}
                   onChange={(e) => handleChange('personalInfo', 'first_name', e.target.value)}
                 />
                 <MyInputField
                   id="last_name"
                   name="last_name"
-                  label="Last Name"
+                  label={t("Last Name")}
                   type="text"
-                  placeholder="Last Name"
+                  placeholder={t("Last Name")}
                   value={formData.personalInfo.last_name}
                   onChange={(e) => handleChange('personalInfo', 'last_name', e.target.value)}
                 />
@@ -309,9 +310,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 <MyInputField
                   id="sex"
                   name="sex"
-                  label="Gender"
+                  label={t("Gender")}
                   type="select"
-                  placeholder="Gender"
+                  placeholder={t("Gender")}
                   options={["Male", "Female"]}
                   value={formData.personalInfo.sex}
                   onChange={(e) => handleChange('personalInfo', 'sex', e.target.value)}
@@ -319,9 +320,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 <MyInputField
                   id="address"
                   name="address"
-                  label="Address"
+                  label={t("Address")}
                   type="text"
-                  placeholder="Address"
+                  placeholder={t("Address")}
                   value={formData.personalInfo.address}
                   onChange={(e) => handleChange('personalInfo', 'address', e.target.value)}
                 />
@@ -331,18 +332,18 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 <MyInputField
                   id="dob"
                   name="dob"
-                  label="Date of Birth"
+                  label={t("Date of Birth")}
                   type="date"
-                  placeholder="Date of Birth"
+                  placeholder={t("Date of Birth")}
                   value={formData.personalInfo.dob}
                   onChange={(e) => handleChange('personalInfo', 'dob', e.target.value)}
                 />
                 <MyInputField
                   id="pob"
                   name="pob"
-                  label="Place of Birth"
+                  label={t("Place of Birth")}
                   type="text"
-                  placeholder="Place of Birth"
+                  placeholder={t("Place of Birth")}
                   value={formData.personalInfo.pob}
                   onChange={(e) => handleChange('personalInfo', 'pob', e.target.value)}
                 />
@@ -352,9 +353,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 <MyInputField
                   id="telephone"
                   name="telephone"
-                  label="Telephone"
+                  label={t("Telephone")}
                   type="number"
-                  placeholder="Telephone"
+                  placeholder={t("Telephone")}
                   value={formData.personalInfo.telephone}
                   onChange={(e) => handleChange('personalInfo', 'telephone', e.target.value)}
                 />
@@ -390,7 +391,7 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                   name="campus"
                   label="Campus"
                   type="select"
-                  placeholder="Select Campus"
+                  placeholder={t("Select Campus")}
                   value={formData.medicalHistory.campus.toString()}
                   onChange={(e) => handleChange('medicalHistory', 'campus', e.target.value)}
                   options={optionsCampuses}
@@ -401,16 +402,16 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                   name="nationality"
                   options={CountryList}
                   onChange={(e) => handleChange('medicalHistory', 'nationality', e?.label || "")}
-                  placeholder="Select a country"
+                  placeholder={t("Select a country")}
                   isSearchable
                 />
 
                 <MyInputField
                   id="region_of_origin"
                   name="region_of_origin"
-                  label="Region Of Origin"
+                  label={t("Region Of Origin")}
                   type="select"
-                  placeholder="Region Of Origin"
+                  placeholder={t("Region Of Origin")}
                   value={formData.medicalHistory.region_of_origin}
                   onChange={(e) => handleChange('medicalHistory', 'region_of_origin', e.target.value)}
                   options={RegionList}
@@ -419,9 +420,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 {formData.medicalHistory.region_of_origin === "Other" ? <MyInputField
                   id="region_of_origin_other"
                   name="region_of_origin_other"
-                  label="Other Region"
+                  label={t("Other Region")}
                   type="text"
-                  placeholder="Other Origin"
+                  placeholder={t("Other Origin")}
                   value={formData.medicalHistory.region_of_origin_other}
                   onChange={(e) => handleChange('medicalHistory', 'region_of_origin_other', e.target.value)}
                 /> : null}
@@ -433,9 +434,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 <MyInputField
                   id="highest_certificate"
                   name="highest_certificate"
-                  label="Highest Certificate"
+                  label={t("Highest Certificate")}
                   type="select"
-                  placeholder="Highest Certificate"
+                  placeholder={t("Highest Certificate")}
                   value={formData.medicalHistory.highest_certificate}
                   onChange={(e) => handleChange('medicalHistory', 'highest_certificate', e.target.value)}
                   options={CertificateOptions}
@@ -444,18 +445,18 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 {formData.medicalHistory.highest_certificate === "Other" ? <MyInputField
                   id="highest_certificate_other"
                   name="highest_certificate_other"
-                  label="Other Certificate"
+                  label={t("Other Certificate")}
                   type="text"
-                  placeholder="Other Certificate / Diplome"
+                  placeholder={t("Other Certificate / Diplome")}
                   value={formData.medicalHistory.highest_certificate_other}
                   onChange={(e) => handleChange('medicalHistory', 'highest_certificate_other', e.target.value)}
                 /> : null}
                 <MyInputField
                   id="year_obtained"
                   name="year_obtained"
-                  label="Year Obtained"
+                  label={t("Year Obtained")}
                   type="select"
-                  placeholder="Select Year"
+                  placeholder={t("Select Year")}
                   value={formData.medicalHistory.year_obtained}
                   onChange={(e) => handleChange('medicalHistory', 'year_obtained', e.target.value)}
                   options={last_20_years}
@@ -466,18 +467,18 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
                 <MyInputField
                   id="emergency_name"
                   name="emergency_name"
-                  label="Parent Name"
+                  label={t("Parent Name")}
                   type="text"
-                  placeholder="optional"
+                  placeholder={t("Parent Name")}
                   value={formData.medicalHistory.emergency_name}
                   onChange={(e) => handleChange('medicalHistory', 'emergency_name', e.target.value)}
                 />
                 <MyInputField
                   id="emergency_telephone"
                   name="emergency_telephone"
-                  label="Parent Telephone"
+                  label={t("Parent Telephone")}
                   type="number"
-                  placeholder="Emergency Telephone"
+                  placeholder={t("Parent Telephone")}
                   value={formData.medicalHistory.emergency_telephone}
                   onChange={(e) => handleChange('medicalHistory', 'emergency_telephone', e.target.value)}
                 />
@@ -493,15 +494,15 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="font-bold mb-4 text-xl">Class Assigment</h2>
+            <h2 className="font-bold mb-4 text-xl">{t("Class Assignment")}</h2>
             <div className="space-y-4">
 
               <MyInputField
                 id="specialty_one"
                 name="specialty_one"
-                label="Specialty - 1st Choice"
+                label={t("Specialty - 1st Choice")}
                 type="select"
-                placeholder="1st Choice Specialty"
+                placeholder={t("1st Choice Specialty")}
                 value={formData.classAssignment.specialty_one}
                 onChange={(e) => handleChange('classAssignment', 'specialty_one', e.target.value)}
                 options={optionsSpecialties}
@@ -510,9 +511,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
               <MyInputField
                 id="specialty_two"
                 name="specialty_two"
-                label="Specialty - 2nd Choice"
+                label={t("Specialty - 2nd Choice")}
                 type="select"
-                placeholder="1st Choice Specialty"
+                placeholder={t("1st Choice Specialty")}
                 value={formData.classAssignment.specialty_two}
                 onChange={(e) => handleChange('classAssignment', 'specialty_two', e.target.value)}
                 options={optionsSpecialties}
@@ -521,20 +522,20 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
               <MyInputField
                 id="academic_year"
                 name="academic_year"
-                label="Academic Year"
+                label={t("Academic Year")}
                 type="select"
-                placeholder="Academic Year"
+                placeholder={t("Academic Year")}
                 value={formData.classAssignment.academic_year}
                 onChange={(e) => handleChange('classAssignment', 'academic_year', e.target.value)}
-                options={optionsYears}
+                options={optionsYears && optionsYears?.length > 0 ? optionsYears : [getAcademicYear()]}
               />
 
               <MyInputField
                 id="program"
                 name="program"
-                label="Program"
+                label={t("Program")}
                 type="select"
-                placeholder="Program"
+                placeholder={t("Program")}
                 value={formData.classAssignment.program}
                 onChange={(e) => handleChange('classAssignment', 'program', e.target.value)}
                 options={optionsPrograms}
@@ -543,9 +544,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
               <MyInputField
                 id="level"
                 name="level"
-                label="Level"
+                label={t("Level")}
                 type="select"
-                placeholder="level"
+                placeholder={t("level")}
                 value={formData.classAssignment.level}
                 onChange={(e) => handleChange('classAssignment', 'level', e.target.value)}
                 options={optionsLevels}
@@ -554,9 +555,9 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
               <MyInputField
                 id="session"
                 name="session"
-                label="Session"
+                label={t("Session")}
                 type="select"
-                placeholder="Session"
+                placeholder={t("Session")}
                 value={formData.classAssignment.session}
                 onChange={(e) => handleChange('classAssignment', 'session', e.target.value)}
                 options={["Morning", "Evening"]}
@@ -567,106 +568,12 @@ const PreForm = ({ data, source, params, link }: { params: any, source: "admin" 
         );
       case 3:
         return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="font-bold mb-2 md:mb-6 text-2xl text-blue-600 text-center">
-              Confirm Your Information
-            </h2>
-            <div className="bg-gray-100 md:p-6 md:pace-y-4 md:sp-2 p-2 rounded-lg shadow-lg space-y-2">
-              <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-lg">Personal Information</h3>
-                <p><strong>First Name:</strong> {formData.personalInfo.first_name || 'N/A'}</p>
-                <p><strong>Last Name:</strong> {formData.personalInfo.last_name || 'N/A'}</p>
-                <p><strong>Sex:</strong> {formData.personalInfo.sex || 'N/A'}</p>
-                <p><strong>Address:</strong> {formData.personalInfo.address || 'N/A'}</p>
-                <p><strong>Date of Birth:</strong> {formData.personalInfo.dob || 'N/A'}</p>
-                <p><strong>Place of Birth:</strong> {formData.personalInfo.pob || 'N/A'}</p>
-              </div>
-              {/* <hr className="border-gray" /> */}
-              <br />
-
-              <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-lg">Contact Information</h3>
-                <p><strong>Telephone:</strong> {formData.personalInfo.telephone || 'N/A'}</p>
-                <div className='flex items-center justify-between'>
-                  <p><strong>Email:</strong> {formData.personalInfo.email || 'N/A'}</p>
-                  <p className='flex items-center justify-between'>
-                    <span>
-                      <button
-                        onClick={() => setCurrentStep(currentStep - 3)}
-                        className="bg-gray border hover:bg-gray-400 md:px-6 ml-4 my-0 p-2 py-2 rounded-lg shadow-md text-gray-800"
-                      >
-                        Edit Information
-                      </button>
-
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <hr className="border-gray-300" />
-              <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-lg">Other Information</h3>
-                <div className="flex gap-2 md:flex-row md:gap-10">
-                  <p className='w-1/2'><strong>CAMPUS:</strong> {data.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus || 'N/A'} </p>
-                </div>
-                <div className="flex gap-2 md:flex-row md:gap-10">
-                  <p className='w-1/2'><strong>Highest Certificate:</strong> {(formData.medicalHistory.highest_certificate === "Other" ? capitalizeFirstLetter(formData.medicalHistory.highest_certificate_other.toLowerCase()) : formData.medicalHistory.highest_certificate) || 'N/A'}</p>
-                  <p className='w-1/2'><strong>Year Obtained:</strong> {formData.medicalHistory.year_obtained || 'N/A'}</p>
-                </div>
-                <div className="flex gap-10 md:flex-row">
-                  <p><strong>Nationality:</strong> {formData.medicalHistory.nationality || 'N/A'}</p>
-                  <p><strong>Region Of Origin:</strong> {(formData.medicalHistory.region_of_origin === "Other" ? capitalizeFirstLetter(formData.medicalHistory.region_of_origin_other.toLowerCase()) : formData.medicalHistory.region_of_origin) || 'N/A'}</p>
-                </div>
-
-                <div className='flex flex-row'>
-                  <p className='flex flex-col justify-between md:flex-row md:items-center'>
-                    <p><strong>Parent's Name:</strong> {formData.medicalHistory.emergency_name || 'N/A'}</p>
-                    <span><strong>Parent's Address:</strong> {formData.medicalHistory.emergency_town || 'N/A'}</span>
-                    <span><strong>Parent's Telephone:</strong> {formData.medicalHistory.emergency_telephone || 'N/A'}</span>
-                  </p>
-                  <span>
-                      <button
-                        onClick={() => setCurrentStep(currentStep - 2)}
-                        className="bg-gray border hover:bg-gray-400 md:px-6 ml-4 my-0 p-2 py-2 rounded-lg shadow-md text-gray-800"
-                      >
-                        Edit Information
-                      </button>
-
-                    </span>
-                </div>
-              </div>
-
-              <hr className="border-gray-300" />
-              <div className="gap-10 space-y-2">
-
-                <h3 className="font-semibold text-gray-700 text-lg">Class Assignment</h3>
-
-                <p className='flex gap-2 items-center'>
-                  <span className='w-1/2'> <strong>Specialty 1st:</strong> {data.allMainSpecialties.edges.filter((item: EdgeMainSpecialty) => decodeUrlID(item.node.id) === formData.classAssignment.specialty_one)[0].node.specialtyName || 'N/A'} </span>
-                  <span className='w-1/2'> <strong>Specialty 2nd:</strong> {data.allMainSpecialties.edges.filter((item: EdgeMainSpecialty) => decodeUrlID(item.node.id) === formData.classAssignment.specialty_two)[0].node.specialtyName || 'N/A'} </span>
-                </p>
-                <p className='flex items-center justify-between'>
-                  <p> <strong>Program:</strong> {data.allPrograms.edges.filter((item: EdgeMainSpecialty) => decodeUrlID(item.node.id) === formData.classAssignment.program)[0].node.name || 'N/A'} </p>
-                  <p> <strong>Level:</strong> {formData.classAssignment.level || 'N/A'} </p>
-                  <span> <strong>Session:</strong> {formData.classAssignment.session || 'N/A'} </span>
-                  <span>
-                    <button
-                      onClick={() => setCurrentStep(currentStep - 1)}
-                      className="bg-gray border hover:bg-gray-400 md:px-6 ml-4 my-0 p-2 py-2 rounded-lg shadow-md text-gray-800"
-                    >
-                      Edit Information
-                    </button>
-
-                  </span>
-                </p>
-              </div>
-            </div>
-
-          </motion.div>
-
+          <Confirmation
+            formData={formData}
+            data={data}
+            setCurrentStep={setCurrentStep}
+            currentStep={currentStep}
+          />
         );
       default:
         return null;
@@ -760,7 +667,7 @@ const CREATE_PREINSCRIPTION = gql`
     $telephone: String!
     $address: String!
     $pob: String!
-    $dob: Date!
+    $dob: String!
 
     $nationality: String!
     $highestCertificate: String!

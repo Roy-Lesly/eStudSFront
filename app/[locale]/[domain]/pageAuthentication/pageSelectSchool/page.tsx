@@ -13,19 +13,6 @@ import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 
 
-const GET_DATA = gql`
-  query GetAllData {
-    allSchoolInfos {
-      edges {
-        node {
-          id schoolName
-          campus
-          town schoolType
-        }
-      }
-    }
-  }
-`;
 
 const SelectDept = () => {
   const domain = useParams().domain;
@@ -41,7 +28,7 @@ const SelectDept = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const access = localStorage.getItem('session');
+      const access = localStorage.getItem('token');
 
       if (!access || !paramsRole.get('role')) {
         router.push(`/${domain}/pageAuthentication/Login`);
@@ -92,8 +79,9 @@ const SelectDept = () => {
             aria-label={`Select ${node.campus.replace("_", "-")}`}
           >
             <span className="italic text-yellow-100 tracking-wide">{node.schoolName}</span>
-            <span className="md:text-2xl py-2 text-lg">{node.campus.replace("_", "-")}</span>
-            <span className="italic text-yellow-100">{node.town}</span>
+            <span className="md:text-2xl py-2 text-lg">{node?.campus.replace("_", "-")}</span>
+            <span className="italic text-yellow-100">{node?.town}</span>
+            <span className="italic text-yellow-100">{node?.address}</span>
           </Link>
         ))}
       </main>
@@ -112,3 +100,19 @@ const SelectDept = () => {
 };
 
 export default SelectDept;
+
+
+
+const GET_DATA = gql`
+  query GetAllData {
+    allSchoolInfos {
+      edges {
+        node {
+          id schoolName
+          campus
+          town address schoolType
+        }
+      }
+    }
+  }
+`;

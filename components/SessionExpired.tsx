@@ -3,50 +3,56 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaHourglassEnd } from 'react-icons/fa';
 import { IoReload } from 'react-icons/io5';
-import { ActionLogin } from '@/serverActions/AuthActions';
-import { protocol } from '@/config';
-import { LoginUrl } from '@/Domain/configDom';
-import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'next/navigation';
+import { gql, useMutation } from '@apollo/client';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
-const SessionExpired = ({ domain }: { domain: string }) => {
+const SessionExpired = () => {
     const { t } = useTranslation();
+    const { domain } = useParams()
     const [showLogin, setShowLogin] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(false)
 
-    const onSubmitServerAction = async (prevState: any, formData: FormData) => {
-        setLoading(true);
-        const data = {
-            matricle: formData.get('username'),
-            password: formData.get('password'),
-        };
+    const [formData, setFormData] = useState({
+        matricle: "",
+        password: "",
+        parent: false,
+    });
 
-        const response = await ActionLogin(
-            data,
-            `${protocol}api${domain}${LoginUrl}`
-        );
+    const [login, { loading }] = useMutation(LOGIN_MUTATION);
 
-        if (response.detail) {
-            Swal.fire({
-                title: `${response.detail}`,
-                timer: 2500,
-                timerProgressBar: true,
-                showConfirmButton: false,
-                icon: 'warning',
-            });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const { data } = await login({ variables: formData });
+            console.log(data);
+            const token = data.login.token;
+            const refresh = data.login.refresh;
+
+            if (token) {
+                localStorage.setItem("token", token);
+                localStorage.setItem('ref', refresh);
+                Cookies.set('token', token, { expires: 1, secure: true });
+                Cookies.set('refresh', refresh, { expires: 1, secure: true });
+                window.location.reload();
+            }
+            else {
+                localStorage.removeItem("token");
+            }
+        } catch (err: any) {
+            errorLog(err)
         }
-        if (response.refresh && response.access) {
-            Cookies.set('token', response.access, { expires: 7, secure: true });
-            Cookies.set('refresh', response.refresh, { expires: 7, secure: true });
-            localStorage.setItem('session', response.access);
-            localStorage.setItem('token', response.access);
-            localStorage.setItem('ref', response.refresh);
-            window.location.reload();
-        }
-
-        setLoading(false);
-    }
+    };
 
     return (
         <motion.div
@@ -67,22 +73,19 @@ const SessionExpired = ({ domain }: { domain: string }) => {
 
                 <form
                     className="space-y-6"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        const formData = new FormData(e.currentTarget);
-                        onSubmitServerAction(null, formData);
-                    }}
+                    onSubmit={handleLogin}
                 >
                     <div className="space-y-1">
-                        <label htmlFor="username" className="block font-medium text-gray-700 text-sm">
+                        <label htmlFor="matricle" className="block font-medium text-gray-700 text-sm">
                             {t("Matricle")} {t("or")} {t("Username")}
                         </label>
                         <input
                             type="text"
-                            name="username"
-                            id="username"
+                            name="matricle"
+                            id="matricle"
                             required
                             placeholder="Enter your Matricle"
+                            onChange={handleChange}
                             className="border focus:ring focus:ring-indigo-300 px-4 py-2 rounded-lg text-gray-700 w-full"
                         />
                     </div>
@@ -96,6 +99,7 @@ const SessionExpired = ({ domain }: { domain: string }) => {
                             id="password"
                             required
                             placeholder="••••••••"
+                            onChange={handleChange}
                             className="border focus:ring focus:ring-indigo-300 px-4 py-2 rounded-lg text-gray-700 w-full"
                         />
                     </div>
@@ -157,3 +161,20 @@ const SessionExpired = ({ domain }: { domain: string }) => {
 };
 
 export default SessionExpired;
+
+
+const LOGIN_MUTATION = gql`
+  mutation Login(
+    $matricle: String!,
+    $password: String!
+    $parent: Boolean!
+  ) {
+      login (
+        matricle: $matricle,
+        password: $password
+        parent: $parent
+      ) {
+        token refresh
+      }
+    }
+`;

@@ -6,7 +6,7 @@ import Sidebar from '@/section-h/Sidebar/Sidebar';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import { Metadata } from 'next';
-import { getMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
+import { GetMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
@@ -21,7 +21,11 @@ export const metadata: Metadata = {
 };
 
 
-const List = ({ params, data }: { params: any; data: any }) => {
+const List = (
+  { params, data }:
+  { params: any; data: any }
+) => {
+  
   const { t } = useTranslation()
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -31,13 +35,13 @@ const List = ({ params, data }: { params: any; data: any }) => {
       domain={params.domain}
       searchComponent={
         <SearchMultiple
-          names={["courseName", "semester"]}
+          names={["courseName", "semester", "academicYear", "level"]}
           link={`/${params.domain}/Section-H/pageLecturer/${params.school_id}/${params.lecturer_id}/pageMarksEntry`}
         />}
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuLecturer(params)}
+          menuGroups={GetMenuLecturer(params)}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -69,7 +73,10 @@ const List = ({ params, data }: { params: any; data: any }) => {
 export default List;
 
 
-const DataTable = ({ data, params }: { data: EdgeCourse[], params: any }) => {
+const DataTable = (
+  { data, params }: 
+  { data: EdgeCourse[], params: any }
+) => {
   const { t } = useTranslation()
   const router = useRouter();
   const Columns: TableColumn<EdgeCourse>[] = [
@@ -80,13 +87,13 @@ const DataTable = ({ data, params }: { data: EdgeCourse[], params: any }) => {
       render: (_item: EdgeCourse, index: number) => index + 1,
     },
     {
-      header: `${t("CourseCode")}`,
+      header: `${t("Course Code")}`,
       accessor: "node.courseCode",
       responsiveHidden: true,
       align: "left",
     },
     {
-      header: `${t("CourseName")}`,
+      header: `${t("Course Name")}`,
       accessor: "node.mainCourse.courseName",
       align: "left",
     },

@@ -25,15 +25,9 @@
     ],
     "paths": {
       "@/*": [
+        "./*",
+        "./types/*",
         "./app/*",
-        "./app/pageAdministration/*",
-        "./app/pageAccounting/*",
-        "./app/pageAuthentication/*",
-        "./app/pageLecturer/*",
-        "./app/section-h/*",
-        "./app/section-s/*",
-        "./app/section-p/*",
-        "./app/section-v/*",
         "./styles/*",
         "./components/*",
         "./utils/*",

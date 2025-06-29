@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import { getData } from '@/functions'
 import Link from 'next/link'
@@ -13,25 +12,28 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string,  domain: string, };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const apiNotification: ResultInter[] | any = await getData( protocol + "api" + params.domain + GetNotificationUrl, { ...searchParams, nopage: true }, params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const apiNotification: ResultInter[] | any = await getData( protocol + "api" + p.domain + GetNotificationUrl, { ...sp, nopage: true }, p.domain);
 
   return (
-    <LayoutAdmin>
+    
       <>
         <Breadcrumb
           pageName="Announcements"
           pageName1="Back To Announcements"
-          link1={`/Section-H/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements`}
+          link1={`/Section-H/pageAdministration/${p.school_id}/pageNotifications/pageAnnouncements`}
         />
 
-        {apiNotification && <Announcements apiNotification={apiNotification} params={params} />}
+        {apiNotification && <Announcements apiNotification={apiNotification} params={p} />}
 
       </>
-    </LayoutAdmin>
+    
   )
 }
 

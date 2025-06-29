@@ -1,29 +1,34 @@
 import { Metadata } from 'next';
 import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, getData, removeEmptyFields } from '@/functions';
+import { removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, lecturer_id: string, course_id: string, domain: string };
-  searchParams?: any
+    params: any;
+    searchParams: any;
 }) => {
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.fullName = searchParams?.fullName
-  paginationParams.registrationNumber = searchParams?.registrationNumber
-  paginationParams.academicYear = searchParams?.academicYear
+  paginationParams.fullName = sp?.fullName
+  paginationParams.registrationNumber = sp?.registrationNumber
+  paginationParams.academicYear = sp?.academicYear
 
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let dataPending;
+  let dataAdmitted;
   let data;
+
   try {
     const result = await client.query<any>({
-      query: GET_DATA_PENDING,
+      query: GET_DATA_PREINSCRIPTIONN,
       variables: {
         ...removeEmptyFields(paginationParams),
         admissionStatus: false,
@@ -33,31 +38,52 @@ const EditPage = async ({
     });
     dataPending = result.data;
   } catch (error: any) {
-    console.log(error)
-    
+    errorLog(error);
     dataPending = null;
   }
+
+  try {
+    const result = await client.query<any>({
+      query: GET_DATA_PREINSCRIPTIONN,
+      variables: {
+        ...removeEmptyFields(paginationParams),
+        admissionStatus: true,
+        timestamp: new Date().getTime()
+      },
+      fetchPolicy: 'no-cache'
+    });
+    dataAdmitted = result.data;
+  } catch (error: any) {
+    errorLog(error);
+    dataAdmitted = null;
+  }
+
+
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
         ...removeEmptyFields(paginationParams),
         admissionStatus: true,
-        schoolId: parseInt(params.school_id),
+        schoolId: parseInt(p?.school_id),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error)
-    console.error('GraphQL Error Details:', error.networkError.result.errors);
+    errorLog(error);
     data = null;
   }
 
   return (
     <div>
-      <List params={params} dataPending={dataPending} data={data} searchParams={searchParams} />
+      <List 
+      params={p} 
+      dataPending={dataPending?.allPreinscriptions?.edges}
+      dataYears={data?.allAcademicYears} 
+      searchParams={sp} 
+      />
     </div>
   )
 }
@@ -77,10 +103,6 @@ export const metadata: Metadata = {
 
 const GET_DATA = gql`
  query Get(
-  $fullName: String
-  $registrationNumber: String
-  $academicYear: String
-  $admissionStatus: Boolean!
   $schoolId: ID!
 ) {
   allAcademicYears
@@ -93,34 +115,16 @@ const GET_DATA = gql`
       }
     }
   }
-  allPreinscriptions(
-    fullName: $fullName
-    registrationNumber: $registrationNumber
-    academicYear: $academicYear
-    admissionStatus: $admissionStatus
-    last: 100
-  ){
-    edges {
-      node {
-        id 
-        campus registrationNumber firstName lastName
-        fullName sex email sex dob pob address telephone status emergencyName emergencyTown
-        program level session academicYear
-        specialtyTwo campus admissionStatus action 
-      }
-    }
-  }  
 }
 `;
 
-const GET_DATA_PENDING = gql`
+const GET_DATA_PREINSCRIPTIONN = gql`
  query Get(
   $fullName: String
   $registrationNumber: String
   $academicYear: String
   $admissionStatus: Boolean!
 ) {
-  allAcademicYears
   allPreinscriptions(
     fullName: $fullName
     registrationNumber: $registrationNumber

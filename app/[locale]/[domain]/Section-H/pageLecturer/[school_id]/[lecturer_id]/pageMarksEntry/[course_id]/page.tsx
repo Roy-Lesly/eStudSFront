@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, getData } from '@/functions';
+import getApolloClient, { decodeUrlID, errorLog, getData } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 
@@ -8,21 +8,24 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, lecturer_id: string, course_id: string, domain: string };
-  searchParams?: any
+  params: any;
+  searchParams: any;
 }) => {
 
-    const client = getApolloClient(params.domain);
+  const p = await params
+  const sp = await searchParams
+
+    const client = getApolloClient(p.domain);
     let data;
     try {
-      if (searchParams?.spec && params.course_id){
+      if (sp?.spec && p.course_id){
         const result = await client.query<any>({
           query: GET_DATA,
           variables: {
-            courseId: parseInt(decodeUrlID(params.course_id)),
-            specialtyId: parseInt(decodeUrlID(searchParams.spec)),
-            semester: searchParams.sem,
-            schoolId: params.school_id,
+            courseId: parseInt(decodeUrlID(p.course_id)),
+            specialtyId: parseInt(decodeUrlID(sp.spec)),
+            semester: sp.sem,
+            schoolId: p.school_id,
             timestamp: new Date().getTime()
           },
           fetchPolicy: 'no-cache'
@@ -30,7 +33,7 @@ const EditPage = async ({
         data = result.data;
       }
     } catch (error: any) {
-      console.log(error)
+      errorLog(error);
       data = null;
     }
 
@@ -38,7 +41,7 @@ const EditPage = async ({
 
   return (
     <div>
-    <List params={params} data={data} searchParams={searchParams} />
+    <List params={p} data={data} searchParams={sp} />
   </div>
   )
 }
@@ -69,9 +72,9 @@ const GET_DATA = gql`
     edges {
       node {
         id 
-        info
+        infoData
         course { mainCourse { courseName} assignedTo { fullName}}
-        student { user { fullName} specialty { level { level} mainSpecialty { specialtyName} academicYear}}
+        student { customuser { fullName} specialty { level { level} mainSpecialty { specialtyName} academicYear}}
       }
     }
   }

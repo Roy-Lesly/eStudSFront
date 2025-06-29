@@ -1,5 +1,5 @@
 import { NodeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
-import { decodeUrlID } from '@/functions';
+import { decodeUrlID, errorLog } from '@/functions';
 import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -77,9 +77,9 @@ const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
                     alert(`Transaction Successful`)
                     window.location.reload()
                 };
-            } catch (err: any) {
-                console.log(err)
-                alert(`error creating:, ${err}`);
+            } catch (error: any) {
+                errorLog(error);
+                alert(`error creating:, ${error}`);
             }
         }
     };

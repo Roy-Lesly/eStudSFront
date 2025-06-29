@@ -1,18 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaTimes, FaMoneyBillWave, FaReceipt, FaEdit } from 'react-icons/fa';
 import { decodeUrlID } from '@/functions';
-import { gql, useMutation } from '@apollo/client';
-import { JwtPayload } from '@/serverActions/interfaces';
-import { jwtDecode } from 'jwt-decode';
+import { gql } from '@apollo/client';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { useTranslation } from 'react-i18next';
+import { NodeSchoolFees } from '@/utils/Domain/schemas/interfaceGraphql';
 
-const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any }) => {
 
-  const token = localStorage.getItem("token");
-  const user: JwtPayload | null = token ? jwtDecode(token) : null
+const ModalTransaction = ({ setModalOpen, data, p, schoolFees }: { setModalOpen: any; data: any, p: any, schoolFees: NodeSchoolFees | any }) => {
   const [clicked, setClicked] = useState<boolean>(false)
+  const { t } = useTranslation("common");
+  const [canSubmit, setCanSubmit] = useState(true);
+  const platformCharges = schoolFees?.userprofile?.specialty?.school?.schoolIdentification?.platformCharges || 0
+  const idCard = schoolFees?.userprofile?.specialty?.school?.schoolIdentification?.idCharges || 0
 
   const [formData, setFormData] = useState({
     amount: '',
@@ -20,7 +23,7 @@ const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any
     paymentMethod: '',
     payerName: '',
     ref: '',
-    telephone: "0",
+    telephone: null,
     origin: 'admin',
     account: '',
     operator: '',
@@ -31,38 +34,65 @@ const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
-  const [createTransaction] = useMutation(CREATE_DATA)
+  useEffect(() => {
+    if (formData.reason === "PLATFORM CHARGES" && parseInt(formData.amount) != platformCharges) {
+      setFormData({ ...formData, amount: platformCharges.toString() });
+      if (schoolFees.platformPaid && formData.reason === "PLATFORM CHARGES") {
+        alert(t("Account Activated Already"));
+        setCanSubmit(false);
+      }
+    }
+    else if (formData.reason === "IDCARD" && parseInt(formData.amount) != idCard) {
+      setFormData({ ...formData, amount: idCard.toString() });
+      if (schoolFees.idPaid && formData.reason === "IDCARD") {
+        alert(t("Already Paid For ID-CARD"));
+        setCanSubmit(false);
+      }
+    }
+    else if (formData.reason !== "IDCARD" && formData.reason !== "PLATFORM CHARGES") {
+      setCanSubmit(true);
+    }
+  }, [formData])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canSubmit) return;
+    console.log(canSubmit);
+
+    if (data?.balance <= 0 && formData.reason === "TUITION") {
+      alert("Fee Balance is 0, Can't Add a Payment for tuition");
+      return;
+    }
+
     setClicked(true)
-    const newFormData = {
+    const newData = {
       ...formData,
       schoolfeesId: decodeUrlID(data.id),
       amount: parseInt(formData.amount),
       account: formData.reason,
       operationType: "income",
-      userId: user?.user_id,
+      status: (formData.reason === "PLATFORM CHARGES" || formData.reason === "IDCARD") ? "Pending" : "Completed",
       ref: formData.ref ? formData.ref : new Date().toISOString(),
       delete: false
     }
 
-    try {
-      const result = await createTransaction({ variables: newFormData });
-      const t = result?.data?.createUpdateDeleteTransaction?.transaction
-      if (t?.id) {
-        alert(`Success creating:, ${t?.reason}-${t?.amount}`)
-        window.location.reload()
-        setModalOpen(false);;
-        setClicked(false)
-      };
-    } catch (err: any) {
-      console.log(err)
-      alert(`error creating:, ${err}`);
-      setClicked(false)
-    }
+    await ApiFactory({
+      newData: { id: parseInt(decodeUrlID(data?.node?.userprofile.customuser.id)), ...newData, delete: false },
+      mutationName: "createUpdateDeleteTransaction",
+      modelName: "transactions",
+      successField: "id",
+      query,
+      router: null,
+      params: p,
+      redirect: false,
+      reload: true,
+      returnResponseField: false,
+      redirectPath: ``,
+      actionLabel: "processing",
+    });
   };
+
+  const PAYMENT_METHODS = ["DIRECT", "BANK"]
 
   return (
     <motion.div
@@ -92,25 +122,12 @@ const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any
         <div className="flex items-center justify-center mb-4">
           <h3 className="flex font-bold gap-2 items-center text-2xl text-blue-800">
             <FaMoneyBillWave size={20} />
-            New Transaction
+            {t("New Transaction")}
           </h3>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Amount */}
-          <div className="flex gap-4 items-center">
-            <FaMoneyBillWave size={20} className="text-green-600" />
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              required
-              placeholder="Enter amount"
-              className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
-            />
-          </div>
 
           {/* Reason */}
           <div className="flex gap-4 items-center">
@@ -126,9 +143,23 @@ const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any
               <option value="REGISTRATION">REGISTRATION</option>
               <option value="TUITION">TUITION</option>
               <option value="SCHOLARSHIP">SCHOLARSHIP</option>
-              {/* <option value="PLATFORM CHARGES">PLATFORM CHARGES</option> */}
-              {/* <option value="ID CHARGES">ID CHARGES</option> */}
+              <option value="PLATFORM CHARGES">PLATFORM CHARGES</option>
+              <option value="IDCARD">IDCARD</option>
             </select>
+          </div>
+
+          {/* Amount */}
+          <div className="flex gap-4 items-center">
+            <FaMoneyBillWave size={20} className="text-green-600" />
+            <input
+              type="number"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              required
+              placeholder="Enter amount"
+              className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
+            />
           </div>
 
           {/* Payment Method */}
@@ -142,11 +173,11 @@ const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any
               className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
             >
               <option value="">Select payment method</option>
-              <option value="DIRECT">DIRECT</option>
-              <option value="BANK">BANK</option>
-              <option value="MTN">Mobile Money</option>
-              <option value="ORANGE">Orange Money</option>
-            </select>
+              {PAYMENT_METHODS.map((pm: string) => (
+                <option key={pm} value={pm}>
+                  {pm}
+                </option>
+              ))}            </select>
           </div>
 
           <div className="flex gap-4 items-center">
@@ -201,20 +232,19 @@ const ModalTransaction = ({ setModalOpen, data }: { setModalOpen: any; data: any
 export default ModalTransaction;
 
 
-const CREATE_DATA = gql`
+const query = gql`
     mutation CreateTransaction(
       $reason: String!
       $schoolfeesId: ID!
       $paymentMethod: String!
       $amount: Int!
       $ref: String!
-      $telephone: String
+      $telephone: Int
       $payerName: String
       $operator: String
       $origin: String!
       $account: String!
       $status: String!
-      $userId: ID!
       $delete: Boolean!
     ) {
       createUpdateDeleteTransaction(
@@ -229,10 +259,9 @@ const CREATE_DATA = gql`
         origin: $origin
         account: $account
         status: $status
-        userId: $userId
         delete: $delete
       ) {
-        transaction {
+        transactions {
           id
           amount
           reason

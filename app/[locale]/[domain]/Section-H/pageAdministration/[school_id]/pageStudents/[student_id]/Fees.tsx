@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { FaCheckCircle, FaPlus, FaTimesCircle } from 'react-icons/fa';
-import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
+import { NodeSchoolFees, SetTransactions } from '@/Domain/schemas/interfaceGraphql';
 import ModalTransaction from './Comps/ModalTransaction';
 
 
-const Fees = ({ data }: { data: EdgeSchoolFees }) => {
-  const [ modalOpen, setModalOpen] = useState<boolean>(false);
-
-  // console.log(data, 11)
+const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeSchoolFees }) => {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
     <motion.div
@@ -122,7 +120,7 @@ const Fees = ({ data }: { data: EdgeSchoolFees }) => {
               </tr>
             </thead>
             <tbody>
-              {data.node.transactionsSet.edges.map((transaction: any, index: number) => (
+              {data.node.transactions.map((transaction: SetTransactions, index: number) => (
                 <motion.tr
                   key={index}
                   initial={{ opacity: 0, x: 30 }}
@@ -130,10 +128,10 @@ const Fees = ({ data }: { data: EdgeSchoolFees }) => {
                   transition={{ delay: 0.2 * index, duration: 0.5 }}
                   className="border-b"
                 >
-                  <td className="px-4 py-2 text-gray-700">{transaction.node.reason}</td>
-                  <td className="px-4 py-2 text-gray-800">{transaction.node.amount.toLocaleString()} F</td>
-                  <td className="hidden md:flex px-4 py-2 text-grayflex">{transaction.node.ref}</td>
-                  <td className="px-4 py-2 text-gray-600">{transaction.node.createdAt.slice(0, 10)}, {transaction.node.createdAt.slice(11, 16)}</td>
+                  <td className="px-4 py-2 text-gray-700">{transaction.reason}</td>
+                  <td className="px-4 py-2 text-gray-800">{transaction.amount.toLocaleString()} F</td>
+                  <td className="hidden md:flex px-4 py-2 text-grayflex">{transaction.ref}</td>
+                  <td className="px-4 py-2 text-gray-600">{transaction.createdAt.slice(0, 10)}, {transaction.createdAt.slice(11, 16)}</td>
                 </motion.tr>
               ))}
             </tbody>
@@ -141,7 +139,15 @@ const Fees = ({ data }: { data: EdgeSchoolFees }) => {
         </div>
       </motion.div>
 
-      {modalOpen && data.node ? <ModalTransaction setModalOpen={setModalOpen} data={data.node} /> : null}
+      {modalOpen && data.node ?
+        <ModalTransaction
+          setModalOpen={setModalOpen}
+          data={data.node}
+          p={p}
+          schoolFees={schoolFees}
+        />
+        :
+        null}
 
     </motion.div>
   );

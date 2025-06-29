@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import ListConstantPage from '@/componentsTwo/ListAdmin/ListConstantPage'
 import { getData } from '@/functions'
 import { protocol } from '@/config'
@@ -11,22 +10,25 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const apiData: any = await getData(protocol + "api" + params.domain + GetSysConstantUrl, { ...searchParams, fieldList: [ "id", "name", "sys_category__id", "sys_category__name"] }, params.domain)
+  const p = await params;
+  const sp = await searchParams;
+
+  const apiData: any = await getData(protocol + "api" + p.domain + GetSysConstantUrl, { ...sp, fieldList: [ "id", "name", "sys_category__id", "sys_category__name"] }, p.domain)
   console.log(apiData, 19)
   return (
-    <LayoutAdmin>
+    
       <>
 
-        {searchParams && <NotificationError errorMessage={searchParams} />}
+        {sp && <NotificationError errorMessage={sp} />}
 
-        {apiData && apiData.results && <ListConstantPage params={params} data={apiData.results} />}
+        {apiData && apiData.results && <ListConstantPage params={p} data={apiData.results} />}
 
       </>
-    </LayoutAdmin>
+    
   )
 }
 

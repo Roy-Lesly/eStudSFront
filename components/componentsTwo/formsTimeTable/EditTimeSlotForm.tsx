@@ -82,10 +82,6 @@ const EditTimeSlotForm = ({
     // }
   });
 
-  console.log(data)
-  console.log(extra_data)
-
-
   return (
     <form className="bg-slate-300 flex flex-col gap-1 p-2 rounded text-black" onSubmit={onSubmit}>
       {/* <h1 className="font-medium">Week: {extra_data.week}</h1> */}

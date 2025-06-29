@@ -82,7 +82,7 @@ const TimeTableEditTimeSlotForm = ({
         }
         const call = async () => {
           var responseSlot = await ActionEdit(data_for_timeslot, dataToUpdate[index].id, SchemaCreateEditTimeSlot, protocol + "api" + params.domain + TimeSlotUrl, params.domain)
-          console.log(responseSlot, 93)
+
           if (responseSlot && responseSlot.id) {
             setProcessingLevel(index + 1 * 100 / dataToUpdate.length)
             if (index == dataToUpdate.length - 1) {

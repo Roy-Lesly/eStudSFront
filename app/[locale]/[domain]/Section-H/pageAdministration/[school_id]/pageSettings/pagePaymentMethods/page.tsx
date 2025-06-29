@@ -2,44 +2,45 @@ import { Metadata } from 'next'
 import React from 'react'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import MyPagination from '@/section-h/common/Pagination/MyPagination'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import MyButtonCustom from '@/section-h/common/MyButtonCustom'
 import { GetPaymentMethodInter } from '@/Domain/Utils-H/feesControl/feesInter'
 import { protocol } from '@/config'
 import { PaymentMethodUrl } from '@/Domain/Utils-H/feesControl/feesConfig'
 import { getData } from '@/functions'
 import NotificationError from '@/section-h/common/NotificationError'
-import ServerError from '@/section-h/common/ServerError'
 import { redirect } from 'next/navigation'
+import ServerError from '@/components/ServerError'
 
 const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const apiData: GetPaymentMethodInter[] | any = await getData(protocol  + "api" + params.domain + PaymentMethodUrl, {...searchParams}, params.domain);
+  const p = await params;
+  const sp = await searchParams;
+  const apiData: GetPaymentMethodInter[] | any = await getData(protocol  + "api" + p.domain + PaymentMethodUrl, {...sp}, p.domain);
   
   return (
-    <LayoutAdmin>
+    
       <>
         <Breadcrumb
           pageName="Payment Methods" 
           pageName1="Dashboard" 
           pageName2="Settings" 
-          link1={`/Section-H/pageAdministration/${params.school_id}`}
-          link2={`/Section-H/pageAdministration/${params.school_id}/pageSettings`}
+          link1={`/Section-H/pageAdministration/${p.school_id}`}
+          link2={`/Section-H/pageAdministration/${p.school_id}/pageSettings`}
         />
 
-        {searchParams && <NotificationError errorMessage={searchParams} />}
-        {apiData == "ECONNREFUSED" && <ServerError />}
+        {sp && <NotificationError errorMessage={sp} />}
+        {apiData == "ECONNREFUSED" && <ServerError type='network' />}
         {apiData && apiData.unauthorized && redirect(`/pageAuthentication/pageSessionExpired`)}
-        {apiData != "ECONNREFUSED" && <List apiData={apiData} params={params} />}
+        {apiData != "ECONNREFUSED" && <List apiData={apiData} params={p} />}
 
       </>
-    </LayoutAdmin>
+    
   )
 }
 

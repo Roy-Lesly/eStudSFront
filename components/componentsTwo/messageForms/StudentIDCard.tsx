@@ -46,8 +46,6 @@ const StudentIDCard = ({
       const reader = new FileReader();
       reader.onloadend = () => {
         if (typeof reader.result === 'string') {
-          console.log(reader, 51)
-          console.log(reader.result)
           setSelectedPhoto(reader.result);
         }
       };
@@ -58,7 +56,7 @@ const StudentIDCard = ({
   useEffect(() => {
     if (data) {
       setLoading(false);
-      setSelectedPhoto("https://apitest.e-conneq.com/media/" + data.node.userprofile.user.photo)
+      setSelectedPhoto("https://apitest.e-conneq.com/media/" + data.node.userprofile.customuser.photo)
     }
   }, [data])
 
@@ -80,15 +78,13 @@ const StudentIDCard = ({
         format: [85, 54],
       });
       pdf.addImage(imgData, 'PNG', 0, 0, 85, 54);
-      pdf.save(`ID-${data?.node.userprofile.user.fullName}.pdf`);
+      pdf.save(`ID-${data?.node.userprofile.customuser.fullName}.pdf`);
       setLoading(true)
       router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/`)
     });
   };
 
   if (loading) return <p className="text-center text-gray-600">Loading...</p>;
-
-  console.log(data)
 
   return (
     <div className="flex flex-col items-center justify-center p-4">
@@ -113,7 +109,7 @@ const StudentIDCard = ({
         {/* Header Section */}
         {selectedColor ? <div className={` ${selectedColor} flex h-[13mm] items-start px-2 rounded-t-lg text-white`}>
           <div className="flex font-bold items-center justify-center pt-[1mm] rounded w-[19mm]">
-            <img
+            <Image
               src={data.node.userprofile.specialty.school.schoolIdentification.logo ? `https://api${params.domain}.e-conneq.com/media/` + data.node.userprofile.specialty.school.schoolIdentification.logo : ""}
               alt="Profile"
               className="border border-gray h-[10mm] object-cover rounded-md w-[10mm]"
@@ -131,7 +127,7 @@ const StudentIDCard = ({
         <div className="bg-slate-100 flex flex-row h-[41mm] pt-[1mm] px-[1mm]">
           <div className="flex flex-col items-center">
             <img
-              src={data?.node.userprofile.user.photo ? selectedPhoto : ""}
+              src={data?.node.userprofile.customuser.photo ? selectedPhoto : ""}
               alt="Profile"
               className={`bg-white ${selectedPhoto ? "border-white" : "border-black opacity-10"} border  h-[23mm] object-cover rounded-md w-[23mm]`}
             />
@@ -162,19 +158,19 @@ const StudentIDCard = ({
                   <span className="h-[3mm]">Full Name:</span>
                   <span className="h-[3mm]">Nom et Prenom:</span>
                 </span>
-                {data?.node.userprofile.user.fullName && <span className={`m-0 leading-snug font-semibold italic text-blue-950 w-[35mm] whitespace-normal ${data.node.userprofile.user.fullName.length > 25 ? "text-[11px]" : "text-14px"}`}>{(data.node.userprofile.user.fullName ? data.node.userprofile.user.fullName.length : 0) > 34 ? data.node.userprofile.user.fullName.slice(0, 34) + "." : data.node.userprofile.user.fullName}</span>}
+                {data?.node.userprofile.customuser.fullName && <span className={`m-0 leading-snug font-semibold italic text-blue-950 w-[35mm] whitespace-normal ${data.node.userprofile.customuser.fullName.length > 25 ? "text-[11px]" : "text-14px"}`}>{(data.node.userprofile.customuser.fullName ? data.node.userprofile.customuser.fullName.length : 0) > 34 ? data.node.userprofile.customuser.fullName.slice(0, 34) + "." : data.node.userprofile.customuser.fullName}</span>}
               </p>
 
               <p className="flex h-[5mm] items-center mb-[1mm]">
                 <span className="italic text-[8px] text-black text-gray-950 w-[31mm]">Matricule:</span>
-                <span className="font-semibold italic text-blue-950 text-left w-full">{data?.node.userprofile.user.matricle}</span>
+                <span className="font-semibold italic text-blue-950 text-left w-full">{data?.node.userprofile.customuser.matricle}</span>
               </p>
               <p className="flex items-center">
                 <span className="flex flex-col italic leading-none text-[7px] text-black text-gray-950 w-[20mm]">
                   <span className="h-[3mm] text-black">Date & Place of Birth:</span>
                   <span className="h-[3mm] text-black">Date & Lieu de N:</span>
                 </span>
-                <span className="font-semibold italic leading-snug m-0 text-[8px] text-blue-950 text-center tracking-wider">{data?.node.userprofile.user.dob}, {data?.node.userprofile.user.pob.slice(0, 27)}</span>
+                <span className="font-semibold italic leading-snug m-0 text-[8px] text-blue-950 text-center tracking-wider">{data?.node.userprofile.customuser.dob}, {data?.node.userprofile.customuser.pob.slice(0, 27)}</span>
               </p>
               <p className="flex items-center">
                 <span className="italic text-[8px] text-black text-gray-950 w-[31mm]">Filiere/Specialty:</span>

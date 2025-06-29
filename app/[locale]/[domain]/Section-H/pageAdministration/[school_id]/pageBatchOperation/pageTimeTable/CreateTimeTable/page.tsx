@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { getData, removeEmptyFields } from '@/functions'
+import getApolloClient, { errorLog, getData, removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 
@@ -8,22 +8,24 @@ const page = async ({
     params,
     searchParams,
 }: {
-    params: { school_id: string, domain: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams?: any;
 }) => {
 
-    const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+    const client = getApolloClient(p.domain);
     let data;
 
     try {
-        console.log(searchParams)
         let q: any = {
-            schoolId: parseInt(params.school_id),
+            schoolId: parseInt(p.school_id),
             timestamp: new Date().getTime()
         }
-        if (searchParams?.specialtyName) { q = { ...q, specialtyName: searchParams.specialtyName } }
-        if (searchParams?.academicYear) { q = { ...q, academicYear: searchParams.academicYear } }
-        if (searchParams?.level) { q = { ...q, level: searchParams.level } }
+        if (sp?.specialtyName) { q = { ...q, specialtyName: sp.specialtyName } }
+        if (sp?.academicYear) { q = { ...q, academicYear: sp.academicYear } }
+        if (sp?.level) { q = { ...q, level: sp.level } }
 
         const result = await client.query<any>({
             query: GET_SPECIALTIES,
@@ -32,19 +34,17 @@ const page = async ({
         });
         data = result.data;
     } catch (error: any) {
-        console.log(error, 81)
+        errorLog(error);
         if (error.networkError && error.networkError.result) {
             console.error('GraphQL Error Details:', error.networkError.result.errors);
         }
         data = null;
     }
 
-    console.log(data, 42)
-
     return (
         <div>
             <List 
-                params={params} 
+                params={p} 
                 data={data?.allSpecialties?.edges}
             />
         </div>

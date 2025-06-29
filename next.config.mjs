@@ -32,13 +32,17 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "images.pexels.com",
             },
-        ],
-        domains: [ 
-            "localhost",
-            "**.e-conneq.com",
-            "apibrains.localhost",
+            {
+                protocol: "http",
+                hostname: "localhost",
+            },
+            {
+                protocol: "http",
+                hostname: "apibrains.localhost",
+            },
         ],
     },
+    
     trailingSlash: true,
     experimental: {
         serverActions: {
@@ -48,12 +52,12 @@ const nextConfig = {
                 "vishi.e-conneq.com",
             ],
         },
-        turbo: {
-            rules: {
-                '*.svg': {
-                    loaders: ['@svgr/webpack'],
-                    as: '*.js',
-                },
+    },
+    turbopack: {
+        rules: {
+            '*.svg': {
+                loaders: ['@svgr/webpack'],
+                as: '*.js',
             },
         },
     },

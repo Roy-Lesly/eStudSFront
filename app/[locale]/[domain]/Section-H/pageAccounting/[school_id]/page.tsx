@@ -1,87 +1,109 @@
-import { Metadata } from 'next'
-import React from 'react'
-import Link from 'next/link'
-import SessionExpired from '@/section-h/common/SessionExpired'
-import { revalidatePath } from 'next/cache'
-import { getData } from '@/functions'
-import NotLoggedIn from '@/section-h/common/NotLoggedIn'
-import { getSession } from '@/serverActions/sessionAction'
-import Image from 'next/image'
-import { ConfigData, protocol } from '@/config'
-import { GetSchoolInfoInter } from '@/Domain/Utils-H/appControl/appInter'
-import { GetSchoolInfoUrl } from '@/Domain/Utils-H/appControl/appConfig'
+import { Metadata } from 'next';
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import getApolloClient from '@/functions';
+import { protocol, RootApi } from '@/config';
+import { gql } from '@apollo/client';
+import initTranslations from '@/initTranslations';
 
 
-interface PageProps {
-  id: number
-  title: string
-  link: string
-}
-const page = async ({
-  params,
-  searchParams,
+const Page = async ({
+  params
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const domain = params.domain
+  const p = await params;
+  // const sp = await searchParams;
 
-  const session = await getSession();
-  const apiSchool: GetSchoolInfoInter[] | any = await getData(protocol + "api" + domain + GetSchoolInfoUrl, { nopage: true, id: params.school_id }, params.domain)
+  const { t } = await initTranslations(p.locale, ["common"])
+  const { domain, school_id } = p;
 
-  if (!session.isLoggedIn) {
-    return <NotLoggedIn />
+  const client = getApolloClient(p.domain);
+  let data;
+  try {
+    const result = await client.query<any>({
+      query: GET_DATA,
+      variables: {
+        id: school_id,
+        timestamp: new Date().getTime()
+      },
+      fetchPolicy: 'no-cache'
+    });
+    data = result.data;
+  } catch (error: any) {
+    errorLog(error);
+    data = null;
   }
 
-  if (session.isLoggedIn) {
-    revalidatePath("/Section-H/pageAdministration")
 
-    if (new Date(session.exp) < new Date()) {
-      return <SessionExpired />
-    }
-
-    return (
-
-      <>
-        {apiSchool && apiSchool.length == 1 &&
-          <div className='flex flex-col gap-20 h-screen items-center justify-center px-10 tracking-widest'>
-                  <div className="hidden md:flex">
-        <Image
-          width={200}
-          height={200}
-          src={ConfigData[domain]["higher"].logo512}
-          alt="Logo"
-          style={{ borderRadius: 150 }}
-          priority
-        />
-      </div>
-
-      <div className="flex md:hidden">
-        <Image
-          width={130}
-          height={130}
-          src={ConfigData[domain]["higher"].logo256}
-          alt="Logo"
-          style={{ borderRadius: 150 }}
-          priority
-        />
-      </div>
-            <div className='flex flex-col font-bold gap-10 items-center justify-center md:text-4xl text-2xl'>
-              <div>WELCOME TO</div>
-              <div className='flex text-center' >{apiSchool[0].school_name}</div>
-            </div>
-            <Link href={`/Section-H/pageAccounting/${params.school_id}/pageDashboard`} className="bg-bluedark font-medium px-10 py-2 rounded text-white text-xl">Continue</Link>
+  return (
+    <>
+      {data && data?.allSchoolInfos?.edges.length === 1 && (
+        <main className="flex flex-col gap-20 items-center justify-center min-h-screen px-10 tracking-widest">
+          {/* School Logo */}
+          <div>
+            <Image
+              width={200}
+              height={200}
+              src={`${protocol}api${domain}${RootApi}/media/` + data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
+              alt={`${data.allSchoolInfos?.edges[0].node?.schoolName || 'School'} Logo`}
+              className="hidden md:block rounded-full"
+              priority
+            />
+            <Image
+              width={130}
+              height={130}
+              src={`${protocol}api${domain}${RootApi}/media/` + data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
+              alt={`${data.allSchoolInfos?.edges[0].node?.schoolName || 'School'} Logo`}
+              className="block md:hidden rounded-full"
+              priority
+            />
           </div>
-        }
-      </>
 
-    )
-  }
-}
+          {/* Welcome Message */}
+          <div className="flex flex-col font-bold gap-10 items-center text-center">
+            <h1 className="md:text-4xl text-2xl">{t("Welcome").toUpperCase()}</h1>
+            <h2 className="md:text-4xl text-2xl">{data.allSchoolInfos?.edges[0].node?.schoolName || 'School Name'}</h2>
+          </div>
 
-export default page
+          {/* Continue Button */}
+          <Link
+            href={`/${domain}/Section-H/pageAccounting/${school_id}/pageDashboard`}
+            className="bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium hover:bg-blue-700 px-10 py-2 rounded-md text-white text-xl transition"
+          >
+            Continue
+          </Link>
+        </main>
+      )}
+    </>
+  );
+};
+
+export default Page;
 
 export const metadata: Metadata = {
-  title: "Accounting-Page",
+  title: 'Admin Page | School Management',
+  description: 'Access the administration page for your school management system.',
+  keywords: 'school management, admin page, education system, dashboard',
+  robots: 'index, follow',
+  viewport: 'width=device-width, initial-scale=1.0',
 };
+
+
+const GET_DATA = gql`
+  query GetData (
+    $id: ID!
+  ) {
+    allSchoolInfos (
+      id: $id
+    ) {
+      edges {
+        node {
+          id campus address schoolName schoolIdentification { id logo }
+        }
+      }
+    }
+  }`

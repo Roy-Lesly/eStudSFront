@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { getData, removeEmptyFields } from '@/functions'
+import getApolloClient, { errorLog, getData, removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 
@@ -8,18 +8,20 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams?: any;
 }) => {
 
+  const p = await params;
+  const sp = await searchParams;
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.fullName = searchParams?.fullName ? searchParams.fullName : ""
-  paginationParams.telephone = searchParams?.telephone ? searchParams.telephone : ""
-  paginationParams.sex = searchParams?.sex ? searchParams.sex : ""
+  paginationParams.fullName = sp?.fullName ? sp.fullName : ""
+  paginationParams.telephone = sp?.telephone ? sp.telephone : ""
+  paginationParams.sex = sp?.sex ? sp.sex : ""
 
   const t = removeEmptyFields(paginationParams)
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let dataAdmins;
   let dataLects;
 
@@ -29,14 +31,14 @@ const page = async ({
       query: GET_DATA_ADMIN,
       variables: {
         ...t,
-        schoolId: parseInt(params.school_id),
+        schoolId: parseInt(p.school_id),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     dataAdmins = result.data;
   } catch (error: any) {
-    
+
     dataAdmins = null;
   }
 
@@ -47,24 +49,25 @@ const page = async ({
       query: GET_DATA_LECTURERS,
       variables: {
         ...t,
-        schoolId: parseInt(params.school_id),
+        schoolId: parseInt(p.school_id),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     dataLects = result.data;
   } catch (error: any) {
-    console.log(error)
-    
+    errorLog(error);
+
     dataLects = null;
   }
 
-  console.log("Lecturers => View")
-
-
   return (
     <div>
-      <List params={params} data={ {"admins": dataAdmins, lects: dataLects} } searchParams={searchParams} />
+      <List
+        params={p}
+        data={{ "admins": dataAdmins, "lects": dataLects }}
+        searchParams={sp}
+      />
     </div>
   )
 }
@@ -82,8 +85,15 @@ const GET_DATA_LECTURERS = gql`
   $schoolId: Decimal!,
   $fullName: String,
   $telephone: String,
-  $sex: UserControlCustomUserSexChoices,
+  $sex: String,
 ) {
+  allDepartments {
+    edges {
+      node {
+        id name
+      }
+    }
+  }
   allCustomUsers(
     isActive: true
     schoolId: $schoolId
@@ -96,7 +106,10 @@ const GET_DATA_LECTURERS = gql`
   ) {
     edges {
       node {
-        id firstName lastName fullName username sex dob pob address telephone email lastLogin title 
+        id firstName lastName fullName 
+        username sex dob pob address telephone
+        email lastLogin title nationality
+        highestCertificate regionOfOrigin yearObtained 
       }
     }
   }
@@ -107,7 +120,7 @@ const GET_DATA_ADMIN = gql`
   $schoolId: Decimal!,
   $fullName: String,
   $telephone: String,
-  $sex: UserControlCustomUserSexChoices,
+  $sex: String,
 ) {
   allCustomUsers(
     isActive: true
@@ -121,7 +134,10 @@ const GET_DATA_ADMIN = gql`
   ) {
     edges {
       node {
-        id firstName lastName fullName username sex dob pob address telephone email lastLogin title 
+        id firstName lastName fullName 
+        username sex dob pob address telephone
+        email lastLogin title 
+        nationality highestCertificate regionOfOrigin yearObtained 
       }
     }
   }

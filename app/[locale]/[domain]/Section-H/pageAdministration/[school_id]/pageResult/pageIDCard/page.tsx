@@ -1,8 +1,7 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { removeEmptyFields } from '@/functions'
+import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
-import { AllUserProfilesResponse } from '@/Domain/schemas/interfaceGraphql'
 import List from './List'
 
 
@@ -10,21 +9,24 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | undefined };
+  params: any;
+  searchParams: any;
 }) => {
+
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = { };
   
-  paginationParams.specialtyName = searchParams?.specialtyName
-  paginationParams.academicYear = searchParams?.academicYear
-  paginationParams.level = parseInt(searchParams?.level || "")
-  paginationParams.schoolId = parseInt(params.school_id)
+  paginationParams.specialtyName = sp?.specialtyName
+  paginationParams.academicYear = sp?.academicYear
+  paginationParams.level = parseInt(sp?.level || "")
+  paginationParams.schoolId = parseInt(p.school_id)
 
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let data;
   let dataExtra;
-  if (searchParams?.academicYear && searchParams?.level ) {
+  if (sp?.academicYear && sp?.level ) {
     try {
       const result = await client.query<any>({
         query: GET_DATA,
@@ -36,7 +38,7 @@ const page = async ({
       });
       data = result.data;
     } catch (error: any) {
-      console.log(error, 39)
+      errorLog(error);
       data = null;
     }
   }
@@ -47,12 +49,13 @@ const page = async ({
     });
     dataExtra = result.data;
   } catch (error: any) {
+    errorLog(error)
     dataExtra = null;
   }
 
   return (
     <div>
-      <List params={params} data={data} dataExtra={dataExtra} searchParams={searchParams} />
+      <List params={p} data={data} dataExtra={dataExtra} searchParams={sp} />
     </div>
   )
 }

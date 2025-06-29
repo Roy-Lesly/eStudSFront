@@ -40,13 +40,11 @@ const StudentsForm = ({
     sex: z.enum(["Male", "Female"]),
     telephone: z.coerce.number().int().gte(610000000).lte(699999999).refine(async (e) => {
       const telephones = await getData(protocol + "api" + params.domain + GetCustomUserUrl, { nopage: true, telephone: e }, params.domain);
-      console.log("telephone found", telephones, telephones.count)
       if (telephones && telephones.count) return false;
       else return true
     }, "This telephone exist already"),
     email: z.string().min(1, { message: "This field has to be filled." }).email("This is not a valid email.").refine(async (e) => {
       const emails = await getData(protocol + "api" + params.domain + GetCustomUserUrl, { nopage: true, email: e }, params.domain);
-      console.log("email found", emails.count)
       if (emails && emails.count) return false;
       else return true
     }, "This email exist already"),
@@ -94,7 +92,7 @@ const StudentsForm = ({
             nopage: true, school_id: params.school_id,
             "domain_id": selectedDomainID, "level_id": selectedLevelID, "academic_year": selectedYear,
           }, params.domain)
-          console.log(response, 97)
+         
           if (response && response.length) {
             setSpecialtyData(response)
           };
@@ -146,20 +144,16 @@ const StudentsForm = ({
       const call = async () => {
         // Pre-Inscription
         const response1 = await ActionCreate(newData, SchemaCreateEditPreIncription, protocol + "api" + params.domain + PreInscriptionUrl)
-        console.log("studentform 149 preReg -1", response1)
         const t1 = await handleResponseError(response1, ["username", "telephone", "email", "full_name", "dob"]);
 
         // Create CustomUser Student
         if (t1 == "" && response1 && response1.id) {
           const response2 = await ActionCreate(newData, SchemaCreateEditCustomUser, protocol + "api" + params.domain + CustomUserUrl)
-          console.log("studentform 149 custUser -2", response2)
-          console.log("studentform 149 custUser -157", newProfileData)
           const t2 = await handleResponseError(response2, ["username", "telephone", "email", "full_name", "dob"]);
 
           // Create UserProfile Student
           if (t2 == "" && response2 && response2.id) {
             const response3 = await ActionCreate({ ...newProfileData, user_id: response2.id }, SchemaCreateEditUserProfile, protocol + "api" + params.domain + UserProfileUrl)
-            console.log("studentform 161 userprofile -3", response3)
             const t3 = await handleResponseError(response2, ["username", "telephone", "email", "full_name", "dob"]);
             if (t3 == "" &&  response3 && response3.id) {
               router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription/Admitted?created="SUCCESSFULLY (${response3.id}) !!!`);
@@ -174,11 +168,6 @@ const StudentsForm = ({
     }
 
   });
-
-  console.log(specialtyData)
-  console.log(selectedDomainID)
-  console.log(selectedLevelID)
-  console.log(selectedYear )
 
   return (
     <>

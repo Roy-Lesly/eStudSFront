@@ -48,7 +48,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
       // sys_category_id: formVals.sys_category_id
     }
     const call = async () => {
-      const response = await ActionEdit(newData, data.node.userprofile.user.id, SchemaCreateEditCustomUser, protocol + "api" + params.domain + CustomUserUrl, params.domain)
+      const response = await ActionEdit(newData, data.node.userprofile.customuser.id, SchemaCreateEditCustomUser, protocol + "api" + params.domain + CustomUserUrl, params.domain)
       if (response && response.id) {
         router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Info?updated="SUCCESSFULLY (${response.id}) !!!`);
       }
@@ -74,7 +74,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
 
                   <div className="flex flex-col gap-4 md:flex-row md:gap-10 w-full">
                     <div className="flex flex-row gap-2 w-1/3">
-                      <h1>Student's ID Card</h1>
+                      <h1>Student&apos;s ID Card</h1>
                       <MessageModal table="student_id_card" type="create"
                         params={params} icon={<FaArrowRight />} data={data}
                         extra_data={ {link: `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${params.student_id}/Fees`}}
@@ -83,7 +83,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Matricle"
                       name="matricle"
-                      defaultValue={data?.node.userprofile.user.matricle}
+                      defaultValue={data?.node.userprofile.customuser.matricle}
                       register={register}
                       readOnly={true}
                     />
@@ -93,7 +93,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="First Name"
                       name="first_name"
-                      defaultValue={data?.node.userprofile.user.firstName}
+                      defaultValue={data?.node.userprofile.customuser.firstName}
                       register={register}
                       error={errors?.first_name}
                       readOnly={true}
@@ -101,7 +101,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Last Name"
                       name="last_name"
-                      defaultValue={data?.node.userprofile.user.lastName}
+                      defaultValue={data?.node.userprofile.customuser.lastName}
                       register={register}
                       error={errors?.last_name}
                       readOnly={true}
@@ -112,7 +112,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Gender"
                       name="sex"
-                      defaultValue={data?.node.userprofile.user.sex}
+                      defaultValue={data?.node.userprofile.customuser.sex}
                       register={register}
                       error={errors?.sex}
                       readOnly={true}
@@ -120,7 +120,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Date of Birth"
                       name="dob"
-                      defaultValue={data?.node.userprofile.user.dob}
+                      defaultValue={data?.node.userprofile.customuser.dob}
                       register={register}
                       error={errors?.dob}
                       readOnly={true}
@@ -128,7 +128,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Date of Birth"
                       name="pob"
-                      defaultValue={data?.node.userprofile.user.pob}
+                      defaultValue={data?.node.userprofile.customuser.pob}
                       register={register}
                       error={errors?.pob}
                       readOnly={true}
@@ -139,7 +139,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Telephone"
                       name="telephone"
-                      defaultValue={data?.node.userprofile.user.telephone}
+                      defaultValue={data?.node.userprofile.customuser.telephone}
                       register={register}
                       error={errors?.telephone}
                     />
@@ -147,7 +147,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Email"
                       name="email"
-                      defaultValue={data?.node.userprofile.user.email}
+                      defaultValue={data?.node.userprofile.customuser.email}
                       register={register}
                       error={errors?.email}
                     />
@@ -178,7 +178,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Parent Name"
                       name="parent"
-                      defaultValue={data?.node.userprofile.user.parent}
+                      defaultValue={data?.node.userprofile.customuser.parent}
                       register={register}
                       error={errors?.parent}
                     />
@@ -186,7 +186,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Parent Telephone"
                       name="parent_telephone"
-                      defaultValue={data?.node.userprofile.user.parentTelephone}
+                      defaultValue={data?.node.userprofile.customuser.parentTelephone}
                       register={register}
                       error={errors?.parent_telephone}
                     />
@@ -197,7 +197,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="About Me"
                       name="about"
-                      defaultValue={data?.node.userprofile.user.about}
+                      defaultValue={data?.node.userprofile.customuser.about}
                       register={register}
                       error={errors?.about}
                     />

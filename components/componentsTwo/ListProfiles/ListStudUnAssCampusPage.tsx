@@ -33,7 +33,6 @@ const columns = [
 
 const ListStudUnAssCampusPage = async ({ params, data, extra_data }: { params: any, data: GetUserProfileInter[] | any, extra_data: any[] }) => {
 
-  console.log(extra_data, 41)
   const renderRow = (item: GetUserProfileInter, index: number) => (
     <tr
       key={item.id}

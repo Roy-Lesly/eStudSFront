@@ -1,5 +1,7 @@
 import { jwtDecode } from "jwt-decode";
+import { useParams } from "next/navigation";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { FaCog, FaUserShield, FaChartPie } from "react-icons/fa"; // Example icons
 
 // Define types for the menu structure
@@ -15,7 +17,10 @@ type MenuSection = {
   menuItems: MenuItem[];
 };
 
-export const getMenuMenuAccounting = (params: { school_id: string; domain: string; pageTitle: string }): MenuSection[] => {
+export const GetMenuAccounting = () => {
+    const { t } = useTranslation();
+    const { school_id, domain } = useParams();
+    
   if (typeof window === "undefined") {
     return [];  // Return empty array or handle server-side logic here
   }
@@ -23,50 +28,50 @@ export const getMenuMenuAccounting = (params: { school_id: string; domain: strin
   const token = localStorage.getItem("token");
   const user = token ? jwtDecode<{ page: string[] }>(token) : null;
 
-  console.log(user)
-
   return [
     {
       name: "MENU",
       menuItems: [
 
-        // ...(user?.page.map((item: string) => item.toUpperCase()).includes("ACCOUNTING")
-        //   ? [
-        //     {
-        //       icon: <FaCog />,
-        //       label: "Management",
-        //       route: "#",
-        //       children: [
-        //         { label: "Login Performance", route: `/${params.domain}/Section-H/pageAccounting/${params.school_id}/pageManagement/pageLogins`, icon: <FaCog /> },
-        //         { label: "Payment Status", route: `/${params.domain}/Section-H/pageAccounting/${params.school_id}/pageManagement/pagePayments`, icon: <FaCog /> },
-        //         { label: "Portal Control", route: `/${params.domain}/Section-H/pageAccounting/${params.school_id}/pageManagement/pagePayments`, icon: <FaCog /> },
-        //       ],
-        //     },
-        //   ]
-        //   : []),
+        ...(user?.page.map((item: string) => item.toUpperCase()).includes("MANAGEMENT")
+                  ? [
+                    {
+                      icon: <FaCog />,
+                      label: `${t("Management")}`,
+                      route: "#",
+                      children: [
+                        { label: `${t("Dashboard")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageDashboard`, icon: <FaCog /> },
+                        { label: `${t("User Management")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageUserManagement`, icon: <FaCog /> },
+                        { label: `${t("Audit Finance")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageFinancial`, icon: <FaCog /> },
+                        { label: `${t("Audit Results")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageResultAudit`, icon: <FaCog /> },
+                        { label: `${t("System Updates")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageSystemUpdates`, icon: <FaCog /> },
+                      ],
+                    },
+                  ]
+                  : []),
 
         {
           icon: <FaChartPie />,
           label: "Dashboard",
-          route: `/${params.domain}/Section-H/pageAccounting/${params.school_id}/pageDashboard`,
+          route: `/${domain}/Section-H/pageAccounting/${school_id}/pageDashboard`,
         },
 
         {
           icon: <FaChartPie />,
           label: "System Counts",
-          route: `/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemCounts`,
+          route: `/${domain}/Section-H/pageAccounting/${school_id}/AnalysisSystemCounts`,
         },
 
         {
           icon: <FaChartPie />,
           label: "Income Domain",
-          route: `/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeDomain`,
+          route: `/${domain}/Section-H/pageAccounting/${school_id}/AnalysisSystemIncomeDomain`,
         },
 
         {
           icon: <FaChartPie />,
           label: "Income Specialty",
-          route: `/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeSpecialty`,
+          route: `/${domain}/Section-H/pageAccounting/${school_id}/AnalysisSystemIncomeSpecialty`,
         },
 
       ],

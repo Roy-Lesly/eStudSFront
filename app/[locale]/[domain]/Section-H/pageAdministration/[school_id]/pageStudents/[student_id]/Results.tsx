@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { EdgeResult, EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import FeesCheck from './Comps/FeesCheck';
 import ResultsEdit from './Comps/ResultsEdit';
-import ResultSlip from '@/[locale]/[domain]/Section-H/pageStudent/[userprofile_id]/ResultSlip';
+import ResultSlip from '@/[locale]/[domain]/Section-H/pageStudent//[userprofile_id]/ResultSlip';
 
 const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolFees, params: any }) => {
   const [selectedSemester, setSelectedSemester] = useState<string>('I');
@@ -29,7 +29,7 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          {data?.[0]?.node?.student?.user?.fullName || "Student Name"}
+          {data?.[0]?.node?.student?.customuser?.fullName || "Student Name"}
         </motion.h1>
         <motion.h2
           className="text-gray-700 text-lg"
@@ -68,6 +68,7 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
             {data && data.length ? <ResultSlip
               data={data}
               schoolFees={fees.node}
+              resitPublished={true}
               semester={selectedSemester}
             /> : null}
           </FeesCheck>
@@ -92,8 +93,8 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
           semester={selectedSemester}
           link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${params.student_id}`}
         >
-          {selectedSemester === 'I' ? <ResultsEdit canEdit={true} data={data.filter((item) => item.node.course.semester === "I")} /> : null}
-          {selectedSemester === 'II' ? <ResultsEdit canEdit={true} data={data.filter((item) => item.node.course.semester === "II")} /> : null}
+          {selectedSemester === 'I' ? <ResultsEdit params={params} canEdit={true} data={data.filter((item) => item.node.course.semester === "I")}  /> : null}
+          {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={true} data={data.filter((item) => item.node.course.semester === "II")}  /> : null}
 
         </FeesCheck>
 

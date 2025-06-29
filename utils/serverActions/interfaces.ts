@@ -66,6 +66,7 @@ export interface JwtPayload {
     dept?: any;
     page?: any;
     school?: any;
+    language?: string[];
     last_login?: any;
 }
 

@@ -2,7 +2,7 @@
 
 import React, { FC, useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
@@ -16,12 +16,13 @@ import ExcelExporter from '@/ExcelExporter';
 import ButtonAction from '@/section-h/Buttons/ButtonAction';
 import MyModal from '@/MyModals/MyModal';
 import { FaPlus } from 'react-icons/fa';
-import { FaArrowRightLong, FaRightLong } from 'react-icons/fa6';
+import { FaRightLong } from 'react-icons/fa6';
 import PerformanceCourse from './PerformanceCourse';
 import ModalCUDMainCourse from '@/MyModals/ModalCUDMainCourse';
 import ModalCUDCourse from '@/MyModals/ModalCUDCourse';
 import ServerError from '@/ServerError';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
 
 const List = ({ params, data, searchParams, admins }: { params: any; data: any, searchParams: any, admins: any }) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState(0);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
@@ -40,13 +42,13 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
 
   const Columns: TableColumn<EdgeCourse>[] = [
     { header: "#", align: "center", render: (_item: EdgeCourse, index: number) => index + 1, },
-    { header: "Course Name", accessor: "node.mainCourse.courseName", align: "left" },
-    { header: "Class", accessor: "node.specialty.mainSpecialty.specialtyName", align: "left" },
-    { header: "Year", accessor: "node.specialty.academicYear", align: "center" },
-    { header: "level", accessor: "node.specialty.level.level", align: "center" },
-    { header: "Resit", accessor: "node.countResit", align: "center" },
+    { header: `${t("Course Name")}`, accessor: "node.mainCourse.courseName", align: "left" },
+    { header: `${t("Class")}`, accessor: "node.specialty.mainSpecialty.specialtyName", align: "left" },
+    { header: `${t("Year")}`, accessor: "node.specialty.academicYear", align: "center" },
+    { header: `${t("level")}`, accessor: "node.specialty.level.level", align: "center" },
+    { header: `${t("Resit")}`, accessor: "node.countResit", align: "center" },
     {
-      header: "View", align: "center",
+      header: `${t("View")}`, align: "center",
       render: (item) => <div className='flex flex-row gap-2 justify-center'>
         <ButtonAction data={item} type='edit' action={() => { setShowModal({ show: true, type: "update" }); setSelectedItem(item) }} />
         <ButtonAction data={item} type='delete' action={() => { setShowModal({ show: true, type: "delete" }); setSelectedItem(item) }} />
@@ -62,9 +64,9 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
 
   const ColumnsMain: TableColumn<EdgeMainCourse>[] = [
     { header: "#", align: "center", render: (_item: EdgeMainCourse, index: number) => index + 1, },
-    { header: "Course Name", accessor: "node.courseName", align: "left" },
+    { header: `${t("Course Name")}`, accessor: "node.courseName", align: "left" },
     {
-      header: "View", align: "center",
+      header: `${t("View")}`, align: "center",
       render: (item) => <div className='flex flex-row gap-2 justify-center'>
         <ButtonAction data={item} type='edit' action={() => { setShowModal({ show: true, type: "update" }); setSelectedItem(item) }} />
         <ButtonAction data={item} type='delete' action={() => { setShowModal({ show: true, type: "delete" }); setSelectedItem(item) }} />
@@ -106,7 +108,7 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -122,9 +124,9 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
       }
     >
       <Breadcrumb
-        department="Courses"
+        department={t('Courses')}
         subRoute="List"
-        pageName="Courses"
+        pageName={t('Courses')}
         mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/pageCourses/${params.profile_id}`}
         subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/pageCourses/${params.profile_id}`}
       />
@@ -138,7 +140,7 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
             <MyTabs
               tabs={[
                 {
-                  label: 'Courses', content: data?.allCourses?.edges.length ?
+                  label: `${t('Courses')}`, content: data?.allCourses?.edges.length ?
                     <>
                       {selectedCourse ?
                         <PerformanceCourse />
@@ -160,14 +162,14 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
                       }
                     </>
                     :
-                    <ServerError type="notFound" item="Courses" />,
+                    <ServerError type="notFound" item={t("Courses")} />,
                   icon: <button
                     className='bg-green-300 flex gap-2 p-2 rounded-full'
                     onClick={() => { setShowModal({ type: "create", show: true }); setSelectedItem(null) }}
                   ><FaPlus size={20} /></button>
                 },
                 {
-                  label: 'List Course', content: data?.allMainCourses?.edges.length ?
+                  label: `${t('Main Courses')}`, content: data?.allMainCourses?.edges.length ?
                     <MyTableComp
                       data={
                         data?.allMainCourses?.edges.sort((a: EdgeMainCourse, b: EdgeMainCourse) => {
@@ -178,7 +180,7 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
                       columns={ColumnsMain}
                     />
                     :
-                    <ServerError type="notFound" item="List Courses" />,
+                    <ServerError type="notFound" item={t("Main Courses")} />,
                   icon: <button
                     className='bg-green-300 flex gap-2 p-2 rounded-full'
                     onClick={() => { setShowModal({ type: "create", show: true }); setSelectedItem(null) }}

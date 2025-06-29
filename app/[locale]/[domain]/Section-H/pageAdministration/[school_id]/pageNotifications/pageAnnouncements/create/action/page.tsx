@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import { getData } from '@/functions'
 import { redirect } from 'next/navigation'
@@ -15,12 +14,13 @@ const page = async ({
     params,
     searchParams,
 }: {
-    params: { school_id: string,  domain: string, };
-    searchParams?: { [key: string]: string | string[] | undefined };
-}) => {
+    params: any;
+    searchParams: any;
+}) => { 
+    const p = await params; const sp = await searchParams;
 
     return (
-        <LayoutAdmin>
+        
             <>
                 <Breadcrumb
                     pageName="New Announcements"
@@ -31,7 +31,7 @@ const page = async ({
                 {searchParams && <CreateAnnouncements params={params} searchParams={searchParams} />}
 
             </>
-        </LayoutAdmin>
+        
     )
 }
 
@@ -72,10 +72,7 @@ const CreateAnnouncements = async ({ params, searchParams }: any) => {
         if (target == "domains" && domains) { data = { ...data, domains: [parseInt(domains.toString())] } }
         if (target == "specialty" && specialty) { data = { ...data, specialty: [parseInt(specialty.toString())] } }
 
-        console.log(data, 78)
-        // return
         const response = await ActionCreate(data, SchemaCreateEditNotifiation, protocol + "api" + params.domain + NotificationUrl, `/Section-H/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements`)
-        console.log(response, 81)
         if (response.id) {
             redirect(`/Section-H/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements`)
         }

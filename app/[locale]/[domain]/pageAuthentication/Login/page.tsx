@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import LoginForm from "./LoginForm";
 import { gql } from "@apollo/client";
-import getApolloClient from "@/functions";
+import getApolloClient from "@/utils/graphql/GetAppolloClient";
 
 
 const GET_DATA = gql`
@@ -21,10 +21,12 @@ const GET_DATA = gql`
 const Home = async ({
   params,
 }: {
-  params: { locale: string; domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+    params: any;
+    searchParams?: any;
 }) => {
-  const client = getApolloClient(params.domain);
+  const p = await params;
+
+  const client = getApolloClient(p.domain);
   let data = null;
 
   try {
@@ -40,7 +42,7 @@ const Home = async ({
     console.error(error);
   }
 
-  return <LoginForm schools={data?.allSchoolInfos?.edges} params={params} />;
+  return <LoginForm schools={data?.allSchoolInfos?.edges} params={p} />;
 };
 
 export default Home;

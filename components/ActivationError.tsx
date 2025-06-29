@@ -11,7 +11,7 @@ import ModalTransaction from '@/[locale]/[domain]/Section-H/pageAdministration/[
 const ActivationError = (
   { type, item, link, fees }
     :
-    { type: 'platform' | 'id' | "fees", item?: string, data?: EdgeSchoolFees, link?: string, fees?: EdgeSchoolFees }
+    { type: 'platform' | 'id' | "fees", item?: string, link?: string, fees?: EdgeSchoolFees }
 ) => {
   const params = useParams();
 
@@ -113,7 +113,12 @@ const ActivationError = (
         :
 
         showFees ?
-          <ModalTransaction setModalOpen={setShowFees} data={fees?.node} />
+          <ModalTransaction
+            setModalOpen={setShowFees}
+            p={null}
+            schoolFees={fees}
+            data={fees?.node}
+          />
           :
           showPlatform ?
             <>Platform</>

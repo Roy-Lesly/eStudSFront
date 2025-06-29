@@ -4,10 +4,8 @@ import MyLoadingModal from "@/section-h/common/MyButtons/MyLoadingModal";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState } from "react";
-// import LoginReconnect from "./formsAuth/LoginReconnect";
 
 // USE LAZY LOADING
-const LoginReconnect = dynamic(() => import("./formsAuth/LoginReconnect"), { loading: () => <MyLoadingModal />, });
 const UsersForm = dynamic(() => import("./formsProfiles/UsersForm"), { loading: () => <MyLoadingModal />, });
 const LecturersForm = dynamic(() => import("./formsProfiles/LecturersForm"), { loading: () => <MyLoadingModal />, });
 const StudentsForm = dynamic(() => import("./formsProfiles/StudentsForm"), { loading: () => <MyLoadingModal />, });
@@ -20,14 +18,12 @@ const MainCourseForm = dynamic(() => import("./formSettings/MainCourseForm"), { 
 const CourseForm = dynamic(() => import("./formSettings/CourseForm"), { loading: () => <MyLoadingModal /> });
 const SysCategoryForm = dynamic(() => import("./formsAdmin/SysCategoryForm"), { loading: () => <MyLoadingModal /> });
 const SysConstantForm = dynamic(() => import("./formsAdmin/SysConstantForm"), { loading: () => <MyLoadingModal /> });
-const ListAccountsUpdatePage = dynamic(() => import("./ListUtility/ListAccountsUpdatePage"), { loading: () => <MyLoadingModal /> });
 const AccountCreateForm = dynamic(() => import("./formsUtility/account/AccountCreateForm"), { loading: () => <MyLoadingModal /> });
 const DepartmentForm = dynamic(() => import("./formsAdmin/DepartmentForm"), { loading: () => <MyLoadingModal /> });
 const AccountForm = dynamic(() => import("./formsAdmin/AccountForm"), { loading: () => <MyLoadingModal /> });
 const LevelForm = dynamic(() => import("./formSettings/LevelForm"), { loading: () => <MyLoadingModal /> });
 const ProgramForm = dynamic(() => import("./formSettings/ProgramForm"), { loading: () => <MyLoadingModal /> });
 const CreateFeePreselectForm = dynamic(() => import("./formAccounting/CreateFeePreselectForm"), { loading: () => <MyLoadingModal /> });
-const PayPlatFormChargeForm = dynamic(() => import("./formsAdmin/PayPlatFormChargeForm"), { loading: () => <MyLoadingModal /> });
 const PayPlatFormAndIdCardForm = dynamic(() => import("./formsUtility/PayPlatFormAndIdCardForm"), { loading: () => <MyLoadingModal /> });
 const PayFeesForm = dynamic(() => import("./formsAdmin/PayFeesForm"), { loading: () => <MyLoadingModal /> });
 const AssignStudentToSpecialtyForm = dynamic(() => import("./formsProfiles/AssignStudentToSpecialtyForm"), { loading: () => <MyLoadingModal /> });
@@ -40,7 +36,6 @@ const TimeTableEditTimeSlotForm = dynamic(() => import("./formsTimeTable/TimeTab
 const forms: {
   [key: string]: (type: "create" | "update" | "delete" | "custom" | any, params: any, setOpen: any, data?: any, extra_data?: any) => JSX.Element;
 } = {
-  // login_reconnect: (type, params, setOpen, data, extra_data) => <LoginReconnect data={data} extra_data={extra_data} params={params} setOpen={setOpen} />,
   users: (type, params, setOpen, data, extra_data) => <UsersForm type={type} data={data} extra_data={extra_data} params={params} setOpen={setOpen} />,
   admins: (type, params, setOpen, data) => <AdminsForm type={type} data={data} params={params} setOpen={setOpen} />,
   lecturer: (type, params, setOpen, data) => <LecturersForm type={type} data={data} params={params} setOpen={setOpen} />,
@@ -58,12 +53,10 @@ const forms: {
   assign_student_to_specialty: (type, params, setOpen, data, extra_data) => <AssignStudentToSpecialtyForm type={type} data={data} params={params} setOpen={setOpen} extra_data={extra_data} />,
   sys_constant: (type, params, setOpen, data) => <SysConstantForm type={type} data={data} params={params} setOpen={setOpen} />,
   sys_category: (type, params, setOpen, data) => <SysCategoryForm type={type} data={data} params={params} setOpen={setOpen} />,
-  // accounts_update: (type, params, setOpen, data, extra_data ) => <ListAccountsUpdatePage type={type} data={data} params={params} setOpen={setOpen} extra_data={extra_data} />,
   accounts_create: (type, params, setOpen, data, extra_data) => <AccountCreateForm type={type} data={data} params={params} setOpen={setOpen} extra_data={extra_data} />,
   department: (type, params, setOpen, data) => <DepartmentForm type={type} data={data} params={params} setOpen={setOpen} />,
   account: (type, params, setOpen, data) => <AccountForm type={type} data={data} params={params} setOpen={setOpen} />,
   pay_fees: (type, params, setOpen, data, extra_data,) => <PayFeesForm type={type} params={params} data={data} setOpen={setOpen} extra_data={extra_data} />,
-  platform_charge: (type, params, setOpen, data, extra_data) => <PayPlatFormChargeForm type={type} params={params} setOpen={setOpen} data={data} extra_data={extra_data} />,
   platform_and_id_card: (type, params, setOpen, data, extra_data) => <PayPlatFormAndIdCardForm type={type} params={params} setOpen={setOpen} data={data} extra_data={extra_data} />,
   create_fees_preselect: (type, params, setOpen, data) => <CreateFeePreselectForm apiDomains={data} params={params} setOpen={setOpen} />,
   timetable_select_month: (type, params, setOpen, data) => <TimeTableSelectMonth data={data} type={type} params={params} setOpen={setOpen} />,

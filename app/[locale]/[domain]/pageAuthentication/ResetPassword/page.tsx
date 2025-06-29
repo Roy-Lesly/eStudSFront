@@ -1,24 +1,24 @@
 'use client';
 import React, {useState } from 'react';
-// import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useFormState } from 'react-dom';
 import { ActionResetPassword } from '@/serverActions/AuthActions';
 import Swal from 'sweetalert2';
 import { protocol } from '@/config';
 import { ResetPasswordEmail } from '@/Domain/configDom';
+import Link from 'next/link';
 
 
 const page = async ({
   params,
-  searchParams,
 }: {
-    params: { id: string | number, domain: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
+    params: any;
+    searchParams?: any;
 }) => {
+  const p = await params;
 
   return (
-    <CheckUserForm params={params} />
+    <CheckUserForm params={p} />
   )
 }
 
@@ -26,7 +26,6 @@ export default page;
 
 
 const CheckUserForm = ({ params }: any) => {
-  const [count, setCount] = useState<number>(0);
   const [attempts, setAttempts] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -96,8 +95,8 @@ const CheckUserForm = ({ params }: any) => {
             </form>
 
             <div className="flex items-center justify-between">
-              <a href={`/${params.domain}/pageAuthentication/Login`} className="bg-white dark:text-primary-500 font-medium hover:underline px-3 py-1 rounded text-primary-600 text-sm">Back To Login</a>
-              <a href={`/${params.domain}/pageAuthentication/PasswordAndToken`} className="bg-white dark:text-primary-500 font-medium hover:underline px-3 py-1 rounded text-primary-600 text-sm">Enter Token</a>
+              <Link href={`/${params.domain}/pageAuthentication/Login`} className="bg-white dark:text-primary-500 font-medium hover:underline px-3 py-1 rounded text-primary-600 text-sm">Back To Login</Link>
+              <Link href={`/${params.domain}/pageAuthentication/PasswordAndToken`} className="bg-white dark:text-primary-500 font-medium hover:underline px-3 py-1 rounded text-primary-600 text-sm">Enter Token</Link>
             </div>
           </div>
         </div>

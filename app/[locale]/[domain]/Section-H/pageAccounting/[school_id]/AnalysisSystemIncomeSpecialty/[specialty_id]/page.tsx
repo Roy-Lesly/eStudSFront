@@ -11,22 +11,26 @@ export const metadata: Metadata = {
 
 const page = async ({
   params,
-  searchParams,
+  searchParams
 }: {
-  params: any,
+    params: any,
   searchParams?: any
 }) => {
 
-  const client = getApolloClient(params.domain);
+   const p = await params;
+    const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let data;
   let dataYears;
-  if (params?.specialty_id) {
+
+  if (p?.specialty_id) {
     try {
       const result = await client.query<any>({
         query: GET_DATA,
         variables: {
-          schoolId: parseInt(params.school_id),
-          specialtyId: parseInt(params.specialty_id),
+          schoolId: parseInt(p.school_id),
+          specialtyId: parseInt(p.specialty_id),
           timestamp: new Date().getTime()
         },
         fetchPolicy: 'no-cache'
@@ -43,13 +47,11 @@ const page = async ({
       data = null;
     }
   }
-  console.log(data, 64)
-  console.log(params, 66)
 
   return (
     <div>
       <List 
-        params={params} 
+        params={p} 
         data={data?.transactionTotalsByStudent} 
       />
     </div>

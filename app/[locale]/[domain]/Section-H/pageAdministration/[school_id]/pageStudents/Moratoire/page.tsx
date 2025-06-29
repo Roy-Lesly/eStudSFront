@@ -1,35 +1,35 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 
 const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
+
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = {};
 
-  const date = new Date().getFullYear()
+  paginationParams.fullName = sp?.fullName
+  paginationParams.academicYear = sp?.academicYear
+  paginationParams.specialtyName = sp?.specialtyName
+  paginationParams.level = sp?.level
+  paginationParams.schoolId = parseInt(p.school_id)
 
-  paginationParams.fullName = searchParams?.fullName
-  paginationParams.academicYear = searchParams?.academicYear
-  paginationParams.specialtyName = searchParams?.specialtyName
-  paginationParams.level = searchParams?.level
-  paginationParams.schoolId = parseInt(params.school_id)
-  // paginationParams.level = parseInt(searchParams?.level ? Array.isArray(searchParams.level) ? searchParams.level[0] : searchParams.level : "")
-
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let dataPending;
   let dataApproved;
   let dataRejected;
   try {
-    console.log(removeEmptyFields(paginationParams))
     const resultP = await client.query<any>({
       query: GET_DATA_PENDING,
       variables: {
@@ -61,22 +61,20 @@ const page = async ({
     dataApproved = resultA.data;
     dataRejected = resultR.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error);
     dataPending = null;
     dataApproved = null;
     dataRejected = null;
   }
 
-  console.log(dataPending, "Moratoire => View")
-
   return (
     <div>
       <List
-        params={params}
+        params={p}
         dataPending={dataPending}
         dataApproved={dataApproved}
         dataRejected={dataRejected}
-        sp={searchParams}
+        sp={sp}
       />
     </div>
   )
@@ -119,7 +117,7 @@ const GET_DATA_PENDING = gql`
         approvedSchedule { amount dueDate }
         userprofile {
           id
-          user {
+          customuser {
             id fullName, matricle
           }
           specialty { 
@@ -127,7 +125,7 @@ const GET_DATA_PENDING = gql`
             level { level }
             mainSpecialty { specialtyName } 
           }
-          info
+          infoData
         }
       }
     }
@@ -165,7 +163,7 @@ const GET_DATA_APPROVED = gql`
         approvedSchedule { amount dueDate}
         userprofile {
           id
-          user {
+          customuser {
             id fullName, matricle
           }
           specialty { 
@@ -173,7 +171,7 @@ const GET_DATA_APPROVED = gql`
             level { level }
             mainSpecialty { specialtyName } 
           }
-          info
+          infoData
         }
       }
     }
@@ -211,7 +209,7 @@ const GET_DATA_REJECTED = gql`
         approvedSchedule { amount dueDate}
         userprofile {
           id
-          user {
+          customuser {
             id fullName, matricle
           }
           specialty { 
@@ -219,7 +217,7 @@ const GET_DATA_REJECTED = gql`
             level { level }
             mainSpecialty { specialtyName } 
           }
-          info
+          infoData
         }
       }
     }

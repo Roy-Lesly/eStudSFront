@@ -3,8 +3,8 @@
 import { JwtPayload } from "@/serverActions/interfaces";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
-import SessionExpired from "./SessionExpired";
 import NotAuthorized from "./NotAuthorized";
+import SessionExpired from "./SessionExpired";
 
 const DefaultLayout = ({
   domain,
@@ -47,7 +47,6 @@ const DefaultLayout = ({
               setAccess(false);
             }
           } else {
-            // setUser(decodedToken);
           }
         } else {
           setUser(null);
@@ -57,8 +56,7 @@ const DefaultLayout = ({
         setUser(null);
       }
     }
-  }, [])
-
+  }, [access])
 
 
   return (
@@ -83,7 +81,7 @@ const DefaultLayout = ({
                   :
                   <NotAuthorized domain={domain} />
                 :
-                <SessionExpired domain={domain} />
+                <SessionExpired />
               }
             </div>
           </main>

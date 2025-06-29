@@ -88,11 +88,12 @@ export interface ResultTranscript {
     courseName: string;
     ca: number;
     exam: number;
+    resit: number;
     average: number;
     WP: number;
     GP: number;
     GD: string;
-    resit: boolean;
+    hasResit: boolean;
 }
 
 export interface TransPerSemester {

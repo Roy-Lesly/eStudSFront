@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react'
-import getApolloClient, { decodeUrlID } from '@/functions';
+import getApolloClient, { decodeUrlID, errorLog } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 
@@ -8,34 +8,35 @@ const CourseManagementPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string, course_id: string };
+  params: any;
   searchParams?: any
 }) => {
 
-  const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
-        schoolId: parseInt(params.school_id),
-        courseId: parseInt(decodeUrlID(params.course_id)),
-        courseId2: parseInt(decodeUrlID(params.course_id)),
+        schoolId: parseInt(p.school_id),
+        courseId: parseInt(decodeUrlID(p.course_id)),
+        courseId2: parseInt(decodeUrlID(p.course_id)),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error, 30)
+    errorLog(error);
     data = null;
   }
 
-  console.log(data)
-
   return (
     <div>
-      <List params={params} data={data} searchParams={searchParams} />
+      <List params={p} data={data} searchParams={sp} />
     </div>
   )
 }

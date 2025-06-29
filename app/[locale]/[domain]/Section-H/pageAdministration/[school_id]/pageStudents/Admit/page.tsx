@@ -1,7 +1,7 @@
 import React from 'react'
 import Form from './Form'
 import { gql } from '@apollo/client'
-import getApolloClient from '@/functions'
+import getApolloClient, { errorLog } from '@/functions'
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -12,11 +12,14 @@ export const metadata: Metadata = {
 const page = async ({
   params,
 }: {
-  params: any,
-  searchParams?: any
+  params: any;
+  searchParams: any;
 }) => {
+
+  const p = await params;
+  // const sp = await searchParams;
   
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let data;
 
   try {
@@ -29,14 +32,14 @@ const page = async ({
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error);
     data = null;
   }
 
 
   return (
     <div>
-      <Form params={params} data={data} />
+      <Form params={p} data={data} />
     </div>
   )
 }

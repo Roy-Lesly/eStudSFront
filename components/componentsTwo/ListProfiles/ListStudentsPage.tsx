@@ -6,12 +6,12 @@ import { FaDownload, FaPlus } from "react-icons/fa6";
 import { getData } from "@/functions";
 import { protocol } from "@/config";
 import { AcademicYearUrl, GetDomainUrl, GetLevelUrl, GetSchoolInfoUrl } from "@/Domain/Utils-H/appControl/appConfig";
-import { GetDepartmentInter, GetUserProfileInter } from "@/Domain/Utils-H/userControl/userInter";
+import { GetDepartmentInter } from "@/Domain/Utils-H/userControl/userInter";
 import Link from "next/link";
 import { GetDepartmentUrl, GetProgramUrl } from "@/Domain/Utils-H/userControl/userConfig";
 import MessageModal from "../MessageModal";
 import SearchStudentProfile from "../SearchComponents/SearchStudentProfile";
-import { EdgeUserProfile, NodeUserProfile } from "@/Domain/schemas/interfaceGraphql";
+import { EdgeUserProfile } from "@/Domain/schemas/interfaceGraphql";
 
 
 const columns = [
@@ -72,12 +72,12 @@ const ListStudentsPage = async ({ params, searchParams, data }: { params: any, s
       className={`${TableRowClassName.all + " " + TableRowClassName.sm}`}
     >
       <td className="hidden md:table-cell">{index + 1}</td>
-      <td className="hidden md:table-cell">{item.node.user.matricle}</td>
-      <td className="table-cell">{item.node.user.fullName?.slice(0, 35)}</td>
+      <td className="hidden md:table-cell">{item.node.customuser.matricle}</td>
+      <td className="table-cell">{item.node.customuser.fullName?.slice(0, 35)}</td>
       <td className="hidden md:table-cell">{item.node.specialty?.mainSpecialty.specialtyName?.slice(0, 23)}</td>
       <td className="hidden md:table-cell">{item.node.specialty?.academicYear}</td>
       <td className="hidden md:table-cell">{item.node.specialty?.level.level}</td>
-      <td className="hidden md:table-cell">{item.node.user.telephone}</td>
+      <td className="hidden md:table-cell">{item.node.customuser.telephone}</td>
       <td>
         <div className="flex gap-2 items-center justify-center">
           <Link href={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/Info`} className="bg-bluedash px-2 py-1 rounded text-white">View</Link>
@@ -85,8 +85,6 @@ const ListStudentsPage = async ({ params, searchParams, data }: { params: any, s
       </td>
     </tr>
   );
-  
-  // console.log("data 88 ListStudentPage", data)
 
   return (
     <div className="bg-white flex-1 m-2 mt-1 p-2 rounded-md">

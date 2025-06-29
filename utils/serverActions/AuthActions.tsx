@@ -9,7 +9,6 @@ import { JwtPayload } from './interfaces';
 export const ActionLogin = async (loginData: unknown, url: string) => {
     var config = {}
     const result = SchemaLogin.safeParse(loginData);
-    console.log(result, 12)
     if (!result.success) {
         let errorMessage = "";
 
@@ -29,8 +28,6 @@ export const ActionLogin = async (loginData: unknown, url: string) => {
         params: "remove_payload",
         token: config
     })
-
-    console.log(response, 33)
     
     if (response) {
         if (response?.data) {
@@ -104,13 +101,11 @@ export const ActionCheckUser = async (checkData: unknown, url: string) => {
         params: "remove_payload",
         token: config    
     })
-    console.log(107, response)
 
     if (response) {
         if (response?.data) {
             return response.data
         }
-        console.log("error")
         return { response };
     }
     return { errors: "SERVER ERROR"}
@@ -177,8 +172,6 @@ export const ActionResetPassword = async (emailData: unknown, url: string) => {
         params: "remove_payload",
         token: {}
     })
-
-    console.log(183, response)
 
     if (response) {
         if (response?.data) {

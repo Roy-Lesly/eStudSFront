@@ -4,43 +4,44 @@ import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import MyPagination from '@/section-h/common/Pagination/MyPagination'
 import NotificationError from '@/section-h/common/NotificationError'
 import MyButtonCustom from '@/section-h/common/MyButtonCustom'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import { ProgramInter } from '@/Domain/Utils-H/userControl/userInter'
 import { protocol } from '@/config'
 import { ResetPasswordTokensUrl } from '@/Domain/configDom'
-import { getData } from '@/functions'
-import ServerError from '@/section-h/common/ServerError'
+import { getData } from '@/functions';
 import { redirect } from 'next/navigation'
+import ServerError from '@/components/ServerError'
 
 const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string,  domain: string, };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const apiData: ProgramInter[] | any = await getData(protocol  + "api" + params.domain + ResetPasswordTokensUrl, {}, params.domain);
-  console.log(27, apiData)
+  const p = await params;
+  const sp = await searchParams;
+
+  const apiData: ProgramInter[] | any = await getData(protocol  + "api" + p.domain + ResetPasswordTokensUrl, {}, p.domain);
   
   return (
-    <LayoutAdmin>
+    
       <>
         <Breadcrumb
           pageName="Password Tokens" 
           pageName1="Dashboard" 
           pageName2="Settings" 
-          link1={`/Section-H/pageAdministration/${params.school_id}`}
-          link2={`/Section-H/pageAdministration/${params.school_id}/pageUtilities`}
+          link1={`/Section-H/pageAdministration/${p.school_id}`}
+          link2={`/Section-H/pageAdministration/${p.school_id}/pageUtilities`}
         />
 
         {searchParams && <NotificationError errorMessage={searchParams} />}
-        {apiData == "ECONNREFUSED" && <ServerError />}
+        {apiData == "ECONNREFUSED" && <ServerError type='network' />}
         {apiData && apiData.unauthorized && redirect(`/pageAuthentication/pageSessionExpired`)}
         {apiData != "ECONNREFUSED" && <List apiData={apiData} params={params} />}
 
       </>
-    </LayoutAdmin>
+    
   )
 }
 

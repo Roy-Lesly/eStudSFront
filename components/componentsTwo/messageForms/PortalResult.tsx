@@ -47,10 +47,10 @@ const PortalResult = ({
       if (extra_data.portal_type === "resit") newPublishState = { portal_resit: extra_data.value };
 
       const newData = { ...data, ...newPublishState, specialty_id: data.specialty_id, semester: data.semester };
-      console.log(newData, "newData")
+
       const call = async () => {
         const response = await ActionEdit(newData, data.id.toString(), SchemaCreateEditPublish, `${protocol}api${params.domain}${PublishUrl}`, params.domain);
-        console.log(response)
+
         if (response.id === data.id) {
           router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pagePortals?success=Published Successfully ${response.id}`);
         }

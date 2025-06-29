@@ -7,10 +7,15 @@ import SelectDept from '../SelectDept';
 const EditPage = async ({
   params,
 }: {
-  params: { school_id: string, domain: string };
+  params: any;
+  searchParams: any;
 }) => {
 
-const client = getApolloClient(params.domain);
+  const p = await params;
+  // const sp = await searchParams;
+  
+
+const client = getApolloClient(p.domain);
     let data;
     try {
         const result = await client.query<any>({
@@ -22,13 +27,13 @@ const client = getApolloClient(params.domain);
         });
         data = result.data;
     } catch (error: any) {
-      data = null; console.log(error)
+      data = null; errorLog(error);
       
     }
 
   return (
     <div>
-    <SelectDept params={params} data={data} page="Accounting" />
+    <SelectDept params={p} data={data} page="Accounting" />
   </div>
   )
 }

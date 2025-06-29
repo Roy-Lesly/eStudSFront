@@ -68,7 +68,7 @@ const ListStudsSpecialtiesPage = async ({ params, data }: { params: any, data: E
       query: GET_ALL_USER_PROFILES,
       variables: {
         first: 10,
-        userId: decodeUrlID(data.node.user.id),
+        userId: decodeUrlID(data.node.customuser.id),
         schoolId: params.school_id,
       },
     });

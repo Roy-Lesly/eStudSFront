@@ -5,14 +5,13 @@ import Sidebar from '@/section-h/Sidebar/Sidebar';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
-import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
-import { getMenuMenuAccounting } from '@/section-h/Sidebar/MenuAccounting';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TransactionTotalsByStudent } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import ExcelExporter from '@/ExcelExporter';
+import { GetMenuAccounting } from '@/components/section-h/Sidebar/MenuAccounting';
 
 export const metadata: Metadata = {
   title: "Student Acount Details",
@@ -45,7 +44,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuMenuAccounting(params)}
+          menuGroups={GetMenuAccounting()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

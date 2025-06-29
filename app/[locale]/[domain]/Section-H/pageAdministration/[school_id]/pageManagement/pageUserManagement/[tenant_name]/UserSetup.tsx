@@ -33,7 +33,6 @@ const UserSetup = ({ user, setPage }: { user: EdgeCustomUser; setPage: any }) =>
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log("Updated user data:", formData);
-        // Implement API update logic here
     };
 
     return (

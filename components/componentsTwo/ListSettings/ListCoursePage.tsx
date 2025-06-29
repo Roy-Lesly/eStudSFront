@@ -92,8 +92,6 @@ const ListCoursePage = async ({ params, data, apiYears, lastYear }: { params: an
     </tr>
   );
 
-  console.log(data, 95)
-
   return (
     <div className="bg-white flex-1 m-2 mt-1 p-2 rounded-md">
 

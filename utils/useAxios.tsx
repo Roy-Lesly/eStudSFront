@@ -21,22 +21,14 @@ const useAxios = async (domain: string) => {
         expTime.setUTCSeconds(token.exp ? token.exp : 0);
         const isExpired = ( new Date().toISOString().slice(0, 16) > (expTime.toISOString().slice(0, 16)) )
         
-        // console.log(25, domain, isExpired, 15)
-
         if (!isExpired) { return req }
-
-        // console.log(32, protocol + "api" + domain + RefreshTokenUrl)
         const response = await axios.post(protocol + "api" + domain + RefreshTokenUrl, {
             refresh: session.refresh
         }).catch(
             (e: CustomAxiosError) => {
-                // console.log(37, e, "error useAxios")
                 return e.response
             }
         ) as AxiosResponse
-
-        // console.log(39, response.data, "useAxios")
-        // console.log(39, session.refresh, "useAxios")
 
         if (response.statusText == "Unauthorized") {
             return response.data
@@ -56,9 +48,6 @@ const useAxios = async (domain: string) => {
             session.isLoggedIn = true
             session.access = response.data.access
             session.refresh = session.refresh
-            console.log(63, session, "useAxios")
-            // await session.save();
-            // return session
         }
 
         req.headers.Authorization = `Bearer ${response.data.access}`

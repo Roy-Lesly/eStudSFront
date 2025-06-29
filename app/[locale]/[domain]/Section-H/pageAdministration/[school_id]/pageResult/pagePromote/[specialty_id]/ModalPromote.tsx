@@ -19,7 +19,7 @@ const ModalPromote: FC<ModalProps> = ({ profilesToPromote, onCancel, onPromote }
             {profilesToPromote.map((profile, index) => (
               <li key={profile.node.id} className="bg-gray-100 flex items-center justify-between p-1 rounded">
                 <div>
-                  <p className="font-semibold">{profile.node.user.fullName}</p>
+                  <p className="font-semibold">{profile.node.customuser.fullName}</p>
                 </div>
               </li>
             ))}

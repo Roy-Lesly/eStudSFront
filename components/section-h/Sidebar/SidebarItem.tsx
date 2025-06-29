@@ -2,20 +2,16 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SidebarDropdown from "./SidebarDropdown";
-import { MdWifiProtectedSetup } from "react-icons/md";
-import Moratoire from "@/[locale]/[domain]/Section-H/pageAdministration/[school_id]/pageStudents/[student_id]/Moratoire";
 
 const SidebarItem = ({ item, pageName, setPageName, params }: any) => {
   const handleClick = () => {
     const updatedPageName = pageName !== item.label.toLowerCase() ? item.label.toLowerCase() : "";
     if (!item.children){
-      console.log(item, 10)
     }
     return setPageName(updatedPageName);
   };
 
   const pathname = usePathname();
-  // console.log(pathname, 14)
 
   const isActive = (item: any) => {
     if (pathname.toLowerCase().includes(item.route)) return true;
@@ -23,10 +19,6 @@ const SidebarItem = ({ item, pageName, setPageName, params }: any) => {
   };
 
   const isItemActive = isActive(item);
-
-  // console.log(item, 25)
-  // console.log(pageName, 27)
-  // console.log(isItemActive, 28)
 
   return (
     <>

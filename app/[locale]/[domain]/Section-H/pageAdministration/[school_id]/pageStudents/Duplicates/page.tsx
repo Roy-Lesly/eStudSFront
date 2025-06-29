@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import React from 'react'
 import { gql } from '@apollo/client'
-import getApolloClient from '@/functions';
+import getApolloClient, { errorLog } from '@/functions';
 import List from './List';
 
 
@@ -9,11 +9,14 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let data;
 
   try {
@@ -26,13 +29,13 @@ const page = async ({
     });
     data = result.data;
   } catch (error: any) {
-    
+    errorLog(error)
     data = null;
   }
 
   return (
     <div>
-      <List params={params} data={data?.allCustomUserDuplicates?.edges} searchParams={searchParams} />
+      <List params={p} data={data?.allCustomUserDuplicates?.edges} searchParams={sp} />
     </div>
   )
 }

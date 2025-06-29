@@ -21,7 +21,7 @@ export default page
 //   searchParams,
 // }: {
 //   params: { userprofile_id: string, domain: string, specialty_id: string };
-//   searchParams?: { [key: string]: string | string[] | undefined };
+//   searchParams: any;
 // }) => {
 
 //   const profile: any = await getData(protocol + "api" + params.domain + GetUserProfileUrl, { id: params.userprofile_id, }, params.domain);

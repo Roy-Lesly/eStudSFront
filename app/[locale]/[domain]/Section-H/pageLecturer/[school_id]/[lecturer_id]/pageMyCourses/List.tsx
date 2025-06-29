@@ -9,7 +9,7 @@ import { Metadata } from 'next';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import { getMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
+import { GetMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { useTranslation } from 'react-i18next';
 
@@ -28,14 +28,13 @@ const List = ({ params, data }: { params: any; data: any }) => {
       domain={params.domain}
       searchComponent={
         <SearchMultiple
-          names={["courseName"]}
-          link={`/${params.domain}/Section-H/pageLecturer/${params.school_id}/${params.lecturer_id}/pageMyCourses`}
-        />
-      }
+          names={["courseName", "semester", "academicYear", "level"]}
+          link={`/${params.domain}/Section-H/pageLecturer/${params.school_id}/${params.lecturer_id}/pageMarksEntry`}
+        />}
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuLecturer(params)}
+          menuGroups={GetMenuLecturer(params)}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -79,13 +78,13 @@ const DataTable = ({ data }: { data: EdgeCourse[] }) => {
       render: (_item: EdgeCourse, index: number) => index + 1,
     },
     {
-      header: `${t("CourseCode")}`,
+      header: `${t("Course Code")}`,
       accessor: "node.courseCode",
       responsiveHidden: true,
       align: "left",
     },
     {
-      header: `${t("CourseName")}`,
+      header: `${t("Course Name")}`,
       accessor: "node.mainCourse.courseName",
       align: "left",
     },

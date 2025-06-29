@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import Specialty from './Specialty'
 
@@ -8,12 +7,14 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams?: any
 }) => {
+
+  const p = await params;
+  const sp = await searchParams;
   
   return (
-    <LayoutAdmin >
       <>
         <Breadcrumb
           pageName="Specialty" 
@@ -21,9 +22,9 @@ const page = async ({
           link1="/pageAdministration/pageResult" 
         />
 
-        <Specialty params={params} />
+        <Specialty params={p} />
       </>
-    </LayoutAdmin>
+    
   )
 }
 

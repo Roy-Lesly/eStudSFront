@@ -6,77 +6,46 @@ import CountChart from "@/componentsTwo/CountChart";
 import { protocol } from "@/config";
 import { AcademicYearUrl, GetLevelUrl } from "@/Domain/Utils-H/appControl/appConfig";
 import { GetDashCustomUserSexChartUrl, GetDashProfileSexChartUrl, GetDashSpecialtyLevelCountChartUrl, GetDashUserCardUrl } from "@/Domain/Utils-H/dashControl/dashConfig";
-import LayoutAdmin from "@/section-h/compAdministration/LayoutAdmin";
 import List from './List';
 
 const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, lecturer_id: string, course_id: string, domain: string };
-  searchParams?: any
+  params: any;
+  searchParams: any;
 }) => {
 
-
-
-
+  const p = await params;
+  const sp = await searchParams;
 
   const today = new Date()
-  const acadYears: any = await getData(protocol + "api" + params.domain + AcademicYearUrl, { school: params.school_id }, params.domain )
-  const apiLevels = await getData(protocol + "api" + params.domain + GetLevelUrl, { nopage: true }, params.domain )
+  const acadYears: any = await getData(protocol + "api" + p.domain + AcademicYearUrl, { school: p.school_id }, p.domain )
+  const apiLevels = await getData(protocol + "api" + p.domain + GetLevelUrl, { nopage: true }, p.domain )
   const sortedAcadYears = await acadYears?.results && acadYears?.results.sort((a: string, b: string) => a[3] < b[3] ? 1 : a[3] > b[3] ? -1 : 0)
 
-  const userCardData = sortedAcadYears && await getData(protocol + "api" + params.domain + GetDashUserCardUrl, {
-    academic_year: searchParams && Object.keys(searchParams).includes("academic_year") ? searchParams.academic_year : sortedAcadYears[0],
-    this_year: searchParams && Object.keys(searchParams).includes("this_year") ? searchParams.this_year : today.getFullYear(),
-    school: params.school_id
-  }, params.domain )
-  const profileSexChartData = sortedAcadYears && await getData(protocol + "api" + params.domain + GetDashProfileSexChartUrl, {
-    academic_year: searchParams && Object.keys(searchParams).includes("academic_year") ? searchParams.academic_year : sortedAcadYears[0],
-    this_year: searchParams && Object.keys(searchParams).includes("this_year") ? searchParams.this_year : today.getFullYear(),
-    school: params.school_id
-  }, params.domain )
+  const userCardData = sortedAcadYears && await getData(protocol + "api" + p.domain + GetDashUserCardUrl, {
+    academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
+    this_year: searchParams && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
+    school: p.school_id
+  }, p.domain )
+  const profileSexChartData = sortedAcadYears && await getData(protocol + "api" + p.domain + GetDashProfileSexChartUrl, {
+    academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
+    this_year: sp && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
+    school: p.school_id
+  }, p.domain )
   const specialtyLevelCountChartData = sortedAcadYears && await getData(protocol + "api" + params.domain + GetDashSpecialtyLevelCountChartUrl, {
-    academic_year: searchParams && Object.keys(searchParams).includes("academic_year") ? searchParams.academic_year : sortedAcadYears[0],
-    this_year: searchParams && Object.keys(searchParams).includes("this_year") ? searchParams.this_year : today.getFullYear(),
-    school: params.school_id
-  }, params.domain )
-
-
-
-    // const client = getApolloClient(params.domain);
-    // let data;
-    // try {
-    //   if (searchParams?.spec && params.course_id){
-    //     const result = await client.query<any>({
-    //       query: GET_DATA,
-    //       variables: {
-    //         courseId: parseInt(decodeUrlID(params.course_id)),
-    //         specialtyId: parseInt(decodeUrlID(searchParams.spec)),
-    //         semester: searchParams.sem,
-    //         schoolId: params.school_id,
-    //         timestamp: new Date().getTime()
-    //       },
-    //       fetchPolicy: 'no-cache'
-    //     });
-    //     data = result.data;
-    //   }
-    // } catch (error: any) {
-    //   console.log(error)
-    //   if (error.networkError && error.networkError.result) {
-    //     console.error('GraphQL Error Details:', error.networkError.result.errors);
-    //   }
-    //   data = null;
-    // }
-
+    academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
+    this_year: sp && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
+    school: p.school_id
+  }, p.domain )
 
 
   return (
     <div>
     <List
-      params={params} 
-      // data={data} 
-      searchParams={searchParams} 
+      params={params}
+      searchParams={sp} 
       apiLevels={apiLevels}
       userCardData={userCardData}
       profileSexChartData={profileSexChartData}

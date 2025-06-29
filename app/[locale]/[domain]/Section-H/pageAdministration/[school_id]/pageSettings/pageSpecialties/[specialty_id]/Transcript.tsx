@@ -2,13 +2,12 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { CombinedResultDataSpecialtyTranscript, ResultDataSpecialtyTranscript, ResultTranscript, SpecialtyAndSchoolInfo, TransPerSemester } from '@/Domain/schemas/interfaceGraphqlKPI';
+import { CombinedResultDataSpecialtyTranscript } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { BlobProvider, PDFViewer } from '@react-pdf/renderer';
-import TransOneYear from '../../../pageResult/pageTranscript/[school_fees_id]/Comps/TransOneYear';
+import BatchTransOneYear from '../../../pageResult/pageTranscript/[fees_id]/CompsBatch/BatchTransOneYear';
 
 const Transcript = ({ data, params, searchParams }: { data: CombinedResultDataSpecialtyTranscript | null, params: any, specialty_id: string, searchParams: any }) => {
 
-  console.log(data?.resultDataSpecialtyTranscript, 1515)
   const router = useRouter();
 
   return (
@@ -36,23 +35,12 @@ const Transcript = ({ data, params, searchParams }: { data: CombinedResultDataSp
             maxWidth: "1200px",
           }}
         >
-            <TransOneYear
+            <BatchTransOneYear
               dataResult={data?.resultDataSpecialtyTranscript?.filter((item: any) => item.platform)} 
               params={params} 
               dataHeader={data?.specialtyAndSchoolInfo} 
             />
           </PDFViewer>
-          // <BlobProvider
-          //   document={<TransOneYear
-          //     dataResult={data?.resultDataSpecialtyTranscript?.filter((item: any) => item.platform)} 
-          //     params={params} 
-          //     dataHeader={data?.specialtyAndSchoolInfo} 
-          //   />}
-          // >
-          //   {({ url, loading }) =>
-          //     loading ? <p className='flex items-center justify-center my-24'>Loading Preview...</p> : <iframe src={url || ""} width="100%" height="600px" />
-          //   }
-          // </BlobProvider>
         :
         <div>None</div>}
     </div>

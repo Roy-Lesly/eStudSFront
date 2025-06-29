@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Document,
     Page,
@@ -8,21 +8,25 @@ import {
     StyleSheet,
     Image,
     View,
-    Font,
 } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { pdf } from "@react-pdf/renderer";
 import { FiDownload } from "react-icons/fi";
 import { EdgeResult, NodeSchoolFees } from "@/Domain/schemas/interfaceGraphql";
 import { calcTotalandGrade } from "@/functions";
+import { QrCodeBase64 } from "@/components/QrCodeBase64";
+import { protocol, RootApi } from "@/utils/config";
+import { useParams } from "next/navigation";
 
 
-const MyPDF = ({ results, schoolFees, semester }: { results: EdgeResult[]; schoolFees: NodeSchoolFees, semester: "I" | "II" }) => {
+const MyPDF = (
+    { results, schoolFees, semester, qrCodeDataUrl, resitPublished }:
+        { results: EdgeResult[]; schoolFees: NodeSchoolFees, semester: "I" | "II", qrCodeDataUrl: string, resitPublished: boolean }
+) => {
     const schoolInfo = schoolFees?.userprofile?.specialty?.school;
     const profileInfo = schoolFees?.userprofile;
     const logoUrl = schoolFees?.userprofile?.specialty?.school?.schoolIdentification?.logo;
-    const codeUrl = schoolFees?.userprofile?.code;
-    console.log(schoolInfo, 24)
+
 
     return (
         <Document>
@@ -61,14 +65,15 @@ const MyPDF = ({ results, schoolFees, semester }: { results: EdgeResult[]; schoo
                         </View>
                     </View>
 
-                    {logoUrl && (
-                        <Image style={styles.logo} src={`https://apibrains.e-conneq.com/media/${codeUrl}`} />
-                    )}
+                    {logoUrl && <Image
+                        src={qrCodeDataUrl}
+                        style={styles.logo}
+                    />}
                 </View>
 
                 <View style={styles.studentInfo}>
                     <Text style={styles.studentLine}>
-                        {profileInfo?.user?.fullName}
+                        {profileInfo?.customuser?.fullName}
                     </Text>
                     <View style={styles.studentLineRow}>
                         <Text style={styles.studentLine}>Specialty: {profileInfo?.specialty?.mainSpecialty?.specialtyName}</Text>
@@ -92,27 +97,27 @@ const MyPDF = ({ results, schoolFees, semester }: { results: EdgeResult[]; schoo
                 {/* Table Rows */}
                 {results.map(({ node }, index) => {
                     const courseName = node.course?.mainCourse?.courseName || "-";
-                    const info = node.info ? JSON.parse(node.info) : {};
+                    const info = node.infoData ? JSON.parse(node.infoData) : {};
 
                     return (
                         <View key={index} style={[styles.tableRow, { fontSize: 9 }]}>
                             <Text style={[styles.courseNameCell, { paddingHorizontal: 3 }]}>
                                 {node.course.mainCourse.courseName}
                             </Text>
-                            <Text style={[styles.otherCell, info.ca < (schoolInfo.caLimit/2) ? styles.redText : {}]}>
+                            <Text style={[styles.otherCell, info.ca < (schoolInfo.caLimit / 2) ? styles.redText : {}]}>
                                 {info.ca ?? "-"}
                             </Text>
-                            <Text style={[styles.otherCell, info.exam < (schoolInfo.examLimit/2) ? styles.redText : {}]}>
+                            <Text style={[styles.otherCell, info.exam < (schoolInfo.examLimit / 2) ? styles.redText : {}]}>
                                 {info.exam ?? "-"}
                             </Text>
-                            <Text style={[styles.otherCell, info.resit < (schoolInfo.resitLimit/2) ? styles.redText : {}]}>
-                                {info.resit ?? "-"}
+                            <Text style={[styles.otherCell, info.resit < (schoolInfo.resitLimit / 2) ? styles.redText : {}]}>
+                                {resitPublished ? info.resit ?? "-" : ""}
                             </Text>
                             <Text style={[styles.otherCell, info.average < 50 ? styles.redText : {}]}>
-                                {info.average ?? "-"}
+                                {resitPublished ? info.average ? calcTotalandGrade(info.ca, info.exam, info.resit).mark : "-" : (calcTotalandGrade(info.ca, info.exam, null).mark)}
                             </Text>
                             <Text style={[styles.lastCell, info.average < 50 ? styles.redText : {}]}>
-                                {info.average ? calcTotalandGrade(info.ca, info.exam, info.resit).grade : "-"} {calcTotalandGrade(info.ca, info.exam, info.resit).withResit ? "*" : ""}
+                                {resitPublished ? info.average ? calcTotalandGrade(info.ca, info.exam, info.resit).grade : "-" : (calcTotalandGrade(info.ca, info.exam, null).grade)}
                             </Text>
                         </View>
                     );
@@ -126,19 +131,33 @@ const ResultSlip = ({
     data,
     schoolFees,
     semester,
+    resitPublished,
     fileName = `result-slip Semester-${semester}.pdf`,
 }: {
     data: EdgeResult[];
     schoolFees: NodeSchoolFees;
     semester: "I" | "II" | any;
+    resitPublished: boolean;
     fileName?: string;
 }) => {
+
+    const params = useParams();
+
+    const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+
+    useEffect(() => {
+        const url = `${protocol}${params.domain}${RootApi}/check/${schoolFees?.userprofile.id}/resultslip/?n=1`;
+        QrCodeBase64(url).then(setQrCodeDataUrl);
+    }, []);
+
     const handleDownload = async () => {
         const blob = await pdf(
             <MyPDF
                 results={data}
                 schoolFees={schoolFees}
                 semester={semester}
+                resitPublished={resitPublished}
+                qrCodeDataUrl={qrCodeDataUrl}
             />
         ).toBlob();
         saveAs(blob, fileName);
@@ -164,7 +183,7 @@ export default ResultSlip;
 
 const styles = StyleSheet.create({
     page: {
-        border: 2,
+        borderWidth: 2,
         borderRadius: 5,
         paddingHorizontal: 15,
         paddingVertical: 12,

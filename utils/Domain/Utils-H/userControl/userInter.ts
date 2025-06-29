@@ -45,7 +45,7 @@ export type DeptInter = {
 
 export type AppearanceInter = {
   id: number;
-  user: CustomUserInter;
+  customuser: CustomUserInter;
   dark_mode: string;
   lang: string;
 };

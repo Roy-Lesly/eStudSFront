@@ -9,10 +9,10 @@ import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import MyTabs from '@/MyTabs';
-import { getMenuMenuAccounting } from '@/section-h/Sidebar/MenuAccounting';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TransactionTotalsByDomain } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
+import { GetMenuAccounting } from '@/components/section-h/Sidebar/MenuAccounting';
 
 
 export const metadata: Metadata = {
@@ -68,7 +68,7 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuMenuAccounting(params)}
+          menuGroups={GetMenuAccounting()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -129,18 +129,18 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
                     :
                     <ServerError type="notFound" item="Income" />
                 },
-                {
-                  label: 'Others', content: data?.transactionTotalsByDomain?.length ?
-                        <MyTableComp
-                        data={
-                          data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
-                            return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
-                          })}
-                        columns={ColumnsOthers}
-                      />
-                    :
-                    <ServerError type="notFound" item="Income" />
-                },
+                // {
+                //   label: 'Others', content: data?.transactionTotalsByDomain?.length ?
+                //         <MyTableComp
+                //         data={
+                //           data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
+                //             return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
+                //           })}
+                //         columns={ColumnsOthers}
+                //       />
+                //     :
+                //     <ServerError type="notFound" item="Income" />
+                // },
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}

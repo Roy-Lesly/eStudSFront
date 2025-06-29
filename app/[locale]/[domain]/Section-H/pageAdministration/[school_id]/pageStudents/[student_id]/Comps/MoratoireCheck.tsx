@@ -1,8 +1,6 @@
 "use client";
 
 import { ReactNode } from "react";
-import ActivationError from "@/ActivationError";
-import { EdgeSchoolFees } from "@/Domain/schemas/interfaceGraphql";
 
 interface AccessGuardProps {
   children: ReactNode;

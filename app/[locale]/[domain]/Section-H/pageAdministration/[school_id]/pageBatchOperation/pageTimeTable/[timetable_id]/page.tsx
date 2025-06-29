@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { decodeUrlID } from '@/functions'
+import getApolloClient, { decodeUrlID, errorLog } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 
@@ -8,20 +8,21 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string, timetable_id: string };
-  searchParams?: { spec: string };
+  params: any;
+  searchParams?: any;
 }) => {
 
-  // const t = removeEmptyFields(paginationParams)
-  const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let dataAllTimeTables;
 
   try {
-    console.log(searchParams)
     let q: any = {
-      id: parseInt(decodeUrlID(params.timetable_id)),
-      schoolId: parseInt(params.school_id),
-      specialtyId: parseInt(decodeUrlID(searchParams?.spec || "")),
+      id: parseInt(decodeUrlID(p.timetable_id)),
+      schoolId: parseInt(p.school_id),
+      specialtyId: parseInt(decodeUrlID(sp?.spec || "")),
       timestamp: new Date().getTime()
     }
     console.log(q)
@@ -32,7 +33,7 @@ const page = async ({
     });
     dataAllTimeTables = result.data;
   } catch (error: any) {
-    console.log(error, 81)
+    errorLog(error);
     
     dataAllTimeTables = null;
   }
@@ -40,11 +41,11 @@ const page = async ({
   return (
     <div>
       <List 
-        params={params} 
+        params={p} 
         dataAllTimeTables={dataAllTimeTables?.allTimeTables?.edges}
         apiCourses={dataAllTimeTables?.allCourses?.edges} 
         apiHalls={dataAllTimeTables?.allHalls?.edges} 
-        searchParams={searchParams} 
+        searchParams={sp} 
       />
     </div>
   )

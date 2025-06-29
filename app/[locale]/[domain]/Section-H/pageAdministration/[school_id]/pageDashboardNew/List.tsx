@@ -3,7 +3,7 @@
 import React, { FC, useState } from 'react';
 import { motion } from 'framer-motion';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
@@ -36,7 +36,7 @@ const List = (
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -103,13 +103,6 @@ const AdminPage = async (
       userCardData: { students: number, lecturers: number, admins: number, inactive: number, academic_year: string },
       specialtyLevelCountChartData: any
     }) => {
-
-  console.log(apiLevels)
-  console.log(profileSexChartData)
-  console.log(userCardData)
-  console.log(searchParams)
-  console.log(specialtyLevelCountChartData)
-  console.log(sortedAcadYears)
 
   const UserSexAdminChartData = sortedAcadYears && await getData(protocol + "api" + params.domain + GetDashCustomUserSexChartUrl, {
     role: "admin",

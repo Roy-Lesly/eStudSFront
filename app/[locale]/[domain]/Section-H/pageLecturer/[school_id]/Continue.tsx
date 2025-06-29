@@ -6,9 +6,9 @@ import React from 'react';
 
 
 const Continue = (
-    { domain, params }
+    { params }
     :
-    { domain: string, params: any }
+    { params: any }
 ) => {
 
     const token = localStorage.getItem("token");
@@ -19,7 +19,7 @@ const Continue = (
         <>
         { user ?
             <Link
-            href={`/${domain}/Section-H/pageLecturer/${params.school_id}/${user.user_id}/pageMyCourses`}
+            href={`/${params.domain}/Section-H/pageLecturer/${params.school_id}/${user.user_id}/pageMyCourses`}
             className="bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium hover:bg-blue-700 px-10 py-2 rounded-md text-white text-xl transition"
         >
             Continue

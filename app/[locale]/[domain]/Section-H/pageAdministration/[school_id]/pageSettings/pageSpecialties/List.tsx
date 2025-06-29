@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
@@ -21,6 +21,7 @@ import MyModal from '@/MyModals/MyModal';
 import ModalCUDSpecialty from '@/MyModals/ModalCUDSpecialty';
 import ModalCUDMainSpecialty from '@/MyModals/ModalCUDMainSpecialty';
 import ServerError from '@/ServerError';
+import { useTranslation } from 'react-i18next';
 
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState(0);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
@@ -37,12 +39,12 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
   const Columns: TableColumn<EdgeSpecialty>[] = [
     { header: "#", align: "center", render: (_item: EdgeSpecialty, index: number) => index + 1, },
-    { header: "Specialty Name", accessor: "node.mainSpecialty.specialtyName", align: "left" },
-    { header: "Year", accessor: "node.academicYear", align: "center" },
-    { header: "level", accessor: "node.level.level", align: "center" },
-    { header: "Students", accessor: "node.studentCount", align: "center" },
+    { header: `${t("Specialty Name")}`, accessor: "node.mainSpecialty.specialtyName", align: "left" },
+    { header: `${t("Year")}`, accessor: "node.academicYear", align: "center" },
+    { header: `${t("Level")}`, accessor: "node.level.level", align: "center" },
+    { header: `${t("Students")}`, accessor: "node.studentCount", align: "center" },
     {
-      header: "View", align: "center",
+      header: `${t("View")}`, align: "center",
       render: (item) => <div
         className="flex flex-row gap-2 items-center justify-center p-1 rounded-full"
       >
@@ -62,7 +64,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
   const ColumnsMain: TableColumn<EdgeMainSpecialty>[] = [
     { header: "#", align: "center", render: (_item: EdgeMainSpecialty, index: number) => index + 1, },
-    { header: "Specialty Name", accessor: "node.specialtyName", align: "left" },
+    { header: `${"Specialty Name"}`, accessor: "node.specialtyName", align: "left" },
     {
       header: "View", align: "center",
       render: (item) => <button
@@ -105,7 +107,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

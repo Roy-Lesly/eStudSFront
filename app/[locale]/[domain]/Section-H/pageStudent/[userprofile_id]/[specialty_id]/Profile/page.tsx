@@ -1,5 +1,5 @@
 import React from "react";
-import getApolloClient from "@/functions";
+import getApolloClient, { errorLog } from "@/functions";
 import { Metadata } from "next";
 import { gql } from "@apollo/client";
 import List from "./List";
@@ -12,24 +12,26 @@ export const metadata: Metadata = {
 const page = async ({
   params,
 }: {
-  params: { specialty_id: string; userprofile_id: string; domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const client = getApolloClient(params.domain);
+  const p = await params;
+
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
-        id: parseInt(params.userprofile_id),
+        id: parseInt(p.userprofile_id),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error);
     if (error.networkError && error.networkError.result) {
     }
     data = null;
@@ -39,7 +41,7 @@ const page = async ({
   return (
     <List
       data={data}
-      params={params}
+      params={p}
     />
   );
 };
@@ -60,7 +62,7 @@ const GET_DATA = gql`
         edges {
         node {
             id 
-            user { id fullName matricle photo dob pob telephone address parent parentTelephone nationality highestCertificate yearObtained regionOfOrigin} 
+            customuser { id fullName matricle photo dob pob telephone address parent parentTelephone nationality highestCertificate yearObtained regionOfOrigin} 
             specialty { 
               academicYear level { level} 
               mainSpecialty { specialtyName}

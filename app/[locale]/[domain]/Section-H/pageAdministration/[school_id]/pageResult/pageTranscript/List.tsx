@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
@@ -14,6 +14,7 @@ import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import ExcelExporter from '@/ExcelExporter';
 import MyTabs from '@/MyTabs';
+import { decodeUrlID } from '@/utils/functions';
 
 
 const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: { params: any; dataPending: any, dataApproved: any, dataPrinted: any, searchParams: any }) => {
@@ -24,7 +25,7 @@ const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: 
 
   const Columns: TableColumn<EdgeTranscriptApplications>[] = [
     { header: "#", align: "center", render: (_item: EdgeTranscriptApplications, index: number) => index + 1, },
-    { header: "Full Name", accessor: "node.userprofile.user.fullName", align: "left" },
+    { header: "Full Name", accessor: "node.userprofile.customuser.fullName", align: "left" },
     { header: "Class", accessor: "node.userprofile.specialty.mainSpecialty.specialtyName", align: "left" },
     { header: "Level", accessor: "node.userprofile.specialty.level.level", align: "center" },
     { header: "Year", accessor: "node.userprofile.specialty.academicYear", align: "center" },
@@ -39,7 +40,7 @@ const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: 
     {
       header: "Action", align: "center", hideColumn: activeTab > 0 ? true : false,
       render: (item) => <button 
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageTranscript/${item.node.userprofile.id}`)}
+        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageTranscript/${item.node.userprofile.schoolfees.id}/all`)}
         className='flex items-center justify-center w-full'
       >
         <FaRightLong color="green" size={21} />
@@ -70,7 +71,7 @@ const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: 
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

@@ -6,7 +6,6 @@ import { jwtDecode } from "jwt-decode";
 import ClickOutside from "@/ClickOutside";
 import { JwtPayload } from "@/serverActions/interfaces";
 import { useParams } from "next/navigation";
-import { PathParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 import { capitalizeFirstLetter } from "@/functions";
 
 const DropdownUser = () => {
@@ -14,24 +13,9 @@ const DropdownUser = () => {
   const [showSignOut, setShowSignOut] = useState(false);
   const params = useParams();
 
-  const [token, setToken] = useState<string | null>(null);
-  const [school, setSchool] = useState<string | null>(null);
-  const [user, setUser] = useState<JwtPayload | null>(null);
+  const token = localStorage.getItem("token");
+  const user:JwtPayload | null = token ? jwtDecode(token) : null;
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedToken = localStorage.getItem("token");
-      const storedSchool = localStorage.getItem("school");
-
-      setToken(storedToken);
-      setSchool(storedSchool);
-
-      if (storedToken) {
-        const decodedUser = jwtDecode<JwtPayload>(storedToken);
-        setUser(decodedUser);
-      }
-    }
-  }, []);
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -90,7 +74,7 @@ const DropdownUser = () => {
             {(user && user.dept?.length) ? user.dept.map((dept: string) =>
               <li key={dept}>
                 <Link
-                  href={`/${params.domain}/Section-H/page${capitalizeFirstLetter(dept)}/${school}`}
+                  href={`/${params.domain}/Section-H/page${capitalizeFirstLetter(dept)}/${params.school_id}`}
                   className="duration-300 ease-in-out flex font-medium gap-3.5 hover:text-primary items-center lg:text-base text-sm"
                 >
                   <svg

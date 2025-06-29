@@ -82,7 +82,7 @@ export const ConstProgramList = [
 ]
 
 export const CertificateOptions = [ 
-    "Vocational", "Ordinary Level", "B.E.P.C", "Advanced Level", "Baccalaureat", 
-    "HND", "BTS", "Bachelor", "LICENCE", "Master", "Phd", "DOCTORAT", "Other", 
+    "Vocational", "GCE Ordinary Level", "B.E.P.C", "GCE Advanced Level", "Baccalaureat", 
+    "HND", "BTS", "BACHELOR", "LICENCE", "MASTERS", "PHD", "DOCTORAT", "Other", 
 ];
-export const RegionList = ["Littoral", "Center", "West", "South West", "South", "North West", "Est", "Adamawa", "North", "Far North", "Other"]
+export const RegionList = ["Littoral", "Center", "West", "South West", "South", "North West", "East", "Adamawa", "North", "Far North", "Other"]

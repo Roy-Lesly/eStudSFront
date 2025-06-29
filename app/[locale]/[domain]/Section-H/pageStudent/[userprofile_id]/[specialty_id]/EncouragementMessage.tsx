@@ -16,7 +16,7 @@ const EncouragementMessage = ({ data }: { data: NodeSchoolFees }) => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
-        Dear {data?.userprofile.user.fullName},
+        Dear {data?.userprofile.customuser.fullName},
       </motion.span>
 
       <motion.span

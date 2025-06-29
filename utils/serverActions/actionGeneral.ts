@@ -1,12 +1,11 @@
 
 import { axiosRequest } from "@/functions";
-import { revalidatePath } from "next/cache";
-import { getSession } from "./sessionAction";
 import { jwtDecode } from "jwt-decode";
 import useAxios from "@/useAxios";
 import { collectMoney } from "@/payment";
 import { GetSchoolFeesInter } from "@/Domain/Utils-H/feesControl/feesInter";
 import { JwtPayload } from "./interfaces";
+import { getSession } from "./sessionAction";
 
 
 
@@ -34,8 +33,6 @@ export const ActionCreate = async (data: unknown, schema: any, url: string, reva
         config = { headers: { Authorization: `Bearer ${session.access}`}}
     }
 
-    console.log(result, url, 37, "function")
-
     var response = null
     if (url.includes("token")){
         response = await axiosRequest<any>({
@@ -56,7 +53,6 @@ export const ActionCreate = async (data: unknown, schema: any, url: string, reva
             token: config
         })
     }
-    console.log(response?.data, 59)
 
     if (response) {
         if (response.data) {
@@ -212,7 +208,6 @@ export const makeMobilePayment = async (formData: any, apiSchoolFee: GetSchoolFe
         status: "completed",
     }
     var pay: { operation: boolean, transaction: boolean } | any = await collectMoney({ amount: newData.amount, service: newData.operator, payer: newData.telephone });
-    console.log(pay, 114)
     return pay
 }
 

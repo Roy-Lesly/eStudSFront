@@ -3,11 +3,11 @@ import { Metadata } from "next";
 import Link from "next/link";
 import initTranslations from "@/initTranslations";
 
-const page = async ({ params }: { params: { locale: string } }) => {
+const page = async ({ params }: { params: any }) => {
 
-  const { t } = await initTranslations(params.locale, ["common"]);
+   const p = await params;
 
-  console.log(t("Check Status"), 14)
+  const { t } = await initTranslations(p.locale, ["common"]);
   
   return (
     <main className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-800 text-white px-2 md:px-6 p-4 md:py-10">

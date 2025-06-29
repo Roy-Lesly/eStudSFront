@@ -113,12 +113,11 @@ const CourseTable = ({ params, selectedYearCourses, setToImportCourses, toImport
                         else { router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageImport/pageImportCourses?error=${t[0]}`); }
                     }
                 })
-                .catch(err => {
-                    console.log(98, err)
+                .catch((error: any) => {
+                    errorLog(error);
                 })
             return
         } else {
-            // console.log(103, "Not Logged In")
         }
     }
 

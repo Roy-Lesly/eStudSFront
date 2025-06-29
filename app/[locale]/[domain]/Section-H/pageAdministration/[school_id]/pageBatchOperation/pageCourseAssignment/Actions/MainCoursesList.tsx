@@ -2,16 +2,16 @@ import { getData } from '@/functions'
 import { GetMainCourseUrl } from '@/Domain/Utils-H/appControl/appConfig'
 import { MainCourseInter } from '@/Domain/Utils-H/appControl/appInter'
 import { useParams, usePathname } from 'next/navigation'
-import React, { FC, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { protocol } from '@/config'
+import { EdgeMainCourse } from '@/utils/Domain/schemas/interfaceGraphql'
 
 
-interface DepartmentDrugListProps {
-    data: MainCourseInter[]
-    addMainCourseItems: any
-}
 
-const MainCoursesList: FC<DepartmentDrugListProps> = ({ data, addMainCourseItems }) => {
+const MainCoursesList= (
+    { data, addMainCourseItems }:
+    { data: EdgeMainCourse[], addMainCourseItems: any }
+) => {
     return (
         <div className='flex flex-col'>
             <List data={data} addMainCourseItems={addMainCourseItems} />
@@ -22,24 +22,25 @@ const MainCoursesList: FC<DepartmentDrugListProps> = ({ data, addMainCourseItems
 export default MainCoursesList
 
 
-interface ListProps {
-    data: MainCourseInter[]
-    addMainCourseItems: any
-}
-const List: FC<ListProps> = ({ data, addMainCourseItems }) => {
+const List = (
+    { data, addMainCourseItems }:
+    { data: EdgeMainCourse[], addMainCourseItems: any }
+) => {
 
     const domain = useParams().domain;
+      const dom = Array.isArray(domain) ? domain[0] : domain;
+
     const [ count, setCount ] = useState<number>(0)
     const [ searchText, setSearchText ] = useState<string>()
     const [ tableData, setTableData ] = useState<MainCourseInter[]>()
-    const [ mainCoursesToAssign, setMainCoursesToAssign ] = useState<MainCourseInter[]>(data)
+    const [ mainCoursesToAssign, setMainCoursesToAssign ] = useState<EdgeMainCourse[]>(data)
 
     const pathUrl = usePathname()
 
     useEffect(() => {
         if (count == 1 && searchText && searchText.length > 2) {
             const searchBack = async () => {
-                const res = await getData(protocol  + "api" + domain + GetMainCourseUrl, { course_name: searchText, nopage: true }, Array.isArray(domain) ? domain[0] : domain)
+                const res = await getData(protocol  + "api" + domain + GetMainCourseUrl, { course_name: searchText, nopage: true }, Array.isArray(dom) ? dom[0] : dom)
                 if (res){
                     setMainCoursesToAssign(res)
                     setCount(2)
@@ -71,7 +72,7 @@ const List: FC<ListProps> = ({ data, addMainCourseItems }) => {
                 </div>
             </div>
             {
-                mainCoursesToAssign && mainCoursesToAssign.length > 0 && mainCoursesToAssign.map((item: MainCourseInter, index: number) => (
+                mainCoursesToAssign && mainCoursesToAssign.length > 0 && mainCoursesToAssign.map((item: EdgeMainCourse, index: number) => (
                     <div
                         className="2xl:px-6.5 bg-white border-stroke border-t cursor-pointer dark:bg-slate-700 dark:border-strokedark dark:hover:bg-teal-700 font-semibold grid grid-cols-7 hover:bg-teal-300 md:px-4 px-3 py-2 text-sm tracking-widest"
                         key={index}
@@ -86,7 +87,7 @@ const List: FC<ListProps> = ({ data, addMainCourseItems }) => {
 
                         <div className="col-span-6 items-center justify-start md:flex">
                             <span className="dark:text-white text-black">
-                                {item.course_name}
+                                {item?.node?.courseName}
                             </span>
                         </div>
 

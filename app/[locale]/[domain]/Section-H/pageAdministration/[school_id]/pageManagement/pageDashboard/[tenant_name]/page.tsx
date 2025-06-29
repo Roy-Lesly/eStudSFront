@@ -8,14 +8,17 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let data;
   try {
-    const tenantId = Array.isArray(searchParams?.id) ? searchParams?.id[0] : searchParams?.id;
+    const tenantId = Array.isArray(sp?.id) ? sp?.id[0] : sp?.id;
 
     const result = await client.query<any>({
       query: GET_DATA,
@@ -27,12 +30,12 @@ const page = async ({
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error);
     data = null;
   }
 
   return (
-    <List params={params} searchParams={searchParams} tenant={data?.allTenants?.edges[0]} />
+    <List params={p} searchParams={sp} tenant={data?.allTenants?.edges[0]} />
   )
 }
 

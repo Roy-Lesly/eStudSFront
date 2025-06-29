@@ -6,7 +6,7 @@ import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import DefaultLayout from '@/DefaultLayout';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import { EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyTableComp from '@/section-h/Table/MyTableComp';
@@ -24,7 +24,7 @@ const List = ({ params, data }: { data: any, params: any; searchParams: any }) =
 
     const Columns: TableColumn<EdgeTransactions>[] = [
       { header: '#', align: 'left', render: (_item: EdgeTransactions, index: number) => index + 1, responsiveHidden: true},
-      { header: 'Full Name', accessor: 'node.schoolfees.userprofile.user.fullName', align: 'left',},
+      { header: 'Full Name', accessor: 'node.schoolfees.userprofile.customuser.fullName', align: 'left',},
       { header: 'Specialy', align: 'left', render: (_item: EdgeTransactions, index: number) => {
         return <div className='flex justify-between items-center gap-2'>
           <span className='w-full'>{_item.node.schoolfees.userprofile.specialty.mainSpecialty?.specialtyName}</span>
@@ -48,7 +48,7 @@ const List = ({ params, data }: { data: any, params: any; searchParams: any }) =
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

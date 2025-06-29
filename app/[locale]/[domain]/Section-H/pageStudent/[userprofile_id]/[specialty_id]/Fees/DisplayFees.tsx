@@ -2,20 +2,21 @@
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import { GrStatusGood } from 'react-icons/gr';
-import FormModal from '@/componentsTwo/FormModal';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 import { EdgeSchoolFees, EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import ModalApplication from './ModalApplication';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { FiClock } from 'react-icons/fi';
+import PaymentIDPLAT from '@/components/componentsTwo/formsAdmin/PaymentIDPLAT';
 
 
 const DisplayFees = ({ params, apiSchoolFees, apiTransactions }: { apiSchoolFees: EdgeSchoolFees, apiTransactions: EdgeTransactions[], params?: any }) => {
   const { t } = useTranslation();
-  const [showModal, setShowModal] = useState<boolean>(false)
-  const info = JSON.parse(apiSchoolFees?.node?.userprofile?.info)
+  const [showModalType, setShowModalType] = useState<"id" | "platform" | "moratoire" | null>(null)
+  const info = JSON.parse(apiSchoolFees?.node?.userprofile?.infoData)
   const statusMoratoire = info?.moratoire?.status ?? null;
+  const school = apiSchoolFees?.node?.userprofile?.specialty?.school ?? null;
 
   return (
     <motion.div
@@ -27,7 +28,7 @@ const DisplayFees = ({ params, apiSchoolFees, apiTransactions }: { apiSchoolFees
       {/* Student Info */}
       <div className="flex flex-col items-center justify-center text-center">
         <h2 className="font-semibold mb-1 text-lg">
-          {apiSchoolFees.node.userprofile.user.firstName} - {apiSchoolFees.node.userprofile.user.matricle}
+          {apiSchoolFees.node.userprofile.customuser.firstName} - {apiSchoolFees.node.userprofile.customuser.matricle}
         </h2>
         <p className="text-gray-600">{apiSchoolFees.node.userprofile.specialty.mainSpecialty.specialtyName}</p>
         <p className="text-gray-600">{t("Academic Year")}: {apiSchoolFees.node.userprofile.specialty.academicYear}</p>
@@ -115,6 +116,8 @@ const DisplayFees = ({ params, apiSchoolFees, apiTransactions }: { apiSchoolFees
         </span>
       </div>
 
+
+
       {/* Account Status & Action Button */}
       <div className="flex items-center justify-between mt-8">
         <span className="font-medium">{t("Request Moratorium")}:</span>
@@ -143,7 +146,7 @@ const DisplayFees = ({ params, apiSchoolFees, apiTransactions }: { apiSchoolFees
                 </div>
               ) : (
                 <button
-                  onClick={() => setShowModal(true)}
+                  onClick={() => setShowModalType("moratoire")}
                   className="p-2 border border-green-500 rounded-full hover:bg-green-50 transition"
                   title="Request Moratorium"
                 >
@@ -151,12 +154,26 @@ const DisplayFees = ({ params, apiSchoolFees, apiTransactions }: { apiSchoolFees
                 </button>
               )
         ) : (
-          // Not an activated account
           <div className="flex items-center gap-2 text-red-500">
             <FaTimes size={25} />
             <span className="text-sm font-semibold">{t("Account Inactive")}</span>
           </div>
         )}
+      </div>
+
+
+      {/* ID Card Status & Action Button */}
+      <div className="flex items-center justify-between mt-8">
+        <span className="font-medium">{t("ID Card")}:</span>
+
+        {apiSchoolFees?.node?.idPaid ?
+          <GrStatusGood size={40} />
+          :
+          <div className="flex items-center gap-2 text-red-500">
+            <FaTimes size={25} />
+            <span className="text-sm font-semibold">{t("ID Card Not Paid")}</span>
+          </div>
+        }
       </div>
 
 
@@ -166,27 +183,31 @@ const DisplayFees = ({ params, apiSchoolFees, apiTransactions }: { apiSchoolFees
         {apiSchoolFees.node.platformPaid ? (
           <GrStatusGood color="green" size={40} />
         ) : (
-          <FormModal
-            table="platform_charge"
-            type="custom"
-            params={params}
-            icon={<FaPlus />}
-            data={apiSchoolFees}
-            extra_data={{
-              url: `${params.domain}/Section-H/pageStudent/${params.userprofile_id}/${params.specialty_id}/Fees`,
-              type: "single",
-            }}
-            buttonTitle={t("Activate")}
-            customClassName="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-          />
+          <button
+            onClick={() => setShowModalType("platform")}
+            className="text-lg font-medium bg-orange-100 flex p-2 items-center justify-center border gap-2 border-red-500 rounded-full hover:bg-green-50 transition"
+          >
+            {t("Activate")} <FaArrowRightLong size={22} color="red" />
+          </button>
         )}
       </div>
 
 
-      {showModal ? <ModalApplication
+      {showModalType === "moratoire" ? <ModalApplication
         schoolFee={apiSchoolFees?.node}
-        onClose={() => setShowModal(false)}
+        onClose={() => setShowModalType(null)}
       /> : null}
+
+      {showModalType === "platform" || showModalType === "id" ? <PaymentIDPLAT
+        source={"student"}
+        setModalOpen={setShowModalType}
+        data={[apiSchoolFees]}
+        title={"single"}
+        p={params}
+        school={school}
+      />
+        :
+        null}
 
 
     </motion.div>

@@ -47,12 +47,10 @@ const ConfirmTranscriptPrint = ({
   useEffect(() => {
     if (count == 0 && data && data.id) {
       const getTA = async () => {
-        console.log(data, 50  )
         var res = await getData(protocol + "api" + params.domain + GetTranscriptApplicationUrl, {
           nopage: true, userprofile__id: data.id,
           fieldList: ["id", "userprofile__id", "print_count"]
         }, params.domain)
-        console.log(res, 54)
         if (res && res.length == 1) {
           setMyTranscriptApplication(res[0]);
         }
@@ -69,9 +67,6 @@ const ConfirmTranscriptPrint = ({
     const status = useFormStatus();
     return <MyButtonModal type={"Check & Print"} clicked={status.pending} />
   }
-
-  console.log(data, 72)
-  console.log(myTranscriptApplication, 73)
 
   return (
     <>

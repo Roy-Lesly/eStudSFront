@@ -9,7 +9,7 @@ import { Metadata } from 'next';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import { getMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
+import { GetMenuLecturer } from '@/section-h/Sidebar/MenuLecturer';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { useTranslation } from 'react-i18next';
 import ComingSoon from '@/ComingSoon';
@@ -36,7 +36,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuLecturer(params)}
+          menuGroups={GetMenuLecturer(params)}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

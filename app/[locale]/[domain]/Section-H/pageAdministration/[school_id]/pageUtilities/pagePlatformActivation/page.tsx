@@ -1,11 +1,11 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import getApolloClient from '@/functions'
 import NotificationError from '@/section-h/common/NotificationError'
 import { gql } from '@apollo/client'
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql'
 import ListPendingPlatformPage from '@/componentsTwo/ListUtility/ListPendingPlatformPage'
+import List from './List'
 
 
 interface GetDataResponse {
@@ -28,7 +28,7 @@ const GET_DATA = gql`
             userprofile {
               id
               session
-              user { 
+              customuser { 
                 id matricle firstName lastName fullName
               }
               specialty { 
@@ -50,17 +50,20 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<GetDataResponse>({
       query: GET_DATA,
       variables: {
-        schoolId: params.school_id,
+        schoolId: p.school_id,
       },
       fetchPolicy: 'no-cache'
     });
@@ -71,24 +74,11 @@ const page = async ({
     data = null;
   }
 
-  return (
-    <LayoutAdmin>
-      <>
-
-        {searchParams && <NotificationError errorMessage={searchParams} />}
-
-        {data ?
-          data.allSchoolFees.edges.length > 0 ?
-            <ListPendingPlatformPage params={params} data={data.allSchoolFees.edges} />
-            :
-            <div>No School Fees</div>
-          :
-          <div>Error or Network Issues</div>
-        }
-
-      </>
-    </LayoutAdmin>
-  )
+    return (
+        <div>
+            <List params={p} data={data} searchParams={sp} />
+        </div>
+    )
 }
 
 export default page

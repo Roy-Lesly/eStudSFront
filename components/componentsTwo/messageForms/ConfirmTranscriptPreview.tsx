@@ -21,8 +21,6 @@ const ConfirmTranscriptPreview = ({
   extra_data?: any;
 }) => {
 
-  console.log(`${extra_data[0]}/${data.userprofile__id}`)
-
   return (
     <>
         <div className="flex flex-col gap-6 items-center justify-center p-10 text-lg">

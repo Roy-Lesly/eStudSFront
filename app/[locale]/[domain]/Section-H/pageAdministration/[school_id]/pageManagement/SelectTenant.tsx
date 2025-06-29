@@ -26,7 +26,7 @@ const SelectTenant = ({ params }: { params: any }) => {
                     {item.node.isActive ? "Active" : "-"}
                 </span>
             ),
-        }, { header: "User", accessor: "node.user.matricle", align: "left" },
+        }, { header: "User", accessor: "node.customuser.matricle", align: "left" },
         {
             header: "Domain", align: "left",
             render: (item: EdgeTenant) => item.node?.domains?.edges
@@ -56,7 +56,7 @@ const SelectTenant = ({ params }: { params: any }) => {
         <span className="text-black text-xl">Loading Tenants ...</span>
         <span className={`border-bluedash animate-spin border-6  border-t-transparent flex h-[96px] rounded-full w-[96px]`}>.</span>
     </div>;
-        console.log(data, 59)
+        console.log(data)
     if (error) return <p>Error: {error.message}</p>;
 
     const OnSelect = (tenant_name: string, tenant_id: string) => {

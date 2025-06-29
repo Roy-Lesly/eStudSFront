@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import { getData } from '@/functions'
 import { redirect } from 'next/navigation'
@@ -12,11 +11,14 @@ const page = async ({
     params,
     searchParams,
 }: {
-    params: { school_id: string,  domain: string, };
-    searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-    const apiAcademicYear: any = await getData(protocol + "api" + params.domain + AcademicYearUrl, { ...searchParams, nopage: true }, params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+    const apiAcademicYear: any = await getData(protocol + "api" + p.domain + AcademicYearUrl, { ...sp, nopage: true }, p.domain);
     const Filter = () => {
         if (apiAcademicYear.count){
             var filA = apiAcademicYear.results.filter((item: string) => item.includes(new Date().getFullYear().toString()))
@@ -26,18 +28,18 @@ const page = async ({
     const year = Filter()
 
     return (
-        <LayoutAdmin>
+        
             <>
                 <Breadcrumb
                     pageName="Select Target For Announcements"
                     pageName1="Back To Announcements"
-                    link1={`/Section-H/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements`}
+                    link1={`/Section-H/pageAdministration/${p.school_id}/pageNotifications/pageAnnouncements`}
                 />
 
-                {apiAcademicYear && apiAcademicYear.count && year && <SelectTarget params={params} years={year} />}
+                {apiAcademicYear && apiAcademicYear.count && year && <SelectTarget params={p} years={year} />}
 
             </>
-        </LayoutAdmin>
+        
     )
 }
 

@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import Filter from './Filter'
 import { getData } from '@/functions'
@@ -13,16 +12,19 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
+  const p = await params;
+  const sp = await searchParams;
+
   const apiData: ResultInter[] | any = await getData(
-    protocol + "api" + params.domain + GetResultUrl, {...searchParams}, params.domain
+    protocol + "api" + p.domain + GetResultUrl, {...sp}, p.domain
   );
   
   return (
-    <LayoutAdmin>
+    
       <>
         <Breadcrumb
           pageName="Results" 
@@ -35,7 +37,7 @@ const page = async ({
         {/* <ResultList apiData={apiData} /> */}
 
       </>
-    </LayoutAdmin>
+    
   )
 }
 
@@ -49,8 +51,6 @@ export const metadata: Metadata = {
 
 
 const ResultList = ( {apiData}: any ) => {
-
-  console.log(58, apiData)
 
   return (
     <div className="bg-white border border-stroke dark:bg-boxdark dark:border-strokedark rounded-sm shadow-default">
@@ -89,7 +89,7 @@ const ResultList = ( {apiData}: any ) => {
         >
           <div className="flex font-medium items-center tracking-wider w-full">
             <p className="dark:text-white italic text-black text-sm">
-              {item.student.user.first_name} {item.student.user.last_name}
+              {item.student.customuser.first_name} {item.student.customuser.last_name}
             </p>
           </div>
           <div className="flex items-center w-32">

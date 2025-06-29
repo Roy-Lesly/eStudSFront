@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
@@ -15,6 +15,7 @@ import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import MyModal from '@/MyModals/MyModal';
 import ModalCUDField from '@/MyModals/ModalCUDField';
 import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import { useTranslation } from 'react-i18next';
 
 
 export const metadata: Metadata = {
@@ -23,17 +24,18 @@ export const metadata: Metadata = {
 };
 
 const List = ({ params, data }: { params: any; data: any }) => {
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
   const [selectedItem, setSelectedItem] = useState<EdgeField | null>(null);
 
   const Columns: TableColumn<EdgeField>[] = [
     { header: "#", align: "center", render: (_item: EdgeField, index: number) => index + 1, },
-    { header: "Field Name", accessor: "node.fieldName", align: "left" },
-    { header: "Domain", accessor: "node.domain.domainName", align: "left" },
+    { header: `${t("Field Name")}`, accessor: "node.fieldName", align: "left" },
+    { header: `${t("Domain")}`, accessor: "node.domain.domainName", align: "left" },
 
     {
-      header: "View", align: "center", render: (item) => <div className='flex flex-row gap-2 justify-center'>
+      header: `${t("View")}`, align: "center", render: (item) => <div className='flex flex-row gap-2 justify-center'>
       <ButtonAction data={item} type='edit' action={() => {setShowModal({ show: true, type: "update"}); setSelectedItem(item) }} />
       <ButtonAction data={item} type='delete' action={() => {setShowModal({ show: true, type: "delete"}); setSelectedItem(item) }} />
     </div>,
@@ -59,7 +61,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -75,9 +77,9 @@ const List = ({ params, data }: { params: any; data: any }) => {
       }
     >
       <Breadcrumb
-        department="Fields"
+        department={`${t("Field")}s`}
         subRoute="List"
-        pageName="Fields"
+        pageName={`${t("Field")}s`}
         mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
         subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
       />
@@ -95,12 +97,12 @@ const List = ({ params, data }: { params: any; data: any }) => {
                     const fieldNameB = b.node?.fieldName.toLowerCase();
                     return fieldNameA.localeCompare(fieldNameB);
                   })}
-                columns={Columns} table_title='Fields'
+                columns={Columns} table_title={`${t("Field")}s`}
                 button_type={"add"}
                 button_action={() => { setShowModal({ type: "create", show: true }) }}
               />
               :
-              <ServerError type='notFound' item='Fields' />
+              <ServerError type='notFound' item={`${t("Field")}s`} />
             :
             <ServerError type='network' item='' />}
         </div>

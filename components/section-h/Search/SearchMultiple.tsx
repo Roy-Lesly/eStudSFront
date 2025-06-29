@@ -74,8 +74,6 @@ const SearchMultiple = ({
       [name]: e.target.value,
     }));
 
-    console.log(e, name)
-
     const formElement = e.target.closest('form');
     if (formElement) {
       if (debounceTimer) clearTimeout(debounceTimer);

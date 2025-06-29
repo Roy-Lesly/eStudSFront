@@ -27,29 +27,32 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
-        schoolId: params.school_id,
+        schoolId: p.school_id,
       },
       fetchPolicy: 'no-cache'
     });
 
     data = result.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error);
     data = null;
   }
 
   return (
-    <List data={data?.allHalls?.edges} searchParams={searchParams} params={params} />
+    <List data={data?.allHalls?.edges} searchParams={sp} params={p} />
   )
 }
 

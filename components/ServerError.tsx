@@ -5,32 +5,32 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 const ServerError = ({ type, item }: { type: 'offline' | 'network' | 'server' | 'notFound' | "authentication", item?: string }) => {
-  // Messages for each error type
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+
   const messages: Record<typeof type, { title: string; description: string; icon: string }> = {
     offline: {
-      title: 'You are Offline!',
-      description: 'It seems your internet connection is lost. Please check your network settings.',
+      title: t('error.offline.title'),
+      description: t('error.offline.description'),
       icon: '📴',
     },
     network: {
-      title: 'Network Error',
-      description: 'There was an issue connecting to the network. Please try again later.',
+      title: t('error.network.title'),
+      description: t('error.network.description'),
       icon: '🌐',
     },
     server: {
-      title: 'Server Error',
-      description: 'The server encountered an issue. Please contact support if this persists.',
+      title: t('error.server.title'),
+      description: t('error.server.description'),
       icon: '⚠️',
     },
     notFound: {
-      title: 'Data Not Found',
-      description: 'The requested data could not be found. Please check back later.',
+      title: t('error.notFound.title'),
+      description: t('error.notFound.description'),
       icon: '🔍',
     },
     authentication: {
-      title: 'Not Authenticated',
-      description: 'Not Allowed to view this page.',
+      title: t('error.authentication.title'),
+      description: t('error.authentication.description'),
       icon: '🔍',
     },
   };
@@ -79,7 +79,7 @@ const ServerError = ({ type, item }: { type: 'offline' | 'network' | 'server' | 
           onClick={() => window.location.reload()}
           className="bg-blue-500 focus:ring focus:ring-blue-300 font-semibold hover:bg-blue-600 mt-6 px-4 py-2 rounded-lg shadow text-white dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-400 transition-colors duration-300"
         >
-          Retry
+          {t('error.retry')}
         </motion.button>
       </motion.div>
     </div>

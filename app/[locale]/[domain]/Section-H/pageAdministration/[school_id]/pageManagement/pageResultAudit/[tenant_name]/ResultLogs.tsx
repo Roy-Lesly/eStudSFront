@@ -8,7 +8,7 @@ const ResultLogs = ({ data }: { data: EdgeResult[] }) => {
 
     const Columns: TableColumn<EdgeResult>[] = [
         { header: "#", align: "center", render: (_item: EdgeResult, index: number) => index + 1, },
-        { header: "Full Name", accessor: "node.student.user.fullName", align: "left" },
+        { header: "Full Name", accessor: "node.student.customuser.fullName", align: "left" },
         { header: "Course", accessor: "node.course.mainCourse.courseName", align: "left" },
         { 
             header: "Logs", 

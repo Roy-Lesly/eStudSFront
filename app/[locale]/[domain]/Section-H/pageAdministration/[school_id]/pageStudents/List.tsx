@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
@@ -16,6 +16,7 @@ import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import ExcelExporter from '@/ExcelExporter';
 import ServerError from '@/ServerError';
+import { useTranslation } from 'react-i18next';
 
 
 export const metadata: Metadata = {
@@ -24,27 +25,28 @@ export const metadata: Metadata = {
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const router = useRouter();
 
   const Columns: TableColumn<EdgeUserProfile>[] = [
     { header: "#", align: "center", render: (_item: EdgeUserProfile, index: number) => index + 1, },
-    { header: "Matricle", accessor: "node.user.matricle", align: "left" },
-    { header: "Full Name", accessor: "node.user.fullName", align: "left" },
-    { header: "Gender", accessor: "node.user.sex", align: "center" },
-    { header: "Class", accessor: "node.specialty.mainSpecialty.specialtyName", align: "left" },
+    { header: `${t("Matricle")}`, accessor: "node.customuser.matricle", align: "left" },
+    { header: `${t("Full Name")}`, accessor: "node.customuser.fullName", align: "left" },
+    { header: `${t("Gender")}`, accessor: "node.customuser.sex", align: "center" },
+    { header: `${t("Class")}`, accessor: "node.specialty.mainSpecialty.specialtyName", align: "left" },
     {
-      header: "Year / Level", align: "left", render: (item) => <button
+      header: `${t("Year / Level")}`, align: "left", render: (item) => <button
         className=""
       >
         {item.node.specialty.academicYear} / {item.node.specialty.level.level}
       </button>,
     },
     {
-      header: "View", align: "center",
+      header: `${t("View")}`, align: "center",
       render: (item) => <button
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.user.id}`)}
-        className="bg-green-200 p-1 rounded-full"
+        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
+        className="bg-green-200 p-2 rounded-full"
       >
         <FaRightLong color="green" size={21} />
       </button>,
@@ -55,13 +57,13 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     <DefaultLayout
       pageType='admin'
       domain={params.domain}
-      downloadComponent={<ExcelExporter
-        data={data?.allUserProfiles?.edges}
-        title="ClassList"
-        type="UserProfile"
-        page="list_student_specialty"
-        searchParams={searchParams}
-      />}
+      // downloadComponent={<ExcelExporter
+      //   data={data?.allUserProfiles?.edges}
+      //   title="ClassList"
+      //   type="UserProfile"
+      //   page="list_student_specialty"
+      //   searchParams={searchParams}
+      // />}
       searchComponent={
         <SearchMultiple
           names={['fullName', 'specialtyName', 'level', 'sex', 'academicYear']}
@@ -75,7 +77,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -91,9 +93,9 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       }
     >
       <Breadcrumb
-        department="Students"
+        department={t("Students")}
         subRoute="List"
-        pageName="Students"
+        pageName={t("Students")}
         mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Settings/Students/`}
         subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Settings/Students/`}
       />
@@ -104,7 +106,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
           onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Admit`)}
           className="bg-blue-600 flex focus:outline-none gap-2 hover:bg-blue-700 items-center mb-2 px-4 py-2 rounded text-white"
         >
-          <FaPlus />Register
+          <FaPlus />{t("Register")}
         </button>
 
         {data ? (
@@ -114,8 +116,8 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 data.allUserProfiles.edges.sort((a: EdgeUserProfile, b: EdgeUserProfile) => {
                   const academicYearA = a.node.specialty.academicYear;
                   const academicYearB = b.node.specialty.academicYear;
-                  const fullNameA = a.node.user.fullName.toLowerCase();
-                  const fullNameB = b.node.user.fullName.toLowerCase();
+                  const fullNameA = a.node.customuser.fullName.toLowerCase();
+                  const fullNameB = b.node.customuser.fullName.toLowerCase();
 
                   if (academicYearA > academicYearB) return -1;
                   if (academicYearA < academicYearB) return 1;

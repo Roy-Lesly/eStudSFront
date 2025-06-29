@@ -1,11 +1,16 @@
 import HomePageContent from './HomePageContent';
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
-const Home = async ({ params }: { params: { locale: string; domain: string } }) => {
 
-  const client = getApolloClient(params.domain);
+const Home = async (
+  { params }: { params: any }
+) => {
+
+  const p = await params;
+
+  const client = getApolloClient(p.domain);
     let data;
 
     try {
@@ -25,7 +30,7 @@ const Home = async ({ params }: { params: { locale: string; domain: string } }) 
 
 
   return <HomePageContent 
-    params={params}
+    params={p}
     data={data?.allSchoolIdentifications?.edges[0]}
   />;
 };

@@ -5,13 +5,14 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { locale: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+    params: any;
+    searchParams?: any;
 }) => {
+  const p = await params;
+  const sp = await searchParams;
 
   return (
-    // <div>Test</div>
-    <SessionExpired  params={params} />
+    <SessionExpired  params={p} />
   )
 }
 

@@ -13,18 +13,21 @@ const page = async ({
     params,
     searchParams
 }: {
-    params: { locale: string, userprofile_id: string, domain: string, specialty_id: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
+
+  const p = await params
+  const sp = await searchParams
 
     return (
         <div>
-            {searchParams && <NotificationError errorMessage={searchParams} />}
+            {sp && <NotificationError errorMessage={sp} />}
             
             <Suspense fallback={<div>Loading ...</div>}>
 
                 <ResultDisplay
-                    params={params}
+                    params={p}
                     resultType='ca'
                     title='ca'
                 />

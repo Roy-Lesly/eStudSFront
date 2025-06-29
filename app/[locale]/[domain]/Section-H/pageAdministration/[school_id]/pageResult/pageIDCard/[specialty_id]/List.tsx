@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
@@ -13,19 +13,46 @@ import { FaLeftLong, FaRightLong } from 'react-icons/fa6';
 import ServerError from '@/ServerError';
 import { FaCheck } from 'react-icons/fa';
 import { GrClose } from 'react-icons/gr';
-import IDComp from './IDComp';
+import IDComp2 from './IDComp2';
+import { protocol, RootApi } from '@/utils/config';
+import { decodeUrlID } from '@/utils/functions';
+import { QrCodeBase64 } from '@/components/QrCodeBase64';
+// import IDComp1 from './IDComp1';
+// import IDComp2 from './IDComp2';
 
 
 const List = ({ params, data, searchParams }: { params: any; data: EdgeSchoolFees[], searchParams: any }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [print, setPrint] = useState<boolean>(false);
   const [dataToPrint, setDataToPrint] = useState<EdgeSchoolFees[]>();
+  // const [qrCodeMap, setQrCodeMap] = useState<Record<string, string>>({});
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (dataToPrint?.length) {
+      const generateQRCodes = async () => {
+        const newQrCodes: Record<string, string> = {};
+
+        for (const item of dataToPrint) {
+          const userID = decodeUrlID(item.node.userprofile.id);
+          const url = `${protocol}${params.domain}${RootApi}/check/${userID}/idcard/?n=1`;
+          const qr = await QrCodeBase64(url);
+          newQrCodes[item.node.userprofile.id] = qr;
+        }
+
+        setQrCodeDataUrl(newQrCodes); // now a map of userprofile.id → base64
+      };
+
+      generateQRCodes();
+    }
+  }, [dataToPrint]);
+
 
   const Columns: TableColumn<EdgeSchoolFees>[] = [
     { header: "#", align: "center", render: (_item: EdgeSchoolFees, index: number) => index + 1, },
-    { header: "Name", accessor: "node.userprofile.user.fullName", align: "left" },
-    { header: "Gender", accessor: "node.userprofile.user.sex", align: "center" },
-    { header: "Telephone", accessor: "node.userprofile.user.telephone", align: "center" },
+    { header: "Name", accessor: "node.userprofile.customuser.fullName", align: "left" },
+    { header: "Gender", accessor: "node.userprofile.customuser.sex", align: "center" },
+    { header: "Telephone", accessor: "node.userprofile.customuser.telephone", align: "center" },
     { header: "Platform Status", align: "center", render: (item: EdgeSchoolFees, index: number) => <span className='flex items-center justify-center w-full'>{item.node.platformPaid ? <FaCheck size={22} color='green' /> : <GrClose size={22} color='red' />}</span> },
     {
       header: "Action", align: "center",
@@ -38,6 +65,8 @@ const List = ({ params, data, searchParams }: { params: any; data: EdgeSchoolFee
     },
   ];
 
+  console.log(qrCodeDataUrl);
+
   return (
     <DefaultLayout
       pageType='admin'
@@ -48,7 +77,7 @@ const List = ({ params, data, searchParams }: { params: any; data: EdgeSchoolFee
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -87,11 +116,12 @@ const List = ({ params, data, searchParams }: { params: any; data: EdgeSchoolFee
                       Back <FaLeftLong color='red' size={27} />
                     </button>
                   </div>
-                  <IDComp
-                    data={dataToPrint}
-                    params={params}
-                    searchParams={searchParams}
-                  />
+                    <IDComp2
+                      data={dataToPrint} // still an array, but just one item
+                      params={params}
+                      searchParams={searchParams}
+                      qrCodeDataUrl={qrCodeDataUrl} // just that user's QR
+                    />
                 </div>
 
 

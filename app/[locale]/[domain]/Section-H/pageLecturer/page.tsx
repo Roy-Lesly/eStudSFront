@@ -1,16 +1,18 @@
 import { Metadata } from 'next';
 import React from 'react'
-import getApolloClient from '@/functions';
+import getApolloClient, { errorLog } from '@/functions';
 import { gql } from '@apollo/client';
 import SelectDept from '../SelectDept';
 
 const EditPage = async ({
   params,
 }: {
-  params: { school_id: string, domain: string };
+  params: any;
 }) => {
 
-const client = getApolloClient(params.domain);
+  const p = await params
+
+const client = getApolloClient(p.domain);
     let data;
     try {
         const result = await client.query<any>({
@@ -22,15 +24,13 @@ const client = getApolloClient(params.domain);
         });
         data = result.data;
     } catch (error: any) {
-      if (error.networkError && error.networkError.result) {
-        data = null
-      }
+      errorLog(error)
       
     }
 
   return (
     <div>
-    <SelectDept params={params} data={data} page="Lecturer" />
+    <SelectDept params={p} data={data} page="Lecturer" />
   </div>
   )
 }

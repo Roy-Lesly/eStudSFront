@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import { getData } from '@/functions'
 import NotificationError from '@/section-h/common/NotificationError'
@@ -12,15 +11,18 @@ const page = async ({
   params,
   searchParams
 }: {
-  params: { school_id: string, domain: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const apiDomains: any = await getData(protocol + "api" + params.domain + GetDomainUrl, { nopage: true }, params.domain);
-  const apiYears: any = await getData(protocol + "api" + params.domain + AcademicYearUrl, { nopage: true, school: params.school_id }, params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const apiDomains: any = await getData(protocol + "api" + p.domain + GetDomainUrl, { nopage: true }, p.domain);
+  const apiYears: any = await getData(protocol + "api" + p.domain + AcademicYearUrl, { nopage: true, school: params.school_id }, p.domain);
 
   return (
-    <LayoutAdmin>
+    
         <>
             <Breadcrumb
                 pageName={`Import Courses From Another Year`}
@@ -28,12 +30,12 @@ const page = async ({
                 link1="/pageShop" 
             />
 
-            {searchParams && <NotificationError errorMessage={searchParams} />}
+            {sp && <NotificationError errorMessage={sp} />}
 
-            {apiDomains && apiYears && apiYears.count && <SelectCourse params={params} apiDomains={apiDomains} apiYears={apiYears.results} />}
+            {apiDomains && apiYears && apiYears.count && <SelectCourse params={p} apiDomains={apiDomains} apiYears={apiYears.results} />}
             
         </>
-    </LayoutAdmin>
+    
   )
 }
 

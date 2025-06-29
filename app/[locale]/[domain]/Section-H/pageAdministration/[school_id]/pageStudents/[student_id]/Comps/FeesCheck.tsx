@@ -34,7 +34,6 @@ const FeesCheck = ({ children, semester, fees, link, emptyComp }: AccessGuardPro
 
   return <ActivationError
     fees={fees}
-    data={fees}
     type="fees"
     link={link}
   />;

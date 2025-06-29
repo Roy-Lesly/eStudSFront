@@ -1,51 +1,51 @@
 import React, { Suspense } from "react";
-import getApolloClient, { getDataNotProtected } from "@/functions";
+import { getDataNotProtected } from "@/functions";
 import { Metadata } from "next";
 import { GetUserProfileUrl } from "@/Domain/Utils-H/userControl/userConfig";
 import { protocol } from "@/config";
 import { GetUserProfileInter } from "@/Domain/Utils-H/userControl/userInter";
 import { FaCheckCircle, FaTimesCircle, FaUserCircle } from "react-icons/fa";
 import { gql } from "@apollo/client";
+import getApolloClient, { errorLog } from "@/utils/graphql/GetAppolloClient";
 
 export const metadata: Metadata = {
     title: "Transcript",
     description: "This is the Transcript Page",
 };
 
-const Page = async ({
+const page = async ({
     params,
+    searchParams
 }: {
-    params: { school_id: string; profile_id: string; domain: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
-}) => {
+    params: any;
+    searchParams: any;
+}) => { const p = await params; const sp = await searchParams;
+
     const apiStudentInfo: GetUserProfileInter[] = await getDataNotProtected(
-        `${protocol}api${params.domain}${GetUserProfileUrl}`,
-        { id: params.profile_id, nopage: true },
-        params.domain
+        `${protocol}api${p.domain}${GetUserProfileUrl}`,
+        { id: p.profile_id, nopage: true },
+        p.domain
     );
 
-    const client = getApolloClient(params.domain);
+    const client = getApolloClient(p.domain);
     let data;
     try {
         const result = await client.query<any>({
             query: GET_DATA,
             variables: {
-                id: params.profile_id,
-                schoolId: params.school_id,
+                id: p.profile_id,
+                schoolId: p.school_id,
                 timestamp: new Date().getTime()
             },
             fetchPolicy: 'no-cache'
         });
         data = result.data;
     } catch (error: any) {
-        console.log(error)
+        errorLog(error);
         if (error.networkError && error.networkError.result) {
         }
         data = null;
     }
-
-    console.log(data, 46)
-    console.log(data.allUserProfiles.edges[0].node, 47)
 
     return (
         <main className="bg-gradient-to-br flex from-blue-500 items-center justify-center min-h-screen p-4 to-purple-600">
@@ -105,11 +105,11 @@ const Page = async ({
                     <div className="gap-2 grid grid-cols-1 md:grid-cols-2">
                         <div className="flex flex-col">
                             <p className="font-semibold text-slate-500">Full Name / Nom et Prenom:</p>
-                            <p className="text-black font-semibold">{data.allUserProfiles.edges[0].node.user?.fullName}</p>
+                            <p className="text-black font-semibold">{data.allUserProfiles.edges[0].node.customuser?.fullName}</p>
                         </div>
                         <div className="flex flex-col">
                             <p className="font-semibold text-slate-500">Matricle:</p>
-                            <p className="text-black font-semibold">{data.allUserProfiles.edges[0].node.user?.matricle}</p>
+                            <p className="text-black font-semibold">{data.allUserProfiles.edges[0].node.customuser?.matricle}</p>
                         </div>
 
                         <div className="flex flex-col">
@@ -145,7 +145,7 @@ const Page = async ({
     );
 };
 
-export default Page;
+export default page;
 
 
 

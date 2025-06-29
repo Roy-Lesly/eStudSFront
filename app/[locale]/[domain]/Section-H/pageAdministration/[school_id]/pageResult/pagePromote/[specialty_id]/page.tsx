@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, getData, removeEmptyFields } from '@/functions';
+import getApolloClient, { decodeUrlID, errorLog, getData, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 
@@ -8,55 +8,59 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, lecturer_id: string, course_id: string, domain: string, specialty_id: string };
+  params: any;
   searchParams?: any
 }) => {
 
+  const p = await params;
+  const sp = await searchParams;
+
   const paginationParams: Record<string, any> = { };
   
-  paginationParams.specialtyName = searchParams?.spec
-  paginationParams.academicYear = searchParams?.nextYear
-  paginationParams.domainId = parseInt(decodeUrlID(searchParams?.dom))
-  paginationParams.level = searchParams?.next
-    const client = getApolloClient(params.domain);
+  paginationParams.specialtyName = sp?.spec
+  paginationParams.academicYear = sp?.nextYear
+  paginationParams.domainId = parseInt(decodeUrlID(sp?.dom))
+  paginationParams.level = sp?.next
+    const client = getApolloClient(p.domain);
     let data;
     let dataNextSpec;
     try {
         const result = await client.query<any>({
           query: GET_DATA,
           variables: {
-            schoolId: params.school_id,
-            specialtyId: parseInt(decodeUrlID( params.specialty_id)),
-            specialtyId2: parseInt(decodeUrlID( params.specialty_id)),
+            schoolId: p.school_id,
+            specialtyId: parseInt(decodeUrlID( p.specialty_id)),
+            specialtyId2: parseInt(decodeUrlID( p.specialty_id)),
             timestamp: new Date().getTime()
           },
           fetchPolicy: 'no-cache'
         });
         data = result.data;
     } catch (error: any) {
-      
+      errorLog(error);
       data = null;
     }
+
     try {
         const result = await client.query<any>({
           query: GET_DATA_NEXT,
           variables: {
             ...removeEmptyFields(paginationParams),
-            schoolId: params.school_id,
+            schoolId: p.school_id,
             timestamp: new Date().getTime()
           },
           fetchPolicy: 'no-cache'
         });
         dataNextSpec = result.data;
     } catch (error: any) {
-      console.error('GraphQL Error Details:', error);
+      errorLog(error);
       dataNextSpec = null;
     }
 
       
   return (
     <div>
-    <List params={params} data={data} dataNextSpec={dataNextSpec} searchParams={searchParams} />
+    <List params={p} data={data} dataNextSpec={dataNextSpec} searchParams={sp} />
   </div>
   )
 }
@@ -90,7 +94,7 @@ const GET_DATA = gql`
           id
           program { id}
           session
-          user {
+          customuser {
             id fullName
           }
           specialty {
@@ -103,7 +107,7 @@ const GET_DATA = gql`
               specialtyName
             }
           }
-          info
+          infoData
         }
       }
     }
@@ -145,7 +149,7 @@ const GET_DATA_NEXT = gql`
       edges {
         node {
           id
-          user {
+          customuser {
             fullName
           }
           specialty {
@@ -158,7 +162,7 @@ const GET_DATA_NEXT = gql`
               specialtyName
             }
           }
-          info
+          infoData
         }
       }
     }

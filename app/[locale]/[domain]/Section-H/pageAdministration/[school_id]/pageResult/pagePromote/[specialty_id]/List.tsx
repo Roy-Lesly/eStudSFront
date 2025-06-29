@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
@@ -33,12 +33,12 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
 
   const Columns: TableColumn<EdgeUserProfile>[] = [
     { header: "#", align: "center", render: (_item: EdgeUserProfile, index: number) => index + 1, },
-    { header: "Full Name", accessor: "node.user.fullName", align: "left" },
+    { header: "Full Name", accessor: "node.customuser.fullName", align: "left" },
     {
       header: "View", align: "center",
       render: (item) => {
         const isSelected = profilesToPromote.some((profile) => profile.node.id === item.node.id);
-        const info = item.node.info ? JSON.parse(item.node.info.toString()) : {}; // Parse the info JSON field
+        const info = item.node.infoData ? JSON.parse(item.node.infoData.toString()) : {}; // Parse the info JSON field
         const isPromoted = info.status === "promoted";
         return isPromoted ? (
           <span className="font-semibold text-green-500">Promoted</span>
@@ -55,12 +55,12 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
   ];
   const ColumnsNext: TableColumn<EdgeUserProfile>[] = [
     { header: "#", align: "center", render: (_item: EdgeUserProfile, index: number) => index + 1, },
-    { header: "Full Name", accessor: "node.user.fullName", align: "left" },
+    { header: "Full Name", accessor: "node.customuser.fullName", align: "left" },
     {
       header: "View", align: "center",
       render: (item) => {
         const foundInNext = data?.allUserProfiles?.edges.some(
-          (nextItem: EdgeUserProfile) => nextItem.node.user.fullName === item.node.user.fullName
+          (nextItem: EdgeUserProfile) => nextItem.node.customuser.fullName === item.node.customuser.fullName
         );
         return foundInNext ? (
           <span className="font-semibold text-blue-500"></span>
@@ -93,28 +93,27 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
         const prof = profilesToPromote[index].node;
         const data = {
           specialtyId: parseInt(decodeUrlID(selectedSpecialtyNextID)),
-          userId: parseInt(decodeUrlID(prof.user.id)),
+          customuserId: parseInt(decodeUrlID(prof.customuser.id)),
           programId: parseInt(decodeUrlID(prof.program.id)),
           session: capitalizeFirstLetter(prof.session),
-          infoField: JSON.stringify({"status": "N/A"}),
+          infoData: JSON.stringify({"status": "N/A"}),
           delete: false
         }
         console.log(data)
         try {
           const result = await createUserProfile({
             variables: {
-              ...data,
-              createdById: user.user_id
+              ...data
             }
           });
 
           if (result.data.createUpdateDeleteUserProfile.userprofile.id) {
             successMessages.push(
-              `${result.data.createUpdateDeleteUserProfile.userprofile.user.fullName} - ${result.data.createUpdateDeleteUserProfile.userprofile.user.fullName}`
+              `${result.data.createUpdateDeleteUserProfile.userprofile.customuser.fullName} - ${result.data.createUpdateDeleteUserProfile.userprofile.customuser.fullName}`
             );
             let currentInfo = {};
             try {
-              currentInfo = JSON.parse(prof.info.toString() || '{}');
+              currentInfo = JSON.parse(prof.infoData.toString() || '{}');
             } catch (e) {
               console.error("Error parsing info field", e);
             }
@@ -122,18 +121,20 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
             const updatedInfo = {
               ...currentInfo,
               status: 'promoted',
+              promoted_by: user.user_id,
+              date: new Date().toISOString(),
             };
 
             await updateUserProfile({
               variables: {
                 id: parseInt(decodeUrlID(prof.id)),
-                infoField: JSON.stringify(updatedInfo),
-                updatedById: user.user_id
+                infoData: JSON.stringify(updatedInfo),
+                delete: false
               }
             });
           }
-        } catch (err: any) {
-          errorMessages.push(`Error Creating ${prof.user?.fullName}: ${err.message}`);
+        } catch (error: any) {
+          errorMessages.push(`Error Creating ${prof.customuser?.fullName}: ${error.message}`);
         }
       }
 
@@ -161,7 +162,7 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -202,8 +203,8 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
                   <MyTableComp
                     data={
                       data?.allUserProfiles?.edges.sort((a: EdgeUserProfile, b: EdgeUserProfile) => {
-                        const fullNameA = a.node.user.fullName.toLowerCase();
-                        const fullNameB = b.node.user.fullName.toLowerCase();
+                        const fullNameA = a.node.customuser.fullName.toLowerCase();
+                        const fullNameB = b.node.customuser.fullName.toLowerCase();
                         if (fullNameA > fullNameB) return 1;
                         if (fullNameA < fullNameB) return -1;
                       })}
@@ -245,8 +246,8 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
                   <MyTableComp
                     data={
                       dataNextSpec?.allUserProfiles?.edges.sort((a: EdgeUserProfile, b: EdgeUserProfile) => {
-                        const fullNameA = a.node.user.fullName.toLowerCase();
-                        const fullNameB = b.node.user.fullName.toLowerCase();
+                        const fullNameA = a.node.customuser.fullName.toLowerCase();
+                        const fullNameB = b.node.customuser.fullName.toLowerCase();
                         if (fullNameA > fullNameB) return 1;
                         if (fullNameA < fullNameB) return -1;
                       })}
@@ -283,22 +284,20 @@ export default List;
 const UPDATE_PROFILE = gql`
 mutation UpdateProfiles(
     $id: ID!,
-    $infoField: JSONString!,
-    $updatedById: ID!,
+    $infoData: JSONString!,
     $delete: Boolean!,
 ) {
-    updateUserProfile(
+    createUpdateDeleteUserProfile(
         id: $id 
-        infoField: $infoField
-        updatedById: $updatedById
+        infoData: $infoData
         delete: $delete
     ) {
         userprofile {
             id
-            user { fullName matricle }
+            customuser { fullName matricle }
             specialty { 
               academicYear 
-              level{ level}
+              level { level}
               mainSpecialty{ specialtyName}
             }
         }
@@ -308,25 +307,23 @@ mutation UpdateProfiles(
 
 const CREATE_PROFILES = gql`
 mutation CreateProfiles(
-    $userId: ID!, 
+    $customuserId: ID!, 
     $session: String!, 
     $programId: ID!, 
     $specialtyId: ID!, 
-    $infoField: JSONString!, 
-    $createdById: ID!, 
+    $infoData: JSONString!,
     $delete: Boolean!, 
 ) {
     createUpdateDeleteUserProfile(
-        userId: $userId 
+        customuserId: $customuserId 
         session: $session
         programId: $programId 
         specialtyId: $specialtyId 
-        infoField: $infoField
-        createdById: $createdById
+        infoData: $infoData
         delete: $delete
     ) {
         userprofile {
-            id user { fullName }
+            id customuser { fullName }
         }
     }
 }

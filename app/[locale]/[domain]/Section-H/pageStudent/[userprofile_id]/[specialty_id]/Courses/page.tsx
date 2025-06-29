@@ -18,22 +18,25 @@ const page = async ({
     params,
     searchParams
 }: {
-    params: { locale: string, userprofile_id: string, domain: string, specialty_id: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
+
+  const p = await params
+  const sp = await searchParams
 
     const Columns: TableColumn<EdgeCourse>[] = [
         { header: "#", align: "center", render: (_item: EdgeCourse, index: number) => index + 1, },
         { header: "Course Name", accessor: "node.mainCourse.courseName", align: "left" },
     ]
 
-    const client = getApolloClient(params.domain);
+    const client = getApolloClient(p.domain);
     let data;
     try {
         const result = await client.query<any>({
             query: GET_DATA,
             variables: {
-                specialtyId: params.specialty_id,
+                specialtyId: p.specialty_id,
                 timestamp: new Date().getTime()
             },
             fetchPolicy: 'no-cache'
@@ -45,7 +48,7 @@ const page = async ({
 
     return (
         <div>
-            {searchParams && <NotificationError errorMessage={searchParams} />}
+            {sp && <NotificationError errorMessage={sp} />}
 
             <div className='h-screen mx-1 my-16 p-1 rounded text-black'>
 
@@ -53,7 +56,7 @@ const page = async ({
 
                 <Suspense fallback={<div>Loading ...</div>}>
 
-                    <List params={params} data={data} searchParams={searchParams} />
+                    <List params={p} data={data} searchParams={sp} />
 
                 </Suspense>
 

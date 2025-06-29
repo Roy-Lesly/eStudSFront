@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { EdgeMoratoire, NodeMoratoire } from '@/Domain/schemas/interfaceGraphql';
@@ -37,7 +37,7 @@ const List = (
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -57,15 +57,15 @@ const List = (
           <MyTabs
             tabs={[
               {
-                label: t("PageAdmin.Pending"),
+                label: t("Pending"),
                 content: <Applied data={dataPending} activeTab={activeTab} />
               },
               {
-                label: t("PageAdmin.Approved"),
+                label: t("Approved"),
                 content: <Applied data={dataApproved} activeTab={activeTab} />
               },
               {
-                label: t("PageAdmin.Rejected"),
+                label: t("Rejected"),
                 content: <Applied data={dataRejected} activeTab={activeTab} />
               },
             ]}
@@ -89,8 +89,8 @@ const Applied = ({ data, activeTab }: { data: any, activeTab: number }) => {
 
   const Columns: TableColumn<EdgeMoratoire>[] = [
     { header: "#", align: "center", render: (_item: EdgeMoratoire, index: number) => index + 1, },
-    { header: "Matricle", accessor: "node.userprofile.user.matricle", align: "left" },
-    { header: "Full Name", accessor: "node.userprofile.user.fullName", align: "left" },
+    { header: "Matricle", accessor: "node.userprofile.customuser.matricle", align: "left" },
+    { header: "Full Name", accessor: "node.userprofile.customuser.fullName", align: "left" },
     { header: "Class", accessor: "node.userprofile.specialty.mainSpecialty.specialtyName", align: "left" },
     {
       header: "Year / Level", align: "left", render: (item) => <button
@@ -118,8 +118,8 @@ const Applied = ({ data, activeTab }: { data: any, activeTab: number }) => {
             data.allMoratoires?.edges.sort((a: EdgeMoratoire, b: EdgeMoratoire) => {
               const academicYearA = a.node.userprofile.specialty.academicYear;
               const academicYearB = b.node.userprofile.specialty.academicYear;
-              const fullNameA = a.node.userprofile.user.fullName.toLowerCase();
-              const fullNameB = b.node.userprofile.user.fullName.toLowerCase();
+              const fullNameA = a.node.userprofile.customuser.fullName.toLowerCase();
+              const fullNameB = b.node.userprofile.customuser.fullName.toLowerCase();
 
               if (academicYearA > academicYearB) return -1;
               if (academicYearA < academicYearB) return 1;

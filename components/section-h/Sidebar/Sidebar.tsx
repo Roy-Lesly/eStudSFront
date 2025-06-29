@@ -20,7 +20,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, menuGroups, params }: SidebarPro
   const [school, setSchool] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (!school && typeof window !== "undefined") {
       const schoolFromLocalStorage = localStorage.getItem("school");
       setSchool(schoolFromLocalStorage);
     }
@@ -32,7 +32,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, menuGroups, params }: SidebarPro
         className={`fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
-        {/* <!-- SIDEBAR HEADER --> */}
         <div className="flex gap-2 items-center justify-center px-6 py-2">
           <LogoHeader
             trigger={trigger}
@@ -41,7 +40,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, menuGroups, params }: SidebarPro
             home={`/${params.domain}/Section-H/pageAdministration/${school}`}
           />
         </div>
-        {/* <!-- SIDEBAR HEADER --> */}
 
         <div className="duration-300 ease-linear flex flex-col no-scrollbar overflow-y-auto">
           {/* <!-- Sidebar Menu --> */}
@@ -66,7 +64,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, menuGroups, params }: SidebarPro
               </div>
             ))}
           </nav>
-          {/* <!-- Sidebar Menu --> */}
         </div>
       </aside>
     </ClickOutside>

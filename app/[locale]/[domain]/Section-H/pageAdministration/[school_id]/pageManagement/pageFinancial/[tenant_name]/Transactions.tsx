@@ -8,15 +8,14 @@ const Transactions = ({ data }: { data: EdgeTransactions[] }) => {
 
     const Columns: TableColumn<EdgeTransactions>[] = [
         { header: "#", align: "center", render: (_item: EdgeTransactions, index: number) => index + 1, },
-        { header: "Matricle", accessor: "node.schoolfees.userprofile.user.matricle", align: "left" },
-        { header: "Full Name", accessor: "node.schoolfees.userprofile.user.fullName", align: "left" },
+        { header: "Matricle", accessor: "node.schoolfees.userprofile.customuser.matricle", align: "left" },
+        { header: "Full Name", accessor: "node.schoolfees.userprofile.customuser.fullName", align: "left" },
         { header: "Class", accessor: "node.schoolfees.userprofile.specialty.mainSpecialty.specialtyName", align: "left" },
         { header: "Level", accessor: "node.schoolfees.userprofile.specialty.level.level", align: "center" },
         { header: "Year", accessor: "node.schoolfees.userprofile.specialty.academicYear", align: "center" },
         { header: "Date", align: "center", render: (item: EdgeTransactions) => (item.node.createdAt.slice(0, 10) + " " + item.node.createdAt.slice(11, 16)) },
     ]
 
-    console.log(data, 19)
 
     return (
         <div>

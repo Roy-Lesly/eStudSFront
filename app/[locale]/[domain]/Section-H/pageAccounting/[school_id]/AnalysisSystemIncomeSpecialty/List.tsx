@@ -9,13 +9,13 @@ import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import MyTabs from '@/MyTabs';
-import { getMenuMenuAccounting } from '@/section-h/Sidebar/MenuAccounting';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TransactionTotalsBySpecialty } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { EdgeLevel } from '@/Domain/schemas/interfaceGraphql';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
+import { GetMenuAccounting } from '@/components/section-h/Sidebar/MenuAccounting';
 
 
 export const metadata: Metadata = {
@@ -107,18 +107,18 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
       domain={params.domain}
       searchComponent={
         <SearchMultiple
-              names={["academicYear", "level" ]}
+              names={["academicYear", "level", "specialtyName" ]}
               link={`/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeSpecialty`}
               select={[
                 { type: 'select', name: 'academicYear', dataSelect: dataYears },
-                { type: 'select', name: 'level', dataSelect: dataLevels.map((item: EdgeLevel) => item.node.level) },
+                // { type: 'select', name: 'level', dataSelect: dataLevels.map((item: EdgeLevel) => item.node.level) },
               ]}    
             />
       }
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuMenuAccounting(params)}
+          menuGroups={GetMenuAccounting()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -179,18 +179,18 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
                     :
                     <ServerError type="notFound" item="Income" />
                 },
-                {
-                  label: 'Others', content: data?.transactionTotalsBySpecialty?.length ?
-                        <MyTableComp
-                        data={
-                          data?.transactionTotalsBySpecialty?.sort((a: TransactionTotalsBySpecialty, b: TransactionTotalsBySpecialty) => {
-                            return a.specialtyName > b.specialtyName ? 1 : a.specialtyName < b.specialtyName ? -1 : 0
-                          })}
-                        columns={ColumnsOthers}
-                      />
-                    :
-                    <ServerError type="notFound" item="Income" />
-                },
+                // {
+                //   label: 'Others', content: data?.transactionTotalsBySpecialty?.length ?
+                //         <MyTableComp
+                //         data={
+                //           data?.transactionTotalsBySpecialty?.sort((a: TransactionTotalsBySpecialty, b: TransactionTotalsBySpecialty) => {
+                //             return a.specialtyName > b.specialtyName ? 1 : a.specialtyName < b.specialtyName ? -1 : 0
+                //           })}
+                //         columns={ColumnsOthers}
+                //       />
+                //     :
+                //     <ServerError type="notFound" item="Income" />
+                // },
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}

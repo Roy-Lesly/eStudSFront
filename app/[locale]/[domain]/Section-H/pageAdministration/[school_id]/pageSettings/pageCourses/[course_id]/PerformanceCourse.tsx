@@ -51,7 +51,6 @@ const DonutChart = (
 const PerformanceCourse = ({ data }: { data: NodeCourse }) => {
   const total = data.countTotal;
   const totalWithAverage = data.countWithAverage;
-  console.log(data, 51)
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">

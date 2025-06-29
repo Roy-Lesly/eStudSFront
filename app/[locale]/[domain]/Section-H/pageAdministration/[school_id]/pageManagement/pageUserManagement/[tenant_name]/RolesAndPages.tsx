@@ -24,7 +24,7 @@ const RolesAndPages = ({ period }: { period: any }) => {
         {
             header: "View", align: "center",
             render: (item) => <button
-                // onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.user.id}`)}
+                // onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
                 className="bg-green-200 p-1 rounded-full"
             >
                 <FaRightLong color="green" size={21} />

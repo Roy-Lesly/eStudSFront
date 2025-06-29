@@ -3,27 +3,40 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import ButtonUpdate from '@/section-h/Buttons/ButtonUpdate';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
-import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
+import { decodeUrlID } from '@/functions';
 import { FaLeftLong, FaRightLong } from 'react-icons/fa6';
-import IDComp from '../../pageResult/pageIDCard/[specialty_id]/IDComp';
 import { CertificateOptions } from '@/constants';
 import { useTranslation } from 'react-i18next';
-import PasswordResetModal from '@/PasswordModal';
+import QrCodeGenerator from '@/components/QrCodeGenerator';
+import StudentIDCard1 from './Comps/StudentIDCard1';
+import StudentIDCard2 from './Comps/StudentIDCard2';
+import StudentIDCard3 from './Comps/StudentIDCard3';
+import IDComp2 from '../../pageResult/pageIDCard/[specialty_id]/IDComp2';
+import IDComp1 from '../../pageResult/pageIDCard/[specialty_id]/IDComp1';
+import { QrCodeBase64 } from '@/components/QrCodeBase64';
+import { protocol, RootApi } from '@/utils/config';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 const Info = (
   { data, params, searchParams, hasMark }
-  :
-  { data: EdgeSchoolFees, params: any, searchParams: any, hasMark: boolean }
+    :
+    { data: EdgeSchoolFees, params: any, searchParams: any, hasMark: boolean }
 ) => {
 
   const { t } = useTranslation();
   const [showId, setShowId] = useState(false);
   const [user, setUser] = useState<JwtPayload | null>(null);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+
+  useEffect(() => {
+    const url = `${protocol}${params.domain}${RootApi}/check/${decodeUrlID(data?.node?.userprofile?.id)}/idcard/?n=1`;
+    QrCodeBase64(url).then(setQrCodeDataUrl);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -51,31 +64,33 @@ const Info = (
     highestCertificate: string;
     yearObtained: string;
     schoolIds: string[];
-    deptNames: string[];
+    deptIds: number[];
+    infoData: string;
     delete: boolean;
     prefix: string;
   }>({
-    role: data.node.userprofile.user.role || '',
-    photo: data.node.userprofile.user?.photo || '',
-    firstName: data.node.userprofile.user.firstName || '',
-    lastName: data.node.userprofile.user.lastName || '',
-    fullName: data.node.userprofile.user.fullName || '',
-    sex: data.node.userprofile.user.sex || '',
-    dob: data.node.userprofile.user.dob || '',
-    pob: data.node.userprofile.user.pob || '',
-    address: data.node.userprofile.user.address || '',
-    telephone: data.node.userprofile.user.telephone || '',
-    email: data.node.userprofile.user.email || '',
-    parent: data.node.userprofile.user.parent || '',
-    parentTelephone: data.node.userprofile.user.parentTelephone || '',
-    nationality: data.node.userprofile.user.nationality || '',
-    regionOfOrigin: data.node.userprofile.user.regionOfOrigin || '',
-    highestCertificate: data.node.userprofile.user.highestCertificate || '',
-    yearObtained: data.node.userprofile.user.yearObtained || '',
+    role: data?.node?.userprofile.customuser.role || '',
+    photo: data?.node?.userprofile.customuser?.photo || '',
+    firstName: data?.node?.userprofile.customuser.firstName || '',
+    lastName: data?.node?.userprofile.customuser.lastName || '',
+    fullName: data?.node?.userprofile.customuser.fullName || '',
+    sex: data?.node?.userprofile.customuser.sex || '',
+    dob: data?.node?.userprofile.customuser.dob || '',
+    pob: data?.node?.userprofile.customuser.pob || '',
+    address: data?.node?.userprofile.customuser.address || '',
+    telephone: data?.node?.userprofile.customuser.telephone || '',
+    email: data?.node?.userprofile.customuser.email || '',
+    parent: data?.node?.userprofile.customuser.parent || '',
+    parentTelephone: data?.node?.userprofile.customuser.parentTelephone || '',
+    nationality: data?.node?.userprofile.customuser.nationality || '',
+    regionOfOrigin: data?.node?.userprofile.customuser.regionOfOrigin || '',
+    highestCertificate: data?.node?.userprofile.customuser.highestCertificate || '',
+    yearObtained: data?.node?.userprofile.customuser.yearObtained || '',
     schoolIds: [params.school_id],
-    deptNames: ["Student"],
+    deptIds: [],
+    infoData: data?.node?.userprofile.customuser.infoData || JSON.stringify({}),
     delete: false,
-    prefix: data.node.userprofile.user.prefix ? data.node.userprofile.user?.prefix : "x"
+    prefix: data?.node?.userprofile.customuser.prefix ? data?.node?.userprofile.customuser?.prefix : "x"
   });
 
   const handleChange = (e: any) => {
@@ -83,51 +98,30 @@ const Info = (
     setStudent({ ...student, [name]: value.toUpperCase() });
   };
 
-
-  const [createUpdateDeleteCustomUser] = useMutation(UPDATE_DELETE_CUSTOM_USER);
-
   const handleSubmit = async (e: any) => {
     console.log(student)
     e.preventDefault();
 
     if ([student].length > 0 && user && user?.user_id) {
-      const successMessages: string[] = [];
-      const errorMessages: string[] = [];
       for (let index = 0; index < [student].length; index++) {
-        const res = [student][index];
-        try {
-          const result = await createUpdateDeleteCustomUser({
-            variables: {
-              ...res,
-              id: parseInt(decodeUrlID(data.node.userprofile.user.id)),
-              role: res.role.toLowerCase(),
-              sex: capitalizeFirstLetter(res.sex),
-              email: res.email.toLowerCase(),
-              updatedById: user.user_id
-            }
-          });
+        const newData = [student][index];
 
-          console.log(result.data, 70)
+        await ApiFactory({
+          newData: { id: parseInt(decodeUrlID(data?.node?.userprofile.customuser.id)), ...newData, delete: false },
+          mutationName: "createUpdateDeleteCustomUser",
+          modelName: "customuser",
+          successField: "id",
+          query,
+          router: null,
+          params: params,
+          redirect: false,
+          reload: true,
+          returnResponseField: false,
+          redirectPath: ``,
+          actionLabel: "processing",
+        });
 
-          if (result.data.createUpdateDeleteCustomUser.customuser.id) {
-            successMessages.push(
-              `${result.data.createUpdateDeleteCustomUser.customuser.fullName}`
-            );
-          }
-        } catch (err: any) {
-          errorMessages.push(`Error updating ${res.fullName}: ${err.message}`);
-        }
       }
-
-      let alertMessage = "";
-      if (successMessages.length > 0) {
-        alertMessage += `✅ Successfully Submitted`;
-        window.location.reload();
-      }
-      if (errorMessages.length > 0) {
-        alertMessage += `❌ Errors occurred:\n${errorMessages.join("\n")}`;
-      }
-      alert(alertMessage);
     }
   };
 
@@ -148,7 +142,6 @@ const Info = (
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("object, 119")
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       const imageUrl = URL.createObjectURL(file);
@@ -165,7 +158,6 @@ const Info = (
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [passwordState, setPasswordState] = useState<"reset" | "change" | null>(null);
 
-
   return (
     <>
       {showId ?
@@ -178,10 +170,35 @@ const Info = (
               {t("Back")} <FaLeftLong color='red' size={27} />
             </button>
           </div>
-          <IDComp
+
+          {/* <div className='flex flex-col md:flex-row justify-center items-center gap-4'>
+            <StudentIDCard1
+              params={params}
+              data={data}
+              imageSource='/images/logo/id-background.png'
+            />
+            <StudentIDCard2
+              params={params}
+              data={data}
+              imageSource='/images/logo/id-background.png'
+            />
+            <StudentIDCard3
+              params={params}
+              data={data}
+              imageSource='/images/idcards/id-background.png'
+            />
+          </div> */}
+          {/* <IDComp1
             data={[data]}
             params={params}
             searchParams={searchParams}
+            qrCodeDataUrl={qrCodeDataUrl}
+          /> */}
+          <IDComp2
+            data={[data]}
+            params={params}
+            searchParams={searchParams}
+            qrCodeDataUrl={qrCodeDataUrl}
           />
         </div>
         :
@@ -215,22 +232,35 @@ const Info = (
                   <img
                     src={
                       selectedImage ||
-                      (data?.node.userprofile.user.photo
-                        ? "https://apitest.e-conneq.com/media/" + data.node.userprofile.user.photo
+                      (data?.node.userprofile.customuser.photo
+                        ? `https://api${params.domain}.e-conneq.com/media/` + data?.node?.userprofile.customuser.photo
                         : "")
                     }
                     alt="Photo"
                     className={`bg-white border object-cover rounded-md cursor-pointer`}
                     onClick={() => fileInputRef.current?.click()}
                   />
+
                 </div>
-                <div className="flex h-full items-center justify-center md:w-1/3 rounded w-full">
+
+                <QrCodeGenerator
+                  data={
+                    {
+                      id: parseInt(decodeUrlID(params.student_id)),
+                      type: "idcard",
+                      domain: params.domain,
+                      size: 100
+                    }
+                  }
+                />
+
+                {/* <div className="flex h-full items-center justify-center md:w-1/3 rounded w-full">
                   <img
-                    src={data?.node.userprofile.code ? "https://apitest.e-conneq.com/media/" + data?.node.userprofile.code : ""}
+                    src={data?.node?.userprofile.code ? `https://api${params.domain}.e-conneq.com/media/` + data?.node.userprofile.code : "https://apitest.e-conneq.com/media/LogoEconneq.png"}
                     alt="Code"
                     className={`${data?.node.userprofile.code ? data?.node.userprofile.code : "opacity-90"} border-gray-100 object-cover rounded-md `}
                   />
-                </div>
+                </div> */}
 
                 {user && user.is_superuser && user.is_staff ? <div className="flex flex-col gap-4 items-center justify-between md:w-1/3 w-full">
                   <motion.h1
@@ -253,18 +283,18 @@ const Info = (
 
 
               <div className='flex flex-col gap-6'>
-                
+
                 <div className='flex items-center justify-center italic gap-4'>
                   <span>Has Results ?:</span>
                   <span className={`${hasMark ? "text-green-600" : "text-red"} font-semibold text-lg tracking-widest`}>{hasMark ? "Yes" : "No"}</span>
-                  </div>
+                </div>
 
                 <div className=''>
                   <label className="font-semibold text-lg text-slate-800 tracking-widest">Matricle</label>
                   <input
                     type="text"
                     name="x"
-                    value={data.node.userprofile.user.matricle}
+                    value={data?.node?.userprofile.customuser.matricle}
                     onChange={handleChange}
                     className="border p-2 rounded w-full"
                     required
@@ -457,12 +487,6 @@ const Info = (
           </motion.div>
         </motion.form>}
 
-        <PasswordResetModal
-          action={passwordState}
-          onClose={() => setPasswordState(null)}
-          id={parseInt(decodeUrlID(data?.node?.userprofile?.user?.id))}
-        />
-
     </>
   );
 };
@@ -471,7 +495,7 @@ export default Info;
 
 
 
-const UPDATE_DELETE_CUSTOM_USER = gql`
+const query = gql`
   mutation UpdateDelete(
     $id: ID!
     $prefix: String!
@@ -491,10 +515,10 @@ const UPDATE_DELETE_CUSTOM_USER = gql`
     $yearObtained: String!
     $nationality: String!
     $regionOfOrigin: String!
-    $deptNames: [String]!
+    $deptIds: [ID!]
     $schoolIds: [ID]!
     $delete: Boolean!
-    $updatedById: ID!
+    $infoData: JSONString!
   ) {
     createUpdateDeleteCustomUser(
       id: $id, 
@@ -515,10 +539,10 @@ const UPDATE_DELETE_CUSTOM_USER = gql`
       yearObtained: $yearObtained
       nationality: $nationality
       regionOfOrigin: $regionOfOrigin
-      deptNames: $deptNames
+      deptIds: $deptIds
       schoolIds: $schoolIds
       delete: $delete
-      updatedById: $updatedById
+      infoData: $infoData
     ) {
       customuser {
         id 

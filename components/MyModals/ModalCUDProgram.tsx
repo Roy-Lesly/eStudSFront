@@ -6,6 +6,8 @@ import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { EdgeProgram } from '@/Domain/schemas/interfaceGraphql';
+import { FaTimes } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 
 const ModalCUDProgram = ({
@@ -14,6 +16,7 @@ const ModalCUDProgram = ({
     params: any,  actionType: "update" | "create" | "delete", selectedItem: EdgeProgram | null, setOpenModal: any
 }) => {
 
+    const { t } = useTranslation();
     const token = localStorage.getItem('token');
     const user: JwtPayload = jwtDecode(token ? token : "");
 
@@ -64,8 +67,8 @@ const ModalCUDProgram = ({
                 setOpenModal(false);
                 window.location.reload()
             };
-        } catch (err) {
-            alert(`error domain:, ${err}`)
+        } catch (error: any) {
+            alert(`error domain:, ${error}`)
         }
     };
 
@@ -84,8 +87,8 @@ const ModalCUDProgram = ({
                 className="bg-white max-w-lg p-6 rounded-lg shadow-lg w-full"
             >
                 <div className="flex items-center justify-between">
-                    <h2 className="font-semibold text-2xl">{actionType?.toUpperCase()}</h2>
-                    <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl">X</button>
+                    <h2 className="font-semibold text-2xl">{t(actionType)?.toUpperCase()}</h2>
+                    <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl"><FaTimes color='red' /></button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
@@ -96,8 +99,8 @@ const ModalCUDProgram = ({
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            label="name"
-                            placeholder="name"
+                            label={t("Name")}
+                            placeholder={t("Name")}
                             type='text'
                             required
                         />
@@ -108,8 +111,8 @@ const ModalCUDProgram = ({
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            label="description"
-                            placeholder="description"
+                            label={t("Description")}
+                            placeholder={t("Description")}
                             type='textArea'
                             required
                         />
@@ -121,7 +124,7 @@ const ModalCUDProgram = ({
                         type="submit"
                         className={`${actionType === "update" ?"bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
                     >
-                        Confirm & {capitalizeFirstLetter(actionType)}
+                        {t("Confirm")} & {t(capitalizeFirstLetter(actionType))}
                     </motion.button>
 
                 </form>

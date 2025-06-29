@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
@@ -37,7 +37,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -84,8 +84,8 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                   label: 'Students', content: data?.allResults?.edges.length ?
                     <Students data={
                       data?.allResults?.edges.sort((a: EdgeResult, b: EdgeResult) => {
-                        const fullNameA = a.node.student.user.fullName.toLowerCase();
-                        const fullNameB = b.node.student.user.fullName.toLowerCase();
+                        const fullNameA = a.node.student.customuser.fullName.toLowerCase();
+                        const fullNameB = b.node.student.customuser.fullName.toLowerCase();
                         return fullNameA.localeCompare(fullNameB);
                       })}
                       params={params}

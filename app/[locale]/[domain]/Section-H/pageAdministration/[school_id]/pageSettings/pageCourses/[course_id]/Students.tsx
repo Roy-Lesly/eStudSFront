@@ -11,13 +11,10 @@ const Students = ({ data, params }: { data: EdgeResult[], params: any }) => {
 
   const token = localStorage.getItem("token")
   const user: JwtPayload | null = token ? jwtDecode(token) : null
-  console.log(user)
-  console.log(user?.page)
-  console.log(user?.page.includes("Result"))
-  // console.log(data)
+
   const sortedData = [...data].sort((a, b) => {
-    const infoA = JSON.parse(a.node.info || "{}");
-    const infoB = JSON.parse(b.node.info || "{}");
+    const infoA = JSON.parse(a.node.infoData || "{}");
+    const infoB = JSON.parse(b.node.infoData || "{}");
   
     const hasAvgA = typeof infoA.average === "number";
     const hasAvgB = typeof infoB.average === "number";
@@ -29,14 +26,13 @@ const Students = ({ data, params }: { data: EdgeResult[], params: any }) => {
     return infoB.average - infoA.average; // normal descending
   });
 
-  console.log(sortedData)
 
   const Columns: TableColumn<EdgeResult>[] = [
     { header: "Rank", align: "center", render: (_item: EdgeResult, index: number) => index + 1, },
-    { header: "Full Name", accessor: "node.student.user.fullName", align: "left" },
+    { header: "Full Name", accessor: "node.student.customuser.fullName", align: "left" },
     { header: "Total", align: "center", hideColumn: (user?.page.map((item: string) => !item.toUpperCase()).includes("RESULT") || !user?.is_staff),
       render: (item: any) => {
-        const info = JSON.parse(item.node.info);
+        const info = JSON.parse(item.node.infoData);
         return info.average;
       },
     },

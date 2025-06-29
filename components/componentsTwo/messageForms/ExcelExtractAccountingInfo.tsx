@@ -82,8 +82,6 @@ const ExcelExtractAccountingInfo = ({
       }
     } catch (error: any) {
       setLoading(false);
-      console.log("#==================Export Error", error.message);
-
     }
   };
 

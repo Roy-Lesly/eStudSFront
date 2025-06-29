@@ -81,21 +81,22 @@ const page = async ({
   params,
   children
 }: {
-  params: { userprofile_id: string, domain: string, specialty_id: string };
+  params: any;
   children: React.ReactNode;
 
 }) => {
 
+  const p = await params;
 
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<UserProfileAndSchooFeesAndSchoolInfoResponse>({
       query: GET_DATA,
       variables: {
         first: 1,
-        userprofileIdA: decodeUrlID(params.userprofile_id),
-        userprofileIdB: decodeUrlID(params.userprofile_id),
+        userprofileIdA: decodeUrlID(p.userprofile_id),
+        userprofileIdB: decodeUrlID(p.userprofile_id),
       },
     });
     data = result.data;
@@ -110,7 +111,7 @@ const page = async ({
     <div className="w-full">
       {data && <Navbar profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />}
       {children}
-      {data && <Footer params={params} profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />}
+      {data && <Footer params={p} profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />}
     </div>
   );
 }

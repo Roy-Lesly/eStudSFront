@@ -1,8 +1,6 @@
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb';
 import { MyButtonSubmitEdit } from '@/section-h/common/MyButtons/MyButtonSubmit';
 import NotificationError from '@/section-h/common/NotificationError';
-import ServerError from '@/section-h/common/ServerError';
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin';
 import { getData } from '@/functions';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
@@ -12,35 +10,39 @@ import { ProgramInter } from '@/Domain/Utils-H/userControl/userInter';
 import { SchemaCreateEditProgram } from '@/Domain/schemas/schemas';
 import { ActionEdit, ActionDelete } from '@/serverActions/actionGeneral';
 import { protocol } from '@/config';
+import ServerError from '@/components/ServerError';
 
 const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, program_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const apiData: ProgramInter | any = await getData(protocol + "api" + params.domain + ProgramUrl, { id: params.program_id, ...searchParams }, params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const apiData: ProgramInter | any = await getData(protocol + "api" + p.domain + ProgramUrl, { id: p.program_id, ...sp }, p.domain);
 
   return (
-    <LayoutAdmin>
+    
       <>
         <Breadcrumb
           pageName="Edit Program"
           pageName1="Settings"
           pageName2="Programs"
-          link1={`/Section-H/pageAdministration/${params.program_id}`}
-          link2={`/Section-H/pageAdministration/${params.program_id}/pageSettings`}
+          link1={`/Section-H/pageAdministration/${p.program_id}`}
+          link2={`/Section-H/pageAdministration/${p.program_id}/pageSettings`}
         />
 
         {searchParams && <NotificationError errorMessage={searchParams} />}
 
-        { apiData && apiData != "ECONNREFUSED" && <EditDelete apiData={apiData} params={params} />}
-        {apiData == "ECONNREFUSED" && <ServerError />}
+        { apiData && apiData != "ECONNREFUSED" && <EditDelete apiData={apiData} params={p} />}
+        {apiData == "ECONNREFUSED" && <ServerError type="network" />}
 
       </>
-    </LayoutAdmin>
+    
   )
 }
 

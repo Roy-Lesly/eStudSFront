@@ -1,10 +1,5 @@
 import React from 'react'
-import PreInsNavBar from '../PreInsNavBar';
 import { Metadata } from 'next';
-import { getDataNotProtected } from '@/functions';
-import { protocol } from '@/config';
-import { GetSchoolIdentificationUrl } from '@/Domain/Utils-H/appControl/appConfig';
-import { GetSchoolIdentificationInter } from '@/Domain/Utils-H/appControl/appInter';
 import NotificationError from '@/section-h/common/NotificationError';
 import CheckForm from './CheckForm';
 
@@ -13,16 +8,19 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { locale: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
+
+  const p = await params;
+    const sp = await searchParams;
 
   return (
     <>
-      {searchParams && <NotificationError errorMessage={searchParams} />}
+      {sp && <NotificationError errorMessage={sp} />}
       
       <div className='flex flex-col items-center justify-center w-full'>
-        <CheckForm params={params} />
+        <CheckForm params={p} />
       </div>
     </>
   )

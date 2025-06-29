@@ -8,11 +8,12 @@ export const Subdomains = [
     { id: 8, subdomain: "ccast" },
     { id: 9, subdomain: "essm" },
     { id: 10, subdomain: "test" },
-    { id: 11, subdomain: "unique" },
-    { id: 12, subdomain: "stem" },
+    { id: 11, subdomain: "austin" },
+    { id: 12, subdomain: "bhip" },
     { id: 13, subdomain: "cohas" },
-    { id: 14, subdomain: "schooltest" },
-    { id: 15, subdomain: "patrick" },
+    { id: 14, subdomain: "unique" },
+    { id: 15, subdomain: "schooltest" },
+    { id: 16, subdomain: "patrick" },
 ]
 
 

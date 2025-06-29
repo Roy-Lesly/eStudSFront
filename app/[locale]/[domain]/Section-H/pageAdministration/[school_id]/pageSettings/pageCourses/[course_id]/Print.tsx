@@ -23,8 +23,6 @@ const Print = ({ data, params }: { data: EdgeSpecialty, params: any }) => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log('Updated specialty Info:',specialty);
-    // TODO: Implement API call to submit updated data
   };
 
   const sectionVariants = {

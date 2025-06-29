@@ -27,7 +27,7 @@ const SpecialtyLevelIncountChart = (
         <h1 className="font-semibold text-lg">Income Statistics</h1>
         <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>
-      <ResponsiveContainer width="100%" height="95%">
+      {/* <ResponsiveContainer width="100%" height="95%">
         <BarChart width={500} height={300} data={data} barSize={15}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ddd" />
           <XAxis
@@ -55,7 +55,7 @@ const SpecialtyLevelIncountChart = (
             radius={[2, 2, 0, 0]}
           />)}
         </BarChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer> */}
     </div>
   );
 };

@@ -95,10 +95,6 @@ const ExcelExtractAccountingInfo = ({
           }))
         };
 
-        console.log(dataToExport)
-        console.log(name)
-        // return
-
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils?.json_to_sheet(dataToExport);
         XLSX.utils.book_append_sheet(workbook, worksheet, workSheetName ? workSheetName : extra_data.worksheet_name);
@@ -111,8 +107,6 @@ const ExcelExtractAccountingInfo = ({
       }
     } catch (error: any) {
       setLoading(false);
-      console.log("#==================Export Error", error.message);
-
     }
   };
 

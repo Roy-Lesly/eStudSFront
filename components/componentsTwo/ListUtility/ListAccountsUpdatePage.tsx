@@ -8,11 +8,6 @@ import { FaArrowRight } from "react-icons/fa6";
 
 const ListAccountsUpdatePage = async ({ params, apiSysCategory, apiSysConstant, apiAccount, apiYears }: { params: any, apiSysCategory: any, apiSysConstant: any, apiAccount: any, apiYears: any }) => {
 
-  console.log(params, 1)
-  console.log(apiSysCategory, 2)
-  console.log(apiSysConstant, 3)
-  console.log(apiAccount, 4)
-  console.log(apiYears, 5)
   return (
     <div className="flex flex-col gap-10 h-full items-center justify-center">
 

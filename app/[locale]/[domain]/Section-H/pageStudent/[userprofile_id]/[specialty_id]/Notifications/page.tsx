@@ -9,9 +9,11 @@ export const metadata: Metadata = {
 const page = async ({
     params,
 }: {
-    params: { userprofile_id: string,  domain: string, specialty_id: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
+    params: any;
+    searchParams: any;
 }) => {
+
+    const p = await params;
 
     return (
         <div className='h-screen mx-1 my-16 p-1 rounded text-black'>

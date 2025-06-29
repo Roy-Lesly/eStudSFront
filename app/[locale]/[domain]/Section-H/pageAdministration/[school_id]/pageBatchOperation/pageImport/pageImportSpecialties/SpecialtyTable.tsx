@@ -65,13 +65,6 @@ const SpecialtyTable = ({ params, thisYear, existingYearSpecialties, setExisting
                 const filB = addedSpecialtiesIDs?.filter((item: number) => item != spec.id)
                 setAddedSpecialties([...filA])
 
-                console.log(filA)
-                console.log(filB)
-                console.log(existingYearSpecialties)
-                console.log(addedSpecialties)
-                console.log(addedSpecialtiesIDs)
-                console.log(copyExistingYearSpecialties);
-
                 if (filA && filA.length > 0){
                     setAddedSpecialties(filA);
                     setAddedSpecialtiesIDs(filB)
@@ -86,17 +79,10 @@ const SpecialtyTable = ({ params, thisYear, existingYearSpecialties, setExisting
         }
     }
 
-    console.log("========================================================================================")
-    console.log(existingYearSpecialties)
-    console.log(addedSpecialties)
-    console.log(addedSpecialtiesIDs)
-    console.log(copyExistingYearSpecialties);
-
     const importSpecialties = async () => {
         setImportClicked(true);
         if (addedSpecialties && addedSpecialties.length > 0) {
             await Promise.allSettled(addedSpecialties.map((item: GetSpecialtyInter, index: number) => {
-                console.log(item)
                 const data = {
                     school_id: params.school_id,
                     main_specialty_id: item.main_specialty_id,
@@ -112,19 +98,17 @@ const SpecialtyTable = ({ params, thisYear, existingYearSpecialties, setExisting
                 )
             }))
                 .then(res => {
-                    console.log(10500, res)
                     if (res && res.length > 0) {
                         const t = res.map(item => item.status)
                         if (t[0] == "fulfilled") { router.push(`/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageImport?updated=SUCCESSFULLY !!!`); }
                         else { router.push(`/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageImport/pageImportSpecialties?error=${t[0]}`); }
                     }
                 })
-                .catch(err => {
-                    console.log(98, err)
+                .catch((error: any) => {
+                    errorLog(error);
                 })
             return
         } else {
-            // console.log(103, "Not Logged In")
         }
     }
 

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { useRouter } from 'next/navigation';
@@ -60,7 +60,7 @@ const List = ({ params, searchParams, tenant }: { params: any, searchParams: any
             sidebar={
                 <Sidebar
                     params={params}
-                    menuGroups={getMenuAdministration(params)}
+                    menuGroups={GetMenuAdministration()}
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                 />

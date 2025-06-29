@@ -13,7 +13,7 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
     const [viewMoratoire, setViewMoratoire] = useState<boolean>(false);
     const balance = data?.node?.balance
     const statusPlatform = data?.node?.platformPaid
-    const info = JSON.parse(data?.node?.userprofile?.info)
+    const info = JSON.parse(data?.node?.userprofile?.infoData)
     const statusMoratoire = info?.moratoire?.status ?? null;
     const approvedSchedule = info?.moratoire?.approvedSchedule ?? null;
     const cumulativeTotalMoratoire = sumTotalAmounts(approvedSchedule)
@@ -57,7 +57,7 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6 }}
                 >
-                    {data?.node?.userprofile?.user?.fullName || "Student Name"}
+                    {data?.node?.userprofile?.customuser?.fullName || "Student Name"}
                 </motion.h1>
                 <motion.h2
                     className="text-gray-700 text-lg"
@@ -109,8 +109,8 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     statusMoratoire={statusMoratoire}
                     respectPayment={respectPayment}
                 >
-                    {selectedSemester === 'I' ? <ResultsEdit canEdit={false} data={results.filter((item) => item.node.course.semester === "I")} /> : null}
-                    {selectedSemester === 'II' ? <ResultsEdit canEdit={false} data={results.filter((item) => item.node.course.semester === "II")} /> : null}
+                    {selectedSemester === 'I' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "I")} /> : null}
+                    {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "II")} /> : null}
                 </MoratoireCheck>
 
             </div>

@@ -2,17 +2,17 @@
 
 import React, { FC, useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
-import FillMarksAll from './FillMarksAll';
 import { EdgePublish } from '@/Domain/schemas/interfaceGraphql';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { checkPermission } from '@/functions';
+import FillMarksAll from '@/components/componentsOne/FillMarksAll';
 
 
 export const metadata: Metadata = {
@@ -24,7 +24,6 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<{ id: number, title: string, pageType: "ca" | "exam" | "resit" } | null>(null)
 
-  console.log(data?.allPublishes)
   return (
     <DefaultLayout
       pageType='admin'
@@ -32,7 +31,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -98,7 +97,6 @@ const LinkTwo: any = [
 
 const Select = ({ setSelectedType, searchParams, publishData }: { searchParams: { sem: "I" | "II" }, setSelectedType: any, publishData: EdgePublish }) => {
 
-  console.log(publishData, 99)
   const token = localStorage.getItem("token");
   const user: JwtPayload | null = token ? jwtDecode(token) : null;
 

@@ -1,17 +1,16 @@
 'use client';
-import { protocol } from '@/config';
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-import { ActionLogin } from '@/serverActions/AuthActions';
-import { LoginUrl } from '@/Domain/configDom';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import LanguageSwitcher from '@/LanguageSwitcher';
 import { useTranslation } from "react-i18next";
 import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import { JwtPayload } from '@/serverActions/interfaces';
+import { gql, useMutation } from '@apollo/client';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], params: any }) => {
@@ -19,16 +18,22 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
   const router = useRouter();
 
   const [count, setCount] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
   const [loginSucess, setLoginSucess] = useState<boolean>(false);
   const [access, setAccess] = useState<string>('');
   const [refresh, setRefresh] = useState<string>('');
 
-  useEffect(() => {
-    const handleSession = () => {
-      const session = localStorage.getItem('session');
-      const school = localStorage.getItem('school');
+  const [formData, setFormData] = useState({
+    matricle: "",
+    password: "",
+    parent: false,
+  });
 
+  useEffect(() => {
+    const session = localStorage.getItem('token');
+    const school = localStorage.getItem('school');
+    const token: JwtPayload | null = session && session.length ? jwtDecode(session) : null
+
+    const handleSession = () => {
       if (session) {
         const token: JwtPayload | any = jwtDecode(session);
         if (token) {
@@ -48,8 +53,7 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
 
     const fetchSchools = async () => {
       if (schools?.length) {
-        const tok: JwtPayload = jwtDecode(access)
-        if (tok && tok?.school?.length) {
+        if (token && token?.school?.length) {
           setCount(4);
         } else {
           Swal.fire({
@@ -83,32 +87,38 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
     };
 
     const redirectNextPage = () => {
-      const token: JwtPayload | any = jwtDecode(access)
-      console.log(token.school.length, 87)
-
-      if (token && token.school && token.school.length == 1) {
-        if (token.role == "student") {
-          router.push(`/${params.domain}/Section-H/pageStudent`);
+      if (token && token?.school && token.school?.length == 1) {
+        if (token.role?.toLowerCase() == "student") {
+          router.push(`/${params.domain}/Section-H/pageStudent/?user=${token.user_id}`);
           return
         }
       }
 
-      if (token.school && token.school.length > 0) {
-        if (token.role == "admin" || token.role == "teacher") {
+      if (token?.school && token.school.length > 0) {
+        if (token.role?.toLowerCase() == "admin" || token.role?.toLowerCase() == "teacher") {
           if (token.role == "admin") {
             if (token.dept || token.dept.length > 0) {
-              router.push(`/${params.domain}/pageAuthentication/pageSelectSchool?role=${token.role}`);
+              router.push(`${token?.language ? "/" + token?.language[0] : ""}/${params.domain}/pageAuthentication/pageSelectSchool?role=${token.role}`);
+              return;
+            } else {
+              Swal.fire({
+                title: `${t("NoDepartmentAssignedToUser")}`,
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                icon: 'warning',
+              });
               return;
             }
           }
-          if (token.role == "teacher") {
+          if (token.role?.toLowerCase() == "teacher") {
             if (token.dept || token.dept.length > 0) {
               router.push(`/${params.domain}/pageAuthentication/pageSelectSchool?role=${token.role}`);
               return;
             }
           }
         }
-        if (token.role == "student") {
+        if (token.role?.toLowerCase() == "student") {
           router.push(`/Section-H/pageStudent/`);
         }
       }
@@ -117,121 +127,116 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
 
     if (count === 0) handleSession();
     if (count === 3) fetchSchools();
-    if (count === 4 && access && refresh) handleSuccessfulLogin();
-    if (count === 5 && access && refresh) redirectNextPage();
-  }, [count, access, refresh, params.domain]);
+    if (count === 4 && token && refresh) handleSuccessfulLogin();
+    if (count === 5 && token && refresh) redirectNextPage();
+  }, [count, access, refresh, params.domain, schools, router, t]);
 
-  const onSubmitServerAction = async (prevState: any, formData: FormData) => {
-    setLoading(true);
-    const data = {
-      matricle: formData.get('username'),
-      password: formData.get('password'),
-    };
+  const [login, { loading }] = useMutation(LOGIN_MUTATION);
 
-    const response = await ActionLogin(
-      data,
-      `${protocol}api${params.domain}${LoginUrl}`
-    );
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-    // console.log(response, 135)
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    setLoading(false);
+    try {
+      const { data } = await login({ variables: formData });
+      const token = data.login.token;
+      const refresh = data.login.refresh;
 
-    if (response?.detail || response?.error) {
-      Swal.fire({
-        title: response.detail || response.error,
-        timer: 5000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-        icon: response.error ? 'error' : 'warning',
-      });
-      return response.detail || response.error;
-    }
+      if (token) {
+        localStorage.setItem("token", token);
+        localStorage.setItem('ref', refresh);
+        Cookies.set('token', token, { expires: 1, secure: true });
+        Cookies.set('refresh', refresh, { expires: 1, secure: true });
 
-    if (response?.access) {
-      // Save tokens to cookies
-      Cookies.set('token', response.access, { expires: 1, secure: true });
-      Cookies.set('refresh', response.refresh, { expires: 1, secure: true });
-
-      // Save to local storage (optional, for additional access)
-      localStorage.setItem('session', response.access);
-      localStorage.setItem('token', response.access);
-      localStorage.setItem('ref', response.refresh);
-
-      setAccess(response.access);
-      setRefresh(response.refresh);
-      setLoginSucess(true);
-      setCount(3);
+        setAccess(access);
+        setRefresh(refresh);
+        setLoginSucess(true);
+        setCount(3);
+      }
+      else {
+        localStorage.removeItem("token");
+        console.log("ddddd");
+      }
+    } catch (err: any) {
+      errorLog(err);
     }
   };
 
-  return (
-    <section className="bg-gradient-to-br flex flex-col from-blue-700 items-center p-2 md:p-4 justify-center min-h-screen to-indigo-950">
+return (
+  <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-950 via-indigo-600 to-purple-950 p-4">
+    <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl px-6 py-8 md:px-10 md:py-12 transition-all duration-300 hover:shadow-indigo-500/40">
       
-      <div className='flex justify-center mb-20'><LanguageSwitcher currentLocale={params.locale} /></div>
+      <div className="flex justify-center mb-6">
+        <LanguageSwitcher currentLocale={params.locale} />
+      </div>
 
+      {!loginSucess && (
+        <>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center text-gray-800 mb-6">
+            {t("Welcome Back")}
+          </h2>
 
-      {!loginSucess ? <div className="bg-white hover:scale-105 max-w-md p-4 md:p-6 rounded-xl shadow-lg transform transition w-full">
-        <h2 className="font-bold mb-6 text-3xl text-center text-gray-800">
-          {t("Welcome Back")}
-        </h2>
-        <form
-          className="space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.currentTarget);
-            onSubmitServerAction(null, formData);
-          }}
-        >
-          <div className="space-y-1">
-            <label htmlFor="username" className="block font-medium text-gray-800">
-              {t("Matricle")} {t("or")} {t("Username")}
-            </label>
-            <input
-              type="text"
-              name="username"
-              id="username"
-              required
-              placeholder={t("Enter Matricle or Username")}
-              className="border focus:ring focus:ring-indigo-300 px-6 py-3 rounded-lg text-gray-900 text-lg sm:text-2xl font-semibold w-full"
-            />
-          </div>
-          <div className="space-y-1">
-            <label htmlFor="password" className="block font-medium text-gray-700">
-              {t("Password")}
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              required
-              placeholder="••••••••"
-              className="border focus:ring focus:ring-indigo-300 px-4 py-2 rounded-lg tracking-widest text-xl text-gray-700 w-full"
-            />
-          </div>
-          <div className="flex justify-between text-indigo-600">
-            <a href="/pageAuthentication/ResetPassword" className="hover:underline">
-              {t("Forgot Password")}?
-            </a>
-            <a href={`/${params.domain}/pageAuthentication/PasswordAndToken`} className="hover:underline">
-              {t("Enter Token")}
-            </a>
-          </div>
-          <button
-            type="submit"
-            className={`w-full py-2 px-4 rounded-lg text-white font-semibold tracking-wider text-xl ${loading
-              ? 'bg-indigo-300 cursor-not-allowed'
-              : 'bg-indigo-600 hover:bg-indigo-700 transition'
+          <form method="post" onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label htmlFor="matricle" className="block mb-1 text-lg font-semibold text-gray-700">
+                {t("Matricle")} {t("or")} {t("Username")}
+              </label>
+              <input
+                type="text"
+                name="matricle"
+                id="matricle"
+                required
+                placeholder={t("Enter Matricle or Username")}
+                onChange={handleChange}
+                className="w-full px-5 py-3 text-xl font-semibold text-teal-800 tracking-wider border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-800"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block mb-1 text-lg font-semibold text-gray-700">
+                {t("Password")}
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                placeholder="••••••••"
+                onChange={handleChange}
+                className="w-full px-5 py-3 text-xl tracking-widest text-teal-800 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-800"
+              />
+            </div>
+
+            <div className="flex font-semibold justify-between text-sm text-indigo-600 mt-4">
+              <Link href="/pageAuthentication/ResetPassword" className="hover:underline">
+                {t("Forgot Password")}?
+              </Link>
+              <Link href={`/${params.domain}/pageAuthentication/PasswordAndToken`} className="hover:underline">
+                {t("Enter Token")}
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 mt-4 rounded-xl text-white font-semibold text-lg transition-all duration-200 ${
+                loading
+                  ? 'bg-indigo-300 cursor-not-allowed'
+                  : 'bg-indigo-600 hover:bg-indigo-700'
               }`}
-            disabled={loading}
-          >
-            {loading ? `${t("Login In")} ...` : `${t("Login")}`}
-          </button>
-        </form>
+            >
+              {loading ? `${t("Login In")} ...` : `${t("Login")}`}
+            </button>
+          </form>
 
-        <div className="flex items-center justify-between text-indigo-600 mt-6 text-lg">
-          <div className=" text-center text-gray-500">
-            {/* Help?{' '} */}
+          <div className="mt-8 border-t pt-4 text-sm text-gray-600 flex flex-col md:flex-row items-center justify-between gap-3 font-medium">
             <a
               href="https://wa.me/237693358642?text=Hi%20there,%20I%20need%20support!"
               className="hover:underline text-indigo-600"
@@ -240,17 +245,49 @@ const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], param
             >
               {t("Contact Support")}
             </a>
-          </div>
 
-          <div className="text-center text-gray-500">
-            <Link href={`/${params.domain}/pageAuthentication/CheckUser`}>{t("Check User")}</Link>
+            <Link href={`/${params.domain}/pageAuthentication/CheckUser`} className="hover:underline text-indigo-600">
+              {t("Check User")}
+            </Link>
           </div>
-        </div>
-      </div>
-        :
-        null}
-    </section>
-  );
+        </>
+      )}
+    </div>
+  </section>
+);
+
 };
 
 export default LoginForm;
+
+
+const LOGIN_MUTATION = gql`
+  mutation Login(
+    $matricle: String!,
+    $password: String!
+    $parent: Boolean!
+  ) {
+      login (
+        matricle: $matricle,
+        password: $password
+        parent: $parent
+      ) {
+        token refresh
+      }
+    }
+`;
+// const LOGIN_MUTATION = gql`
+//   mutation Login(
+//     $matricle: String!,
+//     $password: String!
+//     $parent: Boolean!
+//   ) {
+//       token(
+//         matricle: $matricle,
+//         password: $password,
+//         parent: $parent
+//       ) {
+//         token refresh
+//       }
+//     }
+// `;

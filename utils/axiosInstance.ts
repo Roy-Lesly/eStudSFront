@@ -19,14 +19,12 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(async req => {
     var session: SessionInter = await getSession();
-    console.log(session, 22);
     if (!session.access){
         // req.headers.Authorization = `Bearer ${session?.access}`
     }
     req.headers.Authorization = `Bearer ${session.access}`
     const user: JwtPayload = jwtDecode(session.access);
     const isExpired = dayjs.unix(user.exp).diff(dayjs()) > 1;
-    console.log(isExpired, 25)
     if (!isExpired) return req
     const response = await fetch(RefreshTokenUrl, {
         method: "post", 
@@ -36,7 +34,6 @@ axiosInstance.interceptors.request.use(async req => {
             'Content-Type': 'application/json'
         },
     })
-    console.log(response, 40)
     // req.headers.Authorization = `Bearer ${response.data.access}`
     
     return req

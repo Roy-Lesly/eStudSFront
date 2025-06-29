@@ -6,6 +6,7 @@ import { useFormState } from 'react-dom';
 import { ActionCreatePassword } from '@/serverActions/AuthActions';
 import { CreatePasswordUrl } from '@/Domain/Utils-H/userControl/userConfig';
 import { protocol } from '@/config';
+import Link from 'next/link';
 
 
 interface Props {
@@ -36,7 +37,6 @@ const CheckUserForm = ({ id, username, params } :any ) => {
       confirm_password: formData.get("confirm_password"),
     }
     const response = await ActionCreatePassword(data, id, protocol + "api" + params.domain + CreatePasswordUrl)
-    console.log(response, 37)
     if (response?.errors) { toast.error(response.errors); setAttempts(attempts + 1); setLoading(false); }
     if (response?.error) { toast.success("Password Created"); router.push(`/pageAuthentication/Login`) }
     if (response?.fail) { toast.success("User Found Set Password"); router.push(`/pageAuthentication/CreatePassword?id=${JSON.stringify(response.fail)}`) }
@@ -90,7 +90,8 @@ const CheckUserForm = ({ id, username, params } :any ) => {
                   <label htmlFor="remember" className="dark:text-gray-300 text-gray-500">Help</label>
                 </div>
               </div>
-              <a href="/pageAuthentication/Login" className="dark:text-primary-500 font-medium hover:underline text-primary-600 text-sm">Login</a>
+              <Link 
+              href="/pageAuthentication/Login" className="dark:text-primary-500 font-medium hover:underline text-primary-600 text-sm">Login</Link>
             </div>
           </div>
         </div>

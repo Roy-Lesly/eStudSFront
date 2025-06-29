@@ -27,7 +27,6 @@ const MultiSelect = ({ formFieldName, options, type }: any) => {
         } 
     }
 
-    console.log(options, 30)
     return (
         <div className='flex flex-col gap-2 w-full'>
 

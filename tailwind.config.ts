@@ -22,6 +22,15 @@ const config: Config = {
     },
     extend: {
       colors: {
+        whiten: "#F1F5F9", // or whatever shade you want
+    body: "#64748B",   // customize this
+    strokedark: "#334155",
+    gray: "#F3F4F6",
+    meta: {
+      4: "#1E293B", // example
+    },
+    boxdark: "#0F172A", // example
+    primary: "#3c50e0", // as used below
         current: "currentColor",
         transparent: "transparent",
         white: "#FFFFFF",
@@ -29,22 +38,16 @@ const config: Config = {
         red: "#FB5454",
         bluedash: "#0084ff",
         "black-2": "#010101",
-        body: "#64748B",
         bodydark: "#AEB7C0",
         bodydark1: "#DEE4EE",
         bodydark2: "#8A99AF",
-        primary: "#3C50E0",
         secondary: "#80CAEE",
         stroke: "#E2E8F0",
-        gray: "#EFF4FB",
         graydark: "#333A48",
         "gray-2": "#F7F9FC",
         "gray-3": "#FAFAFA",
-        whiten: "#F1F5F9",
         whiter: "#F5F7FD",
-        boxdark: "#24303F",
         "boxdark-2": "#1A222C",
-        strokedark: "#2E3A47",
         "form-strokedark": "#3d4d60",
         "form-input": "#1d2a39",
         "meta-1": "#DC3545",

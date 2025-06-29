@@ -8,13 +8,14 @@ import { protocol, RootApi } from '@/config';
 import { EdgeSchoolIdentification } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/LanguageSwitcher';
+import { AnyARecord } from 'dns';
 
 
 const HomePageContent = ({
   params,
   data,
 }: {
-  params: { domain: string, locale: string };
+  params: any;
   data: EdgeSchoolIdentification;
 }) => {
   const { t } = useTranslation("common");
@@ -45,7 +46,7 @@ const HomePageContent = ({
       />
 
       <motion.div
-        className="md:w-48 mt-2 w-32 z-10"  // Reduced margin-top to mt-2
+        className="md:w-48 mt-2 w-32 z-10" 
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 100 }}

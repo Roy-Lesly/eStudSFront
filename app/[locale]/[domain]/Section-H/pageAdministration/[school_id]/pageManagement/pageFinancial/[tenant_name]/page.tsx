@@ -8,12 +8,14 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string, tenant_name: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  // const client = getApolloClient(params.domain);
-  const client = getApolloClient(`${params.tenant_name}`, true);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(`${p.tenant_name}`, true);
   let dataPlatformPaid;
   let dataPlatformPending;
   let dataTransactions;
@@ -23,17 +25,17 @@ const page = async ({
       query: GET_DATA_PLATFORM_PAID,
       variables: {
         // schoolId: (params.school_id),
-        specialtyName: searchParams?.specialty,
-        fullName: searchParams?.fullName,
-        level: searchParams?.level,
-        academicYear: searchParams?.academicYear,
+        specialtyName: sp?.specialty,
+        fullName: sp?.fullName,
+        level: sp?.level,
+        academicYear: sp?.academicYear,
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     dataPlatformPaid = result.data;
   } catch (error: any) {
-    console.log(error, 81)
+    errorLog(error);
     dataPlatformPaid = null;
   }
 
@@ -42,10 +44,10 @@ const page = async ({
       query: GET_DATA_PLATFORM_PENDING,
       variables: {
         // schoolId: parseInt(params.school_id),
-        specialtyName: searchParams?.specialty,
-        fullName: searchParams?.fullName,
-        level: searchParams?.level,
-        academicYear: searchParams?.academicYear,
+        specialtyName: sp?.specialty,
+        fullName: sp?.fullName,
+        level: sp?.level,
+        academicYear: sp?.academicYear,
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
@@ -61,10 +63,10 @@ const page = async ({
       query: GET_LAST_PLATFORM_TRANSACTIONS,
       variables: {
         // schoolId: parseInt(params.school_id),
-        specialtyName: searchParams?.specialty,
-        fullName: searchParams?.fullName,
-        level: searchParams?.level,
-        academicYear: searchParams?.academicYear,
+        specialtyName: sp?.specialty,
+        fullName: sp?.fullName,
+        level: sp?.level,
+        academicYear: sp?.academicYear,
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'

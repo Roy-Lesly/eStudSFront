@@ -5,11 +5,14 @@ import MyInputField from '@/MyInputField';
 import ButtonUpdate from '@/section-h/Buttons/ButtonUpdate';
 import MyTableComp from '@/section-h/Table/MyTableComp'
 import { JwtPayload } from '@/serverActions/interfaces';
-import { gql, useMutation } from '@apollo/client';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { gql } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next';
 
-const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }) => {
+const ResultsEdit = ({ data, canEdit, params }: { data: EdgeResult[], canEdit: boolean, params: any }) => {
+    const { t } = useTranslation("common");
     const [dataToSubmit, setDataToSubmit] = useState<any[]>([]);
     const token = localStorage.getItem("token")
     const user: JwtPayload | null = token ? jwtDecode(token) : null
@@ -36,10 +39,11 @@ const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }
                     <div className="flex gap-2 justify-center">
                         {semFields.map((field, idx) => (
                             <MyInputField
+                                key={idx}
                                 id={field}
                                 name={field}
                                 label=""
-                                value={String(item.node.info[field]) || ''}
+                                value={String(item.node.infoData[field]) || ''}
                                 onChange={(e) => handleInputChange(e, index, field)}
                                 placeholder={`${field}`}
                                 type="number"
@@ -54,17 +58,17 @@ const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }
     ];
 
     const defaultFormData = data.map((item: EdgeResult) => {
-        const info = typeof item.node.info === "string" ? JSON.parse(item.node.info) : {};
+        const infoData = typeof item.node.infoData === "string" ? JSON.parse(item.node.infoData) : {};
         return {
             ...item,
             node: {
                 id: item.node.id,
-                info: info,
+                infoData: infoData,
                 logs: item.node.logs,
-                ca: item.node.ca,
-                exam: item.node.exam,
-                resit: item.node.resit,
-                average: item.node.average,
+                ca: infoData?.ca,
+                exam: infoData?.exam,
+                resit: infoData?.resit,
+                average: infoData?.average,
                 course: item.node.course,
                 student: item.node.student,
             },
@@ -86,8 +90,8 @@ const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }
                         ...item,
                         node: {
                             ...item.node,
-                            info: {
-                                ...item.node.info,
+                            infoData: {
+                                ...item.node.infoData,
                                 [field]: value,
                             },
                         },
@@ -101,7 +105,7 @@ const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }
                 const currentId = parseInt(decodeUrlID(currentRecord.node.id))
 
                 const updatedInfo = {
-                    ...currentRecord.node.info,
+                    ...currentRecord.node.infoData,
                     [field]: parseFloat(value),
                 };
 
@@ -109,7 +113,7 @@ const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }
                     node: {
                         ...currentRecord.node,
                         id: parseInt(decodeUrlID(currentRecord.node.id)),
-                        info: JSON.stringify(updatedInfo),
+                        infoData: JSON.stringify(updatedInfo),
                     },
                 };
 
@@ -133,46 +137,36 @@ const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }
         });
     };
 
-    const [updateResults] = useMutation(SUBMIT_RESULT);
-
     const handleSubmit = async () => {
 
         if (dataToSubmit.length > 0 && user?.user_id) {
-            const successMessages: string[] = [];
-            const errorMessages: string[] = [];
+            let count = 0
             for (let index = 0; index < dataToSubmit.length; index++) {
-                const res = dataToSubmit[index].node;
-                try {
-                    const result = await updateResults({
-                        variables: {
-                            ...res,
-                            updatedById: user.user_id
-                        }
-                    });
+                const newData = dataToSubmit[index].node;
 
-                    if (result.data.updateResult.result.id) {
-                        successMessages.push(
-                            `${result.data.updateResult.result.course.mainCourse.courseName} - ${result.data.updateResult.result.student.user.fullName}`
-                        );
-                    }
-                } catch (err: any) {
-                    errorMessages.push(`Error updating ${res.subject?.mainCourse?.courseName}: ${err.message}`);
-                }
+                const res = await ApiFactory({
+                    newData: { ...newData, delete: false },
+                    mutationName: "createUpdateDeleteResult",
+                    modelName: "result",
+                    successField: "id",
+                    query,
+                    router: null,
+                    params: params,
+                    redirect: false,
+                    reload: false,
+                    returnResponseField: true,
+                    redirectPath: ``,
+                    actionLabel: "processing",
+                });
+                count = count + (res ? 1 : 0)
             }
 
-            // Show a single alert summarizing the results
-            let alertMessage = "";
-            if (successMessages.length > 0) {
-                // alertMessage += `✅ Successfully updated:\n${successMessages.join("\n")}\n\n`;
-                alertMessage += `✅ Successfully Submitted`;
-                alert(alertMessage);
+            if (count === dataToSubmit.length) {
+                alert(t("Operation Completed"))
                 window.location.reload();
+            } else {
+                alert(t("Operation Failed"))
             }
-            if (errorMessages.length > 0) {
-                alertMessage += `❌ Errors occurred:\n${errorMessages.join("\n")}`;
-                alert(alertMessage);
-            }
-
         }
     };
 
@@ -184,7 +178,7 @@ const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }
                 <div className='flex items-center justify-center w-full'>
                     <MyTableComp
                         columns={Columns}
-                        data={formData.sort((a: EdgeResult, b: EdgeResult) => a.node.student.user.fullName > b.node.student.user.fullName ? 1 : a.node.student.user.fullName < b.node.student.user.fullName ? -1 : 0)}
+                        data={formData.sort((a: EdgeResult, b: EdgeResult) => a.node.student.customuser.fullName > b.node.student.customuser.fullName ? 1 : a.node.student.customuser.fullName < b.node.student.customuser.fullName ? -1 : 0)}
                         rowKey={(item, index) => item.node.id || index}
                     />
                 </div>}
@@ -197,22 +191,22 @@ const ResultsEdit = ({ data, canEdit }: { data: EdgeResult[], canEdit: boolean }
 
 export default ResultsEdit
 
-const SUBMIT_RESULT = gql`
-mutation UpdateResult(
+const query = gql`
+mutation Result(
     $id: ID!, 
-    $updatedById: ID!, 
-    $info: JSONString!
+    $infoData: JSONString!
+    $delete: Boolean!, 
 ) {
-    updateResult(
+    createUpdateDeleteResult(
         id: $id, 
-        infoField: $info 
-        updatedById: $updatedById 
+        infoData: $infoData
+        delete: $delete 
     ) {
         result {
             id
             course { mainCourse {courseName}}
-            student { user { fullName}}
-            info
+            student { customuser { fullName}}
+            infoData
         }
     }
 }

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import MyInputField from '@/MyInputField';
 import { EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
 import { useRouter } from 'next/navigation';
@@ -13,6 +13,9 @@ import { CertificateOptions, RegionList } from '@/constants';
 import countryList from "react-select-country-list";
 import Select from "react-select";
 import { useTranslation } from 'react-i18next';
+import FinalPage from './FinalPage';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 const CountryList = countryList().getData();
@@ -54,11 +57,13 @@ type FormData = {
 const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpecialties: any, params: { domain: string, school_id: string } }) => {
   const { t } = useTranslation();
   const steps = [
-    `${t("Personal Info")}`, 
-    `${t("Role / Dept")}`, 
-    `${t("Class Assignment")}`, 
+    `${t("Personal Info")}`,
+    `${t("Role / Dept")}`,
+    `${t("Class Assignment")}`,
     `${t("Confirmation")}`
   ];
+
+  console.log(data);
 
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
@@ -80,6 +85,8 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
       parent: data?.allPreinscriptions?.edges[0].node?.emergencyName,
       parentTelephone: data?.allPreinscriptions?.edges[0].node?.emergencyTelephone,
       password: '',
+      prefix: data?.allSchoolInfos?.edges[0].node.prefix,
+      method: data?.allSchoolInfos?.edges[0].node.method,
     },
     medicalHistory: {
       role: 'student',
@@ -94,8 +101,8 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
       regionOfOriginOther: data?.allPreinscriptions?.edges[0].node?.regionOfOrigin,
     },
     classAssignment: {
-      specialtyId: "",
-      programId: "",
+      specialtyId: data?.allPreinscriptions?.edges[0].node?.specialtyOne,
+      programId: data?.allPreinscriptions?.edges[0].node?.program,
       session: data?.allPreinscriptions?.edges[0].node?.session,
     },
   });
@@ -157,18 +164,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
             );
           });
         }
-        if (!specialty) {
-          specialty = dataSpecialties?.allSpecialties?.edges?.find((item: EdgeSpecialty) => {
-            return (
-              parseInt(decodeUrlID(item.node.mainSpecialty.id)) === parseInt(preinscription.specialtyOne) &&
-              item.node.academicYear === preinscription.academicYear &&
-              item.node.level.level.toString() === preinscription.level.replace("A_", "")
-            );
-          });
-        }
 
         const program = data?.allPrograms?.edges?.find(
-          (item: EdgeProgram) => item.node.name === preinscription.program
+          (item: EdgeProgram) => decodeUrlID(item.node.id) === preinscription.program
         );
 
         return {
@@ -233,15 +231,11 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
     }));
   };
 
-  const [createUpdateDeleteCustomUser] = useMutation(CREATE_DATA)
-  const [createUpdateUserProfile] = useMutation(CREATE_USERPROFILE)
-  const [createUpdateDeletePreInscription] = useMutation(UPDATE_PREINSCRIPTION)
-
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
       const user: JwtPayload = jwtDecode(token || "");
-  
+
       // Validate all steps before proceeding
       const finalValidation = steps.slice(0, 3).map((_, index) => validateStep(index));
       if (!finalValidation.every(Boolean)) {
@@ -249,102 +243,94 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
         setStepValidation(finalValidation);
         return;
       }
-  
-      const schoolInfo = data?.allSchoolInfos?.edges[0]?.node;
+
       const preinscription = data?.allPreinscriptions?.edges[0]?.node;
-  
+
       const newFormData = {
         ...formData.personalInfo,
         ...formData.medicalHistory,
         highestCertificate: formData.medicalHistory.highestCertificate === "Other" ? formData.medicalHistory.highestCertificateOther : formData.medicalHistory.highestCertificate,
         regionOfOrigin: formData.medicalHistory.regionOfOriginOther === "Other" ? formData.medicalHistory.regionOfOriginOther : formData.medicalHistory.regionOfOrigin,
-        prefix: schoolInfo?.prefix || "",
         role: formData.medicalHistory.role,
         email: formData.personalInfo.email.toLowerCase(),
-        deptNames: [formData.medicalHistory.deptNames],
+        dept: [2],
         schoolIds: [parseInt(params.school_id)],
+        prefix: formData.personalInfo.method + formData.personalInfo.prefix,
+        method: formData.personalInfo.method,
+        infoData: JSON.stringify([]),
+        delete: false,
       };
-  
-      // Create User
-      const userResult = await createUpdateDeleteCustomUser({ variables: newFormData });
-      console.log(userResult);
-  
-      if (!userResult.data?.createUpdateDeleteCustomUser?.customuser?.id) {
-        throw new Error("Failed to create user");
+
+      console.log(newFormData);
+      // return
+
+      const userSuccessFieldData = await ApiFactory({
+        newData: newFormData,
+        editData: {},
+        mutationName: "createUpdateDeleteCustomUser",
+        modelName: "customuser",
+        successField: "id",
+        query,
+        router,
+        params,
+        redirect: false,
+        reload: false,
+        returnResponseField: true,
+        redirectPath: ``,
+        actionLabel: "creating",
+      });
+
+      if (!userSuccessFieldData) {
+        errorLog("Failed to create user")
+        return;
       }
-  
-      const userId = parseInt(decodeUrlID(userResult.data.createUpdateDeleteCustomUser.customuser.id));
-  
-      // Create User Profile
-      const newFormDataProfile = {
-        userId,
+
+      const customuserId = parseInt(decodeUrlID(userSuccessFieldData));
+
+      const dataUserProfile = {
+        customuserId,
         specialtyId: parseInt(formData.classAssignment.specialtyId),
         programId: parseInt(formData.classAssignment.programId),
         session: capitalizeFirstLetter(formData.classAssignment.session.toLowerCase()),
-        info: JSON.stringify({ status: "N/A" }),
+        infoData: JSON.stringify({ status: "N/A" }),
         delete: false,
         createdById: user.user_id,
       };
-  
-      const profileResult = await createUpdateUserProfile({ variables: newFormDataProfile });
-    
-      if (!profileResult.data?.createUpdateDeleteUserProfile?.userprofile?.id) {
-        throw new Error("Failed to create user profile");
+
+      // const profileResult = await createUpdateUserProfile({ variables: newFormDataProfile });
+       const userprofileprofileSuccessFieldData = await ApiFactory({
+        newData: { ...dataUserProfile, customUser: decodeUrlID(userSuccessFieldData) },
+        editData: {},
+        mutationName: "createUpdateDeleteUserProfile",
+        modelName: "userprofile",
+        successField: "id",
+        query: queryUserprofile,
+        router,
+        params,
+        redirect: false,
+        reload: false,
+        returnResponseField: true,
+        // redirectPath: `/${params.locale}/${params.domain}/Section-S/${params.language}/PageAdministration/${params.school_id}/PageStudents/`,
+        redirectPath: ``,
+        actionLabel: "creating",
+      });
+
+      if (!userprofileprofileSuccessFieldData) {
+        errorLog("Failed to create profille");
+        return
       }
-  
-      const profileId = profileResult.data.createUpdateDeleteUserProfile.userprofile.id;
-  
-      // Update Pre-inscription
-      const preInscriptionData = {
-        id: parseInt(decodeUrlID(preinscription?.id)),
-        status: "ADMITTED",
-        admissionStatus: true,
-        firstName: preinscription?.firstName,
-        lastName: preinscription?.lastName,
-        sex: capitalizeFirstLetter(preinscription?.sex),
-        address: preinscription?.address,
-        dob: preinscription?.dob,
-        pob: preinscription?.pob,
-        telephone: preinscription?.telephone,
-        email: preinscription?.email,
-        parent: preinscription?.emergencyName,
-        parentTelephone: preinscription?.emergencyTelephone,
-        nationality: formData.medicalHistory.nationality,
-        highestCertificateOther: preinscription?.highestCertificate,
-        highestCertificate: formData.medicalHistory.highestCertificate,
-        yearObtained: formData.medicalHistory.yearObtained,
-        regionOfOrigin: formData.medicalHistory.regionOfOrigin,
-        regionOfOriginOther: preinscription?.regionOfOrigin,
-        registrationNumber: preinscription?.registrationNumber?.toString().toUpperCase(),
-        emergencyName: preinscription?.emergencyName || "",
-        emergencyTown: preinscription?.emergencyTown || "",
-        emergencyTelephone: preinscription?.emergencyTelephone,
-        campus: params.school_id,
-        academicYear: preinscription?.academicYear,
-        program: preinscription?.program,
-        level: preinscription?.level,
-        session: preinscription?.session,
-        specialtyOne: preinscription?.specialtyOne,
-        specialtyTwo: preinscription?.specialtyTwo,
-        action: "ADMISSION",
-        delete: false,
-      };
-  
-      const admissionResult = await createUpdateDeletePreInscription({ variables: preInscriptionData });
-      console.log(admissionResult);
-  
+
       alert(`Success Admitted: ${preinscription?.firstName}`);
-  
+
       router.push(
-        `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${profileId}/?user=${userResult.data.createUpdateDeleteCustomUser.customuser.id}`
-        // `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${profileId}`
+        `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${userprofileprofileSuccessFieldData}/?user=${userSuccessFieldData}`
       );
-    } catch (err: any) {
-      console.error("Error during submission:", err);
-      alert(`Error creating: ${err.message || err}`);
+    } catch (error: any) {
+      console.error("Error during submission:", error);
+      alert(`Error creating: ${error.message || error}`);
     }
   };
-  
+
 
   const filterSpeciaties = (lev: any) => {
     setOptionsSpecialties(dataSpecialties.allSpecialties.edges?.filter((spec: EdgeSpecialty) =>
@@ -673,93 +659,10 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
         );
       case 3:
         return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="font-bold mb-6 text-2xl text-blue-600 text-center">
-              {t("Confirm Your Information")}
-            </h2>
-            <div className="bg-gray-100 p-6 rounded-lg shadow-lg space-y-4">
-              <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-xl">{t("Personal Information")}</h3>
-                <p><strong>{t("First Name")}:</strong> {formData.personalInfo.firstName || 'N/A'}</p>
-                <p><strong>{t("Last Name")}:</strong> {formData.personalInfo.lastName || 'N/A'}</p>
-                <p><strong>{t("Sex")}:</strong> {formData.personalInfo.sex || 'N/A'}</p>
-                <p><strong>{t("Address")}:</strong> {formData.personalInfo.address || 'N/A'}</p>
-                <p><strong>{t("Date of Birth")}:</strong> {formData.personalInfo.dob || 'N/A'}</p>
-                <p><strong>{t("Place of Birth")}:</strong> {formData.personalInfo.pob || 'N/A'}</p>
-              </div>
-              {/* <hr className="border-gray" /> */}
-              <br />
-
-              <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-lg">{t("Contact Information")}</h3>
-                <p><strong>Telephone:</strong> {formData.personalInfo.telephone || 'N/A'}</p>
-                <p><strong>Email:</strong> {formData.personalInfo.email || 'N/A'}</p>
-                <p><strong>{t("Parent's Name")}:</strong> {formData.personalInfo.parent || 'N/A'}</p>
-                <p className='flex items-center justify-between'>
-                  <span><strong>{t("Parent's Telephone")}:</strong> {formData.personalInfo.parentTelephone || 'N/A'}</span>
-                  <span>
-                    <button
-                      onClick={() => setCurrentStep(currentStep - 3)}
-                      className="bg-gray border hover:bg-gray-400 ml-4 my-0 px-6 py-2 rounded-lg shadow-md text-gray-800"
-                    >
-                      {t("Edit Information")}
-                    </button>
-
-                  </span>
-                </p>
-              </div>
-              <hr className="border-gray-300" />
-              <div className="space-y-2">
-                <h3 className="font-semibold text-gray-700 text-lg">{t("Medical History")}</h3>
-                <div className='flex flex-col gap-4 md:flex-row md:gap-10'>
-                  <p><strong>{t("Nationality")}:</strong> {formData.medicalHistory.nationality || 'N/A'}</p>
-                  <p><strong>{t("Region Of Origin")}:</strong> {(formData.medicalHistory.regionOfOrigin === "Other" ? capitalizeFirstLetter(formData.medicalHistory.regionOfOriginOther.toLowerCase()) : formData.medicalHistory.regionOfOrigin) || 'N/A'}</p>
-                </div>
-                <div className='flex flex-col gap-4 md:flex-row md:gap-10'>
-                  <p><strong>{t("Highest Certificate")}:</strong> {(formData.medicalHistory.highestCertificate === "Other" ? (formData.medicalHistory.highestCertificateOther.toLowerCase()) : formData.medicalHistory.highestCertificate) || 'N/A'}</p>
-                  <p><strong>{t("Year Obtained")}:</strong> {formData.medicalHistory.yearObtained || 'N/A'}</p>
-                  <p><strong>Allergies:</strong> {formData.medicalHistory.allergies || 'N/A'}</p>
-                </div>
-                <p className='flex items-center justify-between'>
-                  <span><strong>{t("Medical History")}:</strong> {formData.medicalHistory.medicalHistory || 'N/A'}</span>
-                  <span>
-                    <button
-                      onClick={() => setCurrentStep(currentStep - 2)}
-                      className="bg-gray border hover:bg-gray-400 ml-4 my-0 px-6 py-2 rounded-lg shadow-md text-gray-800"
-                    >
-                      {t("Edit Information")}
-                    </button>
-
-                  </span>
-                </p>
-              </div>
-              <hr className="border-gray-300" />
-              <div className="space-y-2">
-
-                <h3 className="font-semibold text-gray-700 text-lg">{t("Class Assignment")}</h3>
-
-                <p><strong>{t("Class")}:</strong> {optionsSpecialties?.find((item) => item.id === formData.classAssignment.specialtyId)?.name || 'N/A'}</p>
-                <p className='flex items-center justify-between'>
-                  <p><strong>{t("Program")}:</strong> {optionsPrograms?.find((item) => item.id === formData.classAssignment.programId)?.name || 'N/A'}</p>
-                  <span> <strong>Session:</strong> {formData.classAssignment.session || 'N/A'} </span>
-                  <span>
-                    <button
-                      onClick={() => setCurrentStep(currentStep - 1)}
-                      className="bg-gray border hover:bg-gray-400 ml-4 my-0 px-6 py-2 rounded-lg shadow-md text-gray-800"
-                    >
-                      {t("Edit Information")}
-                    </button>
-
-                  </span>
-                </p>
-              </div>
-            </div>
-
-          </motion.div>
+          <FinalPage setCurrentStep={setCurrentStep} currentStep={currentStep} formData={formData} t={t}
+            optionsSpecialties={optionsSpecialties}
+            optionsPrograms={optionsPrograms}
+          />
 
         );
       default:
@@ -836,7 +739,7 @@ export default AdmissionForm;
 
 
 
-const CREATE_DATA = gql`
+const query = gql`
     mutation CreateCustomUser(
       $prefix: String!
       $sex: String!
@@ -855,8 +758,10 @@ const CREATE_DATA = gql`
       $regionOfOrigin: String!
       $highestCertificate: String!
       $yearObtained: String!
-      $deptNames: [String]!
-      $schoolIds: [ID]!
+      $deptIds: [ID]
+      $schoolIds: [ID!]!
+      $infoData: JSONString!
+      $delete: Boolean!
     ) {
       createUpdateDeleteCustomUser(
         prefix: $prefix
@@ -876,8 +781,10 @@ const CREATE_DATA = gql`
         regionOfOrigin: $regionOfOrigin
         highestCertificate: $highestCertificate
         yearObtained: $yearObtained
-        deptNames: $deptNames
+        deptIds: $deptIds
         schoolIds: $schoolIds
+        infoData: $infoData
+        delete: $delete
       ) {
         customuser {
           id
@@ -887,96 +794,24 @@ const CREATE_DATA = gql`
   `;
 
 
-const CREATE_USERPROFILE = gql`
+const queryUserprofile = gql`
   mutation CreateUserProfile(
-    $userId: ID!
+    $customuserId: ID!
     $specialtyId: ID!
     $programId: ID!
     $session: String!
-    $info: JSONString!
-    $createdById: ID!
+    $infoData: JSONString!
     $delete: Boolean!
   ) {
     createUpdateDeleteUserProfile(
-      userId: $userId
+      customuserId: $customuserId
       specialtyId: $specialtyId
       programId: $programId
       session: $session
-      infoField: $info
-      createdById: $createdById
+      infoData: $infoData
       delete: $delete
     ) {
       userprofile {
-        id
-      }
-    }
-  }
-`;
-
-const UPDATE_PREINSCRIPTION = gql`
-  mutation Update(
-    $id: ID!
-    $admissionStatus: Boolean
-    $firstName: String!
-    $lastName: String!
-    $sex: String!
-    $email: String!
-    $telephone: String!
-    $address: String!
-    $pob: String!
-    $dob: Date!
-
-    $nationality: String!
-    $highestCertificate: String!
-    $yearObtained: String!
-    $regionOfOrigin: String!
-    $emergencyName: String!
-    $emergencyTown: String!
-    $emergencyTelephone: String!
-
-    $academicYear: String!
-    $session: String!
-    $level: String!
-    $program: String!
-    $specialtyOne: String!
-    $specialtyTwo: String!
-    $action: String!
-    $campus: String!
-    $status: String!
-    $delete: Boolean!
-  ) {
-    createUpdateDeletePreinscription(
-      id: $id
-      admissionStatus: $admissionStatus
-      firstName: $firstName
-      lastName: $lastName
-      sex: $sex
-      address: $address
-      email: $email
-      telephone: $telephone
-      pob: $pob
-      dob: $dob
-
-      nationality: $nationality
-      highestCertificate: $highestCertificate
-      yearObtained: $yearObtained
-      regionOfOrigin: $regionOfOrigin
-      emergencyName: $emergencyName
-      emergencyTown: $emergencyTown
-      emergencyTelephone: $emergencyTelephone
-
-      academicYear: $academicYear
-      session: $session
-      level: $level
-      program: $program
-      specialtyOne: $specialtyOne
-      specialtyTwo: $specialtyTwo
-      action: $action
-      campus: $campus
-      status: $status
-      delete: $delete
-    ) {
-      preinscription {
         id
       }
     }

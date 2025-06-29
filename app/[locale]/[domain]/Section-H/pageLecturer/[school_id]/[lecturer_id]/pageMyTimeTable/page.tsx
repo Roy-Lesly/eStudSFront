@@ -13,22 +13,25 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: any,
-  searchParams?: any
+  params: any;
+  searchParams: any;
 }) => {
+
+  const p = await params
+  const sp = await searchParams
 
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.courseName = searchParams?.courseName ? searchParams.courseName : ""
-  const client = getApolloClient(params.domain);
+  paginationParams.courseName = sp?.courseName ? sp.courseName : ""
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
         ...paginationParams,
-        assignedToId: params.lecturer_id,
-        schoolId: params.school_id,
+        assignedToId: p.lecturer_id,
+        schoolId: p.school_id,
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
@@ -42,7 +45,7 @@ const page = async ({
 
   return (
     <div>
-      <List params={params} data={data} />
+      <List params={p} data={data} />
     </div>
   )
 }

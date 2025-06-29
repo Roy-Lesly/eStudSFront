@@ -51,8 +51,8 @@ const ListPendingPlatformPage = async ({ params, data }: { params: any, data: Ed
       className={`${TableRowClassName.all + " " + TableRowClassName.sm}`}
     >
       <td className="">{index + 1}</td>
-      <td className="">{item.node.userprofile.user.matricle}</td>
-      <td className="">{item.node.userprofile.user.fullName}</td>
+      <td className="">{item.node.userprofile.customuser.matricle}</td>
+      <td className="">{item.node.userprofile.customuser.fullName}</td>
       <td className="">{item.node.userprofile.specialty.mainSpecialty.specialtyName}</td>
       <td className="">{item.node.userprofile.specialty.level.level}</td>
       <td>
@@ -104,7 +104,7 @@ const ListPendingPlatformPage = async ({ params, data }: { params: any, data: Ed
       </div>
 
       {data?.length ?
-        <Table columns={columns} renderRow={renderRow} data={data.sort((a: EdgeSchoolFees, b: EdgeSchoolFees) => a.node.userprofile.user.fullName > b.node.userprofile.user.fullName ? 1 : a.node.userprofile.user.fullName < b.node.userprofile.user.fullName ? -1 : 0)} />
+        <Table columns={columns} renderRow={renderRow} data={data.sort((a: EdgeSchoolFees, b: EdgeSchoolFees) => a.node.userprofile.customuser.fullName > b.node.userprofile.customuser.fullName ? 1 : a.node.userprofile.customuser.fullName < b.node.userprofile.customuser.fullName ? -1 : 0)} />
         :
         <div>No Data Found</div>
       }

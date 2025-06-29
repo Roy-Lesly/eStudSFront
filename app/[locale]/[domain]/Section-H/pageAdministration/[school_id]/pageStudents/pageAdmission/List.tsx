@@ -2,22 +2,18 @@
 
 import React, { useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
-import { Metadata } from 'next';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import { decodeUrlID } from '@/functions';
 import AdmissionForm from './AdmissionForm';
+import { FaArrowDown } from 'react-icons/fa';
+import Link from 'next/link';
 
 
-export const metadata: Metadata = {
-    title: "Courses Page",
-    description: "This is Courses Page Admin Settings",
-};
-
-const List = ({ params, data, dataSpecialties, searchParams }: { params: any; data: any, dataSpecialties: any, searchParams: any }) => {
+const List = ({ params, dataPreinscription, dataSpecialties, searchParams }: { params: any; dataPreinscription: any, dataSpecialties: any, searchParams: any }) => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
     return (
@@ -27,7 +23,7 @@ const List = ({ params, data, dataSpecialties, searchParams }: { params: any; da
             sidebar={
                 <Sidebar
                     params={params}
-                    menuGroups={getMenuAdministration(params)}
+                    menuGroups={GetMenuAdministration()}
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                 />
@@ -56,9 +52,22 @@ const List = ({ params, data, dataSpecialties, searchParams }: { params: any; da
 
                     {dataSpecialties?.allSpecialties ?
                         dataSpecialties?.allSpecialties?.edges.length ?
-                            <AdmissionForm data={data} dataSpecialties={dataSpecialties}  params={params} />
+                            <AdmissionForm
+                                data={dataPreinscription}
+                                dataSpecialties={dataSpecialties}
+                                params={params}
+                            />
                             :
-                            <div>No Specialties Found</div>
+                            <div className='flex flex-col gap-16 items-center justify-center  py-20 '>
+                                <span className='text-red rounded py-2 px-6 tracking-wider text-2xl font-bold'>No Specialties / Classes Found</span>
+                                <Link
+                                    href={`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties`}
+                                    className='text-teal-800 flex gap-4 text-xl tracking-wider font-semibold'
+                                >
+                                    Click to Create
+                                    <FaArrowDown size={30} />
+                                </Link>
+                            </div>
                         :
                         <ServerError type='network' item="Registration" />
                     }

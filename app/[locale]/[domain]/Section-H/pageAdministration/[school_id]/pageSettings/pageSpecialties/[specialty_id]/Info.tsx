@@ -18,8 +18,6 @@ const Info = ({ data, params }: { data: EdgeSpecialty, params: any }) => {
     paymentThree: data.node.paymentThree || '',
   });
 
-  console.log(data, 22)
-
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setSpecialty({ ...specialty, [name]: value });

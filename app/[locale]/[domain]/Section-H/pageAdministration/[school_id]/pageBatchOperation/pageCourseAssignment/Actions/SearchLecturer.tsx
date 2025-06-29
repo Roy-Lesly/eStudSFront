@@ -1,8 +1,8 @@
 'use client';
 import { EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
 import React, { useState } from 'react';
-import { SelectedMainCousesAssignProps } from './CourseAssignAction';
 import { decodeUrlID } from '@/functions';
+import { SelectedMainCousesAssignProps } from './List';
 
 const SearchLecturer = ({ apiLecturer, updateCourseAssignedTo, item }: { updateCourseAssignedTo: any, apiLecturer: any, item: SelectedMainCousesAssignProps}) => {
     const [ newData, setNewData ] = useState<EdgeCustomUser[]>(apiLecturer);

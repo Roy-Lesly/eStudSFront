@@ -1,40 +1,52 @@
 import { Metadata } from 'next';
 import React from 'react'
-import getApolloClient, { decodeUrlID, removeEmptyFields } from '@/functions';
+import { decodeUrlID, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+
+
+
+export const metadata: Metadata = {
+    title: "Admission Page",
+    description: "This is Admission Page Admin Settings",
+};
+
 
 const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, lecturer_id: string, course_id: string, domain: string };
-  searchParams?: any
+    params: any;
+    searchParams: any;
 }) => {
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.id = searchParams?.id
-  paginationParams.level = searchParams?.level
-  paginationParams.academicYear = searchParams?.academicYear
-  paginationParams.domainName = searchParams?.domainName
-  const client = getApolloClient(params.domain);
-  let data;
+  paginationParams.id = sp?.id
+  paginationParams.level = sp?.level
+  paginationParams.academicYear = sp?.academicYear
+  paginationParams.domainName = sp?.domainName
+  const client = getApolloClient(p.domain);
+  let dataPreinscription;
   let dataSpecialties;
+
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
-        id: parseInt(decodeUrlID(searchParams?.id)),
-        schoolId: parseInt(params.school_id),
+        id: parseInt(decodeUrlID(sp?.id)),
+        schoolId: parseInt(p.school_id),
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
-    data = result.data;
+    dataPreinscription = result.data;
   } catch (error: any) {
     console.log(error, 35)
-    data = null;
+    dataPreinscription = null;
   }
 
   try {
@@ -42,35 +54,30 @@ const EditPage = async ({
       query: GET_DATA_SPECIALTIES,
       variables: {
         ...removeEmptyFields(paginationParams),
-        schoolId: parseInt(params.school_id),
+        schoolId: parseInt(p.school_id),
       },
       fetchPolicy: 'no-cache'
     });
     dataSpecialties = result.data;
   } catch (error: any) {
-    console.log(error, 55)
+    errorLog(error)
     dataSpecialties = null;
   }
 
-  console.log(data?.allPreinscriptions?.edges[0].node, 55)
-
-
   return (
     <div>
-      <List params={params} data={data} searchParams={searchParams} dataSpecialties={dataSpecialties} />
+      <List 
+      params={p} 
+      dataPreinscription={dataPreinscription} 
+      searchParams={sp} 
+      dataSpecialties={dataSpecialties} 
+      />
     </div>
   )
 }
 
 export default EditPage
 
-
-
-export const metadata: Metadata = {
-  title:
-    "Admission",
-  description: "This is Admission Page",
-};
 
 
 const GET_DATA_SPECIALTIES = gql`
@@ -114,7 +121,7 @@ const GET_DATA = gql`
   allSchoolInfos(id: $schoolId){
     edges {
       node {
-        prefix
+        prefix method
       }
     }
   }

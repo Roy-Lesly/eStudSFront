@@ -5,9 +5,6 @@ import { DataProps, JwtPayload } from './serverActions/interfaces';
 import Swal from 'sweetalert2';
 import logger from './logger';
 import useAxios from './useAxios';
-import { ApolloClient, InMemoryCache, HttpLink, NormalizedCacheObject } from '@apollo/client';
-import Cookies from 'js-cookie';
-import { protocol, RootApi } from "./config";
 import { jwtDecode } from "jwt-decode";
 
 
@@ -22,11 +19,11 @@ export const decodeUrlID = (urlID: string) => {
 
 
 export const checkPermission = (
-    token: string | null, 
+    token: string | null,
     controls: ("admin" | "teacher" | "student" | "is_staff" | "is_superuser" | "is_hod" | "admin_page" | "lecturer_page" | "accounting_page" | "student_page" | "result_management")[]
 ) => {
     var user: JwtPayload | null = null
-    if (token && token.length){ user = jwtDecode(token)}
+    if (token && token.length) { user = jwtDecode(token) }
     if (!user || !user.is_active) { return false; }
     return controls.every(control => {
         if (control === "admin" && user?.role === "admin") return true;
@@ -58,58 +55,25 @@ export const addOneYear = (year: string) => {
     const newStartYear = startYear + 1; // Add 1 to the start year
     const newEndYear = endYear + 1; // Add 1 to the end year
     return `${newStartYear}/${newEndYear}`; // Join the new years back into a string
-  }
-  
+}
+
 
 export const removeEmptyFields = (obj: Record<string, any>) => {
     return Object.fromEntries(
-      Object.entries(obj).filter(([_, value]) => value !== '')
+        Object.entries(obj).filter(([_, value]) => value !== '')
     );
-  };
+};
 
 
 export const capitalizeFirstLetter = (str: string) => {
     if (!str) return ''; // Handle empty strings
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  }
-  
-export default function getApolloClient(domain: string, external?: boolean): ApolloClient<NormalizedCacheObject> {
-    const csrfToken = Cookies.get('csrftoken');
-    const uri = protocol + (external ? domain : ('api' + domain)) + RootApi + '/graphql/'
-
-    const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY || "",
-        'X-CSRFToken': csrfToken || "",
-        Referer: `${protocol}api${domain}${RootApi}`,
-        'X-Timestamp': new Date().getTime().toString()
-    };
-    return new ApolloClient({
-        link: new HttpLink({
-            uri,
-            fetch,
-            headers
-        }),
-        cache: new InMemoryCache(),
-        defaultOptions: {
-            watchQuery: {
-                fetchPolicy: 'no-cache',
-            },
-            query: {
-                fetchPolicy: 'no-cache',
-            },
-            mutate: {
-                fetchPolicy: 'no-cache',
-            },
-        },
-    });
 }
 
 
 export const getData = async (url: string, searchParams: any, domain: string, page?: string | null) => {
 
     if (!domain) {
-        console.log("url functions-83", url, domain)
         return null
     }
 
@@ -143,14 +107,14 @@ export const getData = async (url: string, searchParams: any, domain: string, pa
                     }
                     return { error: "error" }
                 } catch (error: any) {
-                    var errObj = Object.keys(error)
-                    if (errObj && errObj.length > 0) {
-                        if (errObj?.includes("code") && error.code == "ERR_BAD_RESPONSE") { console.log("error.code", 104, error.code); return { error: "ERR_BAD_RESPONSE" } }
-                        if (errObj?.includes("code") && error.code == "ECONNRESET") { console.log("error.code", 104, error.code); return { error: "ECONNRESET" } }
-                        if (errObj?.includes("name") && error.name == "Error") { console.log("error.name", 105, error.name,); return { error: "Error" } }
-                        if (errObj?.includes("message") && error.message.includes("Client network")) { console.log("error.message", 106, error.message,); return { error: error.message } }
-                        if (errObj?.includes("cause") && error.cause.code) { console.log("error.cause", 107, error.cause.code); return { error: "ECONNRESET" } }
-                        if (errObj?.includes("response") && error.response.data) {
+                    var errorObj = Object.keys(error)
+                    if (errorObj && errorObj.length > 0) {
+                        if (errorObj?.includes("code") && error.code == "ERR_BAD_RESPONSE") { console.log("error.code", 104, error.code); return { error: "ERR_BAD_RESPONSE" } }
+                        if (errorObj?.includes("code") && error.code == "ECONNRESET") { console.log("error.code", 104, error.code); return { error: "ECONNRESET" } }
+                        if (errorObj?.includes("name") && error.name == "Error") { console.log("error.name", 105, error.name,); return { error: "Error" } }
+                        if (errorObj?.includes("message") && error.message.includes("Client network")) { console.log("error.message", 106, error.message,); return { error: error.message } }
+                        if (errorObj?.includes("cause") && error.cause.code) { console.log("error.cause", 107, error.cause.code); return { error: "ECONNRESET" } }
+                        if (errorObj?.includes("response") && error.response.data) {
                             if (error.response?.data?.code == "token_not_valid") { return { unauthorized: error.response.data.code } }
                             return { error: error.response.data }
                         }
@@ -213,14 +177,14 @@ export const getDataNotProtected = async (url: string, searchParams: any, domain
                     }
                     return { error: "error" }
                 } catch (error: any) {
-                    var errObj = Object.keys(error)
-                    if (errObj && errObj.length > 0) {
-                        if (errObj?.includes("code") && error.code == "ERR_BAD_RESPONSE") { console.log("error.code", 104, error.code); return { error: "ERR_BAD_RESPONSE" } }
-                        if (errObj?.includes("code") && error.code == "ECONNRESET") { console.log("error.code", 104, error.code); return { error: "ECONNRESET" } }
-                        if (errObj?.includes("name") && error.name == "Error") { console.log("error.name", 105, error.name,); return { error: "Error" } }
-                        if (errObj?.includes("message") && error.message.includes("Client network")) { console.log("error.message", 106, error.message,); return { error: error.message } }
-                        if (errObj?.includes("cause") && error.cause.code) { console.log("error.cause", 107, error.cause.code); return { error: "ECONNRESET" } }
-                        if (errObj?.includes("response") && error.response.data) {
+                    var errorObj = Object.keys(error)
+                    if (errorObj && errorObj.length > 0) {
+                        if (errorObj?.includes("code") && error.code == "ERR_BAD_RESPONSE") { console.log("error.code", 104, error.code); return { error: "ERR_BAD_RESPONSE" } }
+                        if (errorObj?.includes("code") && error.code == "ECONNRESET") { console.log("error.code", 104, error.code); return { error: "ECONNRESET" } }
+                        if (errorObj?.includes("name") && error.name == "Error") { console.log("error.name", 105, error.name,); return { error: "Error" } }
+                        if (errorObj?.includes("message") && error.message.includes("Client network")) { console.log("error.message", 106, error.message,); return { error: error.message } }
+                        if (errorObj?.includes("cause") && error.cause.code) { console.log("error.cause", 107, error.cause.code); return { error: "ECONNRESET" } }
+                        if (errorObj?.includes("response") && error.response.data) {
                             if (error.response?.data?.code == "token_not_valid") { return { unauthorized: error.response.data.code } }
                             return { error: error.response.data }
                         }
@@ -240,8 +204,6 @@ export const getDataNotProtected = async (url: string, searchParams: any, domain
                     url,
                     config
                 )
-                logger.log(response, 199)
-                console.log(response, 200)
                 return response.data;
             } catch (error: any) {
                 if (error.response?.data?.code == "token_not_valid") { return { unauthorized: error.response.data.code } }
@@ -509,8 +471,6 @@ export const axiosRequest = async <T>({
     token
 }: AxiosRequestProps): Promise<AxiosResponse<T> | null | any> => {
 
-    logger.log(url, 475)
-
     let headers: any = hasAuth ? {} : {}
     if (file) {
         headers = {
@@ -539,9 +499,6 @@ export const axiosRequest = async <T>({
         payload = { payload: payload }
     }
 
-    // logger.log(506, headers)
-    // logger.log(API_KEY)
-
     if (Object.keys(token).length > 0) {
         const response = await Axios({
             method,
@@ -565,8 +522,7 @@ export const axiosRequest = async <T>({
             headers: { ...headers }
         }).catch(
             (e: any) => {
-                // logger.log(e, 522)
-                logger.log(url, 531)
+                logger.log(e, 531)
                 if (!showError) return
                 return e.response
             }
@@ -580,30 +536,30 @@ export const axiosRequest = async <T>({
 
 export function formatDate(dateString: string) {
     const date = new Date(dateString);
-  
+
     const day = date.getDate();
     const daySuffix = getDaySuffix(day);
     const weekday = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date);
     const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
     const year = date.getFullYear();
-  
+
     return `${weekday} ${day}${daySuffix} ${month} ${year}`;
-  }
-  
-  function getDaySuffix(day: number) {
+}
+
+function getDaySuffix(day: number) {
     if (day > 3 && day < 21) return "th"; // 4th-20th
     switch (day % 10) {
-      case 1: return "st";
-      case 2: return "nd";
-      case 3: return "rd";
-      default: return "th";
+        case 1: return "st";
+        case 2: return "nd";
+        case 3: return "rd";
+        default: return "th";
     }
-  }
-  
+}
+
 
 export const roundToNearest30 = (time: string): string => {
     let [hour, minute] = time.split(":").map(Number);
-    
+
     // Round minutes to the nearest 30-minute mark
     if (minute < 15) minute = 0;
     else if (minute < 45) minute = 30;
@@ -627,13 +583,30 @@ export const calculateHours = (start: string, end: string): number => {
 
 
 export const parseJson = (data: string | Record<string, boolean>): Record<string, boolean> => {
-  if (typeof data === "string") {
-    try {
-      return JSON.parse(data);
-    } catch (error) {
-      console.error('Error parsing JSON:', error);
-      return {};
+    if (typeof data === "string") {
+        try {
+            return JSON.parse(data);
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            return {};
+        }
     }
-  }
-  return data;
+    return data;
 };
+
+
+export function getAcademicYear(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 0 = January, 7 = August
+
+    if (month < 7) {
+        // Before August: academic year spans previous year to current year
+        return `${year - 1}/${year}`;
+    } else {
+        // August or later: academic year spans current year to next year
+        return `${year}/${year + 1}`;
+    }
+}
+
+

@@ -1,7 +1,7 @@
 import React from 'react'
 import List from './List'
 import { gql } from '@apollo/client'
-import getApolloClient from '@/functions'
+import getApolloClient, { errorLog } from '@/functions'
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -13,21 +13,24 @@ const page = async ({
     params,
     searchParams,
 }: {
-    params: any,
-    searchParams?: any
+  params: any;
+  searchParams: any;
 }) => {
 
-    const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+    const client = getApolloClient(p.domain);
     let data;
     try {
         let q: any = {
-            schoolId: parseInt(params.school_id),
+            schoolId: parseInt(p.school_id),
             timestamp: new Date().getTime()
         }
-        if (searchParams?.fullName){ q = { ...q, fullName: searchParams?.fullName } } 
-        if (searchParams?.specialtyName){ q = { ...q, specialtyName: searchParams?.specialtyName } } 
-        if (searchParams?.level){ q = { ...q, level: parseInt(searchParams?.level) } } 
-        if (searchParams?.academicYear){ q = { ...q, academicYear: searchParams?.academicYear } } 
+        if (sp?.fullName){ q = { ...q, fullName: sp?.fullName } } 
+        if (sp?.specialtyName){ q = { ...q, specialtyName: sp?.specialtyName } } 
+        if (sp?.level){ q = { ...q, level: parseInt(sp?.level) } } 
+        if (sp?.academicYear){ q = { ...q, academicYear: sp?.academicYear } } 
 
         const result = await client.query<any>({
             query: GET_DATA,
@@ -36,13 +39,13 @@ const page = async ({
         });
         data = result.data;
     } catch (error: any) {
-        console.log(error)
+        errorLog(error);
         data = null;
     }
 
     return (
         <div>
-            <List params={params} data={data} searchParams={searchParams} />
+            <List params={p} data={data} searchParams={sp} />
         </div>
     )
 }
@@ -71,7 +74,7 @@ const GET_DATA = gql`
                 id
                 schoolfees { id 
                     userprofile {
-                        user { id fullName matricle}
+                        customuser { id fullName matricle}
                         specialty { 
                             mainSpecialty { specialtyName}
                             level { level}

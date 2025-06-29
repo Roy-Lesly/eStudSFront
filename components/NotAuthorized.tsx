@@ -35,6 +35,11 @@ const NotAuthorized = ({ domain }: { domain: string }) => {
                 icon: 'warning',
             });
         }
+        console.log("object");
+        console.log("object");
+        console.log("object");
+        console.log("object");
+        console.log("object");
         if (response.refresh && response.access){
             Cookies.set('token', response.access, { expires: 7, secure: true });
             Cookies.set('refresh', response.refresh, { expires: 7, secure: true });

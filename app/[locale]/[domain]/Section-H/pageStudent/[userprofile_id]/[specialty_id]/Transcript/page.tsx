@@ -1,28 +1,58 @@
 import getApolloClient from '@/functions';
-import { GetPublishInter } from '@/Domain/Utils-H/appControl/appInter';
 import { Metadata } from 'next';
 import React from 'react'
-import { GrClose, GrStatusGood } from 'react-icons/gr';
 import { gql } from '@apollo/client';
-import { EdgePublish, EdgeResult, EdgeSchoolFees, EdgeTranscriptApplications } from '@/Domain/schemas/interfaceGraphql';
-import logger from '@/logger';
 import DisplayPage from './DisplayPage';
 
 
-interface GetDataResponse {
-    allSchoolFees: {
-        edges: EdgeSchoolFees[]
+
+export const metadata: Metadata = {
+    title: "Transcript Page",
+    description: "Student Transcript Page",
+};
+
+const page = async ({
+    params,
+    searchParams,
+}: {
+    params: any;
+    searchParams: any;
+}) => {
+
+  const p = await params;
+  const sp = await searchParams;
+
+    const client = getApolloClient(p.domain);
+    let data;
+    try {
+        const result = await client.query<any>({
+            query: GET_DATA,
+            variables: {
+                userprofileId: parseInt(p.userprofile_id),
+                specialtyId: parseInt(p.specialty_id),
+            },
+            fetchPolicy: 'no-cache'
+        });
+
+        data = result.data;
+    } catch (error: any) {
+        // console.log(error, 111)
+        data = null;
     }
-    allResults: {
-        edges: EdgeResult[]
-    }
-    allPublishes: {
-        edges: EdgePublish[]
-    }
-    allTranscriptApplications: {
-        edges: EdgeTranscriptApplications[]
-    }
+
+    return (
+        <div className='h-screen mb-2 mt-2 rounded text-black'>
+
+            <DisplayPage data={data} params={p} />
+
+        </div>
+    )
+
 }
+
+export default page
+
+
 
 const GET_DATA = gql`
  query GetAllData(
@@ -38,7 +68,7 @@ const GET_DATA = gql`
           userprofile {
             id
             session
-            user { 
+            customuser { 
               id matricle firstName lastName fullName
             }
             specialty { 
@@ -57,7 +87,7 @@ const GET_DATA = gql`
     allResults(first: 50, studentId: $userprofileId,) {
       edges {
         node {
-          id info course { semester mainCourse { courseName }}  
+          id infoData course { semester mainCourse { courseName }}  
         }
       }
     }
@@ -79,52 +109,3 @@ const GET_DATA = gql`
     }
   }
 `;
-
-
-export const metadata: Metadata = {
-    title: "Transcript Page",
-    description: "Student Transcript Page",
-};
-
-const page = async ({
-    params,
-    searchParams,
-}: {
-    params: { userprofile_id: string, domain: string, specialty_id: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
-}) => {
-
-  console.log(parseInt(params.userprofile_id))
-  console.log(parseInt(params.specialty_id))
-
-    const client = getApolloClient(params.domain);
-    let data;
-    try {
-        const result = await client.query<GetDataResponse>({
-            query: GET_DATA,
-            variables: {
-                userprofileId: parseInt(params.userprofile_id),
-                specialtyId: parseInt(params.specialty_id),
-            },
-            fetchPolicy: 'no-cache'
-        });
-
-        data = result.data;
-    } catch (error: any) {
-        // console.log(error, 111)
-        data = null;
-    }
-
-    console.log(data, 117)
-
-    return (
-        <div className='h-screen mb-2 mt-2 rounded text-black'>
-
-            <DisplayPage data={data} params={params} />
-
-        </div>
-    )
-
-}
-
-export default page

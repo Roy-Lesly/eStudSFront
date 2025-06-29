@@ -1,11 +1,12 @@
 import React, { FC, useState} from 'react'
 import { FaRightLong } from 'react-icons/fa6'
-import { SelectedMainCousesAssignProps } from './CourseAssignAction'
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ActionCreate } from '@/serverActions/actionGeneral'
 import { CourseUrl } from '@/Domain/Utils-H/appControl/appConfig'
 import { SchemaCreateEditCourse } from '@/Domain/schemas/schemas'
 import { protocol } from '@/config'
+import { FaTimes } from 'react-icons/fa'
+import { SelectedMainCousesAssignProps } from './List'
 
 
 interface PageProps {
@@ -64,10 +65,8 @@ const List: FC<ListProps> = ({ data, setPage, page, setData }) => {
                     )
                 }))
                 .then(res => {
-                    console.log(103, res)
                     if (res && res.length > 0 && pn) {
                         const t = res.map(item => item.status)
-                        console.log(t)
                         if (!t.includes("fulfilled")){
                             router.push(`/${domain}/Section-H/pageAdministration/${pn[0]}/pageBatchOperation/pageCourseAssignment?error=Operation Successful`);
                         } else {
@@ -76,15 +75,14 @@ const List: FC<ListProps> = ({ data, setPage, page, setData }) => {
                         setLoading(false);
                     }
                 })
-                .catch(err => {
+                .catch((error: any) => {
                     if (pn){
-                        router.push(`/${domain}/Section-H/pageAdministration/${pn[0]}/pageBatchOperation/pageCourseAssignment?specialty_id=${searchParams.get("specialty_id")}&semester=${searchParams.get("semester")}&error=${JSON.stringify(err)}`);
+                        router.push(`/${domain}/Section-H/pageAdministration/${pn[0]}/pageBatchOperation/pageCourseAssignment?specialty_id=${searchParams.get("specialty_id")}&semester=${searchParams.get("semester")}&error=${JSON.stringify(error)}`);
 
                     }
                 })
                 return
             } else {
-                // console.log(103, "Not Logged In")
             }
             const response = await ActionCreate(data[0], SchemaCreateEditCourse, protocol  + "api" + domain + CourseUrl)
             if (response?.error) {
@@ -122,7 +120,7 @@ const List: FC<ListProps> = ({ data, setPage, page, setData }) => {
                         </div>
 
                         <div className="hidden items-center justify-center md:flex">
-                            <button onClick={(e) => { removeItem(item.mainCourseId)}} className='border font-bold px-2.5 rounded text-red text-xl'>x</button>
+                            <button onClick={(e) => { removeItem(item.mainCourseId)}} className='border font-bold px-2.5 rounded text-red text-xl'><FaTimes color='red' /></button>
                         </div>
 
                     </div>

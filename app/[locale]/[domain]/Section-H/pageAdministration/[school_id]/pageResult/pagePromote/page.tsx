@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, getData, removeEmptyFields } from '@/functions';
+import getApolloClient, { decodeUrlID, errorLog, getData, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 
@@ -8,41 +8,43 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, lecturer_id: string, course_id: string, domain: string };
+  params: any;
   searchParams?: any
 }) => {
+
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = { };
 
   const date =  new Date().getFullYear()
   
-  paginationParams.specialtyName = searchParams?.specialtyName
-  paginationParams.domainName = searchParams?.domainName
-  paginationParams.level = searchParams?.level
-  paginationParams.academicYear = searchParams?.academicYear ? searchParams.academicYear : `${new Date().getFullYear() - (new Date().getMonth() + 1 <= 7 ? 2 : 1)}`;
-  const client = getApolloClient(params.domain);
+  paginationParams.specialtyName = sp?.specialtyName
+  paginationParams.domainName = sp?.domainName
+  paginationParams.level = sp?.level
+  paginationParams.academicYear = sp?.academicYear ? sp.academicYear : `${new Date().getFullYear() - (new Date().getMonth() + 1 <= 7 ? 2 : 1)}`;
+  const client = getApolloClient(p.domain);
     let data;
     try {
         const result = await client.query<any>({
           query: GET_DATA,
           variables: {
             ...removeEmptyFields(paginationParams),
-            schoolId: params.school_id,
+            schoolId: p.school_id,
             timestamp: new Date().getTime()
           },
           fetchPolicy: 'no-cache'
         });
         data = result.data;
     } catch (error: any) {
-      console.log(error)
+      errorLog(error);
       
       data = null;
     }
-      console.log(data, 42)
 
   return (
     <div>
-    <List params={params} data={data} searchParams={searchParams} />
+    <List params={p} data={data} searchParams={sp} />
   </div>
   )
 }

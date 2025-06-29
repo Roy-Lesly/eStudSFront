@@ -1,5 +1,6 @@
 'use client';
 import React, { FC, useState } from 'react'
+import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import swal from 'sweetalert2'
 
@@ -26,7 +27,7 @@ const Notification: FC<NotificationProps> = ({ searchParams }) => {
                         {searchParams.created && <span className='bg-notigreen italic md:px-4 px-2 py-2 rounded w-full'>{searchParams.created}</span>}
                         {searchParams.updated && <span className='bg-notiblue italic md:px-4 px-2 py-2 rounded w-full'>{searchParams.updated}</span>}
                         {searchParams.deleted && <span className='bg-notired italic md:px-4 px-2 py-2 rounded w-full'>{searchParams.deleted}</span>}
-                        <button onClick={onClose} className='bg-redlight font-semibold px-4 rounded'>X</button>
+                        <button onClick={onClose} className='bg-redlight font-semibold px-4 rounded'><FaTimes color='red' /></button>
                     </div>
                 </div>
             }

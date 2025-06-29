@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { decodeUrlID } from '@/functions'
+import getApolloClient, { decodeUrlID, errorLog } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 
@@ -9,30 +9,33 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string, specialty_id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
-        schoolId: parseInt(params.school_id),
-        specialtyId: parseInt(decodeUrlID(params.specialty_id))
+        schoolId: parseInt(p.school_id),
+        specialtyId: parseInt(decodeUrlID(p.specialty_id))
       },
       fetchPolicy: 'no-cache'
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error);
     data = null;
   }
 
   return (
     <div>
-      <List params={params} data={data?.allSchoolFees?.edges} searchParams={searchParams} />
+      <List params={p} data={data?.allSchoolFees?.edges} searchParams={sp} />
       </div>
   )
 }
@@ -59,7 +62,7 @@ const GET_DATA = gql`
           platformPaid
           userprofile {
             code
-            user {
+            customuser {
               matricle
               fullName
               sex

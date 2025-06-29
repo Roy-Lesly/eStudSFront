@@ -6,6 +6,8 @@ import { gql, useMutation } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next';
+import { FaTimes } from 'react-icons/fa';
 
 
 interface FormData {
@@ -24,7 +26,7 @@ const ModalCUDSpecialty = (
     }
 ) => {
 
-  
+  const { t } = useTranslation();
   const token = localStorage.getItem('token');
   const user: JwtPayload = jwtDecode(token ? token : "");
 
@@ -60,6 +62,10 @@ const ModalCUDSpecialty = (
     if (!confirmCreate) {
       return;
     }
+    if (formData.specialtyNameShort.length != 3) {
+      alert(`${t("3 Letters Expected for Specialty Short Name")}`)
+      return;
+    }
     let dataToSubmit: any = formData
     if (actionType === "create") {
       dataToSubmit = {
@@ -89,8 +95,8 @@ const ModalCUDSpecialty = (
         setOpenModal(false);
         window.location.reload()
       };
-    } catch (err) {
-      alert(`error domain:, ${err}`)
+    } catch (error: any) {
+      alert(`error domain:, ${error}`)
     }
   };
 
@@ -108,8 +114,8 @@ const ModalCUDSpecialty = (
         className="bg-white max-w-lg p-6 rounded-lg shadow-lg w-full"
       >
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-2xl">{actionType?.toUpperCase()}</h2>
-          <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl">X</button>
+          <h2 className="font-semibold text-2xl">{t(actionType)?.toUpperCase()}</h2>
+          <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl"><FaTimes color='red' /></button>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
@@ -118,9 +124,9 @@ const ModalCUDSpecialty = (
           <MyInputField
               id="specialtyName"
               name="specialtyName"
-              label="Specialty Name"
+              label={t("Specialty Name")}
               type="text"
-              placeholder="Enter specialty Name"
+              placeholder={t("Enter Specialty Name")}
               value={formData.specialtyName}
               onChange={(e) => handleChange('specialtyName', (e.target.value))}
             />
@@ -130,9 +136,9 @@ const ModalCUDSpecialty = (
           <MyInputField
               id="specialtyNameShort"
               name="specialtyNameShort"
-              label="specialty Short "
+              label={t("Specialty Short Name")}
               type="text"
-              placeholder="Enter specialtyNameShort"
+              placeholder={t("Enter Specialty Short")}
               value={formData.specialtyNameShort}
               onChange={(e) => handleChange('specialtyNameShort', (e.target.value))}
             />
@@ -143,9 +149,9 @@ const ModalCUDSpecialty = (
           <MyInputField
             id="fieldId"
             name="fieldId"
-            label="Field"
+            label={t("Field")}
             type="select"
-            placeholder="Select field"
+            placeholder={t("Select Field")}
             value={formData.fieldId?.toString()}
             options={extraData?.fields?.map((item: EdgeField) => { return { id: decodeUrlID(item.node.id.toString()), name: item.node.fieldName } })}
             onChange={(e) => handleChange('fieldId', parseInt(e.target.value))}
@@ -158,7 +164,7 @@ const ModalCUDSpecialty = (
             type="submit"
             className={`${actionType === "update" ? "bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
           >
-            Confirm & {capitalizeFirstLetter(actionType)}
+            {t("Confirm")} & {t(capitalizeFirstLetter(actionType))}
           </motion.button>
         </form>
 

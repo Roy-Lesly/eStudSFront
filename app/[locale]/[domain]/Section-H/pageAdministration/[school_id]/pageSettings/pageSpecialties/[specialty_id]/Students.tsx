@@ -14,14 +14,13 @@ const Students = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => 
   const token = localStorage.getItem("token");
   const user: JwtPayload | null = token ? jwtDecode(token) : null;
   const router = useRouter();
-
   const Columns: TableColumn<EdgeSchoolFees>[] = [
     { header: "#", align: "center", render: (_item: EdgeSchoolFees, index: number) => index + 1, },
-    { header: "Matricle", accessor: "node.userprofile.user.matricle", align: "left" },
-    { header: "Full Name", accessor: "node.userprofile.user.fullName", align: "left" },
+    { header: "Matricle", accessor: "node.userprofile.customuser.matricle", align: "left" },
+    { header: "Full Name", accessor: "node.userprofile.customuser.fullName", align: "left" },
     {
-      header: "Print", hideColumn: user?.is_staff || user?.page.includes("DOCUMENT"), align: "center", render: (item: EdgeSchoolFees, index: number) => <button
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageTranscript/${item.node.id}`)}
+      header: "Print", hideColumn: user?.is_superuser ? false : !user?.page.map((p: string) => p.toUpperCase()).includes("DOCUMENT"), align: "center", render: (item: EdgeSchoolFees, index: number) => <button
+        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageTranscript/${item.node.id}/1`)}
         className="bg-green-200 p-1 rounded-full"
       >
         <FaRightLong color="green" size={21} />

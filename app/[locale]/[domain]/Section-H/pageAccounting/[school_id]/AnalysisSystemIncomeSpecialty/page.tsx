@@ -17,22 +17,24 @@ const page = async ({
   searchParams?: any
 }) => {
 
+   const p = await params;
+          const sp = await searchParams;
+
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.academicYear = searchParams?.academicYear
-  paginationParams.level = parseInt(searchParams?.level)
+  paginationParams.academicYear = sp?.academicYear
+  paginationParams.level = parseInt(sp?.level)
 
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let data;
   let dataYears;
   if (paginationParams?.academicYear) {
-    console.log(29, removeEmptyFields(paginationParams))
     try {
       const result = await client.query<any>({
         query: GET_DATA,
         variables: {
           ...removeEmptyFields(paginationParams),
-          schoolId: parseInt(params.school_id),
+          schoolId: parseInt(p.school_id),
           timestamp: new Date().getTime()
         },
         fetchPolicy: 'no-cache'
@@ -66,11 +68,11 @@ const page = async ({
   return (
     <div>
       <List 
-        params={params} 
+        params={p} 
         data={data} 
         dataYears={dataYears?.allAcademicYears} 
         dataLevels={dataYears?.allLevels?.edges} 
-        searchParams={searchParams} 
+        searchParams={sp} 
       />
     </div>
   )

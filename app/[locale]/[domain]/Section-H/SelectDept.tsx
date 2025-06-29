@@ -9,7 +9,7 @@ import { JwtPayload } from '@/serverActions/interfaces';
 import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import { decodeUrlID } from '@/functions';
 
-const SelectDept = async ({ params, data, page }: { params: any; data: any, page: "Administration" | "Lecturer" | "Accounting" }) => {
+const SelectDept = ({ params, data, page }: { params: any; data: any, page: "Administration" | "Lecturer" | "Accounting" }) => {
   const router = useRouter();
   const token = localStorage.getItem('token');
   const user: JwtPayload | null = token ? jwtDecode(token) : null;

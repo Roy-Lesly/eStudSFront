@@ -2,13 +2,10 @@
 
 import React from 'react';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
-import { FaArrowRight } from 'react-icons/fa';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 
 const Courses = ({ data, params }: { data: EdgeCourse[], params: any }) => {
-
-  console.log(data, 22)
 
   const Columns: TableColumn<EdgeCourse>[] = [
     { header: "#", align: "center", render: (_item: EdgeCourse, index: number) => index + 1, },

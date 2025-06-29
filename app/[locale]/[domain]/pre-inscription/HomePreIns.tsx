@@ -58,7 +58,6 @@ const CheckForm = ({ params }: any) => {
                     protocol + "api" + params.domain + OpenGetPreInscriptionUrl,
                     { ...n }, params.domain
                 )
-                console.log(response, 54)
                 if (response && response.count) {
                     setPage(2)
                     setResponseData(response.results[0]);

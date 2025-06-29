@@ -1,22 +1,40 @@
-import { ConfigData, protocol } from "@/config";
-import { capitalizeFirstLetter, getData } from "@/functions";
-import { GetUserProfileUrl } from "@/Domain/Utils-H/userControl/userConfig";
+import { ConfigData } from "@/config";
+import getApolloClient, { capitalizeFirstLetter, decodeUrlID, errorLog } from "@/functions";
 import Image from "next/image";
 import Link from "next/link";
-import { GetUserProfileInter } from "@/Domain/Utils-H/userControl/userInter";
 import initTranslations from "@/initTranslations";
+import { gql } from "@apollo/client";
 
 
 const page = async (
   { params }
   : 
-  { params: { locale: string, userprofile_id: string, domain: string, specialty_id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  { 
+    params: any;
+  searchParams: any;
 }) => {
 
-  const profile: GetUserProfileInter[] = await getData(protocol + "api" + params.domain + GetUserProfileUrl, { id: params.userprofile_id, nopage: true }, params.domain);
+  const p = await params;
 
-  const { t } = await initTranslations(params.locale, ['common'])
+  const { t } = await initTranslations(p.locale, ['common']);
+    const client = getApolloClient(p.domain);
+    let data;
+  
+    try {
+      const result = await client.query<any>({
+        query: GET_PROFILE,
+        variables: {
+          id: p?.userprofile_id
+        },
+        fetchPolicy: 'no-cache'
+      });
+      data = result.data;
+    } catch (error: any) {
+      errorLog(error)
+      data = null;
+    }
+
+
 
   const menuList = [
     { id: 1, link: "CA", label: `${t("CA")}`, icon: "/images/ca.svg", notification: false },
@@ -32,33 +50,33 @@ const page = async (
 
   return (
     <main className="mb-20 mt-[70px]">
-      {profile && profile.length && profile.length == 1 && <section className="my-6 px-3">
+      {data && data?.allUserProfiles?.edges.length == 1 && <section className="my-6 px-3">
 
         <div className="bg-blue-950 h-[176px] px-5 py-2 rounded-lg w-full">
           <div className="flex items-center justify-between">
             <div className="text-white">
-              <span className="font-bold">{profile[0].full_name}</span>
+              <span className="font-bold">{data?.allUserProfiles?.edges[0].node.customuser?.fullName}</span>
               <div className="flex flex-col mt-2">
                 <div className="flex gap-2 justify-between">
-                  <span className="font-bold">{profile[0].specialty_name}</span>
+                  <span className="font-bold">{data?.allUserProfiles?.edges[0].node.specialty?.mainSpecialty.specialtyName}</span>
                 </div>
 
                 <div className="flex flex-row gap-2">
                   <div className="flex gap-2 justify-between">
-                    <span className="font-bold"> {profile[0].academic_year}</span> | <span className=""> {profile[0].level}</span>
+                    <span className="font-bold"> {data?.allUserProfiles?.edges[0].node.specialty?.academicYear}</span> | <span className=""> {data?.allUserProfiles?.edges[0].node.specialty.level.level}</span>
                   </div>    
                 </div>
 
                 <div className="flex flex-row gap-2">
                   <div className="flex gap-2 justify-between">
-                  {capitalizeFirstLetter(t("Matricle"))}: <span className="font-old italic tracking-widest">{profile[0].matricle}</span>
+                  {capitalizeFirstLetter(t("Matricle"))}: <span className="font-old italic tracking-widest">{data?.allUserProfiles?.edges[0].node.customuser.matricle}</span>
                   </div>    
                 </div>
 
               </div>
             </div>
 
-            <Link href={`/${params.domain}/Section-H/pageStudent`}>
+            <Link href={`/${p.domain}/Section-H/pageStudent/?user=${decodeUrlID(data?.allUserProfiles?.edges[0].node.customuser?.id)}`}>
               <Image
                 width={72}
                 height={72}
@@ -85,7 +103,7 @@ const page = async (
         <div className='gap-3 grid grid-cols-2 grid-rows-3 mt-3 p-3 pb-16 rounded-[16px]'>
           {menuList.map((list: any, index: number) => {
             return (
-              <Link href={`/${params.domain}/Section-H/pageStudent/${params.userprofile_id}/${params.specialty_id}/${list.link}`} key={list.id} className='bg-white flex flex-col h-[86px] items-center justify-center rounded-[20px] shadow-3xl w-full'>
+              <Link href={`/${p.domain}/Section-H/pageStudent/${p.userprofile_id}/${p.specialty_id}/${list.link}`} key={list.id} className='bg-white flex flex-col h-[86px] items-center justify-center rounded-[20px] shadow-3xl w-full'>
                 <div className="flex relative">
                   {/* <div className={`${list.notification && notifications.length > 0 ? "bg-red" : ""} -translate-y-1/2 absolute animate-pulse  bottom-auto inline-block left-auto  p-1.5 right-0 rotate-0 rounded-full scale-x-100 scale-y-100 skew-x-0 skew-y-0 text-xs top-0 translate-x-2/4 z-10`}></div> */}
                   <Image src={list.icon} alt={list.label} width={40} height={40} />
@@ -111,3 +129,27 @@ const page = async (
 }
 
 export default page;
+
+
+
+
+const GET_PROFILE = gql`
+ query GetAllData (
+  $id: ID!
+ ) {
+  allUserProfiles (
+    id: $id
+  ) {
+    edges {
+      node {
+        id
+        customuser { id matricle fullName }
+        specialty { id academicYear 
+          level { level} 
+          mainSpecialty { specialtyName}
+        }
+      }
+    }
+  }
+}
+`;

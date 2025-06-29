@@ -17,8 +17,7 @@ const ExcelExtractAccountingInfo = dynamic(() => import("./messageForms/ExcelExt
 const AdmittedPreincriptionStudentDetails = dynamic(() => import("./messageForms/AdmittedPreincriptionStudentDetails"), { loading: () => <MyLoadingModal />, });
 const TransactionDetailsForm = dynamic(() => import("./formsUtility/TransactionDetailsForm"), { loading: () => <MyLoadingModal />, });
 const StudentIDCard = dynamic(() => import("./messageForms/StudentIDCard"), { loading: () => <MyLoadingModal /> });
-const PublishResult = dynamic(() => import("./messageForms/PublishResult"), { loading: () => <MyLoadingModal /> });
-const PortalResult = dynamic(() => import("./messageForms/PortalResult"), { loading: () => <MyLoadingModal /> });
+const PortalPublishResult = dynamic(() => import("./messageForms/PortalPublishResult"), { loading: () => <MyLoadingModal /> });
 const TranscriptOneYear = dynamic(() => import("./messageForms/TranscriptOneYear"), { loading: () => <MyLoadingModal /> });
 const TranscriptTwoYear = dynamic(() => import("./messageForms/TranscriptTwoYear"), { loading: () => <MyLoadingModal /> });
 const TranscriptThreeYear = dynamic(() => import("./messageForms/TranscriptThreeYear"), { loading: () => <MyLoadingModal /> });
@@ -26,8 +25,7 @@ const TranscriptThreeYear = dynamic(() => import("./messageForms/TranscriptThree
 const forms: {
   [key: string]: (type: "create" | "update" | "delete" | "custom" | any, params: any, setOpen: any, data?: any, extra_data?: any ) => JSX.Element;
 } = {
-  publish_result: (type, params, setOpen, data, extra_data) => <PublishResult type={type} data={data} extra_data={extra_data} params={params} setOpen={setOpen} />,
-  portal_result: (type, params, setOpen, data, extra_data) => <PortalResult type={type} data={data} extra_data={extra_data} params={params} setOpen={setOpen} />,
+  portal_publish_result: (type, params, setOpen, data, extra_data) => <PortalPublishResult type={type} data={data} extra_data={extra_data} params={params} setOpen={setOpen} />,
   confirm_apply_transcript: (type, params, setOpen, data, extra_data) => <ConfirmTranscriptApply type={type} data={data} extra_data={extra_data} params={params} setOpen={setOpen} />,
   confirm_approve_transcript: (type, params, setOpen, data, extra_data) => <ConfirmTranscriptApprove type={type} data={data} extra_data={extra_data} params={params} setOpen={setOpen} />,
   confirm_preview_transcript: (type, params, setOpen, data, extra_data) => <ConfirmTranscriptPreview type={type} data={data} extra_data={extra_data} params={params} setOpen={setOpen} />,
@@ -57,8 +55,7 @@ const MessageModal = ({
   formClassName,
 }: {
   table:
-    | "publish_result"
-    | "portal_result"
+    | "portal_publish_result"
     | "confirm_apply_transcript"
     | "confirm_approve_transcript"
     | "confirm_preview_transcript"

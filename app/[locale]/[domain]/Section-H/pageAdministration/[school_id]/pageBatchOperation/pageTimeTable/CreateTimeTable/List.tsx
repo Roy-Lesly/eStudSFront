@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
@@ -15,9 +15,6 @@ import { FaLeftLong, FaRightLong } from 'react-icons/fa6';
 import MyModal from '@/MyModals/MyModal';
 import ModalSelect from './ModalSelect';
 import DrawTimeTable from './DrawTimeTable';
-// import UAParser from 'ua-parser-js';
-import { UAParser } from 'ua-parser-js';
-// import UAParser from "ua-parser-js";
 
 
 const List = ({ params, data }: { params: any; data: any }) => {
@@ -61,7 +58,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

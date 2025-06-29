@@ -1,17 +1,16 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 
-const page = ({
-  params: { id },
+const page = async ({
+  params: any,
 }: {
-  params: { id: string };
+    params: any;
 }) => {
-  console.log("Result Page Here !!!")
+
+  // const p = await params;
   
   return (
-    <LayoutAdmin >
         <>
             <Breadcrumb
                 pageName="Field" 
@@ -22,7 +21,7 @@ const page = ({
             <div>Results</div>
             
         </>
-    </LayoutAdmin>
+    
   )
 }
 

@@ -22,11 +22,6 @@ const TranscriptOneYear = ({
   extra_data?: any;
 }) => {
 
-  console.log(type, 23)
-  console.log(params, 24)
-  console.log(data, 25)
-  console.log(extra_data, 26)
-
   const idTranscriptRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(true);
 

@@ -1,8 +1,9 @@
 import React from 'react'
 import List from './List'
 import { gql } from '@apollo/client'
-import getApolloClient, { decodeUrlID } from '@/functions'
+import { decodeUrlID } from '@/functions'
 import { Metadata } from 'next';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Info Page",
@@ -17,33 +18,34 @@ const page = async ({
   searchParams?: any
 }) => {
 
-  const client = getApolloClient(params.domain);
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
   let data;
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
         id: params.profile_id,
-        userprofileId: parseInt(decodeUrlID(params.student_id)),
-        userId: parseInt(decodeUrlID(searchParams.user)),
-        schoolId: params.school_id,
+        userprofileId: parseInt(decodeUrlID(p.student_id)),
+        customuserId: parseInt(decodeUrlID(sp.user)),
+        schoolId: p.school_id,
         timestamp: new Date().getTime()
       },
       fetchPolicy: 'no-cache'
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error);
     
     data = null;
   }
 
-  console.log("Student => Info")
-
 
   return (
     <div>
-      <List params={params} data={data} searchParams={searchParams} />
+      <List params={p} data={data} s={sp} />
     </div>
   )
 }
@@ -53,14 +55,13 @@ export default page
 
 const GET_DATA = gql`
  query GetData(
+    $customuserId: Decimal,
     $userprofileId: Decimal,
-    $userId: Decimal,
-    $first: Int,
     $schoolId: Decimal!
 ) {
     allSchoolFees(
-      userId: $userId, 
-      first: $first, 
+      customuserId: $customuserId, 
+      first: 10, 
       schoolId: $schoolId
     ) {
       edges {
@@ -73,10 +74,10 @@ const GET_DATA = gql`
             id
             session
             code
-            info
-            user { 
+            infoData
+            customuser { 
               id role matricle firstName lastName photo sex dob pob email telephone address fullName parent parentTelephone about photo
-              nationality highestCertificate yearObtained regionOfOrigin
+              nationality highestCertificate yearObtained regionOfOrigin infoData
             }
             specialty { 
               id
@@ -88,22 +89,18 @@ const GET_DATA = gql`
               paymentThree
               mainSpecialty { specialtyName }
               level { level }
-              school { schoolName campus colors schoolIdentification { logo platformCharges } schoolfeesControl }
+              school { schoolName campus colors schoolIdentification { logo platformCharges idCharges } schoolfeesControl }
             }
             program { id name }
           }
-          transactionsSet {
-            edges {
-              node {
-                amount
-                createdAt
-                paymentMethod
-                reason
-                ref
-                status
-                createdAt
-              }
-            }
+          transactions {
+            amount
+            createdAt
+            paymentMethod
+            reason
+            ref
+            status
+            createdAt
           }
         }
       }
@@ -119,9 +116,9 @@ const GET_DATA = gql`
       edges {
         node {
           id 
-          info
+          infoData
           student { 
-            user { fullName}
+            customuser { fullName}
             specialty { 
               academicYear
               level { level}

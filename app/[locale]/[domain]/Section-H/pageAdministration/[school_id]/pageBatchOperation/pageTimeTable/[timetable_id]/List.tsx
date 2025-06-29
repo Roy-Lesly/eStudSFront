@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { getMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import { Metadata } from 'next';
@@ -40,7 +40,6 @@ const List = (
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  console.log(dataAllTimeTables)
 
   return (
     <DefaultLayout
@@ -56,7 +55,7 @@ const List = (
       sidebar={
         <Sidebar
           params={params}
-          menuGroups={getMenuAdministration(params)}
+          menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

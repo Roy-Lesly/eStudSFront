@@ -1,5 +1,4 @@
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import { Metadata } from 'next'
 import React from 'react'
 
@@ -7,7 +6,7 @@ const page = () => {
   console.log("Batch Page Here !!!")
   
   return (
-    <LayoutAdmin>
+    
       <>
         <Breadcrumb
           pageName="Batch Operation" 
@@ -19,7 +18,7 @@ const page = () => {
           Batch Operation Page
         </div>
       </>
-    </LayoutAdmin>
+    
   )
 }
 

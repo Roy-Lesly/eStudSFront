@@ -1,4 +1,3 @@
-import { StaticGenerationAsyncStorage } from "next/dist/client/components/static-generation-async-storage.external";
 
 // PageInfo interface
 interface PageInfo {
@@ -73,6 +72,7 @@ export interface NodeCustomUser {
   address: string;
   telephone: string;
   email: string;
+  title: string;
   parent: string;
   parentTelephone: string;
   about: string;
@@ -82,6 +82,8 @@ export interface NodeCustomUser {
   regionOfOrigin: string;
   highestCertificate: string;
   yearObtained: string;
+  infoData: string | any;
+  isActive: boolean;
   createdAt: string;
 }
 
@@ -89,11 +91,13 @@ export interface NodeCustomUser {
 export interface NodeUserProfile {
   id: string;
   session: string;
-  user: NodeCustomUser;
+  customuser: NodeCustomUser;
   specialty: NodeSpecialty;
   program: NodeProgram;
   code: string;
-  info: string | any;
+  infoData: string | any;
+  schoolfees: { id: string, balance: number };
+  moratoires: any;
 }
 
 // Level interface
@@ -246,12 +250,8 @@ export interface NodeResult {
   id: string;
   student: NodeUserProfile,
   course: NodeCourse,
-  info: string | any; // JSONField structure
+  infoData: string | any; // JSONField structure
   logs: any; // JSONField structure
-  ca: number
-  exam: number
-  resit: number
-  average: number
 }
 
 // Publish interface
@@ -299,13 +299,15 @@ export interface NodeMoratoire {
   userprofile: NodeUserProfile;
 }
 
+
+export interface SetTransactions { id: string, status: string, amount: number, reason: string, paymentMethod: string, ref: string, createdAt: string }
 export interface NodeSchoolFees {
   id: string | number;
   userprofile: NodeUserProfile,
   platformPaid: boolean;
   idPaid: boolean;
   balance: number;
-  transactionsSet: EdgeTransactionsSet;
+  transactions: SetTransactions[];
   updatedAt: string;
   updatedBy: NodeCustomUser;
 }
@@ -492,91 +494,91 @@ export interface EdgeSysConstants {
 export interface AllCustomUsersResponse {
   allCustomUsers: {
     edges: EdgeCustomUser[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface  AllUserProfilesResponse {
   allUserProfiles: {
     edges: EdgeUserProfile[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllLevelsResponse {
   allLevels: {
     edges: EdgeLevel[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllDepartmentsResponse {
   allDepartments: {
     edges: EdgeDepartment[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllProgramsResponse {
   allPrograms: {
     edges: EdgeProgram[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllSchoolIdentificationsResponse {
   allSchoolIdentifications: {
     edges: EdgeSchoolIdentification[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllSchoolIdentificationsResponse {
   allSchoolIdentifications: {
     edges: EdgeSchoolIdentification[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllDomainsResponse {
   allDomains: {
     edges: EdgeDomain[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllFieldsResponse {
   allFields: {
     edges: EdgeField[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllMainSpecialtiesResponse {
   allMainSpecialties: {
     edges: EdgeMainSpecialty[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllSpecialtiesResponse {
   allSpecialties: {
     edges: EdgeSpecialty[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllMainCoursesResponse {
   allMainCourses: {
     edges: EdgeMainCourse[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 
 export interface AllCoursesResponse {
   allCourses: {
     edges: EdgeCourse[];
-    pageInfo: PageInfo;
+    pageinfoData: PageInfo;
   };
 }
 

@@ -1,24 +1,26 @@
-import FormModal from '@/componentsTwo/FormModal';
-import { EdgePublish, EdgeResult, EdgeSchoolFees, NodeSchoolFees, NodeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql'
-import getApolloClient, { calcTotalandGrade, capitalizeFirstLetter } from '@/functions';
+import { EdgePublish, EdgeResult, EdgeSchoolFees, NodeSchoolFees } from '@/Domain/schemas/interfaceGraphql'
+import getApolloClient, { calcTotalandGrade, capitalizeFirstLetter, errorLog } from '@/functions';
 import { gql } from '@apollo/client';
-import React from 'react'
-import { FaMinus, FaPlus } from 'react-icons/fa';
+// import React, { useState } from 'react'
+import { FaMinus } from 'react-icons/fa';
 import { GrClose, GrStatusGood } from 'react-icons/gr';
 import EncouragementMessage from './EncouragementMessage';
 import initTranslations from '@/initTranslations';
 import ResultSlip from '../ResultSlip';
+import { FaArrowRightLong } from 'react-icons/fa6';
+import PaymentStatus from './PaymentStatus';
 
 
 
 const ResultDisplay = async (
   { params, resultType, title }
     :
-    { params: { locale: string, userprofile_id: string, domain: string, specialty_id: string }, resultType: "ca" | "exam" | "resit" | "result", title: string }
+    { params: any, resultType: "ca" | "exam" | "resit" | "result", title: string }
 ) => {
-  const { t } = await initTranslations(params.locale, ['common'])
+  const p = await params;
+  const { t } = await initTranslations(p.locale, ['common'])
 
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let data;
 
   try {
@@ -26,27 +28,28 @@ const ResultDisplay = async (
       query: GET_DATA,
       variables: {
         first: 40,
-        userprofileId: params.userprofile_id,
-        specialtyId: params.specialty_id,
+        userprofileId: p.userprofile_id,
+        specialtyId: p.specialty_id,
       },
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error)
+    errorLog(error)
     data = null;
   }
 
-  const schoolFees = data ? data.allSchoolFees?.edges[0].node : null
+  const schoolFees: NodeSchoolFees = data ? data.allSchoolFees?.edges[0].node : null
   const platform = data ? data.allSchoolFees.edges[0].node.platformPaid : 0
   const tuition = data ? data.allSchoolFees.edges[0].node.userprofile.specialty.tuition : 0
   const balance = data ? data.allSchoolFees.edges[0].node.balance : 0
   const paidAmount = tuition - balance
   const feeCheckList = data ? data.allSchoolFees.edges[0].node.userprofile.specialty.school.schoolfeesControl.split(",").map((num: any) => parseFloat(num.trim())) : []
-  const pubI = data && data.allPublishes.edges?.filter((item: EdgePublish) => item?.node.semester === "I")
-  const pubII = data && data.allPublishes.edges?.filter((item: EdgePublish) => item?.node.semester === "II")
+  const pubI: EdgePublish[] = data && data.allPublishes.edges?.filter((item: EdgePublish) => item?.node.semester === "I")
+  const pubII: EdgePublish[] = data && data.allPublishes.edges?.filter((item: EdgePublish) => item?.node.semester === "II")
+  // const [showModalType, setShowModalType] = useState<"id" | "platform" | "moratoire" | null>(null)
 
   return (
-    <div className='flex flex-col gap-4 min-h-screen pb-4'>
+    <div className='flex flex-col gap-4 min-h-screen mb-4 pb-16'>
       {/* Main Content */}
       <div className='h-screen mx-1 my-16 p-1 rounded text-black'>
 
@@ -56,7 +59,7 @@ const ResultDisplay = async (
 
 
 
-        <div className='flex-grow'>
+        <div className='flex-grow h-full'>
           {data ? (
             data.allSchoolFees.edges[0].node.platformPaid ? (
               data.allResults ? (
@@ -75,14 +78,16 @@ const ResultDisplay = async (
                         fees={data.allSchoolFees.edges}
                         publish={pubI[0]}
                         platform={platform}
-                        params={params}
+                        params={p}
                       />
                       :
                       (resultType == "result" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)) ?
                         <Result
-                          locale={params.locale}
+                          locale={p.locale}
                           semester='I'
                           schoolFees={schoolFees}
+                          examPublished={pubI[0]?.node?.exam}
+                          resitPublished={pubI[0]?.node?.resit}
                           data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
                         />
                         :
@@ -117,14 +122,16 @@ const ResultDisplay = async (
                         fees={data.allSchoolFees.edges}
                         publish={pubII[0]}
                         platform={platform}
-                        params={params}
+                        params={p}
                       />
                       :
                       (resultType == "result" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)) ?
                         <Result
-                          locale={params?.locale}
+                          locale={p?.locale}
                           semester='II'
                           schoolFees={schoolFees}
+                          examPublished={pubII[0]?.node?.exam}
+                          resitPublished={pubII[0]?.node?.resit}
                           data={data.allResults.edges.filter((item: EdgeResult) => item?.node?.course.semester === 'II')}
                         />
                         :
@@ -147,32 +154,16 @@ const ResultDisplay = async (
                   }
                 </>
               ) : (
-                <div>No Data (Results)</div>
+                <div>{t("No Data")} {t("Results")}</div>
               )
-            ) : (
-              <div className='flex flex-col gap-10 items-center justify-center pt-40 text-[18px] text-black'>
-                <div className="flex gap-2 items-center">
-                  <span className='font-bold text-xl'>Status</span>
-                  <span className="bg-red p-2 rounded-full"><GrClose size={28} color="white" width={10} /></span>
-                </div>
-                <span className='font-bold px-10 text-center text-xl'>Activate Account to Access Results</span>
-                <FormModal
-                  table='platform_and_id_card'
-                  type='custom'
-                  params={params}
-                  icon={<FaPlus />}
-                  data={data?.allSchoolFees.edges}
-                  extra_data={{
-                    url: `${params.domain}/Section-H/pageStudent/${params.userprofile_id}/${params.specialty_id}/CA`,
-                    reason: 'platform_charges',
-                  }}
-                  buttonTitle={`${t('activate')}`}
-                  customClassName='flex gap-2 border bg-bluedash px-6 py-2 rounded text-white font-medium capitalize cursor-pointer'
-                />
-              </div>
-            )
+            ) : 
+            <PaymentStatus
+              params={params}
+              apiSchoolFees={data.allSchoolFees?.edges[0]}
+              school={schoolFees?.userprofile?.specialty?.school}
+            />
           ) : (
-            <div className="flex flex-col items-center justify-center my-20 mx-10 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
+            <div className="flex flex-col items-center justify-center my-20 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
               <p className="text-2xl text-center">🚫 {t("No Data Available")}.</p>
             </div>
           )}
@@ -198,10 +189,11 @@ const CaExamResit = async (
   const examLim = fees ? fees[0].node.userprofile.specialty.school.examLimit / 2 : 0;
   const resitLim = fees ? fees[0].node.userprofile.specialty.school.resitLimit / 2 : 0;
   const { t } = await initTranslations(params.locale, ['common'])
-
   if (resultType === "resit") {
     data = data.filter(
-      (item) => item.node.ca + item.node.exam < 50 || item.node.resit > 0
+      (item) => {
+        const info = JSON.parse(item.node.infoData);
+        return (Math.round(+(parseFloat(info.ca) + parseFloat(info.exam)) * 10) / 10) < 50 || info.resit > 0;      }
     );
   }
 
@@ -211,7 +203,7 @@ const CaExamResit = async (
         (resultType === "ca" && publish.node.ca) ||
         (resultType === "exam" && publish.node.exam) ||
         (resultType === "resit" && publish.node.resit)
-      ) &&
+      ) ?
         <div className="mt-8">
           <h2 className="font-semibold mb-4 text-2xl text-center">
             {t("Semester")} {semester}
@@ -229,9 +221,9 @@ const CaExamResit = async (
               <tbody className="bg-white">
                 {data.map((edge: EdgeResult) => {
                   const { node } = edge;
-                  const { info } = node;
+                  const { infoData } = node;
 
-                  const parsedInfo = typeof info === 'string' ? JSON.parse(info) : {};
+                  const parsedInfo = typeof infoData === 'string' ? JSON.parse(infoData) : {};
                   const { ca = "-", exam = "-", resit = "-", validated = false, average = "-" } = parsedInfo;
 
 
@@ -281,12 +273,22 @@ const CaExamResit = async (
           </div>
 
         </div>
+
+        :
+
+        <div className='flex flex-col gap-4 items-center text-center justify-center text-2xl my-20 md:my-40 py-10 border rounded-xl'>
+          <div className='font-bold tracking-widest'>Semester {semester}</div>
+          <div className='font-semibold text-red italic'>{t("Not Available Yet")} !!!</div>
+        </div>
       }
     </>
   );
 };
 
-const Result = async ({ schoolFees, data, semester, locale }: { schoolFees: NodeSchoolFees, data: EdgeResult[], semester: "I" | "II", locale: string }) => {
+const Result = async (
+  { schoolFees, data, semester, examPublished, resitPublished, locale }:
+    { schoolFees: NodeSchoolFees, data: EdgeResult[], examPublished: boolean, resitPublished: boolean, semester: "I" | "II", locale: string }
+) => {
 
   const { t: trans } = await initTranslations(locale, ['common'])
   const t = trans("PageStudent")["Result"];
@@ -294,28 +296,28 @@ const Result = async ({ schoolFees, data, semester, locale }: { schoolFees: Node
   return (
     <div className="mt-8 mb-4">
       <h2 className="font-semibold mb-4 text-2xl text-center">
-        {t["Semester"]} {semester}
+        {trans("Semester")} {semester}
       </h2>
 
       <div className="overflow-x-aut">
-        <table className="border border-collapse border-gray-200 min-w-full shadow-md table-auto">
+        {examPublished ? <table className="border border-collapse border-gray-200 min-w-full shadow-md table-auto">
           <thead>
             <tr className="bg-slate-200">
-              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{capitalizeFirstLetter(t["Course"])}</th>
-              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{t['ca']}</th>
-              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{t['exam']}</th>
-              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{t['resit']}</th>
+              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{capitalizeFirstLetter(trans("Course"))}</th>
+              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{trans('ca')}</th>
+              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{trans('exam')}</th>
+              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{trans('resit')}</th>
               <th className="border border-gray-300 font-semibold py-1 text-gray-700">Tot</th>
-              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{t['grade']}</th>
+              <th className="border border-gray-300 font-semibold py-1 text-gray-700">{trans('grade')}</th>
             </tr>
           </thead>
           <tbody>
 
             {data.map((edge, index: number) => {
               const { node } = edge;
-              const { info } = node;
+              const { infoData } = node;
 
-              const parsedInfo = typeof info === 'string' ? JSON.parse(info) : {};
+              const parsedInfo = typeof infoData === 'string' ? JSON.parse(infoData) : {};
               const { ca = "-", exam = "-", resit = "-", validated = false, average = "-" } = parsedInfo;
 
               return (
@@ -327,20 +329,21 @@ const Result = async ({ schoolFees, data, semester, locale }: { schoolFees: Node
                   <td className="border border-gray-300 font-medium px-4 py-2 text-sm uppercase">{edge.node.course?.mainCourse?.courseName || "N/A"}</td>
                   <td className="border border-gray-300 px-4 py-2">{ca}</td>
                   <td className="border border-gray-300 px-4 py-2">{exam}</td>
-                  <td className="border border-gray-300 px-4 py-2">{resit}</td>
-                  <td className="border border-gray-300 font-semibold gap-2 px-2 py-2">{resit && resit > -0.01 ? <span className="text-red">*</span> : null}<span className={`${validated ? "text-green-500" : "text-red"}`}>{calcTotalandGrade(ca, exam, resit).mark}</span></td>
-                  <td className="border border-gray-300 font-semibold gap-2 px-2 py-2">{resit && resit > -0.01 ? <span className="text-red">*</span> : null}<span className={`${validated ? "text-green-500" : "text-red"}`}>{calcTotalandGrade(ca, exam, resit).grade}</span></td>
+                  <td className="border border-gray-300 px-4 py-2">{resitPublished ? resit : "/"}</td>
+                  <td className="border border-gray-300 font-semibold gap-2 px-2 py-2">{resitPublished ? resit && resit > -0.01 ? <span className="text-red">*</span> : null : null}<span className={`${resitPublished ? validated ? "text-green-500" : "text-red" : ""}`}>{resitPublished ? calcTotalandGrade(ca, exam, resit).mark : (ca + exam)}</span></td>
+                  <td className="border border-gray-300 font-semibold gap-2 px-2 py-2">{resitPublished ? resit && resit > -0.01 ? <span className="text-red">*</span> : null : null}<span className={`${resitPublished ? validated ? "text-green-500" : "text-red" : ""}`}>{calcTotalandGrade(ca, exam, resitPublished ? resit : null).grade}</span></td>
                 </tr>
                 // </motion.tr>
               );
             })}
           </tbody>
-        </table>
+        </table> : <div className='font-semibold text-red italic'>{trans("Not Available Yet")} !!!</div>}
 
-        {data && data.length? <ResultSlip
+        {data && data.length && resitPublished ? <ResultSlip
           data={data}
           schoolFees={schoolFees}
           semester={semester}
+          resitPublished={resitPublished}
         /> : null}
 
 
@@ -356,11 +359,10 @@ const Notification = (
     :
     { semester: "I" | "II", fees: boolean, platform: boolean, publish: boolean, t: any }
 ) => {
-  return <div className="flex flex-col items-center justify-center my-20 mx-10 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
-    {/* <p className="text-2xl font-semibold underline mb-2">{t["Semester"]} {semester}</p> */}
-    {!platform ? <p className="text-lg text-center">🚫 {t["Sorry, Your Account is not Activated Yet. Contact School Administrator"]}.</p>
-      : !fees ? <p className="text-lg text-center">🚫 {t["Sorry, you cannot Access Results. Minimum Fee requirement not reached"]}.</p>
-        : !publish ? <p className="text-lg text-center">🚫 {t["Sorry, Results Not Published Yet. Contact System Administrator"]}.</p>
+  return <div className="flex flex-col items-center justify-center my-20 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
+    {!platform ? <p className="text-lg text-center">🚫 {t("Sorry, Your Account is not Activated Yet. Contact School Administrator")}.</p>
+      : !fees ? <p className="text-lg text-center">🚫 {t("Sorry, you cannot Access Results. Minimum Fee requirement not reached")}.</p>
+        : !publish ? <p className="text-lg text-center">🚫 {t("Sorry, Results Not Published Yet. Contact System Administrator")}.</p>
           : null}
   </div>
 }
@@ -388,7 +390,7 @@ const GET_DATA = gql`
             id
             session
             code
-            user { 
+            customuser { 
               id matricle firstName lastName fullName
             }
             specialty { 
@@ -412,7 +414,7 @@ const GET_DATA = gql`
     allResults(first: 40, studentId: $userprofileId) {
       edges {
         node {
-          id info course { semester mainCourse { courseName } }
+          id infoData course { semester mainCourse { courseName } }
         }
       }
     }

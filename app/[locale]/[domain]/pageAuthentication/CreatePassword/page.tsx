@@ -5,12 +5,14 @@ const page = async ({
   params,
   searchParams,
 }: {
-    params: { id: string | number, domain: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
+    params: any;
+    searchParams?: any;
 }) => {
+  const p = await params;
+  const sp = await searchParams;
 
   return (
-    <CreatePasswordForm searchParams={searchParams} params={params} />
+    <CreatePasswordForm searchParams={sp} params={p} />
   )
 }
 

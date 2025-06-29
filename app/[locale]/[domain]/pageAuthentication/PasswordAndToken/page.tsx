@@ -10,9 +10,11 @@ import { ConfigData, protocol } from '@/config';
 const ResetPasswordPage = ({
   params,
 }: {
-  params: { id: string | number; domain: string };
+    params: any;
 }) => {
-  return <CheckUserForm params={params} />;
+  const p = params;
+
+  return <CheckUserForm params={p} />;
 };
 
 export default ResetPasswordPage;

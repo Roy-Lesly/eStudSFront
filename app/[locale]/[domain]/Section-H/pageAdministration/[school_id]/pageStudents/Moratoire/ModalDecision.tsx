@@ -67,8 +67,8 @@ const ModalDecision: React.FC<Props> = ({ moratoire, tab, onClose }) => {
                     alert(`Transaction Successful`)
                     window.location.reload()
                 };
-            } catch (err: any) {
-                alert(`error creating:, ${err}`);
+            } catch (error: any) {
+                alert(`error creating:, ${error}`);
             }
         }
     };
@@ -110,8 +110,8 @@ const ModalDecision: React.FC<Props> = ({ moratoire, tab, onClose }) => {
                     background: '#fff'
                 }}>
                     <h2 className='font-bold text-2xl text-center mb-2'>Moratoire Review</h2>
-                    <p className='gap-4 flex'><strong className='font-bold text-lg tracking-wide italic'>Matricle:</strong>{moratoire.userprofile.user.matricle}</p>
-                    <p className='gap-4 flex'><strong className='font-bold text-lg tracking-wide italic'>Student:</strong>{moratoire.userprofile.user.fullName}</p>
+                    <p className='gap-4 flex'><strong className='font-bold text-lg tracking-wide italic'>Matricle:</strong>{moratoire.userprofile.customuser.matricle}</p>
+                    <p className='gap-4 flex'><strong className='font-bold text-lg tracking-wide italic'>Student:</strong>{moratoire.userprofile.customuser.fullName}</p>
                     <p className='gap-4 flex'><strong className='font-bold text-lg tracking-wide italic'>Reason:</strong> {moratoire.reason}</p>
 
                     <div className='my-3'>

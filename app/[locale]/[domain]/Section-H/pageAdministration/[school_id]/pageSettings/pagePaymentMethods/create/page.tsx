@@ -1,7 +1,6 @@
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb';
 import { MyButtonSubmitCreate } from '@/section-h/common/MyButtons/MyButtonSubmit';
 import NotificationError from '@/section-h/common/NotificationError';
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin';
 import { ActionCreate } from '@/serverActions/actionGeneral';
 import { SchemaCreateEditProgram } from '@/Domain/schemas/schemas';
 import { ProgramUrl } from '@/Domain/Utils-H/userControl/userConfig';
@@ -14,25 +13,28 @@ const CreatePage = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string, domain: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
+  const p = await params;
+  const sp = await searchParams;
+
   return (
-    <LayoutAdmin>
+    
       <>
         <Breadcrumb
           pageName="Create Program" 
           pageName1="Settings" 
           pageName2="Programs" 
-          link1={`/Section-H/pageAdministration/${params.school_id}/pageSettings`} 
-          link2={`/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms`} 
+          link1={`/Section-H/pageAdministration/${p.school_id}/pageSettings`} 
+          link2={`/Section-H/pageAdministration/${p.school_id}/pageSettings/pagePrograms`} 
         />
 
-        {searchParams && <NotificationError errorMessage={searchParams} />}
-        <Create params={params} />
+        {sp && <NotificationError errorMessage={sp} />}
+        <Create params={p} />
       </>
-    </LayoutAdmin>
+    
   )
 }
 

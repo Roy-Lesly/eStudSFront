@@ -2,19 +2,14 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-// import Image from "next/image";
-// import profilePlaceholder from "@/public/profile-placeholder.png";
 
 const ProfilePage = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState("en");
-//   const [profilePic, setProfilePic] = useState(profilePlaceholder);
 
   const handleImageChange = (e: any) => {
     const file = e.target.files[0];
     if (file) {
-    //   const imageUrl = URL.createObjectURL(file);
-    //   setProfilePic(imageUrl);
     }
   };
 

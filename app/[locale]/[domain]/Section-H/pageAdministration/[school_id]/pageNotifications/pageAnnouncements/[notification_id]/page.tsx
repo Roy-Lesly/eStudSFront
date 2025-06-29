@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import React from 'react'
-import LayoutAdmin from '@/section-h/compAdministration/LayoutAdmin'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
 import {  } from '@/appControl/appConfig'
 import { getData } from '@/functions'
@@ -12,26 +11,29 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: { school_id: string,  domain: string, notification_id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: any;
+  searchParams: any;
 }) => {
 
-  const apiNotification: GetNotificationInter[] | any = await getData( protocol + "api" + params.domain + GetNotificationUrl, { id: params.notification_id, nopage: true, }, params.domain
+  const p = await params;
+  const sp = await searchParams;
+
+  const apiNotification: GetNotificationInter[] | any = await getData( protocol + "api" + p.domain + GetNotificationUrl, { id: p.notification_id, nopage: true, }, p.domain
   );
 
   return (
-    <LayoutAdmin>
+    
       <>
         <Breadcrumb
           pageName="Announcements Details"
           pageName1="Back To Announcements"
-          link1={`/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements`}
+          link1={`/pageAdministration/${p.school_id}/pageNotifications/pageAnnouncements`}
         />
 
-        {apiNotification && <Announcements apiNotification={apiNotification} params={params} />}
+        {apiNotification && <Announcements apiNotification={apiNotification} />}
 
       </>
-    </LayoutAdmin>
+    
   )
 }
 
@@ -42,7 +44,7 @@ export const metadata: Metadata = {
   description: "This is Announcements Details Page",
 };
 
-const Announcements = ({ apiNotification, params }: any) => {
+const Announcements = ({ apiNotification }: any) => {
 
   console.log(apiNotification, 52)
 

@@ -1,29 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { EdgeCustomUser, EdgeDepartment } from '@/Domain/schemas/interfaceGraphql';
 import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
-import getApolloClient, { capitalizeFirstLetter, decodeUrlID } from '@/functions';
+import getApolloClient, { capitalizeFirstLetter, decodeUrlID, errorLog } from '@/functions';
 import { CertificateOptions, RegionList } from '@/constants';
+import { FaTimes } from 'react-icons/fa';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 const CreateLecturer = ({
-    params, role, actionType, selectedItem, openModal, setOpenModal
+    params, role, actionType, selectedItem, openModal, setOpenModal, depts
 }: {
-    params: any, role: "teacher" | "admin", actionType: "update" | "create", selectedItem: EdgeCustomUser | null, openModal: boolean, setOpenModal: any
+    params: any, role: "teacher" | "admin", actionType: "update" | "create", selectedItem: EdgeCustomUser | null, openModal: boolean, setOpenModal: any, depts: EdgeDepartment[]
 }) => {
 
-
-    console.log(params)
-    const last20Years = Array.from({ length: 25 }, (_, i) => (new Date().getFullYear() - (i + 1)).toString() );
+    const last20Years = Array.from({ length: 25 }, (_, i) => (new Date().getFullYear() - (i + 1)).toString());
     const [count, setCount] = useState<number>(0)
     const token = localStorage.getItem('token');
     const user: JwtPayload = jwtDecode(token ? token : "");
+    const dept: EdgeDepartment | null = depts ? depts?.filter((d: EdgeDepartment) => d.node.name.toLowerCase().includes(role === "admin" ? "admin" : "lecturer"))[0] : null;
 
     const [formData, setFormData] = useState({
-        role:role,   
+        role: role,
         firstName: selectedItem && actionType === "update" ? selectedItem.node.firstName : '',
         lastName: selectedItem && actionType === "update" ? selectedItem.node.lastName : '',
         sex: selectedItem && actionType === "update" ? selectedItem.node.sex : '',
@@ -31,15 +32,17 @@ const CreateLecturer = ({
         pob: selectedItem && actionType === "update" ? selectedItem.node.pob : '',
         address: selectedItem && actionType === "update" ? selectedItem.node.address : '',
         telephone: selectedItem && actionType === "update" ? selectedItem.node.telephone : '',
+        title: selectedItem && actionType === "update" ? selectedItem.node.title : '',
         email: selectedItem && actionType === "update" ? selectedItem.node.email : '',
-        highestCertificate: "",
-        yearObtained:"",
-        nationality:"Cameroon",
-        regionOfOrigin:"",
-        prefix:"",
-        title:"",
-        deptNames: "Lecturer",
+        highestCertificate: selectedItem && actionType === "update" ? selectedItem.node.highestCertificate : '',
+        yearObtained: selectedItem && actionType === "update" ? selectedItem.node.yearObtained : '',
+        regionOfOrigin: selectedItem && actionType === "update" ? selectedItem.node.regionOfOrigin : '',
+        nationality: selectedItem && actionType === "update" ? selectedItem.node.nationality : '',
+        infoData: selectedItem && actionType === "update" ? selectedItem.node.infoData || JSON.stringify({}) : JSON.stringify({}),
+        prefix: '',
+        deptIds: [parseInt(decodeUrlID(dept?.node.id || ""))],
         schoolIds: [params.school_id],
+        delete: false,
     })
 
     const client = getApolloClient(params.domain)
@@ -55,7 +58,7 @@ const CreateLecturer = ({
                 if (result?.data?.allDepartments) {
                 }
             } catch (error: any) {
-                console.log(error);
+                errorLog(error);;
             }
         };
         if (count === 0) {
@@ -78,9 +81,9 @@ const CreateLecturer = ({
         }));
     };
 
-
-
-    const [createUpdateDeleteCustomUser] = useMutation(CREATE_OR_UPDATE_OR_EXAM)
+    if (!dept) {
+        alert("No department Found !!!")
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -89,24 +92,27 @@ const CreateLecturer = ({
             dataToSubmit = {
                 ...formData,
                 id: parseInt(decodeUrlID(selectedItem.node.id)),
-                updatedById: user.user_id,
+                sex: capitalizeFirstLetter(formData.sex),
+                delete: actionType === "update" ? false : true,
             }
         }
-        console.log('Form submitted:', dataToSubmit, 126);
-        // return
 
-        try {
-            const result = await createUpdateDeleteCustomUser({
-                variables: { ...dataToSubmit }
-            });
-            console.log("55", result.data.createUpdateDeleteCustomUser.customuser);
-            if (result.data.createUpdateDeleteCustomUser.customuser.id) {
-                setOpenModal(false);
-                window.location.reload()
-            };
-        } catch (err) {
-            alert(`error creating patient:, ${err}`)
-        }
+        await ApiFactory({
+            newData: dataToSubmit,
+            editData: dataToSubmit,
+            mutationName: "createUpdateDeleteCustomUser",
+            modelName: "customuser",
+            successField: "id",
+            query,
+            router: null,
+            params,
+            redirect: false,
+            reload: true,
+            redirectPath: ``,
+            actionLabel: "processing",
+        });
+
+
     };
 
     return (
@@ -125,7 +131,7 @@ const CreateLecturer = ({
             >
                 <div className="flex items-center justify-between">
                     <h2 className="font-semibold text-2xl">{actionType?.toUpperCase()}</h2>
-                    <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl">X</button>
+                    <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl"><FaTimes color='red' /></button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
@@ -153,18 +159,6 @@ const CreateLecturer = ({
                     </div>
 
                     <div className='flex flex-row gap-2 justify-between'>
-                        {/* 
-            {departments?.length ? <MyInputField
-              id="departmentId"
-              name="departmentId"
-              value={formData.departmentId}
-              onChange={handleChange}
-              label="Select Department"
-              placeholder="Select Department"
-              type='select'
-              options={departments.map((item: EdgeDepartment) => { return { id: (decodeUrlID(item.node.id)), name: item.node.name } })}
-              required
-            /> : null} */}
 
                         <MyInputField
                             id="sex"
@@ -185,7 +179,7 @@ const CreateLecturer = ({
                             label="Date Of Birth"
                             placeholder="Date Of Birth"
                             type='date'
-                            required
+                        // required
                         />
                         <MyInputField
                             id="pob"
@@ -195,7 +189,7 @@ const CreateLecturer = ({
                             label="Place of Birth"
                             placeholder="Place of Birth"
                             type='text'
-                            required
+                        // required
                         />
                     </div>
 
@@ -218,8 +212,8 @@ const CreateLecturer = ({
                             label="Title"
                             placeholder="title"
                             type='select'
-                            options={["Mr", "Mrs", "Dr", "Prof", "Hon", "Sir"]}
-                            required
+                            options={["MR", "MRS", "DR", "PROF", "HON", "SIR"]}
+                        // required
                         />
                     </div>
                     <div className='flex flex-row gap-2 justify-between'>
@@ -247,7 +241,7 @@ const CreateLecturer = ({
                         <MyInputField
                             id="highestCertificate"
                             name="highestCertificate"
-                            value={formData.highestCertificate}
+                            value={formData?.highestCertificate}
                             onChange={handleChange}
                             label="Highest Level"
                             placeholder="highestCertificate"
@@ -258,7 +252,7 @@ const CreateLecturer = ({
                         <MyInputField
                             id="yearObtained"
                             name="yearObtained"
-                            value={formData.yearObtained}
+                            value={formData?.yearObtained?.toString()}
                             onChange={handleChange}
                             label="Year Obtained"
                             placeholder="yearObtained"
@@ -293,7 +287,7 @@ const CreateLecturer = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
-                        className={`${actionType === "update" ?"bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
+                        className={`${actionType === "update" ? "bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
                     >
                         Confirm & {capitalizeFirstLetter(actionType)}
                     </motion.button>
@@ -309,8 +303,8 @@ export default CreateLecturer
 
 
 
-export const CREATE_OR_UPDATE_OR_EXAM = gql`
-    mutation CreateUpdateDeleteDate(
+export const query = gql`
+    mutation CreateUpdateDeleteCustomUser(
         $id: ID,
         $schoolIds: [ID]!,
         $firstName: String!,
@@ -323,14 +317,14 @@ export const CREATE_OR_UPDATE_OR_EXAM = gql`
         $telephone: String!,
         $email: String!,
         $title: String,
-        $deptNames: [String]!,
+        $deptIds: [ID!]!,
         $highestCertificate: String!,
         $yearObtained: String,
         $nationality: String!,
         $regionOfOrigin: String!,
         $prefix: String!,
-        $createdById: ID,
-        $updatedById: ID
+        $infoData: JSONString!,
+        $delete: Boolean!,
     ) {
         createUpdateDeleteCustomUser(
             id: $id,
@@ -345,14 +339,14 @@ export const CREATE_OR_UPDATE_OR_EXAM = gql`
             telephone: $telephone,
             email: $email,
             title: $title,
-            deptNames: $deptNames,
+            deptIds: $deptIds,
             highestCertificate: $highestCertificate,
             yearObtained: $yearObtained,
             nationality: $nationality,
             regionOfOrigin: $regionOfOrigin,
             prefix: $prefix,
-            createdById: $createdById,
-            updatedById: $updatedById
+            infoData: $infoData,
+            delete: $delete,
         ) {
             customuser {
               id

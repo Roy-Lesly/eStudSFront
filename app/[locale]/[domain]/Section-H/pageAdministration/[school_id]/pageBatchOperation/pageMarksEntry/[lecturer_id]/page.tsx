@@ -1,7 +1,7 @@
 import React from 'react'
 import List from './List'
 import { gql } from '@apollo/client'
-import getApolloClient from '@/functions'
+import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -13,42 +13,36 @@ const page = async ({
   params,
   searchParams,
 }: {
-  params: any,
-  searchParams?: any
+  params: any;
+  searchParams: any;
 }) => {
 
-console.log(params)
-console.log(searchParams)
+  const p = await params;
+  const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = {};
-
-  paginationParams.academmicYear = searchParams?.academmicYear ? searchParams.academmicYear : ""
-  paginationParams.assignedToId = params?.lecturer_id ? parseInt(params.lecturer_id ): ""
-  const client = getApolloClient(params.domain);
+  const client = getApolloClient(p.domain);
   let data;
+
   try {
     const result = await client.query<any>({
       query: GET_DATA,
       variables: {
-        ...paginationParams,
-        schoolId: params.school_id,
-        timestamp: new Date().getTime()
+        assignedToId: p?.lecturer_id ? parseInt(p.lecturer_id) : "",
+        academicYear: sp?.academicYear ? sp.academicYear : new Date().getFullYear().toString(),
+        schoolId: p.school_id
       },
       fetchPolicy: 'no-cache'
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error, 41)
-    
+    errorLog(error);
+
     data = null;
   }
 
-
-  console.log(data, 49)
-
   return (
     <div>
-      <List params={params} data={data} />
+      <List params={p} data={data} />
     </div>
   )
 }
@@ -59,15 +53,14 @@ export default page
 
 const GET_DATA = gql`
  query GetAllData(
-  $schoolId: Decimal,
-  $academicYear: String,
-  $assignedToId: Decimal!,
+  $schoolId: Decimal!,
+  $assignedToId: Decimal,
+  $academicYear: String!,
 ) {
-  allCourses(
-  schoolId: $schoolId
-  assignedToId: $assignedToId
-  academicYear: $academicYear
-  last: 100
+  allCourses (
+    schoolId: $schoolId
+    assignedToId: $assignedToId
+    academicYear: $academicYear
   ) {
     edges {
       node {
@@ -94,9 +87,6 @@ const GET_DATA = gql`
         }
         mainCourse {
           courseName
-        }
-        resultSet {
-          student { user { fullName} specialty { level { level} mainSpecialty { specialtyName} academicYear} }
         }
       }
     }

@@ -14,8 +14,10 @@ const LogoHeader = ({ trigger, sidebarOpen, setSidebarOpen, home }: any) => {
 
   const { data, loading } = useQuery(GET_DATA, {
     variables: {
-      id: parseInt(parsedSchoolId),
-    }
+      id: parseInt(parsedSchoolId || ""),
+    },
+    skip: isNaN(parseInt(parsedSchoolId || "")),
+    fetchPolicy: "cache-first"
   });
 
   return (
@@ -25,7 +27,7 @@ const LogoHeader = ({ trigger, sidebarOpen, setSidebarOpen, home }: any) => {
         <Image
           width={100}
           height={100}
-          src={`${protocol}api${domain}${RootApi}/media/` + data?.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
+          src={`${protocol}api${domain}${RootApi}/media/` + data?.allSchoolInfos?.edges[0]?.node?.schoolIdentification?.logo || '/placeholder-logo.png'}
           alt="Logo"
           style={{ borderRadius: 50, backgroundColor: "white" }}
           priority
@@ -35,7 +37,7 @@ const LogoHeader = ({ trigger, sidebarOpen, setSidebarOpen, home }: any) => {
         <Image
           width={70}
           height={70}
-          src={`${protocol}api${domain}${RootApi}/media/` + data?.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
+          src={`${protocol}api${domain}${RootApi}/media/` + data?.allSchoolInfos?.edges[0]?.node?.schoolIdentification?.logo || '/placeholder-logo.png'}
           alt="Logo"
           style={{ borderRadius: 50, backgroundColor: "white" }}
           priority

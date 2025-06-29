@@ -71,7 +71,7 @@ const ListStudsTransactionsPage = async ({ params, dataFees, dataTrans }: { para
       <div className="flex gap-2 justify-between">
         <div className="flex gap-2 items-center justify-center">
           <span>Full Name:</span>
-          <span className="font-medium italic md:text-2xl tracking">{dataFees.node.userprofile.user.fullName}</span>
+          <span className="font-medium italic md:text-2xl tracking">{dataFees.node.userprofile.customuser.fullName}</span>
         </div>
         <div>
           <FormModal table="pay_fees" type="create" 
