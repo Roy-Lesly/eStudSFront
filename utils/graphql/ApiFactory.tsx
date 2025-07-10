@@ -12,6 +12,7 @@ type SubmitOptions = {
   redirect: boolean;
   redirectPath: string;
   returnResponseField?: boolean;
+  returnResponseObject?: boolean;
   actionLabel?: "processing" | "creating" | "updating" | "deleting";
   reload?: boolean;
   getFileMap?: (item: any) => Record<string, File>; // file map callback
@@ -30,6 +31,7 @@ export const ApiFactory = async ({
   redirect,
   redirectPath,
   returnResponseField = false,
+  returnResponseObject = false,
   actionLabel = "processing",
   getFileMap
 }: SubmitOptions) => {
@@ -43,7 +45,7 @@ export const ApiFactory = async ({
     if (editData?.id) {
       // res = { ...res, id: parseInt(decodeUrlID(editData.id)) };
     }
-    
+
 
     try {
       const response = await uploadGraphQLMutation({
@@ -55,7 +57,21 @@ export const ApiFactory = async ({
       });
 
       const result = response?.data?.[mutationName]?.[modelName];
-      console.log(response);
+
+      if (response?.data?.[mutationName]) {
+
+        if (returnResponseObject) {
+          successMessages.push(result?.[successField] || "");
+          responseFieldData = response?.data?.[mutationName]
+        }
+        if (result?.id) {
+          successMessages.push(result?.[successField] || "Unnamed item");
+          if (returnResponseField) {
+            responseFieldData = result?.[successField]
+          }
+        }
+      }
+
       console.log(result);
 
       if (result?.id) {
@@ -86,7 +102,8 @@ export const ApiFactory = async ({
   let alertMessage = "";
   if (successMessages.length > 0) {
     alertMessage += `✅ Successfully Submitted`;
-    if (returnResponseField) return responseFieldData;
+    if (returnResponseObject || returnResponseField) return responseFieldData;
+    // if (returnResponseObject) return responseFieldData;
     else if (redirect) { router.push(redirectPath); }
     else if (reload) { window.location.reload(); }
   }

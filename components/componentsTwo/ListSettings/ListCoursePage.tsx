@@ -9,7 +9,7 @@ import { RiDeleteBin2Line } from "react-icons/ri";
 import TableSearch from "../TableSearch";
 import { getData } from "@/functions";
 import { protocol } from "@/config";
-import { AcademicYearUrl, GetDomainUrl, GetLevelUrl, GetMainCourseUrl } from "@/Domain/Utils-H/appControl/appConfig";
+import { GetDomainUrl, GetLevelUrl, GetMainCourseUrl } from "@/Domain/Utils-H/appControl/appConfig";
 import TabsCourse from "../TabsSettings/TabsCourse";
 import TableSearchSelect from "../TableSearchSelect";
 

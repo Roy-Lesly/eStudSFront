@@ -1,9 +1,11 @@
-import { ConfigData } from "@/config";
-import getApolloClient, { capitalizeFirstLetter, decodeUrlID, errorLog } from "@/functions";
+import { ConfigData, protocol, RootApi } from "@/config";
 import Image from "next/image";
 import Link from "next/link";
 import initTranslations from "@/initTranslations";
 import { gql } from "@apollo/client";
+import getApolloClient, { errorLog } from "@/utils/graphql/GetAppolloClient";
+import { capitalizeFirstLetter, decodeUrlID } from "@/utils/functions";
+import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
 
 
 const page = async (
@@ -17,23 +19,14 @@ const page = async (
   const p = await params;
 
   const { t } = await initTranslations(p.locale, ['common']);
-    const client = getApolloClient(p.domain);
-    let data;
-  
-    try {
-      const result = await client.query<any>({
-        query: GET_PROFILE,
-        variables: {
-          id: p?.userprofile_id
-        },
-        fetchPolicy: 'no-cache'
-      });
-      data = result.data;
-    } catch (error: any) {
-      errorLog(error)
-      data = null;
-    }
 
+    const data = await queryServerGraphQL({
+      domain: p?.domain,
+      query: GET_PROFILE,
+      variables: {
+          id: p?.userprofile_id
+      },
+    });
 
 
   const menuList = [
@@ -80,12 +73,13 @@ const page = async (
               <Image
                 width={72}
                 height={72}
-                src={"/images/user/user-01.png"}
+                src={data?.allUserProfiles?.edges[0]?.node?.customuser?.photo ? `${protocol}api${p?.domain}${RootApi}/media/${data?.allUserProfiles?.edges[0]?.node?.customuser?.photo}` : "/images/user/user-01.png"}
                 style={{
                   width: "auto",
                   height: "auto",
                 }}
                 alt="User"
+                className="rounded-full"
               />
             </Link>
 
@@ -105,7 +99,6 @@ const page = async (
             return (
               <Link href={`/${p.domain}/Section-H/pageStudent/${p.userprofile_id}/${p.specialty_id}/${list.link}`} key={list.id} className='bg-white flex flex-col h-[86px] items-center justify-center rounded-[20px] shadow-3xl w-full'>
                 <div className="flex relative">
-                  {/* <div className={`${list.notification && notifications.length > 0 ? "bg-red" : ""} -translate-y-1/2 absolute animate-pulse  bottom-auto inline-block left-auto  p-1.5 right-0 rotate-0 rounded-full scale-x-100 scale-y-100 skew-x-0 skew-y-0 text-xs top-0 translate-x-2/4 z-10`}></div> */}
                   <Image src={list.icon} alt={list.label} width={40} height={40} />
                 </div>
                 <span className="font-bold text-black">{list.label}</span>
@@ -143,7 +136,7 @@ const GET_PROFILE = gql`
     edges {
       node {
         id
-        customuser { id matricle fullName }
+        customuser { id matricle fullName photo }
         specialty { id academicYear 
           level { level} 
           mainSpecialty { specialtyName}

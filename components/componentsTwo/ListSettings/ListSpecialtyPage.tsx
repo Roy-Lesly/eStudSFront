@@ -1,9 +1,8 @@
 import FormModal from "@/componentsTwo/FormModal";
-import { role } from "@/componentsTwo/lib/data";
 import Table from "@/componentsTwo/Table";
 import { protocol } from "@/config";
 import { TableRowClassName } from "@/constants";
-import { AcademicYearUrl, GetLevelUrl, GetMainSpecialtyUrl } from "@/Domain/Utils-H/appControl/appConfig";
+import { GetLevelUrl, GetMainSpecialtyUrl } from "@/Domain/Utils-H/appControl/appConfig";
 import { GetSpecialtyInter } from "@/Domain/Utils-H/appControl/appInter";
 import { getData } from "@/functions";
 import MyPageTitle from "@/section-h/common/MyPageTitle";

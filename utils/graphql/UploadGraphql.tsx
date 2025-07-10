@@ -1,6 +1,5 @@
 import { RootApi, protocol } from "../config";
 import { Subdomains } from "../dataSource";
-import { errorLog } from "../functions";
 
 
 type UploadGraphQLArgs = {

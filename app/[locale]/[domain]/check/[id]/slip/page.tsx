@@ -1,7 +1,7 @@
 import React from 'react';
 import StudentProfile from './StudentProfile';
-import getApolloClient, { errorLog } from '@/utils/functions';
 import { gql } from '@apollo/client';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const page = async (
   { params }:
@@ -52,7 +52,7 @@ const GET_DATA = gql`
     edges {
       node {
         id session
-        user {
+        customuser {
           id photo fullName, matricle sex telephone dob pob email address parent parentTelephone 
           nationality highestCertificate yearObtained regionOfOrigin
         }

@@ -45,14 +45,25 @@ export interface NodePreInscription {
   address: string;
   telephone: string;
   email: string;
-  campus: string;
-  emergency: string;
-  emergencyTelephone: string;
+  campus: NodeSchoolHigherInfo;
+  fatherName: string;
+  motherName: string;
+  fatherTelephone: string;
+  motherTelephone: string;
+  parentAddress: string;
   about: string;
   nationality: string;
   regionOfOrigin: string;
   highestCertificate: string;
-  yearObtain: string;
+  yearObtained: string;
+  status: string;
+  admissionStatus: boolean;
+  program: NodeProgram;
+  specialtyOne: NodeMainSpecialty;
+  specialtyTwo: NodeMainSpecialty;
+  academicYear: string;
+  level: string;
+  session: string;
 }
 
 // User interface
@@ -73,8 +84,11 @@ export interface NodeCustomUser {
   telephone: string;
   email: string;
   title: string;
-  parent: string;
-  parentTelephone: string;
+  fatherName: string;
+  motherName: string;
+  fatherTelephone: string;
+  motherTelephone: string;
+  parentAddress: string;
   about: string;
   isSuperuser: string;
   isStaff: string;
@@ -138,6 +152,10 @@ export interface NodeSchoolIdentification {
   messageTwo: string;
   backEnd: string;
   frontEnd: string;
+  hasHigher: string;
+  hasSecondary: string;
+  hasPrimary: string;
+  hasVocational: string;
 }
 
 // School interface
@@ -158,7 +176,7 @@ export interface NodeSchoolHigherInfo {
   website: string;
   latitude: number;
   longitude: number;
-  logo: string;
+  logoCampus: string;
   registrationSeperateTuition: boolean;
   welcome_message: string;
   radius: number;
@@ -333,7 +351,7 @@ export interface NodeTransactions {
   updatedAt: string,
 }
 
-// TranscriptApplications interface
+
 export interface NodeTranscriptApplications {
   id: string | number;
   userprofile: NodeUserProfile,
@@ -343,6 +361,18 @@ export interface NodeTranscriptApplications {
   approvedAt: string,
   printedBy: NodeCustomUser,
   printedAt: string,
+  createdBy: NodeCustomUser,
+  updatedBy: NodeCustomUser,
+  createdAt: string,
+  updatedAt: string,
+}
+
+export interface NodeAccount {
+  id: string | number;
+  name: string,
+  year: string,
+  status: boolean,
+  description: string,
   createdBy: NodeCustomUser,
   updatedBy: NodeCustomUser,
   createdAt: string,
@@ -474,6 +504,10 @@ export interface EdgeTransactions {
 
 export interface EdgeTranscriptApplications {
   node: NodeTranscriptApplications;
+}
+
+export interface EdgeAccount {
+  node: NodeAccount;
 }
 
 export interface EdgeSysCategory {

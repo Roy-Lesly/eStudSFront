@@ -21,7 +21,7 @@ const DefaultLayout = ({
   headerbar?: React.ReactNode;
   searchComponent?: React.ReactNode;
   downloadComponent?: React.ReactNode;
-  pageType?: "admin" | "lecturer" | "student";
+  pageType?: "admin" | "teacher" | "student";
 }) => {
 
   const [user, setUser] = useState<JwtPayload | null | any>(null)
@@ -42,8 +42,14 @@ const DefaultLayout = ({
             if (decodedUser.role !== "admin") {
               setAccess(false);
             }
-          } if (pageType && pageType === "lecturer") {
-            if (decodedUser.role === "student") {
+          } 
+          if (pageType && pageType === "teacher") {
+            if (decodedUser.role !== "teacher" && decodedUser.role !== "admin") {
+              setAccess(false);
+            }
+          } 
+          if (pageType && pageType === "student") {
+            if (decodedUser.role !== "student" && decodedUser.role !== "admin") {
               setAccess(false);
             }
           } else {
@@ -71,13 +77,15 @@ const DefaultLayout = ({
             <div className="2xl:p-10 md:p-4 w-full">
               {user ?
                 access ?
-                  <>
-                    <div className="flex gap-2 w-full">
+                  <div className="flex flex-col space-y-2 p-2">
+                    <div className="flex gap-2 w-full shadow-xl rounded bg-white p-2">
                       {downloadComponent}
                       {searchComponent}
                     </div>
-                    {children}
-                  </>
+                    <div className="shadow-lg rounded p-2 bg-white">
+                      {children}
+                    </div>
+                  </div>
                   :
                   <NotAuthorized domain={domain} />
                 :

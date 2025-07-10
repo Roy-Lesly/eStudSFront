@@ -7,7 +7,7 @@ import { JwtPayload } from '@/serverActions/interfaces';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { gql } from '@apollo/client';
 import MyInputField from '@/MyInputField';
-import { EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeLevel, EdgeMainSpecialty, EdgePreInscription, EdgeProgram, EdgeSpecialty, NodeSchoolHigherInfo, NodeSpecialty } from '@/Domain/schemas/interfaceGraphql';
 import { useRouter } from 'next/navigation';
 import { CertificateOptions, RegionList } from '@/constants';
 import countryList from "react-select-country-list";
@@ -30,8 +30,11 @@ type FormData = {
     pob: string;
     telephone: string;
     email: string;
-    parent: string;
-    parentTelephone: string;
+    fatherName: string;
+    motherName: string;
+    fatherTelephone: string;
+    motherTelephone: string;
+    parentAddress: string;
     password: string;
   };
   medicalHistory: {
@@ -54,7 +57,10 @@ type FormData = {
 };
 
 
-const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpecialties: any, params: { domain: string, school_id: string } }) => {
+const AdmissionForm = (
+  { data, dataSpecialties, params, dataSchoolInfo, dataPrograms, dataLevels, specialtyOne, sp }:
+    { data: EdgePreInscription, dataSpecialties: EdgeSpecialty[], params: { domain: string, school_id: string }, dataSchoolInfo: NodeSchoolHigherInfo, dataPrograms: EdgeProgram[], dataLevels: EdgeLevel[], dataMainSpecialties: EdgeMainSpecialty[], specialtyOne?: NodeSpecialty, sp?: any }
+) => {
   const { t } = useTranslation();
   const steps = [
     `${t("Personal Info")}`,
@@ -63,8 +69,6 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
     `${t("Confirmation")}`
   ];
 
-  console.log(data);
-
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [optionsSpecialties, setOptionsSpecialties] = useState<{ id: string, name: string }[]>();
@@ -72,38 +76,42 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
   const [optionsLevels, setOptionsLevels] = useState<{ id: string, name: string }[]>();
   const [selectedLevel, setSelectedLevel] = useState<string>();
 
+
   const [formData, setFormData] = useState({
     personalInfo: {
-      firstName: data?.allPreinscriptions?.edges[0].node?.firstName,
-      lastName: data?.allPreinscriptions?.edges[0].node?.lastName,
-      sex: capitalizeFirstLetter(data?.allPreinscriptions?.edges[0].node?.sex),
-      address: data?.allPreinscriptions?.edges[0].node?.address,
-      dob: data?.allPreinscriptions?.edges[0].node?.dob,
-      pob: data?.allPreinscriptions?.edges[0].node?.pob,
-      telephone: data?.allPreinscriptions?.edges[0].node?.telephone,
-      email: data?.allPreinscriptions?.edges[0].node?.email,
-      parent: data?.allPreinscriptions?.edges[0].node?.emergencyName,
-      parentTelephone: data?.allPreinscriptions?.edges[0].node?.emergencyTelephone,
+      firstName: data?.node?.firstName,
+      lastName: data?.node?.lastName,
+      sex: capitalizeFirstLetter(data?.node?.sex),
+      address: data?.node?.address,
+      dob: data?.node?.dob,
+      pob: data?.node?.pob,
+      telephone: data?.node?.telephone,
+      email: data?.node?.email,
+      fatherName: data?.node?.fatherName,
+      motherName: data?.node?.motherName,
+      fatherTelephone: data?.node?.fatherTelephone,
+      motherTelephone: data?.node?.motherTelephone,
+      parentAddress: data?.node?.parentAddress,
       password: '',
-      prefix: data?.allSchoolInfos?.edges[0].node.prefix,
-      method: data?.allSchoolInfos?.edges[0].node.method,
+      prefix: dataSchoolInfo?.prefix,
+      method: dataSchoolInfo?.method,
     },
     medicalHistory: {
       role: 'student',
       deptNames: 'Student',
       allergies: '',
       medicalHistory: '',
-      nationality: data?.allPreinscriptions?.edges[0].node?.nationality,
-      highestCertificate: data?.allPreinscriptions?.edges[0].node?.highestCertificate,
-      highestCertificateOther: data?.allPreinscriptions?.edges[0].node?.highestCertificate,
-      yearObtained: data?.allPreinscriptions?.edges[0].node?.yearObtained,
-      regionOfOrigin: data?.allPreinscriptions?.edges[0].node?.regionOfOrigin,
-      regionOfOriginOther: data?.allPreinscriptions?.edges[0].node?.regionOfOrigin,
+      nationality: data?.node?.nationality,
+      highestCertificate: data?.node?.highestCertificate,
+      highestCertificateOther: data?.node?.highestCertificate,
+      yearObtained: data?.node?.yearObtained,
+      regionOfOrigin: data?.node?.regionOfOrigin,
+      regionOfOriginOther: data?.node?.regionOfOrigin,
     },
     classAssignment: {
-      specialtyId: data?.allPreinscriptions?.edges[0].node?.specialtyOne,
-      programId: data?.allPreinscriptions?.edges[0].node?.program,
-      session: data?.allPreinscriptions?.edges[0].node?.session,
+      specialtyId: decodeUrlID(specialtyOne?.id || ""),
+      programId: data?.node?.program.id,
+      session: data?.node?.session,
     },
   });
 
@@ -114,8 +122,8 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
   const validateStep = (stepIndex: number): boolean => {
     switch (stepIndex) {
       case 0: {
-        const { firstName, lastName, sex, address, dob, pob, telephone, email, parent, parentTelephone } = formData.personalInfo;
-        return [firstName, lastName, sex, address, dob, pob, telephone, email, parent, parentTelephone].every(
+        const { firstName, lastName, sex, address, dob, pob, telephone, email, motherName, fatherTelephone } = formData.personalInfo;
+        return [firstName, lastName, sex, address, dob, pob, telephone, email, motherName, fatherTelephone].every(
           (field) => field !== undefined && String(field).trim() !== ''
         );
       }
@@ -140,33 +148,33 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
   };
 
   useEffect(() => {
-    if (data && dataSpecialties.allSpecialties?.edges) {
-      setSelectedLevel(data?.allPreinscriptions?.edges[0].node?.level.replace("A_", ""));
+    if (data && dataSpecialties) {
+      setSelectedLevel(data.node?.level.replace("A_", ""));
       setFormData((prev) => {
-        const preinscription = data?.allPreinscriptions?.edges[0]?.node;
+        const preinscription = data?.node;
 
-        if (!preinscription) return prev; // Prevent errors if data is missing
+        if (!preinscription || !dataPrograms) return prev; // Prevent errors if data is missing
 
-        let specialty = dataSpecialties?.allSpecialties?.edges?.find((item: EdgeSpecialty) => {
+        let specialty = dataSpecialties?.find((item: EdgeSpecialty) => {
           return (
-            decodeUrlID(item.node.mainSpecialty.id) === preinscription.specialtyOne &&
+            decodeUrlID(item.node.mainSpecialty.id) === decodeUrlID(preinscription.specialtyOne.id) &&
             item.node.academicYear === preinscription.academicYear &&
             item.node.level.level.toString() === preinscription.level.replace("A_", "")
           );
         });
 
         if (!specialty) {
-          specialty = dataSpecialties?.allSpecialties?.edges?.find((item: EdgeSpecialty) => {
+          specialty = dataSpecialties?.find((item: EdgeSpecialty) => {
             return (
-              decodeUrlID(item.node.mainSpecialty.id) === preinscription.specialtyTwo &&
+              decodeUrlID(item.node.mainSpecialty.id) === decodeUrlID(preinscription.specialtyTwo.id) &&
               item.node.academicYear === preinscription.academicYear &&
               item.node.level.level.toString() === preinscription.level.replace("A_", "")
             );
           });
         }
 
-        const program = data?.allPrograms?.edges?.find(
-          (item: EdgeProgram) => decodeUrlID(item.node.id) === preinscription.program
+        const program = dataPrograms?.find(
+          (item: EdgeProgram) => decodeUrlID(item.node.id) === decodeUrlID(preinscription.program.id)
         );
 
         return {
@@ -174,30 +182,41 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
           classAssignment: {
             ...prev.classAssignment,
             specialtyId: decodeUrlID(specialty?.node.id || ""),
-            programId: decodeUrlID(program?.node.id) || "1",
+            programId: decodeUrlID(program?.node?.id || ""),
           },
         };
       });
-      const f = dataSpecialties.allSpecialties.edges.sort((a: EdgeSpecialty, b: EdgeSpecialty) =>
+      const f = dataSpecialties.sort((a: EdgeSpecialty, b: EdgeSpecialty) =>
         a.node.mainSpecialty.specialtyName > b.node.mainSpecialty.specialtyName ? 1 : a.node.mainSpecialty.specialtyName < b.node.mainSpecialty.specialtyName ? -1 : 0)
         .map((item: EdgeSpecialty) => {
           return { "id": decodeUrlID(item.node.id), "name": `${item.node.mainSpecialty.specialtyName} - ${item.node.level.level} - ${item.node.academicYear}` }
         })
-      if (f) { setOptionsSpecialties(f.filter((item: any) => item.name.includes(data.allPreinscriptions.edges[0].node.level.replace("A_", "")))) }
+      if (f) {
+        if (f && sp?.level) { setOptionsSpecialties(f.filter((item: any) => item.name.includes(sp.level))) }
+        else { setOptionsSpecialties(f) }
+      }
     }
-    if (data && data.allPrograms?.edges) {
-      const f = data.allPrograms.edges.sort((a: EdgeProgram, b: EdgeProgram) => a.node.name > b.node.name ? 1 : a.node.name < b.node.name ? -1 : 0).map((item: EdgeProgram) => {
+    if (data && dataPrograms) {
+      const f = dataPrograms?.sort((a: EdgeProgram, b: EdgeProgram) => a.node.name > b.node.name ? 1 : a.node.name < b.node.name ? -1 : 0).map((item: EdgeProgram) => {
         return { "id": decodeUrlID(item.node.id), "name": `${item.node.name}` }
       })
       if (f) { setOptionsPrograms(f) }
     }
-    if (data && data.allLevels?.edges) {
-      const f = data.allLevels.edges.sort((a: EdgeLevel, b: EdgeLevel) => a.node.level > b.node.level ? 1 : a.node.level < b.node.level ? -1 : 0).map((item: EdgeLevel) => {
+    if (data && dataLevels) {
+      const f = dataLevels?.sort((a: EdgeLevel, b: EdgeLevel) => a.node.level > b.node.level ? 1 : a.node.level < b.node.level ? -1 : 0).map((item: EdgeLevel) => {
         return { "id": item.node.level, "name": `${item.node.level}` }
       })
-      if (f) { setOptionsLevels(f) }
+      if (f) {
+        setOptionsLevels(f)
+      }
     }
   }, [data])
+
+  useEffect(() => {
+    if (!formData?.classAssignment?.specialtyId && optionsSpecialties && optionsSpecialties?.length) {
+        alert(t("1st Choice Specialty Not Found For this Year - Create for this Year and Level"))      
+    }
+  } , [formData, optionsSpecialties])
 
 
   const handleNext = () => {
@@ -209,7 +228,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
     if (isValid && currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else if (!isValid) {
-      alert('Please fill in all required fields.');
+      alert(t("Please fill in all required fields"));
     }
   };
 
@@ -244,7 +263,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
         return;
       }
 
-      const preinscription = data?.allPreinscriptions?.edges[0]?.node;
+      const preinscription = data?.node;
 
       const newFormData = {
         ...formData.personalInfo,
@@ -255,14 +274,12 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
         email: formData.personalInfo.email.toLowerCase(),
         dept: [2],
         schoolIds: [parseInt(params.school_id)],
-        prefix: formData.personalInfo.method + formData.personalInfo.prefix,
+        prefix: (formData.personalInfo.method + formData.personalInfo.prefix) || "",
         method: formData.personalInfo.method,
         infoData: JSON.stringify([]),
         delete: false,
       };
 
-      console.log(newFormData);
-      // return
 
       const userSuccessFieldData = await ApiFactory({
         newData: newFormData,
@@ -285,6 +302,8 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
         return;
       }
 
+      console.log(305, userSuccessFieldData);
+
       const customuserId = parseInt(decodeUrlID(userSuccessFieldData));
 
       const dataUserProfile = {
@@ -297,8 +316,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
         createdById: user.user_id,
       };
 
-      // const profileResult = await createUpdateUserProfile({ variables: newFormDataProfile });
-       const userprofileprofileSuccessFieldData = await ApiFactory({
+      console.log(319, dataUserProfile);
+
+      const userprofileprofileSuccessFieldData = await ApiFactory({
         newData: { ...dataUserProfile, customUser: decodeUrlID(userSuccessFieldData) },
         editData: {},
         mutationName: "createUpdateDeleteUserProfile",
@@ -315,25 +335,28 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
         actionLabel: "creating",
       });
 
+      console.log(338, userprofileprofileSuccessFieldData);
+
+
       if (!userprofileprofileSuccessFieldData) {
         errorLog("Failed to create profille");
         return
       }
 
-      alert(`Success Admitted: ${preinscription?.firstName}`);
+      alert(`Success Admitted: ${preinscription?.firstName} ✅`,);
 
       router.push(
         `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${userprofileprofileSuccessFieldData}/?user=${userSuccessFieldData}`
       );
     } catch (error: any) {
-      console.error("Error during submission:", error);
+      errorLog(error);
       alert(`Error creating: ${error.message || error}`);
     }
   };
 
 
   const filterSpeciaties = (lev: any) => {
-    setOptionsSpecialties(dataSpecialties.allSpecialties.edges?.filter((spec: EdgeSpecialty) =>
+    setOptionsSpecialties(dataSpecialties?.filter((spec: EdgeSpecialty) =>
       spec.node.level.level == lev).map((item: EdgeSpecialty) => { return { "id": decodeUrlID(item.node.id), "name": `${item.node.mainSpecialty.specialtyName} - ${item.node.level.level} - ${item.node.academicYear}` } })
     )
     setSelectedLevel(lev)
@@ -443,24 +466,56 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
 
             <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
               <MyInputField
-                id="parent"
-                name="parent"
-                label={t("Parent Name")}
+                id="fatherName"
+                name="fatherName"
+                label={t("Father Name")}
                 type="text"
-                placeholder={t("Parent Name")}
-                value={formData.personalInfo.parent}
-                onChange={(e) => handleChange('personalInfo', 'parent', e.target.value)}
+                placeholder={t("Father Name")}
+                value={formData.personalInfo.fatherName}
+                onChange={(e) => handleChange('personalInfo', 'fatherName', e.target.value)}
               />
               <MyInputField
-                id="parentTelephone"
-                name="parentTelephone"
-                label={t("Parent Telephone")}
-                type="number"
-                placeholder={t("Parent Telephone")}
-                value={formData.personalInfo.parentTelephone}
-                onChange={(e) => handleChange('personalInfo', 'parentTelephone', e.target.value)}
+                id="motherName"
+                name="motherName"
+                label={t("Mother's Name")}
+                type="text"
+                placeholder={t("Mother's Name")}
+                value={formData.personalInfo.motherName}
+                onChange={(e) => handleChange('personalInfo', 'motherName', e.target.value)}
               />
             </div>
+            <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
+              <MyInputField
+                id="fatherTelephone"
+                name="fatherTelephone"
+                label={t("Father's Telephone")}
+                type="number"
+                placeholder={t("Father's Telephone")}
+                value={formData.personalInfo.fatherTelephone}
+                onChange={(e) => handleChange('personalInfo', 'fatherTelephone', e.target.value)}
+              />
+              <MyInputField
+                id="motherTelephone"
+                name="motherTelephone"
+                label={t("Mother's Telephone")}
+                type="number"
+                placeholder={t("Mother's Telephone")}
+                value={formData.personalInfo.motherTelephone}
+                onChange={(e) => handleChange('personalInfo', 'motherTelephone', e.target.value)}
+              />
+            </div>
+            <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
+              <MyInputField
+                id="parentAddress"
+                name="parentAddress"
+                label={t("Parent's Address")}
+                type="text"
+                placeholder={t("Parent's Address")}
+                value={formData.personalInfo.parentAddress}
+                onChange={(e) => handleChange('personalInfo', 'parentAddress', e.target.value)}
+              />
+            </div>
+
 
           </motion.div>
         );
@@ -596,11 +651,11 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
             <div className='flex flex-row justify-between text-black'>
               <div className="flex gap-2">
                 <span>{t("Choice 1")}:</span>
-                <span className='font-medium italic'>{data.allMainSpecialties?.edges?.filter((item: EdgeMainSpecialty) => parseInt(decodeUrlID(item.node.id)) === parseInt(data?.allPreinscriptions?.edges[0].node?.specialtyOne))[0]?.node.specialtyName}</span>
+                <span className='font-medium italic'>{data?.node.specialtyOne?.specialtyName}</span>
               </div>
               <div className="flex gap-2">
                 <span>{t("Choice 2")}:</span>
-                <span className='font-medium italic'>{data.allMainSpecialties?.edges?.filter((item: EdgeMainSpecialty) => parseInt(decodeUrlID(item.node.id)) === parseInt(data?.allPreinscriptions?.edges[0].node?.specialtyTwo))[0]?.node.specialtyName}</span>
+                <span className='font-medium italic'>{data?.node.specialtyTwo?.specialtyName}</span>
               </div>
             </div>
 
@@ -752,8 +807,11 @@ const query = gql`
       $dob: String!
       $pob: String!
       $telephone: String!
-      $parent: String!
-      $parentTelephone: String!
+      $fatherName: String!
+      $motherName: String!
+      $fatherTelephone: String!
+      $motherTelephone: String!
+      $parentAddress: String!
       $nationality: String!
       $regionOfOrigin: String!
       $highestCertificate: String!
@@ -775,8 +833,11 @@ const query = gql`
         dob: $dob
         pob: $pob
         telephone: $telephone
-        parent: $parent
-        parentTelephone: $parentTelephone
+        fatherName: $fatherName
+        motherName: $motherName
+        fatherTelephone: $fatherTelephone
+        motherTelephone: $motherTelephone
+        parentAddress: $parentAddress
         nationality: $nationality
         regionOfOrigin: $regionOfOrigin
         highestCertificate: $highestCertificate

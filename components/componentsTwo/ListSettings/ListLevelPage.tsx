@@ -1,5 +1,4 @@
 import FormModal from "@/componentsTwo/FormModal";
-import { role } from "@/componentsTwo/lib/data";
 import Table from "@/componentsTwo/Table";
 import { TableRowClassName } from "@/constants";
 import { GetLevelInter } from "@/Domain/Utils-H/appControl/appInter";

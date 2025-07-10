@@ -25,6 +25,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
 
   return (
     <DefaultLayout
+      pageType='teacher'
       domain={params.domain}
       searchComponent={
         <SearchMultiple

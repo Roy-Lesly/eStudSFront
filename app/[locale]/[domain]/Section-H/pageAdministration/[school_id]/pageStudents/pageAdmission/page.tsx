@@ -8,8 +8,8 @@ import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 export const metadata: Metadata = {
-    title: "Admission Page",
-    description: "This is Admission Page Admin Settings",
+  title: "Admission Page",
+  description: "This is Admission Page Admin Settings",
 };
 
 
@@ -17,8 +17,8 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-    params: any;
-    searchParams: any;
+  params: any;
+  searchParams: any;
 }) => {
   const p = await params;
   const sp = await searchParams;
@@ -45,7 +45,7 @@ const EditPage = async ({
     });
     dataPreinscription = result.data;
   } catch (error: any) {
-    console.log(error, 35)
+    errorLog(error)
     dataPreinscription = null;
   }
 
@@ -66,11 +66,12 @@ const EditPage = async ({
 
   return (
     <div>
-      <List 
-      params={p} 
-      dataPreinscription={dataPreinscription} 
-      searchParams={sp} 
-      dataSpecialties={dataSpecialties} 
+      <List
+        params={p}
+        dataPreinscription={dataPreinscription.allPreinscriptions?.edges[0]}
+        dataExtra={dataPreinscription}
+        searchParams={sp}
+        dataSpecialties={dataSpecialties?.allSpecialties?.edges}
       />
     </div>
   )
@@ -104,7 +105,7 @@ const GET_DATA_SPECIALTIES = gql`
           mainSpecialty {
             id specialtyName
           }
-          school { campus}
+          school { campus }
         }
       }
     }
@@ -130,8 +131,14 @@ const GET_DATA = gql`
     ){
       edges {
         node {
-          id registrationNumber firstName lastName fullName dob pob address sex email telephone emergencyName emergencyTelephone session
-          level campus program specialtyOne specialtyTwo academicYear nationality nationality highestCertificate regionOfOrigin yearObtained
+          id registrationNumber firstName lastName fullName dob pob address sex email telephone 
+          fatherName motherName fatherTelephone motherTelephone parentAddress session
+          level academicYear nationality
+          highestCertificate regionOfOrigin yearObtained
+          specialtyOne { id specialtyName }
+          specialtyTwo { id specialtyName }
+          campus { id campus }
+          program { id name }
         }
       }
     }

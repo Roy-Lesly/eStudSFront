@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import React from 'react'
-import getApolloClient from '@/functions';
 import { gql } from '@apollo/client';
 import SelectDept from '../SelectDept';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const EditPage = async ({
   params,
@@ -12,7 +12,6 @@ const EditPage = async ({
 }) => {
 
   const p = await params;
-  // const sp = await searchParams;
 
 const client = getApolloClient(p.domain);
     let data;

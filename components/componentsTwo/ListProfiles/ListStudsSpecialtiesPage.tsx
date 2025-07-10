@@ -1,11 +1,12 @@
 import Table from "@/componentsTwo/Table";
 import { TableRowClassName } from "@/constants";
-import getApolloClient, { decodeUrlID } from "@/functions";
+import { decodeUrlID } from "@/functions";
 import { protocol, RootApi } from "@/config";
 import Link from "next/link";
 import TabsStudents from "../TabsProfiles/TabsStudents";
 import { AllUserProfilesResponse, EdgeUserProfile } from "@/Domain/schemas/interfaceGraphql";
 import { gql } from "@apollo/client";
+import getApolloClient from "@/utils/graphql/GetAppolloClient";
 
 
 const columns = [

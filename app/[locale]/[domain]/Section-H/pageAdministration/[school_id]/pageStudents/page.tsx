@@ -106,7 +106,8 @@ const GET_DATA = gql`
       node {
         id session
         customuser {
-          id fullName, matricle sex telephone dob pob email address parent parentTelephone 
+          id fullName, matricle sex telephone dob pob email address 
+          fatherName fatherTelephone motherName motherTelephone parentAddress 
           nationality highestCertificate yearObtained regionOfOrigin
         }
         specialty { 

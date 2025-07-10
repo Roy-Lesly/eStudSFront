@@ -47,7 +47,8 @@ const FillMarksComponent = (
                                 id={field}
                                 name={field}
                                 label=""
-                                value={String(item.node.infoData[field]) || ''}
+                                // value={String(item.node.infoData[field]) || ''}
+                                value={String(item.node.infoData?.[field] ?? "")}
                                 onChange={(e) => handleInputChange(e, index, field)}
                                 placeholder={`${field}`}
                                 type="number"
@@ -68,64 +69,57 @@ const FillMarksComponent = (
         field: string
     ) => {
         let { value } = e.target;
-        value = Math.max(0, Math.min(
-            values.pageType === "ca" ? schoolInfo.node.caLimit :
-                values.pageType === "exam" ? schoolInfo.node.examLimit :
-                    schoolInfo.node.resitLimit, Math.abs(parseFloat(value || '0'))));
 
-        setFormData((prevFormData: any) => {
-            const updatedFormData = prevFormData.map((item: any, i: number) =>
-                i === index
-                    ? {
-                        ...item,
-                        node: {
-                            ...item.node,
-                            infoData: {
-                                ...item.node.infoData,
-                                [field]: value,
-                            },
-                        },
-                    }
-                    : item
-            );
+        value = Math.max(
+            0,
+            Math.min(
+                values.pageType === "ca"
+                    ? schoolInfo.node.caLimit
+                    : values.pageType === "exam"
+                        ? schoolInfo.node.examLimit
+                        : schoolInfo.node.resitLimit,
+                Math.abs(parseFloat(value || "0"))
+            )
+        );
 
-            // Update `dataToSubmit`
-            setDataToSubmit((prevDataToSubmit) => {
-                const currentRecord = updatedFormData[index];
-                const currentId = parseInt(decodeUrlID(currentRecord.node.id))
+        const newFormData = [...formData];
+        const updatedInfoData = {
+            ...newFormData[index].node.infoData,
+            [field]: value,
+        };
 
-                const updatedInfo = {
-                    ...currentRecord.node.infoData,
-                    [field]: parseFloat(value), // Parse as number if required
-                };
+        newFormData[index] = {
+            ...newFormData[index],
+            node: {
+                ...newFormData[index].node,
+                infoData: updatedInfoData,
+            },
+        };
 
-                const newData = {
-                    node: {
-                        ...currentRecord.node,
-                        id: parseInt(decodeUrlID(currentRecord.node.id)),
-                        info: JSON.stringify(updatedInfo),
-                    },
-                };
+        setFormData(newFormData); // ✅ Safe
 
-                // Check if the record exists in `dataToSubmit`
-                const existingIndex = prevDataToSubmit.findIndex(
-                    (record) => record.node.id === currentId
-                );
+        const currentId = parseInt(decodeUrlID(newFormData[index].node.id));
 
-                if (existingIndex !== -1) {
-                    // Update existing record
-                    return prevDataToSubmit.map((record, idx) =>
-                        idx === existingIndex ? newData : record
-                    );
-                } else {
-                    // Add new record
-                    return [...prevDataToSubmit, newData];
-                }
-            });
+        const newData = {
+            node: {
+                ...newFormData[index].node,
+                id: currentId,
+                info: JSON.stringify(updatedInfoData),
+            },
+        };
 
-            return updatedFormData;
+        setDataToSubmit((prev) => {
+            const existingIndex = prev.findIndex((r) => r.node.id === currentId);
+            if (existingIndex !== -1) {
+                const updated = [...prev];
+                updated[existingIndex] = newData;
+                return updated;
+            } else {
+                return [...prev, newData];
+            }
         });
     };
+
 
 
     const handleSubmit = async () => {
@@ -138,6 +132,7 @@ const FillMarksComponent = (
                 const newData = {
                     ...dataToSubmit[index].node,
                     infoData: JSON.stringify(dataToSubmit[index].node.infoData),
+                    updatedById: user.user_id,
                     delete: false
                 };
 
@@ -193,11 +188,13 @@ const query = gql`
 mutation Result(
     $id: ID!,
     $infoData: JSONString!
+    $updatedById: ID!
     $delete: Boolean!
 ) {
     createUpdateDeleteResult(
         id: $id, 
         infoData: $infoData
+        updatedById: $updatedById
         delete: $delete
     ) {
         result {

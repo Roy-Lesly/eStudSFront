@@ -57,8 +57,11 @@ const Info = (
     address: string;
     telephone: string;
     email: string;
-    parent: string;
-    parentTelephone: string;
+    fatherName: string;
+    fatherTelephone: string;
+    motherName: string;
+    motherTelephone: string;
+    parentAddress: string;
     nationality: string;
     regionOfOrigin: string;
     highestCertificate: string;
@@ -80,8 +83,11 @@ const Info = (
     address: data?.node?.userprofile.customuser.address || '',
     telephone: data?.node?.userprofile.customuser.telephone || '',
     email: data?.node?.userprofile.customuser.email || '',
-    parent: data?.node?.userprofile.customuser.parent || '',
-    parentTelephone: data?.node?.userprofile.customuser.parentTelephone || '',
+    fatherName: data?.node?.userprofile.customuser.fatherName || '',
+    motherName: data?.node?.userprofile.customuser.motherName || '',
+    fatherTelephone: data?.node?.userprofile.customuser.fatherTelephone || '',
+    motherTelephone: data?.node?.userprofile.customuser.motherTelephone || '',
+    parentAddress: data?.node?.userprofile.customuser.parentAddress || '',
     nationality: data?.node?.userprofile.customuser.nationality || '',
     regionOfOrigin: data?.node?.userprofile.customuser.regionOfOrigin || '',
     highestCertificate: data?.node?.userprofile.customuser.highestCertificate || '',
@@ -156,7 +162,6 @@ const Info = (
   };
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [passwordState, setPasswordState] = useState<"reset" | "change" | null>(null);
 
   return (
     <>
@@ -208,12 +213,12 @@ const Info = (
           animate="visible"
           variants={containerVariants}
           onSubmit={handleSubmit}
-          className="bg-white mx-auto pb-6 pt-2 px-6 rounded-lg shadow-lg w-full"
+          className="bg-white font-semibold text-slate-700 text-lg mx-auto pb-6 pt-2 px-6 rounded-lg shadow-lg w-full"
         >
           {/* Basic Information */}
           <motion.div variants={sectionVariants} className="mb-8">
-            <h2 className="border-b font-semibold mb-4 pb-2 text-gray-800 text-xl">
-              Basic Information
+            <h2 className="border-b font-semibold mb-4 pb-2 text-xl text-teal-700">
+              {t("Basic Information")}
             </h2>
 
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
@@ -269,7 +274,7 @@ const Info = (
                     transition={{ duration: 0.5 }}
                     className="font-semibold text-gray-800 text-lg"
                   >
-                    Print ID
+                    {t("Print ID")}
                   </motion.h1>
 
                   <div className='border flex items-center justify-center rounded-full'>
@@ -285,26 +290,25 @@ const Info = (
               <div className='flex flex-col gap-6'>
 
                 <div className='flex items-center justify-center italic gap-4'>
-                  <span>Has Results ?:</span>
+                  <span>{t("Has Results")} ?:</span>
                   <span className={`${hasMark ? "text-green-600" : "text-red"} font-semibold text-lg tracking-widest`}>{hasMark ? "Yes" : "No"}</span>
                 </div>
 
                 <div className=''>
-                  <label className="font-semibold text-lg text-slate-800 tracking-widest">Matricle</label>
+                  <label className="font-semibold text-lg text-slate-800 tracking-widest">{t("Matricle")}</label>
                   <input
                     type="text"
                     name="x"
                     value={data?.node?.userprofile.customuser.matricle}
                     onChange={handleChange}
                     className="border p-2 rounded w-full"
-                    required
                     readOnly
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-gray-600 text-sm">First Name</label>
+                <label className="text-gray-600 text-sm">{t("First Name")}</label>
                 <input
                   type="text"
                   name="firstName"
@@ -315,7 +319,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Last Name</label>
+                <label className="text-gray-600 text-sm">{t("Last Name")}</label>
                 <input
                   type="text"
                   name="lastName"
@@ -326,7 +330,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Sex</label>
+                <label className="text-gray-600 text-sm">{t("Sex")}</label>
                 <select
                   name="sex"
                   value={student.sex}
@@ -335,12 +339,12 @@ const Info = (
                   required
                 >
                   <option value="">Select</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Date of Birth</label>
+                <label className="text-gray-600 text-sm">{t("Date of Birth")}</label>
                 <input
                   type="date"
                   name="dob"
@@ -351,7 +355,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Place of Birth</label>
+                <label className="text-gray-600 text-sm">{t("Place of Birth")}</label>
                 <input
                   type="text"
                   name="pob"
@@ -364,14 +368,17 @@ const Info = (
             </div>
           </motion.div>
 
+
+          <br />
+
           {/* Contact Information */}
           <motion.div variants={sectionVariants} className="mb-8">
-            <h2 className="border-b font-semibold mb-4 pb-2 text-gray-800 text-xl">
-              Contact and Extra Information
+            <h2 className="border-b font-semibold mb-4 pb-2 text-xl text-teal-700">
+              {t("Contact and Extra Information")}
             </h2>
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
               <div>
-                <label className="text-gray-600 text-sm">Address</label>
+                <label className="text-gray-600 text-sm">{t("Address")}</label>
                 <input
                   type="text"
                   name="address"
@@ -382,7 +389,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Telephone</label>
+                <label className="text-gray-600 text-sm">{t("Telephone")}</label>
                 <input
                   type="tel"
                   name="telephone"
@@ -393,7 +400,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Email</label>
+                <label className="text-gray-600 text-sm">{t("Email")}</label>
                 <input
                   type="email"
                   name="email"
@@ -404,7 +411,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Highest Level of Education</label>
+                <label className="text-gray-600 text-sm">{t("Highest Level of Education")}</label>
                 <select
                   name="highestCertificate"
                   value={student.highestCertificate}
@@ -416,7 +423,7 @@ const Info = (
                 </select>
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Year Obtained</label>
+                <label className="text-gray-600 text-sm">{t("Year Obtained")}</label>
                 <select
                   name="yearObtained"
                   value={student.yearObtained}
@@ -428,7 +435,7 @@ const Info = (
                 </select>
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Nationality</label>
+                <label className="text-gray-600 text-sm">{t("Nationality")}</label>
                 <input
                   type="nationality"
                   name="nationality"
@@ -439,7 +446,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Region of Origin</label>
+                <label className="text-gray-600 text-sm">{t("Region of Origin")}</label>
                 <input
                   type="regionOfOrigin"
                   name="regionOfOrigin"
@@ -452,30 +459,67 @@ const Info = (
             </div>
           </motion.div>
 
+          <br />
+
           {/* Parent/Guardian Information */}
           <motion.div variants={sectionVariants} className="mb-8">
-            <h2 className="border-b font-semibold mb-4 pb-2 text-gray-800 text-xl">
-              Parent/Guardian Information
+            <h2 className="border-b font-semibold mb-4 pb-2 text-gray-800 text-xl text-teal-700">
+              {t("Parent/Guardian Information")}
             </h2>
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
               <div>
-                <label className="text-gray-600 text-sm">Parent Name</label>
+                <label className="text-gray-600 text-sm">{t("Father Name")}</label>
                 <input
                   type="text"
-                  name="parent"
-                  value={student.parent}
+                  name="fatherName"
+                  value={student.fatherName}
                   onChange={handleChange}
                   className="border p-2 rounded w-full"
+                  required
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Parent Telephone</label>
+                <label className="text-gray-600 text-sm">{t("Mother Name")}</label>
                 <input
-                  type="tel"
-                  name="parentTelephone"
-                  value={student.parentTelephone}
+                  type="text"
+                  name="motherName"
+                  value={student.motherName}
                   onChange={handleChange}
                   className="border p-2 rounded w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 text-sm">{t("Father Telephone")}</label>
+                <input
+                  type="tel"
+                  name="fatherTelephone"
+                  value={student.fatherTelephone}
+                  onChange={handleChange}
+                  className="border p-2 rounded w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 text-sm">{t("Mother Telephone")}</label>
+                <input
+                  type="tel"
+                  name="motherTelephone"
+                  value={student.motherTelephone}
+                  onChange={handleChange}
+                  className="border p-2 rounded w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 text-sm">{t("Parent Address")}</label>
+                <input
+                  type="tel"
+                  name="parentAddress"
+                  value={student.parentAddress}
+                  onChange={handleChange}
+                  className="border p-2 rounded w-full"
+                  required
                 />
               </div>
             </div>
@@ -509,8 +553,11 @@ const query = gql`
     $pob: String
     $dob: String
     $email: String!
-    $parent: String
-    $parentTelephone: String
+    $fatherName: String
+    $motherName: String
+    $fatherTelephone: String
+    $motherTelephone: String
+    $parentAddress: String
     $highestCertificate: String!
     $yearObtained: String!
     $nationality: String!
@@ -533,8 +580,11 @@ const query = gql`
       pob: $pob
       dob: $dob
       email: $email
-      parent: $parent
-      parentTelephone: $parentTelephone
+      fatherName: $fatherName
+      motherName: $motherName
+      fatherTelephone: $fatherTelephone
+      motherTelephone: $motherTelephone
+      parentAddress: $parentAddress
       highestCertificate: $highestCertificate
       yearObtained: $yearObtained
       nationality: $nationality

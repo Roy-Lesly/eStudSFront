@@ -29,7 +29,7 @@ export default async function RootLayout({
 
   const p = await params;
 
-  const { t, resources } = await initTranslations(p.locale, ["common", "home", "student"]);
+  const { t, resources } = await initTranslations(p.locale, ["common", "home", "student", "primary"]);
 
   return (
     <html lang="en">

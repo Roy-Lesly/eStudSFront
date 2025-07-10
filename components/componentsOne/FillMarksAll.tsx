@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { gql, useMutation } from "@apollo/client";
 import ButtonUpdate from "@/section-h/Buttons/ButtonUpdate";
 import { EdgeResult, EdgeSchoolHigherInfo } from "@/Domain/schemas/interfaceGraphql";
 import FillMarksComponent from "@/components/componentsOne/FillMarksComponent";
@@ -28,7 +27,15 @@ const itemVariants = {
 const FillMarksAll = ({ values, data, params, schoolInfo }: { values: any, data: EdgeResult[], params: any, schoolInfo: EdgeSchoolHigherInfo }) => {
 
     const defaultFormData = data.map((item: EdgeResult) => {
-        const infoData = typeof item.node.infoData === "string" ? JSON.parse(item.node.infoData) : {};
+        // const infoData = typeof item.node.infoData === "string" ? JSON.parse(item.node.infoData) : {};
+        const rawInfoData = typeof item.node.infoData === "string" ? JSON.parse(item.node.infoData) : {};
+        const infoData = {
+            ca: rawInfoData.ca ?? 0,
+            exam: rawInfoData.exam ?? 0,
+            resit: rawInfoData.resit ?? 0,
+            average: rawInfoData.average ?? 0,
+            ...rawInfoData,
+        };
         return {
             ...item,
             node: {

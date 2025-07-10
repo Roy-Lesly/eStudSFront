@@ -1,7 +1,7 @@
-import HomePageContent from './HomePageContent';
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/utils/graphql/GetAppolloClient';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import HomePageContent from './HomeComps/HomePageContent';
 
 
 const Home = async (
@@ -11,25 +11,24 @@ const Home = async (
   const p = await params;
 
   const client = getApolloClient(p.domain);
-    let data;
+  let data;
 
-    try {
-      let q: any = {
-        timestamp: new Date().getTime()
-      }
-      const result = await client.query<any>({
-        query: GET_INFO,
-        variables: q,
-        fetchPolicy: 'no-cache'
-      });
-      data = result.data;
-    } catch (error: any) {
-      
-      data = null;
+  try {
+    let q: any = {
+      timestamp: new Date().getTime()
     }
+    const result = await client.query<any>({
+      query: GET_INFO,
+      variables: q,
+      fetchPolicy: 'no-cache'
+    });
+    data = result.data;
+  } catch (error: any) {
+    errorLog(error)
+    data = null;
+  }
 
-
-  return <HomePageContent 
+  return <HomePageContent
     params={p}
     data={data?.allSchoolIdentifications?.edges[0]}
   />;
@@ -50,7 +49,7 @@ const GET_INFO = gql`
     ) {
       edges {
         node {
-          id name version messageOne messageTwo logo
+          id name version messageOne messageTwo logo supportNumberOne
         }
       }
     }

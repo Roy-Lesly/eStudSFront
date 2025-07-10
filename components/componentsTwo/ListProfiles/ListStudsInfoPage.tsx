@@ -178,7 +178,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Parent Name"
                       name="parent"
-                      defaultValue={data?.node.userprofile.customuser.parent}
+                      defaultValue={data?.node.userprofile.customuser.fatherName}
                       register={register}
                       error={errors?.parent}
                     />
@@ -186,7 +186,7 @@ const ListStudsInfoPage = ({ params, data, apiProgram }: { params: any, data: Ed
                     <InputField
                       label="Parent Telephone"
                       name="parent_telephone"
-                      defaultValue={data?.node.userprofile.customuser.parentTelephone}
+                      defaultValue={data?.node.userprofile.customuser.fatherTelephone}
                       register={register}
                       error={errors?.parent_telephone}
                     />

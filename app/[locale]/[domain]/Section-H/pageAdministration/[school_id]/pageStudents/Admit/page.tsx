@@ -1,8 +1,8 @@
 import React from 'react'
 import Form from './Form'
 import { gql } from '@apollo/client'
-import getApolloClient, { errorLog } from '@/functions'
 import { Metadata } from 'next';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Admission Page",
@@ -17,25 +17,11 @@ const page = async ({
 }) => {
 
   const p = await params;
-  // const sp = await searchParams;
-  
-  const client = getApolloClient(p.domain);
-  let data;
 
-  try {
-    const result = await client.query<any>({
+   const data = await queryServerGraphQL({
+      domain: p.domain,
       query: GET_DATA,
-      variables: {
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
     });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
-
 
   return (
     <div>

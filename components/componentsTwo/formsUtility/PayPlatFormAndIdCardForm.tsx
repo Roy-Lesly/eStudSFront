@@ -14,8 +14,9 @@ import { protocol } from "@/config";
 import { SchoolFeesUrl } from "@/Domain/Utils-H/feesControl/feesConfig";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { EdgeSchoolFees, EdgeTransactions } from "@/Domain/schemas/interfaceGraphql";
-import getApolloClient, { decodeUrlID } from "@/functions";
+import { decodeUrlID } from "@/functions";
 import { gql, useMutation } from "@apollo/client";
+import getApolloClient from "@/utils/graphql/GetAppolloClient";
 
 const SchemaCreate = z.object({
     amount: z.coerce.number().int().gte(10).lte(300000),

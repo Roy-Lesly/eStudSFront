@@ -32,6 +32,7 @@ const List = (
 
   return (
     <DefaultLayout
+      pageType='teacher'
       domain={params.domain}
       searchComponent={
         <SearchMultiple

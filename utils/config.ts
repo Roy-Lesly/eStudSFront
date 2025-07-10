@@ -1,10 +1,10 @@
-// export const protocol = "http://"
-// export const RootApi = ".localhost:8000"
-// export const NoDomainRootApi = "localhost:8000"
+export const protocol = "http://"
+export const RootApi = ".localhost:8000"
+export const NoDomainRootApi = "localhost:8000"
 
-export const protocol = "https://"
-export const RootApi = ".e-conneq.com"
-export const NoDomainRootApi = "e-conneq.com"
+// export const protocol = "https://"
+// export const RootApi = ".e-conneq.com"
+// export const NoDomainRootApi = "e-conneq.com"
 
 
 

@@ -1,293 +1,141 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import { useRouter } from 'next/navigation';
-import Swal from 'sweetalert2';
+"use client";
+import { protocol, RootApi } from '@/utils/config';
+import { EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
+import { Lock, LogIn, User } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
-import Cookies from 'js-cookie';
-import LanguageSwitcher from '@/LanguageSwitcher';
-import { useTranslation } from "react-i18next";
-import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
-import { JwtPayload } from '@/serverActions/interfaces';
-import { gql, useMutation } from '@apollo/client';
-import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
-const LoginForm = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], params: any }) => {
+const LoginForm = (
+  { handleChange, params, loading, handleLogin, school }:
+    { handleChange: any, params: any, loading: boolean, handleLogin: any, school: EdgeSchoolHigherInfo }
+) => {
+
+  const node = school?.node?.schoolIdentification
+  const showParent = (node.hasSecondary || node.hasPrimary || node.hasVocational)
+  const [parent, setParent] = useState<boolean>(false);
+
+  console.log(parent);
+
   const { t } = useTranslation("common");
-  const router = useRouter();
+  return (
+    <>
+      <div className="flex flex-col items-center mb-6">
+        <Image
+          src={`${protocol + "api" + params.domain + RootApi}/media/${school?.node?.schoolIdentification?.logo}`}
+          alt="Logo"
+          width={75}
+          height={75}
+          className='rounded-full'
+        />
 
-  const [count, setCount] = useState<number>(0);
-  const [loginSucess, setLoginSucess] = useState<boolean>(false);
-  const [access, setAccess] = useState<string>('');
-  const [refresh, setRefresh] = useState<string>('');
+        <h1 className="text-xl font-bold mt-2 text-center">{school?.node?.schoolIdentification?.name}</h1>
 
-  const [formData, setFormData] = useState({
-    matricle: "",
-    password: "",
-    parent: false,
-  });
-
-  useEffect(() => {
-    const session = localStorage.getItem('token');
-    const school = localStorage.getItem('school');
-    const token: JwtPayload | null = session && session.length ? jwtDecode(session) : null
-
-    const handleSession = () => {
-      if (session) {
-        const token: JwtPayload | any = jwtDecode(session);
-        if (token) {
-          const isTokenExpired =
-            new Date().toISOString() >
-            new Date((token.exp || 1) * 1000).toISOString();
-          if (isTokenExpired) {
-            localStorage.clear();
-          } else if (school) {
-            // router.push(`/pageAuthentication/pageSelectSchool`);
+        <div className='flex gap-16 justify-center items-center w-full px-4'>
+          <h1 className="text-xl text-teal-300 font-bold mt-6 text-center my-2">{t("LOGIN")}</h1>
+          {showParent ? <button
+            onClick={() => setParent(true)}
+            className="py-2 px-6 rounded-2xl bg-slate-200 text-xl text-teal-700 font-bold mt-6 text-center my-2"
+          >
+            {t("Login As Parent")}
+          </button>
+            : null
           }
-        } else {
-          localStorage.clear();
-        }
-      }
-    };
-
-    const fetchSchools = async () => {
-      if (schools?.length) {
-        if (token && token?.school?.length) {
-          setCount(4);
-        } else {
-          Swal.fire({
-            title: `${t("NoCampusAssignedToUser")}`,
-            timer: 5000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            icon: 'warning',
-          });
-        }
-      } else {
-        Swal.fire({
-          title: `${t("NoCampusFoundInDatabase")}`,
-          timer: 5000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-          icon: 'warning',
-        });
-      }
-    };
-
-    const handleSuccessfulLogin = () => {
-      Swal.fire({
-        title: `${t("Login Successfully")}`,
-        timer: 4000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-        icon: 'success',
-      });
-      setCount(5);
-    };
-
-    const redirectNextPage = () => {
-      if (token && token?.school && token.school?.length == 1) {
-        if (token.role?.toLowerCase() == "student") {
-          router.push(`/${params.domain}/Section-H/pageStudent/?user=${token.user_id}`);
-          return
-        }
-      }
-
-      if (token?.school && token.school.length > 0) {
-        if (token.role?.toLowerCase() == "admin" || token.role?.toLowerCase() == "teacher") {
-          if (token.role == "admin") {
-            if (token.dept || token.dept.length > 0) {
-              router.push(`${token?.language ? "/" + token?.language[0] : ""}/${params.domain}/pageAuthentication/pageSelectSchool?role=${token.role}`);
-              return;
-            } else {
-              Swal.fire({
-                title: `${t("NoDepartmentAssignedToUser")}`,
-                timer: 3000,
-                timerProgressBar: true,
-                showConfirmButton: false,
-                icon: 'warning',
-              });
-              return;
-            }
-          }
-          if (token.role?.toLowerCase() == "teacher") {
-            if (token.dept || token.dept.length > 0) {
-              router.push(`/${params.domain}/pageAuthentication/pageSelectSchool?role=${token.role}`);
-              return;
-            }
-          }
-        }
-        if (token.role?.toLowerCase() == "student") {
-          router.push(`/Section-H/pageStudent/`);
-        }
-      }
-      setCount(6);
-    };
-
-    if (count === 0) handleSession();
-    if (count === 3) fetchSchools();
-    if (count === 4 && token && refresh) handleSuccessfulLogin();
-    if (count === 5 && token && refresh) redirectNextPage();
-  }, [count, access, refresh, params.domain, schools, router, t]);
-
-  const [login, { loading }] = useMutation(LOGIN_MUTATION);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      const { data } = await login({ variables: formData });
-      const token = data.login.token;
-      const refresh = data.login.refresh;
-
-      if (token) {
-        localStorage.setItem("token", token);
-        localStorage.setItem('ref', refresh);
-        Cookies.set('token', token, { expires: 1, secure: true });
-        Cookies.set('refresh', refresh, { expires: 1, secure: true });
-
-        setAccess(access);
-        setRefresh(refresh);
-        setLoginSucess(true);
-        setCount(3);
-      }
-      else {
-        localStorage.removeItem("token");
-        console.log("ddddd");
-      }
-    } catch (err: any) {
-      errorLog(err);
-    }
-  };
-
-return (
-  <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-950 via-indigo-600 to-purple-950 p-4">
-    <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl px-6 py-8 md:px-10 md:py-12 transition-all duration-300 hover:shadow-indigo-500/40">
-      
-      <div className="flex justify-center mb-6">
-        <LanguageSwitcher currentLocale={params.locale} />
+        </div>
       </div>
 
-      {!loginSucess && (
-        <>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-center text-gray-800 mb-6">
-            {t("Welcome Back")}
-          </h2>
+      <form
+        method="post" onSubmit={handleLogin}
+        className="space-y-10"
+      >
 
-          <form method="post" onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label htmlFor="matricle" className="block mb-1 text-lg font-semibold text-gray-700">
-                {t("Matricle")} {t("or")} {t("Username")}
-              </label>
-              <input
-                type="text"
-                name="matricle"
-                id="matricle"
-                required
-                placeholder={t("Enter Matricle or Username")}
-                onChange={handleChange}
-                className="w-full px-5 py-3 text-xl font-semibold text-teal-800 tracking-wider border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-800"
-              />
-            </div>
 
-            <div>
-              <label htmlFor="password" className="block mb-1 text-lg font-semibold text-gray-700">
-                {t("Password")}
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                required
-                placeholder="••••••••"
-                onChange={handleChange}
-                className="w-full px-5 py-3 text-xl tracking-widest text-teal-800 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-800"
-              />
-            </div>
+        {showParent ? <div className="relative flex items-center">
+          <User className="absolute left-4 text-slate-700" size={20} />
+          <input
+            type="text"
+            name='matricle'
+            required
+            placeholder={t("Enter Matricle or Username")}
+            onChange={handleChange}
+            className="w-full pl-16 pr-4 py-4 text-xl text-teal-800 font-semibold rounded-md bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-            <div className="flex font-semibold justify-between text-sm text-indigo-600 mt-4">
-              <Link href="/pageAuthentication/ResetPassword" className="hover:underline">
-                {t("Forgot Password")}?
-              </Link>
-              <Link href={`/${params.domain}/pageAuthentication/PasswordAndToken`} className="hover:underline">
-                {t("Enter Token")}
-              </Link>
-            </div>
+          :
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 mt-4 rounded-xl text-white font-semibold text-lg transition-all duration-200 ${
-                loading
-                  ? 'bg-indigo-300 cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-700'
-              }`}
-            >
-              {loading ? `${t("Login In")} ...` : `${t("Login")}`}
-            </button>
-          </form>
-
-          <div className="mt-8 border-t pt-4 text-sm text-gray-600 flex flex-col md:flex-row items-center justify-between gap-3 font-medium">
-            <a
-              href="https://wa.me/237693358642?text=Hi%20there,%20I%20need%20support!"
-              className="hover:underline text-indigo-600"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("Contact Support")}
-            </a>
-
-            <Link href={`/${params.domain}/pageAuthentication/CheckUser`} className="hover:underline text-indigo-600">
-              {t("Check User")}
-            </Link>
+          <div className="relative flex items-center">
+            <User className="absolute left-4 text-slate-700" size={20} />
+            <input
+              type="text"
+              name='matricle'
+              required
+              placeholder={t("Enter Matricle or Username")}
+              onChange={handleChange}
+              className="w-full pl-16 pr-4 py-4 text-xl text-teal-800 font-semibold rounded-md bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
-        </>
-      )}
-    </div>
-  </section>
-);
+        }
 
-};
+
+        <div className="relative flex items-center">
+          <Lock className="absolute left-4 text-teal-700 font-semibold" size={20} />
+          <input
+            type="password"
+            name='password'
+            required
+            placeholder={t("••••••••")}
+            onChange={handleChange}
+            className="w-full pl-16 py-4 tracking-widest rounded-md text-slate-700 bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="flex font-semibold justify-between text-indigo-100 mt-4">
+          <Link href="/pageAuthentication/ResetPassword" className="hover:underline">
+            {t("Forgot Password")}?
+          </Link>
+          <Link href={`/${params.domain}/pageAuthentication/PasswordAndToken`} className="hover:underline">
+            {t("Enter Token")}
+          </Link>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={`flex gap-4 items-center justify-center w-full py-3 mt-4 rounded-xl text-white font-semibold text-lg transition-all duration-200 ${loading
+            ? 'bg-red cursor-not-allowed'
+            : 'bg-indigo-600 hover:bg-indigo-700'
+            }`}
+        >
+          <LogIn size={18} />
+          {loading ? `${t("Login In")} ...` : `${t("Login")}`}
+        </button>
+
+
+        <div className="mt-8 border-t pt-4 text-sm text-gray-600 flex items-center justify-between gap-3 font-medium">
+          <a
+            href="https://wa.me/237693358642?text=Hi%20there,%20I%20need%20support!"
+            className="hover:underline text-indigo-100"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("Contact Support")}
+          </a>
+
+          <Link href={`/${params.domain}/pageAuthentication/CheckUser`} className="hover:underline text-indigo-100">
+            {t("Check User")}
+          </Link>
+        </div>
+
+
+
+      </form>
+
+      <p className="text-center text-xs text-slate-500 mt-6">© 2022</p>
+    </>
+  );
+}
 
 export default LoginForm;
-
-
-const LOGIN_MUTATION = gql`
-  mutation Login(
-    $matricle: String!,
-    $password: String!
-    $parent: Boolean!
-  ) {
-      login (
-        matricle: $matricle,
-        password: $password
-        parent: $parent
-      ) {
-        token refresh
-      }
-    }
-`;
-// const LOGIN_MUTATION = gql`
-//   mutation Login(
-//     $matricle: String!,
-//     $password: String!
-//     $parent: Boolean!
-//   ) {
-//       token(
-//         matricle: $matricle,
-//         password: $password,
-//         parent: $parent
-//       ) {
-//         token refresh
-//       }
-//     }
-// `;

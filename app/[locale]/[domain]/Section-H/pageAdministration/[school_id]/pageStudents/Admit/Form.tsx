@@ -6,8 +6,8 @@ import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '@/DefaultLayout';
-import PreForm from '@/[locale]/[domain]/pre-inscription/New/PreForm';
 import ServerError from '@/ServerError';
+import PreForm from '@/app/[locale]/[domain]/pre-inscription/New/SectionHigher/PreForm';
 
 
 const Form = ({ params, data }: { params: any; data: any }) => {

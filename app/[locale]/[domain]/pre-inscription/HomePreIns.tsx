@@ -8,11 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { protocol } from '@/config';
 import { getDataNotProtected } from '@/functions';
 import { GetPreInscriptionInter } from '@/Domain/Utils-H/userControl/userInter';
-import generatePDF, { Resolution, Margin, Options } from 'react-to-pdf';
-// import { Preview, print } from 'react-html2pdf';
-// import PreInscriptionForm from './[registration_number]/PreInscriptionForm';
+import { Resolution, Margin, Options } from 'react-to-pdf';
 import { OpenGetPreInscriptionUrl } from '@/Domain/Utils-H/userControl/userConfig';
-import PreInscriptionForm from './Check/[registration_number]/PreInscriptionForm';
 
 
 const SchemaCreate = z.object({
@@ -73,18 +70,6 @@ const CheckForm = ({ params }: any) => {
             {responseData && page == 2 ?
                 <div className='flex flex-col gap-2 h-full w-full'>
                     <h1 className='flex font-bold h-[5%] justify-center text-center text-xl w-full'>Click Below To Download Form</h1>
-                    <div className='flex flex-col gap-2 items-center justify-center'>
-                        {/* <button onClick={() => print('a', 'html-template')}>print</button>
-                        <Preview id={'html-template'} html={"TESTTTT"} /> */}
-                        {/* <button onClick={() => print(responseData.full_name, 'jsx-template')} className='border px-4 py-2 rounded text-center'>Download</button> */}
-                        {/* <button onClick={() => print("responseData.full_name", 'jsx-template')}>Download</button> */}
-                        <PreInscriptionForm data={responseData} params={params} />
-                        {/* <Preview id={'jsx-template'} > */}
-                            {/* <div className='flex h-[600px] items-center justify-center w-[400px]'> */}
-                            {/* <PreInscriptionForm data={responseData} params={params} /> */}
-                            {/* </div> */}
-                        {/* </Preview> */}
-                    </div>
                 </div>
                 :
                 <div className='border md:p-4 p-2'>

@@ -1,6 +1,6 @@
-import getApolloClient, { capitalizeFirstLetter, decodeUrlID, errorLog, getData } from '@/functions';
 import Display from './Display';
 import { gql } from '@apollo/client';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 const page = async ({
@@ -14,28 +14,19 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-
-  const client = getApolloClient(p.domain);
-  let data;
-
-  try {
-    const result = await client.query<any>({
-      query: GET_PROFILES,
-      variables: {
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_PROFILES,
+    variables: {
         customuserId: sp?.user
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    data = null;
-  }
+
+    },
+  });
 
   return (
     <Display
       p={p}
-      data={data?.allUserProfiles?.edges}
+      data={data?.allSchoolFees?.edges}
     />
   )
 }
@@ -47,12 +38,20 @@ const GET_PROFILES = gql`
  query GetAllData (
   $customuserId: Decimal!
  ) {
-  allUserProfiles (
+  allSchoolFees (
     customuserId: $customuserId
   ) {
     edges {
       node {
-        id specialty { id academicYear level { level} mainSpecialty { specialtyName}}
+        id platformPaid
+        userprofile { 
+          id specialty { 
+            id academicYear 
+            level { level} 
+            mainSpecialty { specialtyName}
+          }
+          program { name }
+        }
       }
     }
   }

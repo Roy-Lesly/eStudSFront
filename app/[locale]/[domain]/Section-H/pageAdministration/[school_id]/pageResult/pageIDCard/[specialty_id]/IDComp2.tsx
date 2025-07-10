@@ -11,36 +11,19 @@ const IDComp2 = (
 
   const [fetchedData, setFetchedData] = useState<EdgeSchoolFees[] | null>(null);
 
-  useEffect(() => {
-    if (!data || data.length === 0) return;
 
-    const fetchImagesSequentially = async () => {
-      const updatedData: EdgeSchoolFees[] = [];
+useEffect(() => {
+  if (!data || data.length === 0) return;
 
-      for (const studentData of data) {
-        try {
-          const logoUrl = `https://api${params.domain}.e-conneq.com/media/${studentData?.node.userprofile?.specialty?.school?.schoolIdentification?.logo}`;
-          const profilePicUrl = studentData?.node.userprofile?.customuser?.photo
-            ? `https://api${params.domain}.e-conneq.com/media/${studentData.node.userprofile.customuser.photo}`
-            : "https://dummyimage.com/300x300/cccccc/000000?text=?";
-          const codePicUrl = studentData?.node.userprofile?.code
-            ? `https://api${params.domain}.e-conneq.com/media/${studentData.node.userprofile.code}`
-            : "https://dummyimage.com/300x300/cccccc/000000?text=?";
+  const updatedData: EdgeSchoolFees[] = data.map((studentData) => {
 
-          // Ensure all images are preloaded or at least checked for availability
-          await Promise.all([fetch(logoUrl), fetch(profilePicUrl), fetch(codePicUrl)]);
+    return studentData;
+  });
 
-          updatedData.push(studentData);
-        } catch (error: any) {
-          console.error("Error loading image", error);
-        }
-      }
+  setFetchedData(updatedData);
+}, [data, params]);
 
-      setFetchedData(updatedData);
-    };
-
-    fetchImagesSequentially();
-  }, [data, params]);
+  console.log(fetchedData);
 
   return (
     <div>
@@ -72,6 +55,8 @@ const IDPDFs = (
   { fetchedData, params, qrCodeDataUrl }:
     { fetchedData: EdgeSchoolFees[] | null, params: any, qrCodeDataUrl: string }
 ) => {
+
+  console.log(fetchedData);
 
   if (!fetchedData || fetchedData?.length === 0) {
     return <Text>No data available</Text>;
@@ -164,7 +149,7 @@ const RenderCard = (
 
           <View style={{ width: "18%", alignItems: "center", justifyContent: "center" }}>
             <Image
-              src={`https://api${params.domain}.e-conneq.com/media/${studentData?.node.userprofile?.specialty?.school?.schoolIdentification?.logo}`}
+              src={`https://api${params.domain}.e-conneq.com/media/${studentData?.node.userprofile?.specialty?.school?.logoCampus}`}
               style={styles.logo}
             />
           </View>

@@ -76,7 +76,8 @@ const GET_DATA = gql`
             code
             infoData
             customuser { 
-              id role matricle firstName lastName photo sex dob pob email telephone address fullName parent parentTelephone about photo
+              id role matricle firstName lastName photo sex dob pob email telephone address fullName 
+              fatherName fatherTelephone motherName motherTelephone parentAddress about photo
               nationality highestCertificate yearObtained regionOfOrigin infoData
             }
             specialty { 
@@ -89,7 +90,7 @@ const GET_DATA = gql`
               paymentThree
               mainSpecialty { specialtyName }
               level { level }
-              school { schoolName campus colors schoolIdentification { logo platformCharges idCharges } schoolfeesControl }
+              school { schoolName campus colors logoCampus schoolIdentification { logo platformCharges idCharges } schoolfeesControl }
             }
             program { id name }
           }

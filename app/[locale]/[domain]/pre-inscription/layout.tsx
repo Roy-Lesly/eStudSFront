@@ -1,7 +1,7 @@
 import React from 'react';
-import getApolloClient from '@/functions';
 import { gql } from '@apollo/client';
 import PreInsNavBar from './PreInsNavBar';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const layout = async ({
   params,
@@ -10,28 +10,16 @@ const layout = async ({
   params: any;
   children: React.ReactNode;
 }) => {
-  const p = await params;
+  const { domain } = await params;
 
-  const client = getApolloClient(p.domain);
-  let data;
-
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        timestamp: new Date().getTime(),
-      },
-      fetchPolicy: 'no-cache',
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);;
-    data = null;
-  }
+  const data = await queryServerGraphQL({
+    domain,
+    query: GET_DATA,
+  });
 
   return (
     <div className="flex flex-col gap-2 md:gap-4 h-screen md:p-4 p-2 text-slate-900">
-      <PreInsNavBar params={p} page={1} info={data?.allSchoolInfos?.edges} />
+      <PreInsNavBar params={{ domain }} page={1} info={data?.allSchoolIdentifications?.edges[0]} />
       {children}
     </div>
   );
@@ -41,15 +29,10 @@ export default layout;
 
 const GET_DATA = gql`
   query GetAllData {
-    allSchoolInfos {
+    allSchoolIdentifications {
       edges {
         node {
-          id
-          campus
-          town
-          schoolIdentification {
-            name
-          }
+          name logo
         }
       }
     }

@@ -1,9 +1,10 @@
 import React from 'react'
 // import List from './List'
 import { gql } from '@apollo/client'
-import getApolloClient, { errorLog, getAcademicYear, removeEmptyFields } from '@/functions'
+import { getAcademicYear, removeEmptyFields } from '@/functions'
 import { Metadata } from 'next';
 import List from './List';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Marks-Entry Page",
@@ -27,28 +28,17 @@ const page = async ({
   paginationParams.semester = sp?.semester ? sp.semester : ""
   paginationParams.level = sp?.level ? sp.level : ""
   paginationParams.academicYear = sp?.academicYear ? sp.academicYear : presentAcademicYear
-  const client = getApolloClient(p.domain);
 
-  let data;
-  try {
-    const result = await client.query<any>({
+    const data = await queryServerGraphQL({
+      domain: p?.domain,
       query: GET_DATA,
       variables: {
-        // ...removeEmptyFields(paginationParams),
+        ...removeEmptyFields(paginationParams),
         academicYear: sp?.academicYear ? sp.academicYear : presentAcademicYear,
         assignedToId: p.lecturer_id,
         schoolId: p.school_id,
-        timestamp: new Date().getTime()
       },
-      fetchPolicy: 'no-cache'
     });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    data = null;
-  }
-
-  console.log(data);
 
   return (
     <div>

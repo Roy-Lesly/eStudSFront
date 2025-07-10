@@ -30,25 +30,26 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
     { header: `${t("Full Name")}`, accessor: "node.fullName", align: "left" },
     { header: `${t("Gender")}`, accessor: "node.sex", align: "center", responsiveHidden: true },
     { header: `${t("Address")}`, accessor: "node.address", align: "center", responsiveHidden: true },
-    { header: "Campus", accessor: "node.campus", align: "center", responsiveHidden: true },
+    { header: "Campus", accessor: "node.campus.campus", align: "center", responsiveHidden: true },
     { header: "Telephone", accessor: "node.telephone", align: "center", responsiveHidden: true },
     {
       header: `${t("View")}`, align: "center", responsiveHidden: true,
       render: (item) => <div
         className="gap-2 items-center justify-center p-1 rounded-full x-row"
       >
-        {activeTab === 0 || activeTab === 2 ? <div className='flex flex-row gap-2'>
+        {activeTab === 1 ? <div className='flex flex-row gap-2'>
           <ButtonAction data={item} type='edit' action={() => { }} />
           <ButtonAction data={item} type='delete' action={() => { }} />
         </div>
           :
-          (activeTab === 1) ? <div className='flex flex-row gap-2'>
+          (activeTab === 0) ? <div className='flex flex-row gap-2'>
             <span>{t("Admitted")}</span>
           </div> : null}
       </div>,
     },
     {
-      header: "Admit", align: "center", hideColumn: activeTab == 1 ? true : false, render: (item) => <button
+      // header: "Admit", align: "center", hideColumn: activeTab == 0 || activeTab == 1 ? true : false, render: (item) => <button
+      header: "Admit", align: "center", hideColumn: false, render: (item) => <button
         className="bg-green-400 gap-2 items-center justify-center p-2 rounded-full"
         onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?id=${item.node.id}`)}
       >
@@ -96,8 +97,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
               label: `${t("Pending")}`, content: dataPending?.length ?
                 <MyTableComp
                   data={
-                    // dataPending.filter((i: EdgePreInscription) => i.node.campus.toUpperCase().replace("-", "_") === data.node.campus.toUpperCase().replace("-", "_"))
-                    dataPending.filter((i: EdgePreInscription) => decodeUrlID(i.node.id) === params.school_id)
+                    dataPending.filter((i: EdgePreInscription) => decodeUrlID(i.node.campus.id) === params.school_id)
                       .sort((a: EdgePreInscription, b: EdgePreInscription) => {
                         const fullNameNameA = a.node.fullName.toLowerCase();
                         const fullNameNameB = b.node.fullName.toLowerCase();
@@ -118,7 +118,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
               label: `${t("Other Campus")}`, content: dataPending?.length ?
                 <MyTableComp
                   data={
-                    dataPending.filter((i: EdgePreInscription) => decodeUrlID(i.node.id) !== params.school_id)
+                    dataPending.filter((i: EdgePreInscription) => decodeUrlID(i.node.campus.id) !== params.school_id)
                       .sort((a: EdgePreInscription, b: EdgePreInscription) => {
                         const fullNameNameA = a.node?.fullName?.toLowerCase();
                         const fullNameNameB = b.node.fullName?.toLowerCase();

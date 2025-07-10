@@ -21,7 +21,7 @@ const Transcript = ({ resultI, resultII, resultAll, schoolinfo, studentInfo }: a
         <div className='flex flex-col gap-4'>
 
             <div className='flex items-center justify-center'>
-                
+
                 <div ref={contentToPrint} className='bg-white border-[2px] flex flex-col h-[1121px] p-0 w-[793px]'>
                     <div className='m-1'>
                         <TransHeader schoolinfo={schoolinfo} />
@@ -33,10 +33,10 @@ const Transcript = ({ resultI, resultII, resultAll, schoolinfo, studentInfo }: a
                             </div>
                             <div className='flex flex-col h-[50%] items-center justify-center'>
                                 <div>Semester II</div>
-                            <TranscriptSemester semResults={resultII} />
+                                <TranscriptSemester semResults={resultII} />
+                            </div>
                         </div>
-                    </div>
-                    <TransFooter resultAll={resultAll} />
+                        <TransFooter resultAll={resultAll} />
                     </div>
                 </div>
                 {/* <span className='bg-white flex font-medium italic rotate-180 text-[9px]'>001111111111111111111111111111111111111111111111</span> */}

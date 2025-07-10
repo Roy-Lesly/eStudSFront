@@ -4,14 +4,18 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaTimes, FaMoneyBillWave, FaReceipt, FaEdit } from 'react-icons/fa';
 import { decodeUrlID } from '@/functions';
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { useTranslation } from 'react-i18next';
-import { NodeSchoolFees } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeAccount, NodeSchoolFees } from '@/utils/Domain/schemas/interfaceGraphql';
 
 
-const ModalTransaction = ({ setModalOpen, data, p, schoolFees }: { setModalOpen: any; data: any, p: any, schoolFees: NodeSchoolFees | any }) => {
+const ModalTransaction = (
+  { setModalOpen, data, p, schoolFees }:
+    { setModalOpen: any; data: any, p: any, schoolFees: NodeSchoolFees }
+) => {
   const [clicked, setClicked] = useState<boolean>(false)
+  const [reasons, setReasons] = useState<EdgeAccount[]>([])
   const { t } = useTranslation("common");
   const [canSubmit, setCanSubmit] = useState(true);
   const platformCharges = schoolFees?.userprofile?.specialty?.school?.schoolIdentification?.platformCharges || 0
@@ -34,6 +38,15 @@ const ModalTransaction = ({ setModalOpen, data, p, schoolFees }: { setModalOpen:
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const { data: reasonsApi, loading, error } = useQuery(GET_ACCOUNTS,
+    {
+      variables: {
+        year: schoolFees?.userprofile?.specialty?.academicYear,
+        status: true
+      }
+    }
+  );
+
   useEffect(() => {
     if (formData.reason === "PLATFORM CHARGES" && parseInt(formData.amount) != platformCharges) {
       setFormData({ ...formData, amount: platformCharges.toString() });
@@ -52,12 +65,14 @@ const ModalTransaction = ({ setModalOpen, data, p, schoolFees }: { setModalOpen:
     else if (formData.reason !== "IDCARD" && formData.reason !== "PLATFORM CHARGES") {
       setCanSubmit(true);
     }
-  }, [formData])
+    if (reasonsApi?.allAccounts?.edges && reasons.length < 1) {
+      setReasons(reasonsApi?.allAccounts?.edges)
+    }
+  }, [formData, reasonsApi])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    console.log(canSubmit);
 
     if (data?.balance <= 0 && formData.reason === "TUITION") {
       alert("Fee Balance is 0, Can't Add a Payment for tuition");
@@ -139,12 +154,8 @@ const ModalTransaction = ({ setModalOpen, data, p, schoolFees }: { setModalOpen:
               required
               className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
             >
-              <option value="">Select Reason</option>
-              <option value="REGISTRATION">REGISTRATION</option>
-              <option value="TUITION">TUITION</option>
-              <option value="SCHOLARSHIP">SCHOLARSHIP</option>
-              <option value="PLATFORM CHARGES">PLATFORM CHARGES</option>
-              <option value="IDCARD">IDCARD</option>
+              <option value="">{t("Select Reason")}</option>
+              {reasons && reasons?.length ? reasons.map((r: EdgeAccount) => <option key={r.node.name} value={r.node.name}>{r.node.name} {r.node?.year}</option>) : null}
             </select>
           </div>
 
@@ -269,3 +280,22 @@ const query = gql`
       }
     }
   `;
+
+
+
+const GET_ACCOUNTS = gql`
+  query GetAllData (
+    $year: String!
+  ) {
+    allAccounts (
+      status: true,
+      year: $year
+    ) {
+      edges {
+        node {
+          id name year
+        }
+      }
+    }
+  }
+`;

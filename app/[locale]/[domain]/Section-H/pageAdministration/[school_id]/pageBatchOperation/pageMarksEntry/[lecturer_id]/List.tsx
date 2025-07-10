@@ -16,6 +16,7 @@ import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { decodeUrlID } from '@/functions';
+import { useTranslation } from 'react-i18next';
 
 
 export const metadata: Metadata = {
@@ -37,6 +38,7 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
 };
 
 const List = ({ params, data }: { params: any; data: any }) => {
+  const { t } = useTranslation("common");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const router = useRouter();
 
@@ -47,23 +49,28 @@ const List = ({ params, data }: { params: any; data: any }) => {
       render: (_item: EdgeCourse, index: number) => index + 1,
     },
     {
-      header: 'Course Name',
+      header: `${t("Course Name")}`,
       accessor: 'node.mainCourse.courseName',
       align: 'left',
     },
     {
-      header: 'Class',
+      header: `${t("Class")}`,
       accessor: 'node.specialty.mainSpecialty.specialtyName',
       align: 'left',
     },
     {
-      header: 'Year',
+      header: `${t("Year")}`,
       accessor: 'node.specialty.academicYear',
       align: 'left',
     },
     {
-      header: 'Level',
+      header: `${t("Level")}`,
       accessor: 'node.specialty.level.level',
+      align: 'left',
+    },
+    {
+      header: 'Sem',
+      accessor: 'node.semester',
       align: 'left',
     },
     {

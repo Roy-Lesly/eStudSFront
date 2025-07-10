@@ -1,8 +1,7 @@
 import FormModal from "@/componentsTwo/FormModal";
-import { role } from "@/componentsTwo/lib/data";
 import Table from "@/componentsTwo/Table";
 import { TableRowClassName } from "@/constants";
-import { GetDomainInter, GetFieldInter } from "@/Domain/Utils-H/appControl/appInter";
+import { GetFieldInter } from "@/Domain/Utils-H/appControl/appInter";
 import MyPageTitle from "@/section-h/common/MyPageTitle";
 import { FaPlus } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";

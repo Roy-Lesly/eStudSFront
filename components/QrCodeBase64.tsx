@@ -1,4 +1,3 @@
-// utils/generateQrBase64.ts
 import QRCode from 'qrcode';
 
 export const QrCodeBase64 = async (text: string): Promise<string> => {

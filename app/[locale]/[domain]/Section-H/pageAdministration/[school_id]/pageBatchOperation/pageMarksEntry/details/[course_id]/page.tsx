@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, errorLog, getData } from '@/functions';
+import { decodeUrlID } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const EditPage = async ({
   params,

@@ -4,95 +4,142 @@ import { gql, useQuery } from '@apollo/client';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { FaPowerOff } from 'react-icons/fa6';
-import Loader from '@/section-h/common/Loader';
-import { JwtPayload } from '@/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
+import { LogOut, School, Building2, BookOpen, ShieldCheck, ArrowLeft } from 'lucide-react';
+import Loader from '@/section-h/common/Loader';
 import { decodeUrlID } from '@/functions';
+import { JwtPayload } from '@/serverActions/interfaces';
 import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 
 
+const ICONS = {
+  SECTION_H: <Building2 className="w-6 h-6" />,
+  SECTION_S: <School className="w-6 h-6" />,
+  SECTION_V: <BookOpen className="w-6 h-6" />,
+  SECTION_P: <ShieldCheck className="w-6 h-6" />,
+};
+
+const COLORS = {
+  SECTION_H: 'bg-blue-900 hover:bg-blue-700',
+  SECTION_S: 'bg-teal-700 hover:bg-teal-500',
+  SECTION_V: 'bg-green-800 hover:bg-green-600',
+  SECTION_P: 'bg-purple-700 hover:bg-purple-600',
+};
+
+const LABELS = {
+  SECTION_H: 'Higher Section',
+  SECTION_S: 'Secondary Section',
+  SECTION_V: 'Vocational Section',
+  SECTION_P: 'Primary Section',
+};
+
+const SECTION_ORDER = ['SECTION_H', 'SECTION_S', 'SECTION_V', 'SECTION_P'];
 
 const SelectDept = () => {
+  const { t } = useTranslation();
   const domain = useParams().domain;
   const router = useRouter();
   const paramsRole = useSearchParams();
-  const { t } = useTranslation();
-  
   const { data, loading, error } = useQuery(GET_DATA);
 
   const [user, setUser] = useState<JwtPayload | null>(null);
-  const [dept, setDept] = useState<string>("");
-  const [schools, setSchools] = useState<EdgeSchoolHigherInfo[]>()
+  const [dept, setDept] = useState<string>('');
+  const [schools, setSchools] = useState<EdgeSchoolHigherInfo[]>([]);
 
   useEffect(() => {
-    const initialize = async () => {
-      const access = localStorage.getItem('token');
+    const access = localStorage.getItem('token');
+    const role = paramsRole.get('role');
 
-      if (!access || !paramsRole.get('role')) {
-        router.push(`/${domain}/pageAuthentication/Login`);
-        return;
-      }
+    if (!access || !role) {
+      router.push(`/${domain}/pageAuthentication/Login`);
+      return;
+    }
 
-      const role = paramsRole.get('role');
-      const department = role === 'admin' ? 'pageAdministration' : role === 'teacher' ? 'pageLecturer' : null;
+    const department =
+      role === 'admin' ? 'pageAdministration' :
+        role === 'teacher' ? 'pageLecturer' :
+          role === 'accounting' ? 'pageAccounting' : null;
 
-      const token: JwtPayload = jwtDecode(access)
-      if (department && token?.school?.length) {
-        setSchools(data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolHigherInfo) => token.school.includes(parseInt(decodeUrlID(item.node.id)))) )
-        setDept(department);
-      }
+    const decoded = jwtDecode(access) as JwtPayload;
+    const userSchools = data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolHigherInfo) =>
+      decoded.school.includes(parseInt(decodeUrlID(item.node.id)))
+    ) || [];
 
-      setUser(token);
-    };
+    setUser(decoded);
+    setDept(department || '');
+    setSchools(userSchools);
+  }, [data, paramsRole, domain, router]);
 
-    initialize();
-  }, [data, domain, paramsRole, router]);
-
-
-  // Handle Loading & Error States
   if (loading) return <Loader />;
-  if (error) return <p className="text-red-500">{t("error")}: {error.message}</p>;
+
+  const groupedSchools = SECTION_ORDER.reduce((acc: Record<string, EdgeSchoolHigherInfo[]>, key) => {
+    acc[key] = schools.filter((s) => s.node.schoolType === key);
+    return acc;
+  }, {} as Record<string, EdgeSchoolHigherInfo[]>);
 
   return (
-    <section className="flex flex-col gap-4 items-center justify-center md:px-8 min-h-screen px-4">
-      {/* Header Section */}
-      <header className="text-center w-full">
+    <section className="min-h-screen px-4 md:px-8 py-10 flex flex-col items-center bg-gray-50">
+      {/* Header */}
+      <div className="w-full max-w-4xl text-center mb-6 gap-2 font-bold">
+
+        {error ? <p className="text-red flex flex-col">
+          {t('error')}: {error?.message}
+          <span>{t("Check Network Status")}</span>
+          </p> : null}
+
         <Link href="/pageAuthentication/Logout" aria-label="Logout">
-          <FaPowerOff color="red" size={32} className="mb-4 mx-auto" />
+          <LogOut color='white' className="mx-auto border text-red-500 hover:text-red-700 w-12 h-12 my-3 rounded-full p-3 bg-red transition" />
         </Link>
-        <h1 className="font-semibold md:text-4xl text-3xl">{t("SelectCampus")}</h1>
-      </header>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">{t('Select Campus')}</h1>
+        <p className="text-gray-500 text-sm mt-1">{t('Choose a campus to log into')}</p>
+      </div>
 
-      {/* Campus Selection */}
-      <main className="gap-6 grid grid-cols-1 lg:grid-cols-2 mt-6 sm:grid-cols-2 w-full">
-        {schools?.map(({ node }: any) => (
-          <Link
-            key={node.id}
-            href={`/${domain}/${node.schoolType.toLowerCase()
-              .split("_")
-              .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join("-")}/${dept}/${decodeUrlID(node.id)}?id=${user?.user_id}`}
-            className="bg-blue-950 hover:bg-teal-500 hover:text-black transition-all duration-300 border-2 rounded-lg flex flex-col justify-center items-center text-center h-32 md:h-40 text-white font-bold p-4"
-            onClick={() => localStorage.setItem('school', decodeUrlID(node.id))}
-            aria-label={`Select ${node.campus.replace("_", "-")}`}
-          >
-            <span className="italic text-yellow-100 tracking-wide">{node.schoolName}</span>
-            <span className="md:text-2xl py-2 text-lg">{node?.campus.replace("_", "-")}</span>
-            <span className="italic text-yellow-100">{node?.town}</span>
-            <span className="italic text-yellow-100">{node?.address}</span>
-          </Link>
-        ))}
-      </main>
+      {/* Grouped Campuses */}
+      <div className="w-full max-w-5xl bg-white space-y-10 p-4 rounded-lg shadow-lg">
+        {SECTION_ORDER.map((section) => {
+          const sectionData = groupedSchools[section];
+          if (!sectionData || sectionData.length === 0) return null;
 
-      {/* Footer Section */}
-      <footer className="mt-6">
+          return (
+            <div key={section}>
+              <h2 className="text-lg font-semibold text-gray-700 mb-3">
+                {LABELS[section as keyof typeof LABELS]}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {sectionData?.sort((a: EdgeSchoolHigherInfo, b: EdgeSchoolHigherInfo) => (a.node.campus > b.node.campus) ? 1 : (a.node.campus < b.node.campus) ? -1 : 0).map(({ node }) => (
+                  <Link
+                    key={node.id}
+                    href={`/${domain}/${node.schoolType.replace('SECTION_', 'Section-')}/${dept}/${decodeUrlID(node.id)}?id=${user?.user_id}`}
+                    onClick={() => localStorage.setItem('school', decodeUrlID(node.id))}
+                    className={`w-full rounded-xl shadow-md text-white border p-4 transition-all flex items-center justify-center gap-4 ${COLORS[node.schoolType as keyof typeof COLORS]}`}
+                  >
+                    {ICONS[node.schoolType as keyof typeof ICONS]}
+                    <div className="flex flex-col justify-center text-center w-[75%]">
+                      <span className="font-semibold text-lg">{node.schoolName}</span>
+                      <div className='flex gap-4 items-center justify-center text-sm'>
+                        <span className="text-white/80">{node.town}</span>
+                        <span className="text-white/70">{node.address}</span>
+                      </div>                     
+                      <span className="text-yellow-300 font-semibold mt-1">{node.campus.replace('_', '-')}</span>
+
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      <footer className="mt-12">
         <button
           onClick={() => router.back()}
-          className="bg-green-600 duration-300 font-medium hover:bg-green-700 px-6 py-2 rounded-lg text-lg text-white transition-all"
+          className="flex items-center gap-2 bg-slate-700 hover:bg-gray-900 text-white text-sm px-5 py-2 rounded-md shadow-md transition"
         >
-          {t("back")}
+          <ArrowLeft className="w-6 h-6" />
+          {t('back')}
         </button>
       </footer>
     </section>
@@ -101,16 +148,17 @@ const SelectDept = () => {
 
 export default SelectDept;
 
-
-
 const GET_DATA = gql`
   query GetAllData {
     allSchoolInfos {
       edges {
         node {
-          id schoolName
+          id
+          schoolName
           campus
-          town address schoolType
+          town
+          address
+          schoolType
         }
       }
     }

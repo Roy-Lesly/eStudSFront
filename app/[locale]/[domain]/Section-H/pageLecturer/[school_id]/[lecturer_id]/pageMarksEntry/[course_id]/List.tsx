@@ -24,6 +24,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
   return (
     <DefaultLayout
+      pageType='teacher'
       domain={params.domain}
       sidebar={
         <Sidebar

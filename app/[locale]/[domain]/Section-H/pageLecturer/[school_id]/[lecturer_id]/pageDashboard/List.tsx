@@ -15,8 +15,8 @@ import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
-  title: "Assigned Subjects Page",
-  description: "This is Assigned Subjects Page Admin Settings",
+  title: "Dashboard Page",
+  description: "This is Dashboard Page Lecturer Settings",
 };
 
 
@@ -26,6 +26,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
 
   return (
     <DefaultLayout
+      pageType='teacher'
       domain={params.domain}
       sidebar={
         <Sidebar

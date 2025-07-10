@@ -38,8 +38,16 @@ const nextConfig = {
             },
             {
                 protocol: "http",
-                hostname: "apibrains.localhost",
+                hostname: "**.localhost",
             },
+            // {
+            //     protocol: "http",
+            //     hostname: "apibrains.localhost",
+            // },
+            // {
+            //     protocol: "http",
+            //     hostname: "apiaustin.localhost",
+            // },
         ],
     },
     

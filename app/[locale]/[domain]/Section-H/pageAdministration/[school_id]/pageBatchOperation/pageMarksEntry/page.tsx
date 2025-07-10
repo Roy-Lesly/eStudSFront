@@ -3,6 +3,7 @@ import React from 'react'
 import { gql } from '@apollo/client'
 import List from './List'
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
+import { removeEmptyFields } from '@/utils/functions'
 
 const page = async ({
   params,
@@ -21,28 +22,26 @@ const page = async ({
   paginationParams.fullName = sp?.fullName ? sp.fullName : ""
   paginationParams.telephone = sp?.telephone ? sp.telephone : ""
 
+  const searchObject = removeEmptyFields(paginationParams);
+
   const data = await queryServerGraphQL({
     domain,
     query: GET_DATA,
     variables: {
-      orRole: ["admin", "teacher"],
+      ...searchObject,
+      // orRole: ["admin", "teacher"],
+      role: "teacher",
       schoolId: parseInt(p.school_id),
     },
   });
 
-  const dataAdmin = await queryServerGraphQL({
-    domain,
-    query: GET_DATA,
-    variables: {
-      orRole: ["admin", "teacher"],
-      schoolId: parseInt(p.school_id),
-    },
-  });
+
+  console.log(data);
 
 
   return (
     <div>
-      <List params={p} data={data} dataAdmin={dataAdmin} searchParams={sp} />
+      <List params={p} data={data} searchParams={sp} />
     </div>
   )
 }
@@ -73,37 +72,7 @@ const GET_DATA = gql`
     edges {
       node {
         id 
-        fullName
-        username
-        sex
-        dob
-        pob
-        address
-        telephone
-      }
-    }
-  }
-}
-`;
-
-const GET_DATA_ADMIN = gql`
- query GetAllData(
-  $schoolId: Decimal!,
-  $fullName: String,
-  $telephone: String
-) {
-  allCustomUsers(
-    role: "admin"
-    isActive: true
-    schoolId: $schoolId
-    last: 100
-    fullName: $fullName
-    telephone: $telephone
-    isStaff: false
-  ) {
-    edges {
-      node {
-        id 
+        role
         fullName
         username
         sex

@@ -25,7 +25,7 @@ export default function getApolloClient(
     'Content-Type': 'application/json',
     'X-API-KEY': API_KEY || "",
     ...(csrfToken && { 'X-CSRFToken': csrfToken }),
-    Referer: `${protocol}api${domain}${RootApi}`,
+    Referer: protocol + (external ? domain : ('api' + domain)) + RootApi,
   };
 
   return new ApolloClient({
@@ -36,8 +36,6 @@ export default function getApolloClient(
     }),
     cache: new InMemoryCache(),
     defaultOptions: {
-      //   watchQuery: { fetchPolicy: 'no-cache' },
-      //   query: { fetchPolicy: 'no-cache' },
       mutate: { fetchPolicy: 'no-cache' },
     },
   });
@@ -53,25 +51,30 @@ export const errorLog = (err: any, show?: boolean) => {
 
   // GraphQL Errors
   else if (err?.graphQLErrors?.length > 0) {
-    console?.error("GraphQL Errors:", err.graphQLErrors);
+    console.error("GraphQL Errors:", err.graphQLErrors);
     mes = err.graphQLErrors.map((e: any) => e.message).join('\n');
   }
 
   // Network Errors (Apollo network error with result.errors[])
-  else if (err?.networkError?.result?.errors?.length > 0) {
-    console?.error("Network Error -> GraphQL errors:", err.networkError.result.errors);
-    mes = err.networkError.result.errors.map((e: any) => e.message).join('\n');
-  }
-
-  // Generic Network Error Message
-  else if (err?.networkError?.message) {
-    console?.error("Network Error:", err.networkError.message);
-    mes = err.networkError.message;
+  else if (err?.networkError) {
+    if ("result" in err.networkError) {
+      if (err?.networkError?.result?.errors?.length > 0) {
+        console.error("Network Error -> GraphQL errors:", err?.networkError?.result?.errors);
+        mes = err.networkError.result.errors.map((e: any) => e.message).join('\n');
+      }
+      else if (err?.networkError?.message) {
+        console.error("Network Error:", err.networkError.message);
+        mes = err.networkError.message;
+      }
+      else {
+        console.error("Apollo Network Error:", err.networkError);
+      }
+    }
   }
 
   // Extra Info fallback
   else if (err?.extraInfo) {
-    console?.error("Extra Info:", err.extraInfo);
+    console.error("Extra Info:", err.extraInfo);
     mes = String(err.extraInfo);
   }
 
@@ -82,7 +85,7 @@ export const errorLog = (err: any, show?: boolean) => {
 
   // Unknown error fallback
   else {
-    console?.error("Unhandled error:", err);
+    console.error("Unhandled error:", err);
   }
 
   // SweetAlert show option

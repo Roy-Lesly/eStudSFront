@@ -1,0 +1,96 @@
+import React from 'react'
+import List from './List'
+import { gql } from '@apollo/client'
+import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Marks - Course",
+  description: "This is Marks - Course Admin Settings",
+};
+
+const page = async ({
+  params,
+  searchParams,
+}: {
+  params: any;
+  searchParams: any;
+}) => {
+
+  const p = await params;
+  const sp = await searchParams;
+
+  const client = getApolloClient(p.domain);
+  let data;
+
+  try {
+    const result = await client.query<any>({
+      query: GET_DATA,
+      variables: {
+        assignedToId: p?.lecturer_id ? parseInt(p.lecturer_id) : "",
+        academicYear: sp?.academicYear ? sp.academicYear : new Date().getFullYear().toString(),
+        schoolId: p.school_id
+      },
+      fetchPolicy: 'no-cache'
+    });
+    data = result.data;
+  } catch (error: any) {
+    errorLog(error);
+
+    data = null;
+  }
+
+  return (
+    <div>
+      <List params={p} data={data} />
+    </div>
+  )
+}
+
+
+export default page
+
+
+const GET_DATA = gql`
+ query GetAllData(
+  $schoolId: Decimal!,
+  $assignedToId: Decimal,
+  $academicYear: String!,
+) {
+  allCourses (
+    schoolId: $schoolId
+    assignedToId: $assignedToId
+    academicYear: $academicYear
+  ) {
+    edges {
+      node {
+        id 
+        percentageCa
+        percentageResit
+        percentageExam
+        semester
+        courseCode
+        semester
+        assignedTo { fullName}
+        specialty {
+          id
+          academicYear
+          school {
+            campus
+          }
+          level {
+            level
+          }
+          mainSpecialty {
+            specialtyName
+          }
+        }
+        mainCourse {
+          courseName
+        }
+      }
+    }
+  }
+}
+`;
+

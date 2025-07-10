@@ -5,10 +5,11 @@ import { gql } from '@apollo/client';
 import { EdgeCustomUser, EdgeDepartment } from '@/Domain/schemas/interfaceGraphql';
 import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
-import getApolloClient, { capitalizeFirstLetter, decodeUrlID, errorLog } from '@/functions';
+import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { CertificateOptions, RegionList } from '@/constants';
 import { FaTimes } from 'react-icons/fa';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 const CreateLecturer = ({

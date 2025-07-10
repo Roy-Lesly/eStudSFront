@@ -1,4 +1,4 @@
-import { NodeCustomUser } from "./interfaceGraphql";
+import { NodeCustomUser, NodeProgram } from "./interfaceGraphql";
 
 interface PageInfo {
   hasNextPage: boolean;
@@ -15,14 +15,13 @@ export type TableColumn<T> = {
   render?: (item: T, index: number) => React.ReactNode;  // Change the return type to React.ReactNode
 };
 
-export interface NodeUserprofileSec {
+export interface NodeUserProfileSec {
   id: string;
-  user: NodeCustomUser;
+  customuser: NodeCustomUser;
   series: NodeSeries[];
-  classroom: NodeClassRoom;
-  program: NodeProgramSec;
+  classroomsec: NodeClassRoomSec;
+  program: NodeProgram;
   session: string;
-  code: string;
   active: false;
 }
 
@@ -30,14 +29,10 @@ export interface NodeUserprofileSec {
 export interface NodeSeries {
   id: string;
   name: string;
+  classroom: string;
   subjects: { edges: EdgeMainSubject[] };
 }
 
-export interface NodeProgramSec {
-  id: string;
-  name: string;
-  description: string;
-}
 
 export interface NodeSchoolIdentificationSecondary {
   id: string;
@@ -51,16 +46,12 @@ export interface NodeSchoolInfoSecondary {
   exam_limit: number;
 }
 
-export interface NodeSecondaryLevel {
-  id: string;
-  level: string;
-}
-
-export interface NodeClassRoom {
+export interface NodeClassRoomSec {
   id: string;
   school: NodeSchoolInfoSecondary;
   stream: string;
-  level: NodeSecondaryLevel;
+  level: string;
+  select: boolean;
   option: string;
   academicYear: string;
   registration: number;
@@ -78,7 +69,7 @@ export interface NodeMainSubject {
 export interface NodeSubject {
   id: string;
   mainSubject: NodeMainSubject;
-  classroom: NodeClassRoom;
+  classroomsec: NodeClassRoomSec;
   subjectCode: string;
   subjectType: string;
   subjectCoefficient: string;
@@ -96,7 +87,7 @@ export interface ResultInfo {
 
 export interface NodeResultSecondary {
   id: string;
-  student: NodeUserprofileSec // Represents the "student" ForeignKey
+  student: NodeUserProfileSec // Represents the "student" ForeignKey
   subject: NodeSubject | null; // Represents the "subject" ForeignKey
   info: ResultInfo; // JSONField structure
   active?: true;
@@ -107,7 +98,7 @@ export interface NodeResultSecondary {
 
 export interface NodePublishSecondary {
   id: string;
-  classroom: NodeClassRoom;
+  classroomsec: NodeClassRoomSec;
   publishTerm: "I" | "II" | "III"; // Restricted to the defined term choices
   portalSeq: Record<string, boolean>; // JSON structure as key-value pairs (e.g., {"seq_1": false, "seq_2": false})
   publishSeq: Record<string, boolean>; // JSON structure as key-value pairs (e.g., {"seq_1": false, "seq_2": false})
@@ -124,7 +115,7 @@ export interface EdgeTransactionsSecSet {
 
 export interface NodeSchoolFeesSec {
   id: string;
-  userprofilesec: NodeUserprofileSec;
+  userprofilesec: NodeUserProfileSec;
   platformPaid: boolean,
   idPaid: boolean,
   balance: number,
@@ -161,16 +152,12 @@ export interface NodeTransactionsSec {
 
 
 // Edge interface
-export interface EdgeUserprofileSec {
-  node: NodeUserprofileSec;
+export interface EdgeUserProfileSec {
+  node: NodeUserProfileSec;
 }
 
 export interface EdgeSeries {
   node: NodeSeries;
-}
-
-export interface EdgeProgramSec {
-  node: NodeProgramSec;
 }
 
 export interface EdgeSchoolIdentificationSecondary {
@@ -181,12 +168,8 @@ export interface EdgeSchoolInfoSecondary {
   node: NodeSchoolInfoSecondary;
 }
 
-export interface EdgeSecondaryLevel {
-  node: NodeSecondaryLevel;
-}
-
-export interface EdgeClassRoom {
-  node: NodeClassRoom;
+export interface EdgeClassRoomSec {
+  node: NodeClassRoomSec;
 }
 
 export interface EdgeMainSubject {
@@ -217,89 +200,3 @@ export interface EdgeTransactionsSec {
 
 
 
-
-
-// Query response interface
-export interface AllUserprofileSec {
-  allUserprofileSec: {
-    edges: EdgeUserprofileSec[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllSeries {
-  allSeries: {
-    edges: EdgeSeries[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllProgramSec {
-  allProgramSec: {
-    edges: EdgeProgramSec[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllSchoolIdentificationSecondary {
-  allSchoolIdentification: {
-    edges: EdgeSchoolIdentificationSecondary[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllSchoolInfoSecondary {
-  allSchoolInfoSecondarys: {
-    edges: EdgeSchoolInfoSecondary[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllSecondaryLevel {
-  allSecondaryLevels: {
-    edges: EdgeSecondaryLevel[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllClassRoom {
-  allClassRooms: {
-    edges: EdgeClassRoom[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllMainSubject {
-  allMainSubjects: {
-    edges: EdgeMainSubject[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllSubject {
-  allSubjects: {
-    edges: EdgeSubject[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllPublishSecondarysResponse {
-  allCourses: {
-    edges: EdgePublishSecondary[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllSchoolFeesSecResponse {
-  allSchoolFeesSec: {
-    edges: EdgeSchoolFeesSec[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface AllTransactionsSecResponse {
-  allTransactionsSec: {
-    edges: EdgeTransactionsSec[];
-    pageInfo: PageInfo;
-  };
-}

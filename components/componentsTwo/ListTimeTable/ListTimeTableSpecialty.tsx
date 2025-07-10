@@ -3,16 +3,11 @@ import Table from "@/componentsTwo/Table";
 import { TableRowClassName } from "@/constants";
 import { GetSpecialtyInter } from "@/Domain/Utils-H/appControl/appInter";
 import MyPageTitle from "@/section-h/common/MyPageTitle";
-import { FaDeleteLeft, FaPlus, FaRightLong } from "react-icons/fa6";
+import { FaPlus, FaRightLong } from "react-icons/fa6";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import TableSearchSelect from "../TableSearchSelect";
-import { getData } from "@/functions";
-import { protocol } from "@/config";
-import { GetCourseUrl } from "@/Domain/Utils-H/appControl/appConfig";
-
-
 const columns = [
   {
     header: "No",

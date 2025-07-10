@@ -6,7 +6,7 @@ import SelectField from "../SelectField";
 import { ActionCreate, ActionEdit } from "@/serverActions/actionGeneral";
 import { protocol } from "@/config";
 import { useRouter } from "next/navigation";
-import getApolloClient, { decodeUrlID, getData } from "@/functions";
+import { decodeUrlID, getData } from "@/functions";
 import { useEffect, useState } from "react";
 import { GetSysConstantUrl } from "@/Domain/Utils-H/appControl/appConfig";
 import MyButtonModal from "@/section-h/common/MyButtons/MyButtonModal";
@@ -16,6 +16,7 @@ import { SchemaCreateEditTransactions } from "@/Domain/schemas/schemas";
 import { TransactionUrl } from "@/Domain/Utils-H/feesControl/feesConfig";
 import InputField from "../InputField";
 import { EdgeSchoolFees } from "@/Domain/schemas/interfaceGraphql";
+import getApolloClient from "@/utils/graphql/GetAppolloClient";
 
 
 
