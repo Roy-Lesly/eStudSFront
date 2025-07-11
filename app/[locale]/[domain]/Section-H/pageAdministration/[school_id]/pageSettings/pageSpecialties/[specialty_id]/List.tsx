@@ -76,13 +76,13 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
             <MyTabs
               tabs={[
                 {
-                  label: 'Info', content: data?.allSpecialties?.edges?.length ?
+                  label: `${t('Info')}`, content: data?.allSpecialties?.edges?.length ?
                     <Info data={data.allSpecialties.edges[0]} params={params} />
                     :
                     <ServerError type="notFound" item="Classes" />
                 },
                 {
-                  label: 'Students', content: data?.allSchoolFees?.edges.length ?
+                  label: `${t('Students')}`, content: data?.allSchoolFees?.edges.length ?
                     <Students data={
                       data?.allSchoolFees?.edges.sort((a: EdgeSchoolFees, b: EdgeSchoolFees) => {
                         const fullNameA = a.node.userprofile.customuser.fullName.toLowerCase();
@@ -102,7 +102,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
                   />
                 },
                 {
-                  label: 'Courses', content: data?.allCourses?.edges.length ?
+                  label: `${t('Courses')}`, content: data?.allCourses?.edges.length ?
                     <Courses data={
                       data?.allCourses?.edges.sort((a: EdgeCourse, b: EdgeCourse) => {
                         const courseNameA = a.node.mainCourse.courseName.toLowerCase();
@@ -117,7 +117,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
                     <ServerError type="notFound" item="Class" />
                 },
                 {
-                  label: 'Performance', content: data?.allCourses?.edges.length ?
+                  label: `${t('Performance')}`, content: data?.allCourses?.edges.length ?
                     <PerformanceSpecialty
                       data={data?.allSpecialties?.edges[0].node}
                     />
@@ -127,7 +127,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
                 ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("DOCUMENT") ?
                   [
                     {
-                      label: 'Transcript', content: dataTrans?.resultDataSpecialtyTranscript ?
+                      label: `${t('Transcript')}`, content: dataTrans?.resultDataSpecialtyTranscript ?
                         <Transcript
                           data={dataTrans?.resultDataSpecialtyTranscript}
                           params={params}
@@ -140,7 +140,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
                             <button
                               className='bg-blue-800 font-medium px-4 py-2 rounded text-lg text-white'
                               onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties/${params.specialty_id}/?trans=${true}`)}>
-                              Generate Transcripts For this Specialty
+                              {t("Generate Transcripts For this Specialty")}
                             </button>
                           </div>
                           :
@@ -150,6 +150,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={`Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties/${params.specialty_id}?`}
             />
           ) : (
             <ServerError type="network" item="Class" />

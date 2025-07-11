@@ -27,7 +27,7 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
   return data;
 };
 
-const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+const List = ({ params, data }: { params: any; data: any, searchParams: any }) => {
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();

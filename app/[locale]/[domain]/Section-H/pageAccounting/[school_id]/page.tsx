@@ -2,10 +2,10 @@ import { Metadata } from 'next';
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import getApolloClient from '@/functions';
 import { protocol, RootApi } from '@/config';
 import { gql } from '@apollo/client';
 import initTranslations from '@/initTranslations';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 const Page = async ({
@@ -16,27 +16,17 @@ const Page = async ({
 }) => {
 
   const p = await params;
-  // const sp = await searchParams;
 
   const { t } = await initTranslations(p.locale, ["common"])
   const { domain, school_id } = p;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        id: school_id,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
+  const data = await queryServerGraphQL({
+    domain,
+    query: GET_DATA,
+    variables: {
+      id: parseInt(p.school_id),
+    },
+  });
 
 
   return (

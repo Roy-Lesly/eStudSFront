@@ -4,6 +4,7 @@ import { decodeUrlID } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const ClassManagementPage = async ({
   params,
@@ -16,42 +17,24 @@ const ClassManagementPage = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  let dataTrans;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        schoolId: parseInt(p.school_id),
-        specialtyId: parseInt(decodeUrlID(p.specialty_id)),
-        specialtyId2: parseInt(decodeUrlID(p.specialty_id)),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    
-    data = null;
-  }
-  if (sp && sp?.trans == "true"){
-    try {
-      const result = await client.query<any>({
-        query: GET_DATA_TRANSCRIPT,
-        variables: {
-          schoolId: parseInt(p.school_id),
-          specialtyId: parseInt(decodeUrlID(p.specialty_id)),
-          timestamp: new Date().getTime()
-        },
-        fetchPolicy: 'no-cache'
-      });
-      dataTrans = result.data;
-    } catch (error: any) {
-      dataTrans = null;
-    }
-  }
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      specialtyId: parseInt(decodeUrlID(p.specialty_id)),
+      specialtyId2: parseInt(decodeUrlID(p.specialty_id)),
+      schoolId: parseInt(p.school_id),
+    },
+  });
+
+  const dataTrans = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_TRANSCRIPT,
+    variables: {
+      schoolId: parseInt(p.school_id),
+      specialtyId: parseInt(decodeUrlID(p.specialty_id)),
+    },
+  });
 
   return (
     <div>

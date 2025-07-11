@@ -4,6 +4,7 @@ import { removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 const EditPage = async ({
@@ -17,34 +18,24 @@ const EditPage = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = { };
-  
+  const paginationParams: Record<string, any> = {};
+
   paginationParams.specialtyName = sp?.specialtyName
   paginationParams.domainName = sp?.domainName
-  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear :`${new Date().getFullYear()}` 
-    const client = getApolloClient(p.domain);
-    let data;
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA,
-          variables: {
-            ...removeEmptyFields(paginationParams),
-            schoolId: p.school_id,
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-      errorLog(error);
-      
-      data = null;
-    }
+  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : `${new Date().getFullYear()}`
+
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
   return (
     <div>
-    <List params={p} data={data} searchParams={sp} />
-  </div>
+      <List params={p} data={data} searchParams={sp} />
+    </div>
   )
 }
 

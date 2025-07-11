@@ -61,19 +61,12 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         />
       }
     >
-      <Breadcrumb
-        department="Levels"
-        subRoute="List"
-        pageName="Levels"
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Levels`}
-      />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
 
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-            data.allLevels.edges.length ?
               <MyTableComp
                 data={data.allLevels.edges.sort((a: EdgeLevel, b: EdgeLevel) => a.node.level > b.node.level ? 1 : a.node.level < b.node.level ? -1 : 0)}
                 columns={Columns}
@@ -81,10 +74,8 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 button_type={"add"}
                 button_action={() => { setShowModal({ type: "create", show: true })}}
               />
-              :
-              <ServerError type='notFound' item='SchoolInfo' />
             :
-            <ServerError type='network' item='' />}
+            <ServerError type='network' item='Level' />}
         </div>
 
 

@@ -8,10 +8,11 @@ import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { EdgeDomain, EdgeField } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 const ModalCUDField = ({
-    actionType, selectedItem, setOpenModal, domains
+    actionType, selectedItem, setOpenModal, domains, params
 }: {
     params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeField | null, setOpenModal: any, domains: EdgeDomain[]
 }) => {
@@ -34,10 +35,6 @@ const ModalCUDField = ({
         }));
     };
 
-
-
-    const [createUpdateDeleteField] = useMutation(CREATE_OR_UPDATE_FIELD)
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let dataToSubmit: any = formData
@@ -55,21 +52,23 @@ const ModalCUDField = ({
             }
         }
 
-        try {
+        const res = await ApiFactory({
+            newData: { ...dataToSubmit, delete: actionType === "delete" },
+            editData: { ...dataToSubmit, delete: actionType === "delete" },
+            mutationName: "createUpdateDeleteField",
+            modelName: "field",
+            successField: "id",
+            query,
+            router: null,
+            params,
+            redirect: false,
+            reload: true,
+            returnResponseField: false,
+            redirectPath: ``,
+            actionLabel: "processing",
+        });
 
-            const result = await createUpdateDeleteField({
-                variables: { ...dataToSubmit }
-            });
-            if (
-                (actionType !== "delete" && result.data.createUpdateDeleteField.field.id) ||
-                (actionType === "delete" && result.data.createUpdateDeleteField)
-            ) {
-                setOpenModal(false);
-                window.location.reload()
-            };
-        } catch (error: any) {
-            alert(`error domain:, ${error}`)
-        }
+
     };
 
     return (
@@ -137,7 +136,7 @@ export default ModalCUDField
 
 
 
-export const CREATE_OR_UPDATE_FIELD = gql`
+export const query = gql`
     mutation CreateUpdateDelete(
         $id: ID,
         $fieldName: String!,

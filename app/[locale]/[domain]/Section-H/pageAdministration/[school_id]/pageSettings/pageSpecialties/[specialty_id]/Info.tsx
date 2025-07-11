@@ -3,8 +3,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
-import MessageModal from '@/componentsTwo/MessageModal';
-import { FaArrowRight } from 'react-icons/fa';
 
 const Info = ({ data, params }: { data: EdgeSpecialty, params: any }) => {
   const [specialty, setSpecialty] = useState({

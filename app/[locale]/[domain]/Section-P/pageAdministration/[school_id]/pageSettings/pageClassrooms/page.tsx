@@ -1,0 +1,82 @@
+import { Metadata } from 'next';
+import React from 'react'
+import { removeEmptyFields } from '@/functions';
+import { gql } from '@apollo/client';
+import List from './List';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
+
+
+const EditPage = async ({
+  params,
+  searchParams,
+}: {
+  params: any;
+  searchParams: any;
+}) => {
+
+  const p = await params;
+  const sp = await searchParams;
+
+  const paginationParams: Record<string, any> = {};
+
+  paginationParams.level = sp?.level
+  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : `${new Date().getFullYear()}`
+
+  const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      schoolId: parseInt(p.school_id),
+    },
+  });
+
+  return (
+    <div>
+      <List
+      params={p}
+      data={data}
+      searchParams={sp}
+      />
+    </div>
+  )
+}
+
+export default EditPage
+
+
+
+export const metadata: Metadata = {
+  title:
+    "Classroom-Settings",
+  description: "This is Classroom-Settings Page",
+};
+
+
+
+
+const GET_DATA = gql`
+ query GetData(
+   $schoolId: Decimal,
+   $academicYear: String,
+   $level: String,
+  ) {
+    allClassroomsPrim(
+      last: 100,
+      schoolId: $schoolId
+      academicYear: $academicYear
+      level: $level
+    ){
+      edges {
+        node {
+          id 
+          academicYear
+          registration tuition paymentOne paymentTwo paymentThree
+          school { campus}
+        }
+      }
+    }
+    allAcademicYears
+  }
+`;

@@ -114,42 +114,6 @@ const Print = ({ data, params }: { data: EdgeSpecialty, params: any }) => {
               required
             />
           </div>
-          {/* <div>
-            <label className="text-gray-600 text-sm">Sex</label>
-            <select
-              name="sex"
-              value={specialty.sex}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            >
-              <option value="">Select</option>
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-            </select>
-          </div> */}
-          {/* <div>
-            <label className="text-gray-600 text-sm">Date of Birth</label>
-            <input
-              type="date"
-              name="dob"
-              value={specialty.dob}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            />
-          </div>
-          <div>
-            <label className="text-gray-600 text-sm">Place of Birth</label>
-            <input
-              type="text"
-              name="pob"
-              value={specialty.pob}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            />
-          </div> */}
         </div>
       </motion.div>
 

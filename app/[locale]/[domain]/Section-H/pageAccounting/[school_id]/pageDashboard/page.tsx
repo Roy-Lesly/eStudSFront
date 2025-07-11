@@ -1,12 +1,12 @@
 import { protocol } from "@/config";
 import { GetLevelUrl } from "@/Domain/Utils-H/appControl/appConfig";
 import { GetDashFinanceChartUrl, GetDashSpecialtyLevelIncomeChartUrl, GetDashUserCardUrl } from "@/Domain/Utils-H/dashControl/dashConfig";
-import getApolloClient, { getData } from "@/functions";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
 import List from "./List";
 import { gql } from "@apollo/client";
 import Wrapper from "./Wrapper";
+import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
+import { getData } from "@/utils/functions";
+import { Metadata } from "next";
 
 
 const page = async ({
@@ -20,48 +20,39 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(p.domain);
-  let apiAcademicYears;
-  try {
-    const result = await client.query<any>({
-      query: GET_ACADEMIC_YEARS,
-      variables: {
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    apiAcademicYears = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    apiAcademicYears = null;
-  }
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
-  const today = new Date()
-  const apiLevels = await getData(protocol + "api" + p.domain + GetLevelUrl, { nopage: true }, p.domain)
-  const sortedAcadYears = await apiAcademicYears?.allAcademicYears?.sort((a: string, b: string) => a[3] < b[3] ? 1 : a[3] > b[3] ? -1 : 0)
-  const userCardData = sortedAcadYears && await getData(protocol + "api" + p.domain + GetDashUserCardUrl, {
-    academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
-    this_year: sp && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
-    school: p.school_id
-  }, p.domain)
-  const financeChartData = sortedAcadYears && await getData(protocol + "api" + p.domain + GetDashFinanceChartUrl, {
-    academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
-    this_year: sp && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
-    period: sp && Object.keys(sp).includes("period") ? sp.period : "an_year",
-    school: p.school_id
-  }, p.domain)
-  const specialtyLevelCountChartData = sortedAcadYears && await getData(protocol + "api" + p.domain + GetDashSpecialtyLevelIncomeChartUrl, {
-    academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
-    this_year: sp && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
-    school: p.school_id
-  }, p.domain)
+  // const today = new Date()
+  // const userCardData = sortedAcadYears && await getData(protocol + "api" + p.domain + GetDashUserCardUrl, {
+  //   academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
+  //   this_year: sp && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
+  //   school: p.school_id
+  // }, p.domain)
+  // const financeChartData = sortedAcadYears && await getData(protocol + "api" + p.domain + GetDashFinanceChartUrl, {
+  //   academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
+  //   this_year: sp && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
+  //   period: sp && Object.keys(sp).includes("period") ? sp.period : "an_year",
+  //   school: p.school_id
+  // }, p.domain)
+  // const specialtyLevelCountChartData = sortedAcadYears && await getData(protocol + "api" + p.domain + GetDashSpecialtyLevelIncomeChartUrl, {
+  //   academic_year: sp && Object.keys(sp).includes("academic_year") ? sp.academic_year : sortedAcadYears[0],
+  //   this_year: sp && Object.keys(sp).includes("this_year") ? sp.this_year : today.getFullYear(),
+  //   school: p.school_id
+  // }, p.domain)
 
   return (
     <Wrapper
       params={p}
       searchParams={sp}
     >
-      <List
+      <></>
+      {/* <List
         userCardData={userCardData}
         financeChartData={financeChartData}
         specialtyLevelCountChartData={specialtyLevelCountChartData}
@@ -69,7 +60,7 @@ const page = async ({
         sortedAcadYears={sortedAcadYears}
         p={p}
         sp={sp}
-      />
+      /> */}
     </Wrapper>
   )
 }
@@ -84,8 +75,15 @@ export const metadata: Metadata = {
 
 
 
-const GET_ACADEMIC_YEARS = gql`
+const GET_DATA = gql`
   query GetAcadYears{
     allAcademicYears
+    allLevels { 
+      edges {
+        node {
+          id level
+        }
+      }
+    }
   }
 `;

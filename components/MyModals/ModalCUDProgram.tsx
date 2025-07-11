@@ -8,12 +8,13 @@ import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { EdgeProgram } from '@/Domain/schemas/interfaceGraphql';
 import { FaTimes } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 const ModalCUDProgram = ({
-    actionType, selectedItem, setOpenModal
+    actionType, selectedItem, setOpenModal, params
 }: {
-    params: any,  actionType: "update" | "create" | "delete", selectedItem: EdgeProgram | null, setOpenModal: any
+    params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeProgram | null, setOpenModal: any
 }) => {
 
     const { t } = useTranslation();
@@ -34,42 +35,38 @@ const ModalCUDProgram = ({
         }));
     };
 
-
-
-    const [createUpdateDeleteProgram] = useMutation(CREATE_OR_UPDATE)
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let dataToSubmit: any = formData
         if (actionType === "create" && selectedItem) {
             dataToSubmit = {
                 ...formData,
-                createdById: user.user_id,
+                // createdById: user.user_id,
             }
         }
         if ((actionType === "update" || actionType === "delete") && selectedItem) {
             dataToSubmit = {
                 ...formData,
                 id: parseInt(decodeUrlID(selectedItem.node.id)),
-                updatedById: user.user_id,
+                // updatedById: user.user_id,
             }
         }
 
-        try {
-
-            const result = await createUpdateDeleteProgram({
-                variables: { ...dataToSubmit }
-            });
-            if (
-                (actionType !== "delete" && result.data.createUpdateDeleteProgram.program.id) || 
-                (actionType === "delete" && result.data.createUpdateDeleteProgram)
-            ) {
-                setOpenModal(false);
-                window.location.reload()
-            };
-        } catch (error: any) {
-            alert(`error domain:, ${error}`)
-        }
+        const res = await ApiFactory({
+            newData: { ...dataToSubmit, delete: actionType === "delete" },
+            editData: { ...dataToSubmit, delete: actionType === "delete" },
+            mutationName: "createUpdateDeleteProgram",
+            modelName: "program",
+            successField: "id",
+            query,
+            router: null,
+            params,
+            redirect: false,
+            reload: true,
+            returnResponseField: false,
+            redirectPath: ``,
+            actionLabel: "processing",
+        });
     };
 
     return (
@@ -122,7 +119,7 @@ const ModalCUDProgram = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
-                        className={`${actionType === "update" ?"bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
+                        className={`${actionType === "update" ? "bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
                     >
                         {t("Confirm")} & {t(capitalizeFirstLetter(actionType))}
                     </motion.button>
@@ -138,22 +135,18 @@ export default ModalCUDProgram
 
 
 
-export const CREATE_OR_UPDATE = gql`
-    mutation CreateUpdateDelete(
+export const query = gql`
+    mutation CreateUpdateDeleteData(
         $id: ID,
         $name: String!,
         $description: String!,
         $delete: Boolean!,
-        $createdById: ID,
-        $updatedById: ID
     ) {
         createUpdateDeleteProgram(
             id: $id,
             name: $name,
             description: $description,
             delete: $delete,
-            createdById: $createdById,
-            updatedById: $updatedById
         ) {
             program {
               id

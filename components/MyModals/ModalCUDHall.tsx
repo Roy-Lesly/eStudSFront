@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { EdgeHall } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 const ModalCUDHall = ({
@@ -36,45 +37,36 @@ const ModalCUDHall = ({
     };
 
 
-
-    const [createUpdateDeleteHall] = useMutation(CREATE_OR_UPDATE_HALL)
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let dataToSubmit: any = formData
         if (actionType === "create" && selectedItem) {
             dataToSubmit = {
-                ...formData,
-                createdById: user.user_id,
+                ...formData
             }
         }
         if ((actionType === "update" || actionType === "delete") && selectedItem) {
             dataToSubmit = {
                 ...formData,
                 id: parseInt(decodeUrlID(selectedItem.node.id.toString())),
-                updatedById: user.user_id,
             }
         }
 
-        try {
-
-            const result = await createUpdateDeleteHall({
-                variables: { 
-                    ...dataToSubmit,
-                    name: dataToSubmit.name.toUpperCase(),
-                    capacity: parseInt(dataToSubmit.capacity)
-                }
-            });
-            if (
-                (actionType !== "delete" && result.data.createUpdateDeleteHall.hall.id) ||
-                (actionType === "delete" && result.data.createUpdateDeleteHall)
-            ) {
-                setOpenModal(false);
-                window.location.reload()
-            };
-        } catch (error: any) {
-            alert(`error domain:, ${error}`)
-        }
+        const res = await ApiFactory({
+            newData: { ...dataToSubmit, capacity: parseInt(formData.capacity), delete: actionType === "delete" },
+            editData: { ...dataToSubmit, capacity: parseInt(formData.capacity), delete: actionType === "delete" },
+            mutationName: "createUpdateDeleteHall",
+            modelName: "hall",
+            successField: "id",
+            query,
+            router: null,
+            params,
+            redirect: false,
+            reload: true,
+            returnResponseField: false,
+            redirectPath: ``,
+            actionLabel: "processing",
+        });
     };
 
     return (
@@ -144,24 +136,20 @@ export default ModalCUDHall
 
 
 
-export const CREATE_OR_UPDATE_HALL = gql`
+export const query = gql`
     mutation CreateUpdateDelete(
         $id: ID,
         $name: String!,
         $capacity: Int!,
         $schoolId: ID!,
         $delete: Boolean!,
-        $createdById: ID,
-        $updatedById: ID
     ) {
         createUpdateDeleteHall(
             id: $id,
             name: $name,
             capacity: $capacity,
             schoolId: $schoolId,
-            delete: $delete,
-            createdById: $createdById,
-            updatedById: $updatedById
+            delete: $delete
         ) {
             hall {
               id

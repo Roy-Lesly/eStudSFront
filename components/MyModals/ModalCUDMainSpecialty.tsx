@@ -2,12 +2,13 @@ import { EdgeField, EdgeMainSpecialty } from '@/Domain/schemas/interfaceGraphql'
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import MyInputField from '@/MyInputField';
 import { JwtPayload } from '@/serverActions/interfaces';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 interface FormData {
@@ -21,8 +22,8 @@ const ModalCUDSpecialty = (
   { params, setOpenModal, selectedItem, actionType, extraData }
     :
     {
-      params: { school_id: string}, setOpenModal: any, selectedItem: EdgeMainSpecialty, actionType: "create" | "update" | "delete" | string,
-      extraData: { fields: EdgeField[]}
+      params: { school_id: string }, setOpenModal: any, selectedItem: EdgeMainSpecialty, actionType: "create" | "update" | "delete" | string,
+      extraData: { fields: EdgeField[] }
     }
 ) => {
 
@@ -54,8 +55,6 @@ const ModalCUDSpecialty = (
     }));
   };
 
-  const [createUpdateDeleteMainSpecialty] = useMutation(CREATE_UPDATE_DELETE_MAIN_SPECIALTY);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const confirmCreate = window.confirm(`Are you sure you want to proceed?`);
@@ -81,23 +80,21 @@ const ModalCUDSpecialty = (
       }
     }
 
-    try {
-
-      const result = await createUpdateDeleteMainSpecialty({
-        variables: { 
-          ...dataToSubmit,
-         }
-      });
-      if (
-        (actionType !== "delete" && result.data.createUpdateDeleteMainSpecialty.mainspecialty.id) ||
-        (actionType === "delete" && result.data.createUpdateDeleteMainSpecialty)
-      ) {
-        setOpenModal(false);
-        window.location.reload()
-      };
-    } catch (error: any) {
-      alert(`error domain:, ${error}`)
-    }
+    const res = await ApiFactory({
+      newData: { ...dataToSubmit, delete: actionType === "delete" },
+      editData: { ...dataToSubmit, delete: actionType === "delete" },
+      mutationName: "createUpdateDeleteMainSpecialty",
+      modelName: "mainspecialty",
+      successField: "id",
+      query,
+      router: null,
+      params,
+      redirect: false,
+      reload: true,
+      returnResponseField: false,
+      redirectPath: ``,
+      actionLabel: "processing",
+    });
   };
 
   return (
@@ -121,7 +118,7 @@ const ModalCUDSpecialty = (
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
 
           <div className='flex flex-row gap-2 justify-between'>
-          <MyInputField
+            <MyInputField
               id="specialtyName"
               name="specialtyName"
               label={t("Specialty Name")}
@@ -133,7 +130,7 @@ const ModalCUDSpecialty = (
           </div>
 
           <div className='flex flex-row gap-2 justify-between'>
-          <MyInputField
+            <MyInputField
               id="specialtyNameShort"
               name="specialtyNameShort"
               label={t("Specialty Short Name")}
@@ -144,18 +141,18 @@ const ModalCUDSpecialty = (
             />
           </div>
 
-          
+
           <div className='flex flex-row gap-2 justify-between'>
-          <MyInputField
-            id="fieldId"
-            name="fieldId"
-            label={t("Field")}
-            type="select"
-            placeholder={t("Select Field")}
-            value={formData.fieldId?.toString()}
-            options={extraData?.fields?.map((item: EdgeField) => { return { id: decodeUrlID(item.node.id.toString()), name: item.node.fieldName } })}
-            onChange={(e) => handleChange('fieldId', parseInt(e.target.value))}
-          />
+            <MyInputField
+              id="fieldId"
+              name="fieldId"
+              label={t("Field")}
+              type="select"
+              placeholder={t("Select Field")}
+              value={formData.fieldId?.toString()}
+              options={extraData?.fields?.map((item: EdgeField) => { return { id: decodeUrlID(item.node.id.toString()), name: item.node.fieldName } })}
+              onChange={(e) => handleChange('fieldId', parseInt(e.target.value))}
+            />
           </div>
 
           <motion.button
@@ -178,7 +175,7 @@ export default ModalCUDSpecialty
 
 
 
-const CREATE_UPDATE_DELETE_MAIN_SPECIALTY = gql`
+const query = gql`
   mutation Function(
     $id: ID,
     $specialtyName: String!,

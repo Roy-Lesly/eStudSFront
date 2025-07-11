@@ -96,7 +96,7 @@ const List = ({ p, data, sp, school }: { p: any; data: EdgeSchoolFees[], sp: any
         subRoute="List"
         pageName={t(p?.item_type) + " PAGE"}
         component={<button
-          className='flex gap-2 rounded-xl py-2 px-6 bg-blue-200 font-semibold text-lg'
+          className='flex items-center gap-3 rounded-xl py-2 px-6 bg-blue-200 font-semibold text-lg'
           onClick={() => { setModalOpen("multiple"); }}
         >
           <FaMoneyBillWave size={20} /> Pay All

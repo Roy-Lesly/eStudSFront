@@ -34,7 +34,7 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
   const router = useRouter();
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(searchParams?.tab) || 0);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
@@ -123,13 +123,6 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
         />
       }
     >
-      <Breadcrumb
-        department={t('Courses')}
-        subRoute="List"
-        pageName={t('Courses')}
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/pageCourses/${params.profile_id}`}
-        subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/pageCourses/${params.profile_id}`}
-      />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
 
@@ -189,6 +182,7 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={`Section-H/pageAdministration/${params.school_id}/pageSettings/pageCourses/?`}
             />
           )
             :
@@ -221,10 +215,11 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
               setOpenModal={setShowModal}
               actionType={showModal?.type || "create"}
               selectedItem={selectedItem}
+              params={params}
               extraData={{
                 specialties: data?.allSpecialties?.edges,
                 mainCourses: data?.allMainCourses?.edges,
-                teachers: [...data?.allCustomUsers?.edges, ...admins?.allCustomUsers?.edges]
+                teachers: [...data?.allCustomusers?.edges, ...admins?.allCustomusers?.edges]
               }}
             />}
             openState={showModal?.show || false}

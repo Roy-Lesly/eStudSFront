@@ -8,12 +8,13 @@ import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { EdgeMainCourse } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 const ModalCUDMainCourse = ({
-    actionType, selectedItem, setOpenModal
+    actionType, selectedItem, setOpenModal, params
 }: {
-    params: any,  actionType: "update" | "create" | "delete", selectedItem: EdgeMainCourse | null, setOpenModal: any
+    params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeMainCourse | null, setOpenModal: any
 }) => {
 
     const { t } = useTranslation();
@@ -34,9 +35,6 @@ const ModalCUDMainCourse = ({
     };
 
 
-
-    const [createUpdateDeleteMainCourse] = useMutation(CREATE_OR_UPDATE_MAIN_COURSE)
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let dataToSubmit: any = formData
@@ -54,21 +52,22 @@ const ModalCUDMainCourse = ({
             }
         }
 
-        try {
+        const res = await ApiFactory({
+            newData: { ...dataToSubmit, delete: actionType === "delete" },
+            editData: { ...dataToSubmit, delete: actionType === "delete" },
+            mutationName: "createUpdateDeleteMainCourse",
+            modelName: "maincourse",
+            successField: "id",
+            query,
+            router: null,
+            params,
+            redirect: false,
+            reload: true,
+            returnResponseField: false,
+            redirectPath: ``,
+            actionLabel: "processing",
+        });
 
-            const result = await createUpdateDeleteMainCourse({
-                variables: { ...dataToSubmit }
-            });
-            if (
-                (actionType !== "delete" && result.data.createUpdateDeleteMainCourse.maincourse.id) || 
-                (actionType === "delete" && result.data.createUpdateDeleteMainCourse)
-            ) {
-                setOpenModal(false);
-                window.location.reload()
-            };
-        } catch (error: any) {
-            alert(`error domain:, ${error}`)
-        }
     };
 
     return (
@@ -108,7 +107,7 @@ const ModalCUDMainCourse = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
-                        className={`${actionType === "update" ?"bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
+                        className={`${actionType === "update" ? "bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
                     >
                         {t("Confirm")} & {t(capitalizeFirstLetter(actionType))}
                     </motion.button>
@@ -124,20 +123,20 @@ export default ModalCUDMainCourse
 
 
 
-export const CREATE_OR_UPDATE_MAIN_COURSE = gql`
+export const query = gql`
     mutation CreateUpdateDelete(
         $id: ID,
         $courseName: String!,
-        $delete: Boolean,
         $createdById: ID,
         $updatedById: ID
+        $delete: Boolean!
     )  {
         createUpdateDeleteMainCourse (
             id: $id,
             courseName: $courseName,
-            delete: $delete,
             createdById: $createdById,
             updatedById: $updatedById
+            delete: $delete
         ) {
             maincourse {
               id

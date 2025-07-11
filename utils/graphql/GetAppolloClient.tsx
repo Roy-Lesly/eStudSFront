@@ -59,11 +59,11 @@ export const errorLog = (err: any, show?: boolean) => {
   else if (err?.networkError) {
     if ("result" in err.networkError) {
       if (err?.networkError?.result?.errors?.length > 0) {
-        console.error("Network Error -> GraphQL errors:", err?.networkError?.result?.errors);
+        console.log("Network Error -> GraphQL errors:", err?.networkError?.result?.errors);
         mes = err.networkError.result.errors.map((e: any) => e.message).join('\n');
       }
       else if (err?.networkError?.message) {
-        console.error("Network Error:", err.networkError.message);
+        console.log("Network Error:", err.networkError.message);
         mes = err.networkError.message;
       }
       else {

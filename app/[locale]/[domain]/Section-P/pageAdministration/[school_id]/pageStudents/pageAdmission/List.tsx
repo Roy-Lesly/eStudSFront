@@ -13,9 +13,11 @@ import { FaArrowDown } from 'react-icons/fa';
 import Link from 'next/link';
 
 
-const List = ({ params, dataPreinscription, dataSpecialties, searchParams }: { params: any; dataPreinscription: any, dataSpecialties: any, searchParams: any }) => {
+const List = ({ params, dataPreinscription, dataClasses, searchParams }: { params: any; dataPreinscription: any, dataClasses: any, searchParams: any }) => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
+    console.log(dataPreinscription);
+    console.log(dataClasses);
     return (
         <DefaultLayout
             pageType='admin'
@@ -50,18 +52,18 @@ const List = ({ params, dataPreinscription, dataSpecialties, searchParams }: { p
 
                 <div className="bg-white mt-2 mx-auto rounded shadow w-full">
 
-                    {dataSpecialties?.allSpecialties ?
-                        dataSpecialties?.allSpecialties?.edges.length ?
+                    {dataPreinscription && dataClasses?.allClassroomsPrim ?
+                        dataClasses?.allClassroomsPrim?.edges.length ?
                             <AdmissionForm
                                 data={dataPreinscription}
-                                dataSpecialties={dataSpecialties}
+                                dataSpecialties={dataClasses}
                                 params={params}
                             />
                             :
                             <div className='flex flex-col gap-16 items-center justify-center  py-20 '>
-                                <span className='text-red rounded py-2 px-6 tracking-wider text-2xl font-bold'>No Specialties / Classes Found</span>
+                                <span className='text-red rounded py-2 px-6 tracking-wider text-2xl font-bold'>No Classes Found</span>
                                 <Link
-                                    href={`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties`}
+                                    href={`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageSettings/pageClassrooms`}
                                     className='text-teal-800 flex gap-4 text-xl tracking-wider font-semibold'
                                 >
                                     Click to Create

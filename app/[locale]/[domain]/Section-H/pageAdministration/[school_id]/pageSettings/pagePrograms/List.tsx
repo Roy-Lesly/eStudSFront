@@ -35,9 +35,9 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
     {
       header: "View", align: "center",
       render: (item) => <div className='flex flex-row gap-2 justify-center'>
-      <ButtonAction data={item} type='edit' action={() => {setShowModal({ show: true, type: "update"}); setSelectedItem(item) }} />
-      <ButtonAction data={item} type='delete' action={() => {setShowModal({ show: true, type: "delete"}); setSelectedItem(item) }} />
-    </div>,
+        <ButtonAction data={item} type='edit' action={() => { setShowModal({ show: true, type: "update" }); setSelectedItem(item) }} />
+        <ButtonAction data={item} type='delete' action={() => { setShowModal({ show: true, type: "delete" }); setSelectedItem(item) }} />
+      </div>,
     },
   ];
   return (
@@ -62,28 +62,17 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
         />
       }
     >
-      <Breadcrumb
-        department="Programs"
-        subRoute="List"
-        pageName="Programs"
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Programs`}
-      />
-
       <div className="bg-gray-50 flex flex-col items-center justify-center">
-
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-            data.allPrograms.edges.length ?
-              <MyTableComp
-                data={data.allPrograms.edges.sort((a: EdgeProgram, b: EdgeProgram) => a.node.name > b.node.name ? 1 : a.node.name < b.node.name ? -1 : 0)}
-                columns={Columns}
-                table_title='Program'
-                button_type={"add"}
-                button_action={() => { setShowModal({ type: "create", show: true })}}
-              />
-              :
-              <ServerError type='notFound' item='SchoolInfo' />
+            <MyTableComp
+              data={data.allPrograms.edges.sort((a: EdgeProgram, b: EdgeProgram) => a.node.name > b.node.name ? 1 : a.node.name < b.node.name ? -1 : 0)}
+              columns={Columns}
+              table_title='Program'
+              button_type={"add"}
+              button_action={() => { setShowModal({ type: "create", show: true }) }}
+            />
             :
             <ServerError type='network' item='' />}
         </div>
@@ -91,14 +80,14 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
 
 
         <MyModal
-          component={<ModalCUDProgram 
+          component={<ModalCUDProgram
             params={params}
             setOpenModal={setShowModal}
             actionType={showModal?.type || "create"}
             selectedItem={selectedItem}
           />}
           openState={showModal?.show || false}
-          onClose={() => setShowModal({ show: false, type: "create"})}
+          onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}
           classname=''
         />

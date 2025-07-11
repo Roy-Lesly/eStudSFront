@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { EdgeLevel } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 const ModalCUDLevel = ({
-    actionType, selectedItem, setOpenModal
+    actionType, selectedItem, setOpenModal, params
 }: {
-    params: any,  actionType: "update" | "create" | "delete", selectedItem: EdgeLevel | null, setOpenModal: any
+    params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeLevel | null, setOpenModal: any
 }) => {
 
     const { t } = useTranslation();
@@ -35,8 +36,6 @@ const ModalCUDLevel = ({
 
 
 
-    const [createUpdateDeleteLevel] = useMutation(CREATE_OR_UPDATE)
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let dataToSubmit: any = formData
@@ -54,21 +53,21 @@ const ModalCUDLevel = ({
             }
         }
 
-        try {
-
-            const result = await createUpdateDeleteLevel({
-                variables: { ...dataToSubmit }
-            });
-            if (
-                (actionType !== "delete" && result.data.createUpdateDeleteLevel.level.id) || 
-                (actionType === "delete" && result.data.createUpdateDeleteLevel)
-            ) {
-                setOpenModal(false);
-                window.location.reload()
-            };
-        } catch (error: any) {
-            alert(`error domain:, ${error}`)
-        }
+        const res = await ApiFactory({
+            newData: { ...dataToSubmit, delete: actionType === "delete" },
+            editData: { ...dataToSubmit, delete: actionType === "delete" },
+            mutationName: "createUpdateDeleteLevel",
+            modelName: "level",
+            successField: "id",
+            query,
+            router: null,
+            params,
+            redirect: false,
+            reload: true,
+            returnResponseField: false,
+            redirectPath: ``,
+            actionLabel: "processing",
+        });
     };
 
     return (
@@ -109,7 +108,7 @@ const ModalCUDLevel = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
-                        className={`${actionType === "update" ?"bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
+                        className={`${actionType === "update" ? "bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
                     >
                         {t("Confirm")} & {t(capitalizeFirstLetter(actionType))}
                     </motion.button>
@@ -125,7 +124,7 @@ export default ModalCUDLevel
 
 
 
-export const CREATE_OR_UPDATE = gql`
+export const query = gql`
     mutation CreateUpdateDelete(
         $id: ID,
         $level: Int!,

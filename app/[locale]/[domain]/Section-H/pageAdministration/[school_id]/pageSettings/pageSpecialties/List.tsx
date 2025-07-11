@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(searchParams?.tab) || 0);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const router = useRouter();
@@ -122,13 +122,6 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         />
       }
     >
-      <Breadcrumb
-        department="Specialty"
-        subRoute="List"
-        pageName="Specialty"
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
-        subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
-      />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
 
@@ -182,6 +175,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={`Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties/?`}
             />
           ) : (
             <ServerError type="network" item="Specialties" />

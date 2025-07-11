@@ -88,6 +88,7 @@ const ModalCUDSpecialty = (
       dataToSubmit = {
         ...formData,
         createdById: user.user_id,
+        updatedById: user.user_id,
       }
     }
     if ((actionType === "update" || actionType === "delete") && selectedItem) {
@@ -98,39 +99,21 @@ const ModalCUDSpecialty = (
       }
     }
 
-    // try {
-
-    //   const result = await createUpdateDeleteSpecialty({
-    //     variables: {
-    //       ...dataToSubmit,
-    //     }
-    //   });
-    //   if (
-    //     (actionType !== "delete" && result.data.createUpdateDeleteSpecialty.specialty.id) ||
-    //     (actionType === "delete" && result.data.createUpdateDeleteSpecialty)
-    //   ) {
-    //     setOpenModal(false);
-    //     window.location.reload()
-    //   };
-    // } catch (error: any) {
-    //   alert(`error domain:, ${error}`)
-    // }
-
-    await ApiFactory({
-      newData: dataToSubmit,
-      mutationName: "createUpdateDeleteSpecialty",
-      modelName: "specialty",
-      successField: "id",
-      query,
-      params,
-      router,
-      redirect: true,
-      redirectPath: `/${params.locale}/${params.domain}/Section-H/pageAdministration/${params?.school_id}/pageSettings/pageSpecialties/`,
-      actionLabel: "creating",
-      // getFileMap: (item) => ({
-      //     file: item.file!,
-      // }),
-    });
+   const res = await ApiFactory({
+            newData: { ...dataToSubmit, delete: actionType === "delete" },
+            editData: { ...dataToSubmit, delete: actionType === "delete" },
+            mutationName: "createUpdateDeleteSpecialty",
+            modelName: "specialty",
+            successField: "id",
+            query,
+            router: null,
+            params,
+            redirect: false,
+            reload: true,
+            returnResponseField: false,
+            redirectPath: ``,
+            actionLabel: "processing",
+        });
   };
 
   const mainSpecialtyOptions = extraData?.mainSpecialties?.map((item: EdgeMainSpecialty) => { return { value: decodeUrlID(item.node.id.toString()), label: item.node.specialtyName } });
@@ -175,17 +158,6 @@ const ModalCUDSpecialty = (
               onChange={(e) => handleChange('mainSpecialtyId', parseInt(e?.value || ""))}
             />
           </div>
-
-          {/* <MyInputField
-            id="mainSpecialtyId"
-            name="mainSpecialtyId"
-            label="Main Specialty"
-            type="select"
-            placeholder="Select Specialty"
-            value={formData.mainSpecialtyId?.toString()}
-            options={extraData?.mainSpecialties?.map((item: EdgeMainSpecialty) => { return { id: decodeUrlID(item.node.id.toString()), name: item.node.specialtyName } })}
-            onChange={(e) => handleChange('mainSpecialtyId', parseInt(e.target.value))}
-          /> */}
 
           <div className='flex flex-row gap-2 justify-between'>
             <MyInputField
@@ -251,9 +223,9 @@ const ModalCUDSpecialty = (
               onChange={(e) => handleChange('paymentTwo', parseInt(e.target.value))}
             />
             <MyInputField
-              id="paymentTwo"
-              name="paymentTwo"
-              label="Payment Two"
+              id="paymentThree"
+              name="paymentThree"
+              label="Payment Three"
               type="number"
               placeholder="Enter paymentThree"
               value={formData.paymentThree?.toString()}

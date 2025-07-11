@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { CombinedResultDataSpecialtyTranscript } from '@/Domain/schemas/interfaceGraphqlKPI';
-import { BlobProvider, PDFViewer } from '@react-pdf/renderer';
+import { PDFViewer } from '@react-pdf/renderer';
 import BatchTransOneYear from '../../../pageResult/pageTranscript/[fees_id]/CompsBatch/BatchTransOneYear';
 
 const Transcript = ({ data, params, searchParams }: { data: CombinedResultDataSpecialtyTranscript | null, params: any, specialty_id: string, searchParams: any }) => {

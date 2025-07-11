@@ -7,7 +7,6 @@ import { GrClose, GrStatusGood } from 'react-icons/gr';
 import EncouragementMessage from './EncouragementMessage';
 import initTranslations from '@/initTranslations';
 import ResultSlip from '../ResultSlip';
-import { FaArrowRightLong } from 'react-icons/fa6';
 import PaymentStatus from './PaymentStatus';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
@@ -47,135 +46,134 @@ const ResultDisplay = async (
   const feeCheckList = data ? data.allSchoolFees.edges[0].node.userprofile.specialty.school.schoolfeesControl.split(",").map((num: any) => parseFloat(num.trim())) : []
   const pubI: EdgePublish[] = data && data.allPublishes.edges?.filter((item: EdgePublish) => item?.node.semester === "I")
   const pubII: EdgePublish[] = data && data.allPublishes.edges?.filter((item: EdgePublish) => item?.node.semester === "II")
-  // const [showModalType, setShowModalType] = useState<"id" | "platform" | "moratoire" | null>(null)
 
-  return (
-    <div className='flex flex-col gap-4 min-h-screen mb-4 pb-16'>
-      {/* Main Content */}
-      <div className='h-screen mx-1 my-16 p-1 rounded text-black'>
-
-        <div className='flex font-semibold items-center justify-center mb-2 text-xl uppercase'>
-          {t(title)} - {t("result")}
-        </div>
-
-
-
-        <div className='flex-grow h-full'>
-          {data ? (
-            data.allSchoolFees.edges[0].node.platformPaid ? (
-              data.allResults ? (
-                <>
-
-                  {
-                    (
-                      (resultType == "ca" && paidAmount > ((feeCheckList[0] - 0.01) * tuition)) ||
-                      (resultType == "exam" && paidAmount > ((feeCheckList[1] - 0.01) * tuition)) ||
-                      (resultType == "resit" && paidAmount > ((feeCheckList[2] - 0.01) * tuition))
-                    ) && pubI.length > 0 ?
-                      <CaExamResit
-                        semester='I'
-                        resultType={resultType}
-                        data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
-                        fees={data.allSchoolFees.edges}
-                        publish={pubI[0]}
-                        platform={platform}
-                        params={p}
-                      />
-                      :
-                      (resultType == "result" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)) ?
-                        <Result
-                          locale={p.locale}
-                          semester='I'
-                          schoolFees={schoolFees}
-                          examPublished={pubI[0]?.node?.exam}
-                          resitPublished={pubI[0]?.node?.resit}
-                          data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
-                        />
-                        :
-                        (resultType == "result" ?
-                          <Notification
-                            semester='I'
-                            platform={platform}
-                            fees={paidAmount > ((feeCheckList[2] - 0.01) * tuition)}
-                            publish={pubI[0]?.node.resit}
-                            t={t}
-                          />
-                          :
-                          <Notification
-                            semester='I'
-                            platform={platform}
-                            fees={resultType === "ca" && paidAmount > ((feeCheckList[0] - 0.01) * tuition) || resultType === "exam" && paidAmount > ((feeCheckList[1] - 0.01) * tuition) || resultType === "resit" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)}
-                            publish={resultType === "ca" && pubI[0]?.node.ca || resultType === "exam" && pubI[0]?.node.exam || resultType === "resit" && pubI[0].node.resit}
-                            t={t}
-                          />)
-                  }
-
-                  {
-                    (
-                      (resultType == "ca" && paidAmount > ((feeCheckList[3] - 0.1) * tuition)) ||
-                      (resultType == "exam" && paidAmount > ((feeCheckList[4] - 0.1) * tuition)) ||
-                      (resultType == "resit" && paidAmount > ((feeCheckList[5] - 0.1) * tuition))
-                    ) && pubII.length > 0 ?
-                      <CaExamResit
-                        semester='II'
-                        resultType={resultType}
-                        data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'II')}
-                        fees={data.allSchoolFees.edges}
-                        publish={pubII[0]}
-                        platform={platform}
-                        params={p}
-                      />
-                      :
-                      (resultType == "result" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)) ?
-                        <Result
-                          locale={p?.locale}
-                          semester='II'
-                          schoolFees={schoolFees}
-                          examPublished={pubII[0]?.node?.exam}
-                          resitPublished={pubII[0]?.node?.resit}
-                          data={data.allResults.edges.filter((item: EdgeResult) => item?.node?.course.semester === 'II')}
-                        />
-                        :
-                        (resultType == "result" ?
-                          <Notification
-                            semester='II'
-                            platform={platform}
-                            fees={paidAmount > ((feeCheckList[5] - 0.01) * tuition)}
-                            publish={pubII[0]?.node.resit}
-                            t={t}
-                          />
-                          :
-                          <Notification
-                            semester='II'
-                            platform={platform}
-                            fees={resultType === "ca" && paidAmount > ((feeCheckList[3] - 0.01) * tuition) || resultType === "exam" && paidAmount > ((feeCheckList[4] - 0.01) * tuition) || resultType === "resit" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)}
-                            publish={resultType === "ca" && pubII[0]?.node.ca || resultType === "exam" && pubII[0]?.node.exam || resultType === "resit" && pubII[0]?.node.resit}
-                            t={t}
-                          />)
-                  }
-                </>
-              ) : (
-                <div>{t("No Data")} {t("Results")}</div>
-              )
-            ) : 
-            <PaymentStatus
-              params={params}
-              apiSchoolFees={data.allSchoolFees?.edges[0]}
-              school={schoolFees?.userprofile?.specialty?.school}
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center my-20 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
-              <p className="text-2xl text-center">🚫 {t("No Data Available")}.</p>
-            </div>
-          )}
-        </div>
-
-        {data && <EncouragementMessage data={data.allSchoolFees.edges[0].node} />}
-
-
-      </div>
+return (
+  <div className='flex flex-col min-h-screen bg-gray-50'>
+    {/* Header */}
+    <div className='text-center font-semibold text-xl uppercase my-6'>
+      {t(title)} - {t("result")}
     </div>
-  )
+
+    {/* Main Content */}
+    <div className='flex-grow px-2 mb-24'>
+      {data ? (
+        data.allSchoolFees.edges[0].node.platformPaid ? (
+          data.allResults ? (
+            <>
+              {/* Semester I Logic */}
+              {
+                (
+                  (resultType == "ca" && paidAmount > ((feeCheckList[0] - 0.01) * tuition)) ||
+                  (resultType == "exam" && paidAmount > ((feeCheckList[1] - 0.01) * tuition)) ||
+                  (resultType == "resit" && paidAmount > ((feeCheckList[2] - 0.01) * tuition))
+                ) && pubI.length > 0 ? (
+                  <CaExamResit
+                    semester='I'
+                    resultType={resultType}
+                    data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
+                    fees={data.allSchoolFees.edges}
+                    publish={pubI[0]}
+                    platform={platform}
+                    params={p}
+                  />
+                ) : (resultType === "result" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)) ? (
+                  <Result
+                    locale={p.locale}
+                    semester='I'
+                    schoolFees={schoolFees}
+                    examPublished={pubI[0]?.node?.exam}
+                    resitPublished={pubI[0]?.node?.resit}
+                    data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
+                  />
+                ) : (
+                  <Notification
+                    semester='I'
+                    platform={platform}
+                    fees={
+                      resultType === "ca" && paidAmount > ((feeCheckList[0] - 0.01) * tuition) ||
+                      resultType === "exam" && paidAmount > ((feeCheckList[1] - 0.01) * tuition) ||
+                      resultType === "resit" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)
+                    }
+                    publish={
+                      resultType === "ca" && pubI[0]?.node.ca ||
+                      resultType === "exam" && pubI[0]?.node.exam ||
+                      resultType === "resit" && pubI[0]?.node.resit
+                    }
+                    t={t}
+                  />
+                )
+              }
+
+              {/* Semester II Logic */}
+              {
+                (
+                  (resultType == "ca" && paidAmount > ((feeCheckList[3] - 0.1) * tuition)) ||
+                  (resultType == "exam" && paidAmount > ((feeCheckList[4] - 0.1) * tuition)) ||
+                  (resultType == "resit" && paidAmount > ((feeCheckList[5] - 0.1) * tuition))
+                ) && pubII.length > 0 ? (
+                  <CaExamResit
+                    semester='II'
+                    resultType={resultType}
+                    data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'II')}
+                    fees={data.allSchoolFees.edges}
+                    publish={pubII[0]}
+                    platform={platform}
+                    params={p}
+                  />
+                ) : (resultType === "result" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)) ? (
+                  <Result
+                    locale={p.locale}
+                    semester='II'
+                    schoolFees={schoolFees}
+                    examPublished={pubII[0]?.node?.exam}
+                    resitPublished={pubII[0]?.node?.resit}
+                    data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'II')}
+                  />
+                ) : (
+                  <Notification
+                    semester='II'
+                    platform={platform}
+                    fees={
+                      resultType === "ca" && paidAmount > ((feeCheckList[3] - 0.01) * tuition) ||
+                      resultType === "exam" && paidAmount > ((feeCheckList[4] - 0.01) * tuition) ||
+                      resultType === "resit" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)
+                    }
+                    publish={
+                      resultType === "ca" && pubII[0]?.node.ca ||
+                      resultType === "exam" && pubII[0]?.node.exam ||
+                      resultType === "resit" && pubII[0]?.node.resit
+                    }
+                    t={t}
+                  />
+                )
+              }
+            </>
+          ) : (
+            <div className="text-center text-red-600 text-lg mt-10">{t("No Data")} {t("Results")}</div>
+          )
+        ) : (
+          <PaymentStatus
+            params={params}
+            apiSchoolFees={data.allSchoolFees?.edges[0]}
+            school={schoolFees?.userprofile?.specialty?.school}
+          />
+        )
+      ) : (
+        <div className="flex flex-col items-center justify-center my-20 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
+          <p className="text-2xl text-center">🚫 {t("No Data Available")}.</p>
+        </div>
+      )}
+    </div>
+
+    {/* Sticky Encouragement Message */}
+    {data && (
+      <div className="sticky bottom-10 bg-white shadow-inner pt-2 px-2 z-20 border-t">
+        <EncouragementMessage data={data.allSchoolFees.edges[0].node} />
+      </div>
+    )}
+  </div>
+);
+
 }
 
 export default ResultDisplay
@@ -205,12 +203,12 @@ const CaExamResit = async (
         (resultType === "exam" && publish.node.exam) ||
         (resultType === "resit" && publish.node.resit)
       ) ?
-        <div className="mt-8">
+        <div className="mt-6">
           <h2 className="font-semibold mb-4 text-2xl text-center">
             {t("Semester")} {semester}
           </h2>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto border">
             <table className="border-collapse rounded-lg shadow-md table-auto w-full">
               <thead className="bg-blue-950 text-white">
                 <tr>

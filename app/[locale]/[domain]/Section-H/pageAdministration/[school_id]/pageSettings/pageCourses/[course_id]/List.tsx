@@ -52,13 +52,6 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         />
       }
     >
-      <Breadcrumb
-        department="Course Management"
-        subRoute="List"
-        pageName="Course Management"
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/pageCourses/${params.profile_id}`}
-      />
-
       <div className="bg-gray-50 flex flex-col items-center justify-center">
 
 
@@ -103,6 +96,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={`Section-H/pageAdministration/${params.school_id}/pageSettings/pageCourses/?`}
             />
           ) : (
             <ServerError type="network" item="Class" />

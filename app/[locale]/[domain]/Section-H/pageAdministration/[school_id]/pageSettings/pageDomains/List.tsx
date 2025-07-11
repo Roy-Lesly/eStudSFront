@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeDomain } from '@/Domain/schemas/interfaceGraphql';
@@ -62,20 +61,12 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
         />
       }
     >
-      <Breadcrumb
-        department={`${t("Domain")}s`}
-        subRoute={`${t("List")}`}
-        pageName={`${t("Domain")}s`}
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
-        subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
-      />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
 
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-            data.allDomains.edges.length ?
               <MyTableComp
                 data={
                   data.allDomains.edges.sort((a: EdgeDomain, b: EdgeDomain) => {
@@ -89,8 +80,6 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
                 button_action={() => { setShowModal({ type: "create", show: true })}}
               />
               :
-              <ServerError type='notFound' item='SchoolInfo' />
-            :
             <ServerError type='network' item='' />}
         </div>
 

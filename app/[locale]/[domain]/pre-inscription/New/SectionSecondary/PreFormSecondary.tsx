@@ -3,15 +3,14 @@ import { motion } from 'framer-motion';
 import { capitalizeFirstLetter, decodeUrlID, getAcademicYear } from '@/functions';
 import MyInputField from '@/MyInputField';
 import React, { useEffect, useState } from 'react'
-import { EdgeLevel, EdgeProgram, EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeProgram, EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { CertificateOptions, RegionList } from '@/constants';
 import { gql } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import Confirmation from './Confirmation';
-import { useRouter } from 'next/navigation';
-import { EdgeClassRoomSec, EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { SECONDARY_LEVEL_CHOICES_ENGLISH, SECONDARY_LEVEL_CHOICES_FRENCH } from '@/utils/dataSource';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { stream } from 'xlsx';
@@ -285,8 +284,6 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
       for (let index = 0; index < [newData].length; index++) {
         const dataToSubmit = [newData][index];
 
-        console.log(dataToSubmit);
-
         const res = await ApiFactory({
           newData: { ...dataToSubmit, delete: false },
           editData: { ...dataToSubmit, delete: false },
@@ -302,8 +299,6 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
           redirectPath: ``,
           actionLabel: "processing",
         });
-
-        console.log(res);
 
         setCount(9)
       };

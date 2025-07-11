@@ -22,13 +22,11 @@ const page = async ({
   paginationParams.fullName = sp?.fullName ? sp.fullName : ""
   paginationParams.telephone = sp?.telephone ? sp.telephone : ""
 
-  const searchObject = removeEmptyFields(paginationParams);
-
   const data = await queryServerGraphQL({
     domain,
     query: GET_DATA,
     variables: {
-      ...searchObject,
+      ...removeEmptyFields(paginationParams),
       // orRole: ["admin", "teacher"],
       role: "teacher",
       schoolId: parseInt(p.school_id),

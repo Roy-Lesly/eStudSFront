@@ -8,14 +8,14 @@ import DefaultLayout from '@/DefaultLayout';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import MyTabs from '@/MyTabs';
 import ServerError from '@/ServerError';
-import MyTableComp from '@/section-h/Table/MyTableComp';
 import { EdgePreInscription } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
+import ButtonAction from '@/Section-P/Buttons/ButtonAction';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { decodeUrlID } from '@/utils/functions';
+import MyTableComp from '@/components/section-h/Table/MyTableComp';
 
 
 const List = ({ params, dataYears, dataPending }: { params: any, dataYears: string[], dataPending: EdgePreInscription[], searchParams: any }) => {
@@ -31,26 +31,26 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
     { header: `${t("Gender")}`, accessor: "node.sex", align: "center", responsiveHidden: true },
     { header: `${t("Address")}`, accessor: "node.address", align: "center", responsiveHidden: true },
     { header: "Campus", accessor: "node.campus.campus", align: "center", responsiveHidden: true },
-    { header: "Telephone", accessor: "node.telephone", align: "center", responsiveHidden: true },
-    {
-      header: `${t("View")}`, align: "center", responsiveHidden: true,
-      render: (item) => <div
-        className="gap-2 items-center justify-center p-1 rounded-full x-row"
-      >
-        {activeTab === 0 || activeTab === 2 ? <div className='flex flex-row gap-2'>
-          <ButtonAction data={item} type='edit' action={() => { }} />
-          <ButtonAction data={item} type='delete' action={() => { }} />
-        </div>
-          :
-          (activeTab === 1) ? <div className='flex flex-row gap-2'>
-            <span>{t("Admitted")}</span>
-          </div> : null}
-      </div>,
-    },
+    { header: "Telephone", accessor: "node.fatherTelephone", align: "center", responsiveHidden: true },
+    // {
+    //   header: `${t("View")}`, align: "center", responsiveHidden: true,
+    //   render: (item) => <div
+    //     className="gap-2 items-center justify-center p-1 rounded-full x-row"
+    //   >
+    //     {activeTab === 0 || activeTab === 2 ? <div className='flex flex-row gap-2'>
+    //       <ButtonAction data={item} type='edit' action={() => { }} />
+    //       <ButtonAction data={item} type='delete' action={() => { }} />
+    //     </div>
+    //       :
+    //       (activeTab === 1) ? <div className='flex flex-row gap-2'>
+    //         <span>{t("Admitted")}</span>
+    //       </div> : null}
+    //   </div>,
+    // },
     {
       header: "Admit", align: "center", hideColumn: activeTab == 1 ? true : false, render: (item) => <button
         className="bg-green-400 gap-2 items-center justify-center p-2 rounded-full"
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?id=${item.node.id}`)}
+        onClick={() => router.push(`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?id=${item.node.id}`)}
       >
         <FaArrowRightLong size={22} color='black' />
       </button>,
@@ -64,7 +64,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
       searchComponent={
         <SearchMultiple
           names={["fullName", "registrationNumber"]}
-          link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`}
+          link={`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/PreInscription`}
           select={[
             { type: 'select', name: 'academicYear', dataSelect: dataYears },
           ]}

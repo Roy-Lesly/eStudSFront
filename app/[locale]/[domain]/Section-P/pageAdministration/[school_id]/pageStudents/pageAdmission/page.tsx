@@ -1,15 +1,15 @@
 import { Metadata } from 'next';
 import React from 'react'
-import { decodeUrlID, removeEmptyFields } from '@/functions';
+import { decodeUrlID } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 
 export const metadata: Metadata = {
-    title: "Admission Page",
-    description: "This is Admission Page Admin Settings",
+  title: "Admission Page",
+  description: "This is Admission Page Admin Settings",
 };
 
 
@@ -17,8 +17,8 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-    params: any;
-    searchParams: any;
+  params: any;
+  searchParams: any;
 }) => {
   const p = await params;
   const sp = await searchParams;
@@ -29,48 +29,33 @@ const EditPage = async ({
   paginationParams.level = sp?.level
   paginationParams.academicYear = sp?.academicYear
   paginationParams.domainName = sp?.domainName
-  const client = getApolloClient(p.domain);
-  let dataPreinscription;
-  let dataSpecialties;
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        id: parseInt(decodeUrlID(sp?.id)),
-        schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataPreinscription = result.data;
-  } catch (error: any) {
-    console.log(error, 35)
-    dataPreinscription = null;
-  }
+  const dataPreinscription = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_PREINSCRIPTION,
+    variables: {
+      id: parseInt(decodeUrlID(sp?.id)),
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_SPECIALTIES,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        schoolId: parseInt(p.school_id),
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataSpecialties = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    dataSpecialties = null;
-  }
+
+  const dataClasses = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      schoolId: parseInt(p.school_id),
+      schoolId2: parseInt(p.school_id),
+    },
+  });
 
   return (
     <div>
-      <List 
-      params={p} 
-      dataPreinscription={dataPreinscription} 
-      searchParams={sp} 
-      dataSpecialties={dataSpecialties} 
+      <List
+        params={p}
+        dataPreinscription={dataPreinscription}
+        searchParams={sp}
+        dataClasses={dataClasses}
       />
     </div>
   )
@@ -80,17 +65,34 @@ export default EditPage
 
 
 
-const GET_DATA_SPECIALTIES = gql`
+const GET_DATA = gql`
  query GetData(
-   $schoolId: Decimal,
-   $domainName: String,
+   $schoolId: ID!,
+   $schoolId2: Decimal!,
    $academicYear: String,
-   $level: Decimal,
+   $level: String,
   ) {
-    allSpecialties(
+    allProgramsprim {
+      edges {
+        node {
+          id 
+          name
+        }
+      }
+    }
+    allAcademicYears
+    allSchoolInfos(
+      id: $schoolId
+    ){
+      edges {
+        node {
+          prefix method
+        }
+      }
+    }
+    allClassroomsPrim(
       last: 100,
-      schoolId: $schoolId
-      domainName: $domainName
+      schoolId: $schoolId2
       academicYear: $academicYear
       level: $level
     ){
@@ -98,12 +100,7 @@ const GET_DATA_SPECIALTIES = gql`
         node {
           id 
           academicYear
-          level {
-            level
-          }
-          mainSpecialty {
-            id specialtyName
-          }
+          level
           school { campus }
         }
       }
@@ -113,42 +110,22 @@ const GET_DATA_SPECIALTIES = gql`
 
 
 
-const GET_DATA = gql`
+const GET_DATA_PREINSCRIPTION = gql`
  query GetData(
   $id: ID!
-  $schoolId: ID!
  ) {
-  allSchoolInfos(id: $schoolId){
-    edges {
-      node {
-        prefix method
-      }
-    }
-  }
-  allPreinscriptions(
+  allPreinscriptionsPrim(
       id: $id
     ){
       edges {
         node {
-          id registrationNumber firstName lastName fullName dob pob address sex email telephone emergencyName emergencyTelephone session
-          level program specialtyOne specialtyTwo academicYear nationality nationality highestCertificate regionOfOrigin yearObtained
-          campus { id campus }
-        }
-      }
-    }
-    allMainSpecialties ( last: 100 ) {
-      edges {
-        node {
           id 
-          specialtyName
-        }
-      }
-    }
-    allLevels {
-      edges {
-        node {
-          id 
-          level
+          registrationNumber firstName lastName
+          fullName sex dob pob address status
+          fatherName motherName fatherTelephone motherTelephone parentAddress parentEmail
+          academicYear admissionStatus action
+          program { id name }
+          campus { id schoolName campus }
         }
       }
     }
@@ -160,14 +137,5 @@ const GET_DATA = gql`
         }
       }
     }
-    allPrograms {
-      edges {
-        node {
-          id 
-          name
-        }
-      }
-    }
-    allAcademicYears
   }
 `;

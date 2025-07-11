@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { EdgeDomain } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
 const ModalCUDDomain = ({
-    actionType, selectedItem, setOpenModal
+    actionType, selectedItem, setOpenModal, params
 }: {
-    params: any,  actionType: "update" | "create" | "delete", selectedItem: EdgeDomain | null, setOpenModal: any
+    params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeDomain | null, setOpenModal: any
 }) => {
 
     const { t } = useTranslation();
@@ -34,9 +35,6 @@ const ModalCUDDomain = ({
     };
 
 
-
-    const [createUpdateDeleteDomain] = useMutation(CREATE_OR_UPDATE_DOMAIN)
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let dataToSubmit: any = formData
@@ -54,21 +52,21 @@ const ModalCUDDomain = ({
             }
         }
 
-        try {
-
-            const result = await createUpdateDeleteDomain({
-                variables: { ...dataToSubmit }
-            });
-            if (
-                (actionType !== "delete" && result.data.createUpdateDeleteDomain.domain.id) || 
-                (actionType === "delete" && result.data.createUpdateDeleteDomain)
-            ) {
-                setOpenModal(false);
-                window.location.reload()
-            };
-        } catch (error: any) {
-            alert(`error domain:, ${error}`)
-        }
+        const res = await ApiFactory({
+            newData: { ...dataToSubmit, delete: actionType === "delete" },
+            editData: { ...dataToSubmit, delete: actionType === "delete" },
+            mutationName: "createUpdateDeleteDomain",
+            modelName: "domain",
+            successField: "id",
+            query,
+            router: null,
+            params,
+            redirect: false,
+            reload: true,
+            returnResponseField: false,
+            redirectPath: ``,
+            actionLabel: "processing",
+        });
     };
 
     return (
@@ -107,7 +105,7 @@ const ModalCUDDomain = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
-                        className={`${actionType === "update" ?"bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
+                        className={`${actionType === "update" ? "bg-blue-600" : "bg-green-600"} font-bold hover:bg-blue-700 mt-6 px-6 py-2 rounded-md shadow-md text-lg text-white tracking-wide transition w-full`}
                     >
                         {t("Confirm")} & {t(capitalizeFirstLetter(actionType))}
                     </motion.button>
@@ -123,7 +121,7 @@ export default ModalCUDDomain
 
 
 
-export const CREATE_OR_UPDATE_DOMAIN = gql`
+export const query = gql`
     mutation CreateUpdateDelete(
         $id: ID,
         $domainName: String!,

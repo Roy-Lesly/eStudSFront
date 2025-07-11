@@ -1,7 +1,7 @@
 import { QrCodeBase64 } from '@/components/QrCodeBase64';
 import jsPDF from 'jspdf';
 
-export const generateIDCard = async (
+export const generateIDCardSec = async (
     { students, imageSource = '/images/idcards/id-background2.jpg' }:
         { students: any[], imageSource?: string }
 ) => {
@@ -84,15 +84,14 @@ export const generateIDCard = async (
 
         // FOR DATA
         pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(9);
+        pdf.setFontSize(8.5);
         pdf.setTextColor("#333");
 
         pdf.text(`${student.matricle}`, x + 4, y + 44);
 
         const fullNameText = student.name.length > 15
-            ? pdf.splitTextToSize(student.name, 36)
+            ? pdf.splitTextToSize(student.name, 35)
             : student.name;
-        // const fullNameText = pdf.splitTextToSize(`${student.name}`, 36);
         pdf.text(fullNameText, x + 50, y + (student.name.length > 15 ? 22 : 23));
         pdf.text(`${student.dob}`, x + 50, y + 30);
         const specialtyText = pdf.splitTextToSize(`${student.specialty.slice(0, 30)}`, 40);
@@ -126,6 +125,8 @@ export const generateIDCard = async (
 
     pdf.save('HD-student-id-cards.pdf');
 };
+
+
 
 const loadImageToBase64 = (url: string): Promise<string> => {
     return new Promise((resolve) => {

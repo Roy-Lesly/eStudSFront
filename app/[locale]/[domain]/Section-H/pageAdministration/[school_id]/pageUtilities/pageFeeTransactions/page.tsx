@@ -1,8 +1,9 @@
 import React from 'react'
 import List from './List'
 import { gql } from '@apollo/client'
-import getApolloClient, { errorLog } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { Metadata } from 'next';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
     title: "Transactions",
@@ -13,35 +14,29 @@ const page = async ({
     params,
     searchParams,
 }: {
-  params: any;
-  searchParams: any;
+    params: any;
+    searchParams: any;
 }) => {
 
-  const p = await params;
-  const sp = await searchParams;
+    const p = await params;
+    const sp = await searchParams;
 
-    const client = getApolloClient(p.domain);
-    let data;
-    try {
-        let q: any = {
-            schoolId: parseInt(p.school_id),
-            timestamp: new Date().getTime()
-        }
-        if (sp?.fullName){ q = { ...q, fullName: sp?.fullName } } 
-        if (sp?.specialtyName){ q = { ...q, specialtyName: sp?.specialtyName } } 
-        if (sp?.level){ q = { ...q, level: parseInt(sp?.level) } } 
-        if (sp?.academicYear){ q = { ...q, academicYear: sp?.academicYear } } 
+    const paginationParams: Record<string, any> = {};
 
-        const result = await client.query<any>({
-            query: GET_DATA,
-            variables: q,
-            fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-        errorLog(error);
-        data = null;
-    }
+    paginationParams.fullName = sp?.fullName ? sp.fullName : ""
+    paginationParams.academicYear = sp?.academicYear ? sp.academicYear : ""
+    paginationParams.level = sp?.level ? sp.level : ""
+    paginationParams.specialtyName = sp?.specialtyName ? sp.level : ""
+
+    const data = await queryServerGraphQL({
+        domain: p.domain,
+        query: GET_DATA,
+        variables: {
+            ...removeEmptyFields(paginationParams),
+            schoolId: parseInt(p.school_id)
+        },
+    });
+
 
     return (
         <div>

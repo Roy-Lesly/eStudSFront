@@ -74,12 +74,8 @@ const page = async (
                 width={72}
                 height={72}
                 src={data?.allUserProfiles?.edges[0]?.node?.customuser?.photo ? `${protocol}api${p?.domain}${RootApi}/media/${data?.allUserProfiles?.edges[0]?.node?.customuser?.photo}` : "/images/user/user-01.png"}
-                style={{
-                  width: "auto",
-                  height: "auto",
-                }}
-                alt="User"
-                className="rounded-full"
+                alt="."
+                className="rounded-full bg-white"
               />
             </Link>
 

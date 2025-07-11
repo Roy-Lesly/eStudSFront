@@ -3,7 +3,7 @@ import React, { FC } from 'react'
 import { removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const EditPage = async ({
   params,
@@ -21,66 +21,31 @@ const EditPage = async ({
   paginationParams.registrationNumber = sp?.registrationNumber
   paginationParams.academicYear = sp?.academicYear
 
-  const client = getApolloClient(p.domain);
-  let dataPending;
-  let dataAdmitted;
-  let data;
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_PREINSCRIPTIONN,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        admissionStatus: false,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataPending = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    dataPending = null;
-  }
+  const dataPending = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_PREINSCRIPTION,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      admissionStatus: false,
+    },
+  });
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_PREINSCRIPTIONN,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        admissionStatus: true,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataAdmitted = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    dataAdmitted = null;
-  }
+  const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      schoolId: parseInt(p?.school_id),
+    },
+  });
 
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        admissionStatus: true,
-        schoolId: parseInt(p?.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
 
   return (
     <div>
       <List 
       params={p} 
-      dataPending={dataPending?.allPreinscriptionsSec?.edges}
+      dataPending={dataPending?.allPreinscriptionsPrim?.edges}
       dataYears={data?.allAcademicYears} 
       searchParams={sp} 
       />
@@ -118,14 +83,14 @@ const GET_DATA = gql`
 }
 `;
 
-const GET_DATA_PREINSCRIPTIONN = gql`
+const GET_DATA_PREINSCRIPTION = gql`
  query Get(
   $fullName: String
   $registrationNumber: String
   $academicYear: String
   $admissionStatus: Boolean!
 ) {
-  allPreinscriptionsSec(
+  allPreinscriptionsPrim(
     fullName: $fullName
     registrationNumber: $registrationNumber
     academicYear: $academicYear
@@ -136,8 +101,10 @@ const GET_DATA_PREINSCRIPTIONN = gql`
       node {
         id 
         registrationNumber firstName lastName
-        fullName sex email sex dob pob address telephone status emergencyName emergencyTown
-        program level session academicYear admissionStatus action 
+        fullName sex dob pob address status
+        fatherName motherName fatherTelephone motherTelephone parentAddress parentEmail
+        academicYear admissionStatus action
+        program { id name }
         campus { id schoolName campus }
       }
     }

@@ -1,43 +1,94 @@
 'use client';
+
 import { NodeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
+
+
+const getInitialIndex = () => {
+  const minute = new Date().getMinutes();
+  if (minute === 0) return 1;
+  const index = Math.ceil(minute / 3);
+  return index >= toastMessages.length ? toastMessages.length - 1 : index;
+};
 
 const EncouragementMessage = ({ data }: { data: NodeSchoolFees }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+    const [index, setIndex] = useState(getInitialIndex());
+
+
+    useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % toastMessages.length);
+    }, 10000); // 10 seconds
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <motion.div
-      className="bg-gradient-to-r from-indigo-950 mb-6 mt-auto px-4 py-6 rounded-lg shadow-lg text-white to-purple-600"
+      className="bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-700 text-white rounded-xl shadow-md px-6 py-3 mt-2 w-full cursor-pointer overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: 'easeOut' }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      onClick={() => setIsCollapsed(!isCollapsed)}
     >
-      <motion.span
-        className="block font-semibold mb-2 text-lg"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        Dear {data?.userprofile.customuser.fullName},
-      </motion.span>
+      <div className="flex items-center justify-between">
+        <span className="font-bold text-sm sm:text-base">
+          {isCollapsed ? `Hello, ${data?.userprofile?.customuser?.firstName}` : `Hello, ${data?.userprofile?.customuser?.fullName} 👋`}
+        </span>
+        {isCollapsed ? (
+          <ChevronUp className="w-5 h-5 text-white" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-white" />
+        )}
+      </div>
 
-      <motion.span
-        className="block italic mb-2 text-sm"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        We encourage you to keep on going, even when it gets tough.
-      </motion.span>
-
-      <motion.span
-        className="block italic mb-0 text-sm"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        Learning is a lifelong enriching journey.
-      </motion.span>
+      <AnimatePresence>
+        {!isCollapsed && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <p className="text-sm sm:text-base italic text-slate-100 mt-2">
+              You're doing amazing! Keep pushing forward, even when it's hard.
+            </p>
+            <p className="text-sm sm:text-base italic text-slate-200">
+              {toastMessages[index]}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
 
 export default EncouragementMessage;
+
+
+
+
+const toastMessages = [
+  "You're doing great, keep it up!",
+  "Believe in yourself — you've got this!",
+  "Every step forward is progress.",
+  "Hard work always pays off.",
+  "Stay focused. Stay determined.",
+  "Your efforts today build your future.",
+  "Small steps lead to big success.",
+  "Don't give up — you're almost there.",
+  "Your discipline is your superpower.",
+  "Mistakes are proof that you're learning.",
+  "Push through. Growth happens outside comfort zones.",
+  "You’re stronger than your challenges.",
+  "Be proud of how far you’ve come.",
+  "Keep going — success is closer than you think.",
+  "Consistency beats talent when talent doesn’t work hard.",
+  "Each effort you make counts.",
+  "Celebrate progress, no matter how small.",
+  "Focus on the goal, not the obstacle.",
+  "Learning never stops — embrace it.",
+  "Your future self will thank you for today."
+];

@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 import { platform } from 'os'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
 
 
 const page = async ({
@@ -17,43 +18,25 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(p.domain);
-  let data;
-
-  let searchP: any = {
+  const paginationParams: any = {
     fullName: sp?.fullName,
     specialtyName: sp?.specialtyName,
     level: sp?.level,
     academicYear: sp?.academicYear,
   }
+  paginationParams.fullName = sp?.fullName ? sp.fullName : ""
+  paginationParams.telephone = sp?.telephone ? sp.telephone : ""
 
-  searchP = removeEmptyFields(searchP)
+  const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      schoolId: parseInt(p.school_id),
+      schoolId2: parseInt(p.school_id)
+    },
+  });
 
-  if (p?.item_type === "ID") {
-    searchP.idPaid = false;
-  } else {
-    searchP.platformPaid = false;
-  }
-
-  console.log(searchP);
-
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        ...searchP,
-        schoolId: parseInt(p.school_id),
-        schoolId2: parseInt(p.school_id),
-        status: "Pending"
-      },
-      fetchPolicy: 'no-cache'
-    });
-
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    data = null;
-  }
 
   return (
     <List

@@ -9,10 +9,7 @@ import DefaultLayout from '@/DefaultLayout';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import { EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import MyTableComp from '@/section-h/Table/MyTableComp';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
-import ServerError from '@/ServerError';
-import ListPendingPlatformPage from '@/components/componentsTwo/ListUtility/ListPendingPlatformPage';
 
 
 export const metadata: Metadata = {

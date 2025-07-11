@@ -1,60 +1,54 @@
 import { Metadata } from 'next';
 import React from 'react'
-import getApolloClient, { errorLog, removeEmptyFields } from '@/functions';
+import { removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const EditPage = async ({
   params,
   searchParams,
 }: {
-    params: any;
-    searchParams: any;
-}) => { const p = await params; const sp = await searchParams;
+  params: any;
+  searchParams: any;
+}) => {
+  const p = await params; const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = { };
-  
+  const paginationParams: Record<string, any> = {};
+
   paginationParams.courseName = sp?.courseName
   paginationParams.specialtyName = sp?.specialtyName
   paginationParams.level = sp?.level
   paginationParams.domainName = sp?.domainName
-  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear :`${new Date().getFullYear()}` 
-    const client = getApolloClient(p.domain);
-    let data;
-    let dataAdmin;
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA,
-          variables: {
-            ...removeEmptyFields(paginationParams),
-            schoolId: p.school_id,
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-      errorLog(error)
-    }
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA_ADMIN,
-          variables: {
-            schoolId: p.school_id,
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        dataAdmin = result.data;
-    } catch (error: any) {
-      console.log(error, 35)
-      dataAdmin = null
-    }
+  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : `${new Date().getFullYear()}`
+
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      schoolId: parseInt(p.school_id),
+    },
+  });
+
+  const dataAdmin = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_ADMIN,
+    variables: {
+      schoolId: parseInt(p.school_id),
+    },
+  });
+
 
   return (
     <div>
-    <List params={p} data={data} searchParams={sp} admins={dataAdmin} />
-  </div>
+      <List
+        params={p}
+        data={data}
+        searchParams={sp}
+        admins={dataAdmin}
+      />
+    </div>
   )
 }
 
@@ -72,7 +66,7 @@ const GET_DATA_ADMIN = gql`
  query GetData(
    $schoolId: Decimal
   ) {
-    allCustomUsers(
+    allCustomusers(
       schoolId: $schoolId
       role: "admin"
       last: 500,
@@ -171,7 +165,7 @@ const GET_DATA = gql`
         }
       }
     }
-    allCustomUsers(
+    allCustomusers(
       schoolId: $schoolId
       role: "teacher"
       last: 500,

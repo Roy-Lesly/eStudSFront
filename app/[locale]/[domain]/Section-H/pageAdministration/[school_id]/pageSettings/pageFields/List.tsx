@@ -76,20 +76,11 @@ const List = ({ params, data }: { params: any; data: any }) => {
         />
       }
     >
-      <Breadcrumb
-        department={`${t("Field")}s`}
-        subRoute="List"
-        pageName={`${t("Field")}s`}
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
-        subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
-      />
-
       <div className="bg-gray-50 flex flex-col items-center justify-center">
 
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-            data?.allFields?.edges.length ?
               <MyTableComp
                 data={
                   data?.allFields?.edges.sort((a: EdgeField, b: EdgeField) => {
@@ -101,8 +92,6 @@ const List = ({ params, data }: { params: any; data: any }) => {
                 button_type={"add"}
                 button_action={() => { setShowModal({ type: "create", show: true }) }}
               />
-              :
-              <ServerError type='notFound' item={`${t("Field")}s`} />
             :
             <ServerError type='network' item='' />}
         </div>

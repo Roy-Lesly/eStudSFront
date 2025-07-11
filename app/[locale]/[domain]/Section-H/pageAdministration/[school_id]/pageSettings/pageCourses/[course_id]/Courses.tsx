@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
-import { FaArrowRight } from 'react-icons/fa';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 
