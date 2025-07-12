@@ -31,7 +31,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
     { header: `${t("Gender")}`, accessor: "node.sex", align: "center", responsiveHidden: true },
     { header: `${t("Address")}`, accessor: "node.address", align: "center", responsiveHidden: true },
     { header: "Campus", accessor: "node.campus.campus", align: "center", responsiveHidden: true },
-    { header: "Telephone", accessor: "node.telephone", align: "center", responsiveHidden: true },
+    { header: "Telephone", accessor: "node.fatherTelephone", align: "center", responsiveHidden: true },
     {
       header: `${t("View")}`, align: "center", responsiveHidden: true,
       render: (item) => <div
@@ -50,7 +50,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
     {
       header: "Admit", align: "center", hideColumn: activeTab == 1 ? true : false, render: (item) => <button
         className="bg-green-400 gap-2 items-center justify-center p-2 rounded-full"
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?id=${item.node.id}`)}
+        onClick={() => router.push(`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?id=${item.node.id}`)}
       >
         <FaArrowRightLong size={22} color='black' />
       </button>,
@@ -137,6 +137,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          source={`${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/PreInscription/`}
         />
           :
           <ServerError type="network" item="PreInscription" />

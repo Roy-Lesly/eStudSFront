@@ -66,7 +66,7 @@ const GET_DATA_ADMIN = gql`
  query GetData(
    $schoolId: Decimal
   ) {
-    allCustomusers(
+    allCustomUsers(
       schoolId: $schoolId
       role: "admin"
       last: 500,
@@ -165,7 +165,7 @@ const GET_DATA = gql`
         }
       }
     }
-    allCustomusers(
+    allCustomUsers(
       schoolId: $schoolId
       role: "teacher"
       last: 500,

@@ -50,6 +50,7 @@ export interface NodeClassRoomSec {
   id: string;
   school: NodeSchoolInfoSecondary;
   stream: string;
+  cycle: string;
   level: string;
   select: boolean;
   option: string;

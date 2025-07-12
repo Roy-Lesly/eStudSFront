@@ -1,7 +1,10 @@
 import React from 'react'
-import { FaSave } from 'react-icons/fa'
 
-const MyButtonModal = ({ type, clicked, title, icon, className }: {  clicked: boolean, type?: string, className?: string, title?: string, icon?: any }) => {
+
+const MyButtonModal = (
+    { type, clicked, title, icon, className }:
+    {  clicked: boolean, type?: string, className?: string, title?: string, icon?: any }
+) => {
 
     return <>
         {clicked ?

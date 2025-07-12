@@ -26,9 +26,9 @@ const PreInscriptionForm = ({
 
   const { t } = useTranslation("common");
   const [showPrint, setShowPrint] = useState<boolean>(false);
-  const specialtyOne = dataMainSpecialties.filter((sp: EdgeMainSpecialty) => decodeUrlID(sp.node.id) == decodeUrlID(data?.node?.specialtyOne.id))[0]
-  const specialtyTwo = dataMainSpecialties.filter((sp: EdgeMainSpecialty) => decodeUrlID(sp.node.id) == decodeUrlID(data?.node?.specialtyTwo.id))[0]
-  const school = dataSchool.filter((item: EdgeSchoolHigherInfo) => decodeUrlID(item.node.id) === decodeUrlID(data?.node?.campus.id))[0]
+  const specialtyOne = dataMainSpecialties?.filter((sp: EdgeMainSpecialty) => decodeUrlID(sp.node.id) == decodeUrlID(data?.node?.specialtyOne.id))[0]
+  const specialtyTwo = dataMainSpecialties?.filter((sp: EdgeMainSpecialty) => decodeUrlID(sp.node.id) == decodeUrlID(data?.node?.specialtyTwo.id))[0]
+  const school = dataSchool?.filter((item: EdgeSchoolHigherInfo) => decodeUrlID(item.node.id) === decodeUrlID(data?.node?.campus.id))[0]
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
   useEffect(() => {

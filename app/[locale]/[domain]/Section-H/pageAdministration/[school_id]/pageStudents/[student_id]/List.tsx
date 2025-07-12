@@ -27,13 +27,13 @@ export const metadata: Metadata = {
   description: "This is Main-Subject Page Admin Settings",
 };
 
-const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
+const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
   const user = token ? jwtDecode<JwtPayload>(token) : null;
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) || 0);
   const hasMark = hasAnyMarks(data?.allResults?.edges);
 
   return (
@@ -74,7 +74,7 @@ const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
                   {
                     label: t("Info"),
                     content: <Info
-                      searchParams={s}
+                      searchParams={sp}
                       data={data.allSchoolFees.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]}
                       params={params}
                       hasMark={hasMark}
@@ -120,6 +120,7 @@ const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
                 ]}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
+                source={`Section-H/pageAdministration/${params.school_id}/pageStudents/${params.student_id}/?user=${sp?.user}`}
               />
               :
               <ServerError type="notFound" item={t("Student Info")} />

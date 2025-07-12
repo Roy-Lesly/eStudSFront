@@ -33,7 +33,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
   const token = localStorage.getItem("token");
   const user = token ? jwtDecode<JwtPayload>(token) : null;
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(searchParams?.tab) || 0);
   const router = useRouter();
 
   return (

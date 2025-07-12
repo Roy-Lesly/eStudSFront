@@ -134,11 +134,12 @@ const GET_DATA_PREINSCRIPTION = gql`
   ){
     edges {
       node {
-        id 
+        id registrationNumber
         firstName lastName
         fullName sex sex dob pob address status
         session academicYear
         admissionStatus action 
+        fatherTelephone motherTelephone
         campus { id schoolName campus }
       }
     }

@@ -58,10 +58,10 @@ const GET_DATA = gql`
       edges {
         node {
           id
-          info
+          infoData
           logs
           student {
-            user { fullName matricle }
+            customuser { fullName matricle }
           }
           course {
             mainCourse { id courseName }

@@ -1,9 +1,8 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient from '@/functions'
 import List from './List'
 import { gql } from '@apollo/client'
-import NoDataYet from '@/components/NoDataYet'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 const page = async ({
   params,

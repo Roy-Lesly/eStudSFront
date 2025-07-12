@@ -96,7 +96,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
-              source={`Section-H/pageAdministration/${params.school_id}/pageSettings/pageCourses/?`}
+              source={`Section-H/pageAdministration/${params.school_id}/pageSettings/pageCourses/${params.course_id}/?`}
             />
           ) : (
             <ServerError type="network" item="Class" />

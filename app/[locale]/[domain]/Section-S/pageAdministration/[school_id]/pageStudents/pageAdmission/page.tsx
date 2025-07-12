@@ -4,6 +4,7 @@ import { decodeUrlID, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 
@@ -30,39 +31,24 @@ const EditPage = async ({
   paginationParams.academicYear = sp?.academicYear
   paginationParams.domainName = sp?.domainName
   const client = getApolloClient(p.domain);
-  let dataPreinscription;
-  let dataSpecialties;
 
-  try {
-    const result = await client.query<any>({
+    const dataPreinscription = await queryServerGraphQL({
+      domain: p.domain,
       query: GET_DATA,
       variables: {
         id: parseInt(decodeUrlID(sp?.id)),
         schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
       },
-      fetchPolicy: 'no-cache'
     });
-    dataPreinscription = result.data;
-  } catch (error: any) {
-    console.log(error, 35)
-    dataPreinscription = null;
-  }
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_SPECIALTIES,
+    const dataClassroomsec = await queryServerGraphQL({
+      domain: p.domain,
+      query: GET_DATA_CLASSROOMS,
       variables: {
         ...removeEmptyFields(paginationParams),
         schoolId: parseInt(p.school_id),
       },
-      fetchPolicy: 'no-cache'
     });
-    dataSpecialties = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    dataSpecialties = null;
-  }
 
   return (
     <div>
@@ -70,7 +56,7 @@ const EditPage = async ({
       params={p} 
       dataPreinscription={dataPreinscription} 
       searchParams={sp} 
-      dataSpecialties={dataSpecialties} 
+      dataClassroomsSec={dataClassroomsec?.allClassroomsSec} 
       />
     </div>
   )
@@ -80,30 +66,21 @@ export default EditPage
 
 
 
-const GET_DATA_SPECIALTIES = gql`
+const GET_DATA_CLASSROOMS = gql`
  query GetData(
    $schoolId: Decimal,
-   $domainName: String,
    $academicYear: String,
-   $level: Decimal,
   ) {
-    allSpecialties(
+    allClassroomsSec(
       last: 100,
       schoolId: $schoolId
-      domainName: $domainName
       academicYear: $academicYear
-      level: $level
     ){
       edges {
         node {
           id 
           academicYear
-          level {
-            level
-          }
-          mainSpecialty {
-            id specialtyName
-          }
+          level
           school { campus }
         }
       }
@@ -125,30 +102,19 @@ const GET_DATA = gql`
       }
     }
   }
-  allPreinscriptions(
+  allPreinscriptionsSec(
       id: $id
     ){
       edges {
         node {
-          id registrationNumber firstName lastName fullName dob pob address sex email telephone emergencyName emergencyTelephone session
-          level program specialtyOne specialtyTwo academicYear nationality nationality highestCertificate regionOfOrigin yearObtained
+          id registrationNumber firstName lastName fullName dob pob address sex email 
+          fatherName motherName fatherTelephone motherTelephone session
+          level academicYear
+          program { id name }
+          seriesOne { id name }
+          seriesTwo { id name }
+          nationality highestCertificate regionOfOrigin yearObtained
           campus { id campus }
-        }
-      }
-    }
-    allMainSpecialties ( last: 100 ) {
-      edges {
-        node {
-          id 
-          specialtyName
-        }
-      }
-    }
-    allLevels {
-      edges {
-        node {
-          id 
-          level
         }
       }
     }
@@ -160,7 +126,7 @@ const GET_DATA = gql`
         }
       }
     }
-    allPrograms {
+    allProgramsSec {
       edges {
         node {
           id 
@@ -168,6 +134,6 @@ const GET_DATA = gql`
         }
       }
     }
-    allAcademicYears
+    allAcademicYearsSec
   }
 `;

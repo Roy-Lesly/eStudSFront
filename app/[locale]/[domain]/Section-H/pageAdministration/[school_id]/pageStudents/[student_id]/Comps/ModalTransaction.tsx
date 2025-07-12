@@ -8,14 +8,18 @@ import { gql, useQuery } from '@apollo/client';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { useTranslation } from 'react-i18next';
 import { EdgeAccount, NodeSchoolFees } from '@/utils/Domain/schemas/interfaceGraphql';
+import { jwtDecode } from 'jwt-decode';
+import { JwtPayload } from '@/utils/serverActions/interfaces';
 
 
 const ModalTransaction = (
   { setModalOpen, data, p, schoolFees }:
     { setModalOpen: any; data: any, p: any, schoolFees: NodeSchoolFees }
 ) => {
+
+  const token = localStorage.getItem("token");
+  const user: JwtPayload | null = token ? jwtDecode(token) : null
   const [clicked, setClicked] = useState<boolean>(false)
-  const [reasons, setReasons] = useState<EdgeAccount[]>([])
   const { t } = useTranslation("common");
   const [canSubmit, setCanSubmit] = useState(true);
   const platformCharges = schoolFees?.userprofile?.specialty?.school?.schoolIdentification?.platformCharges || 0
@@ -38,7 +42,7 @@ const ModalTransaction = (
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const { data: reasonsApi, loading, error } = useQuery(GET_ACCOUNTS,
+  const { data: apiAccountNames, loading, error } = useQuery(GET_ACCOUNTS_NAMES,
     {
       variables: {
         year: schoolFees?.userprofile?.specialty?.academicYear,
@@ -46,6 +50,10 @@ const ModalTransaction = (
       }
     }
   );
+
+  console.log(apiAccountNames);
+  console.log(loading);
+  console.log(error);
 
   useEffect(() => {
     if (formData.reason === "PLATFORM CHARGES" && parseInt(formData.amount) != platformCharges) {
@@ -65,10 +73,10 @@ const ModalTransaction = (
     else if (formData.reason !== "IDCARD" && formData.reason !== "PLATFORM CHARGES") {
       setCanSubmit(true);
     }
-    if (reasonsApi?.allAccounts?.edges && reasons.length < 1) {
-      setReasons(reasonsApi?.allAccounts?.edges)
+    if (apiAccountNames < 1) {
+      // setReasons(reasonsApi?.allAccounts?.edges)
     }
-  }, [formData, reasonsApi])
+  }, [formData, apiAccountNames])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,8 +163,13 @@ const ModalTransaction = (
               className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
             >
               <option value="">{t("Select Reason")}</option>
-              {reasons && reasons?.length ? reasons.map((r: EdgeAccount) => <option key={r.node.name} value={r.node.name}>{r.node.name} {r.node?.year}</option>) : null}
-            </select>
+              {apiAccountNames?.getAccountNames
+                ?.filter((an: string) => user?.is_staff || an !== "MANAGEMENT")
+                .map((an: string) => (
+                  <option key={an} value={an}>
+                    {an}
+                  </option>
+                ))}            </select>
           </div>
 
           {/* Amount */}
@@ -183,7 +196,7 @@ const ModalTransaction = (
               required
               className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
             >
-              <option value="">Select payment method</option>
+              <option value="">{t("Select payment method")}</option>
               {PAYMENT_METHODS.map((pm: string) => (
                 <option key={pm} value={pm}>
                   {pm}
@@ -283,19 +296,8 @@ const query = gql`
 
 
 
-const GET_ACCOUNTS = gql`
-  query GetAllData (
-    $year: String!
-  ) {
-    allAccounts (
-      status: true,
-      year: $year
-    ) {
-      edges {
-        node {
-          id name year
-        }
-      }
-    }
+const GET_ACCOUNTS_NAMES = gql`
+  query GetAllData {
+    getAccountNames 
   }
 `;

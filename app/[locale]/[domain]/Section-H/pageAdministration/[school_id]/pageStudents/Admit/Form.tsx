@@ -7,7 +7,7 @@ import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '@/DefaultLayout';
 import ServerError from '@/ServerError';
-import PreForm from '@/app/[locale]/[domain]/pre-inscription/New/SectionHigher/PreForm';
+import PreFormHigher from '@/app/[locale]/[domain]/pre-inscription/New/SectionHigher/PreFormHigher';
 
 
 const Form = ({ params, data }: { params: any; data: any }) => {
@@ -46,7 +46,14 @@ const Form = ({ params, data }: { params: any; data: any }) => {
       />
       
       {data ?
-      <PreForm source='admin' params={params} data={data} link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`} />
+      // <PreFormHigher source='admin'
+      // params={params} data={data}
+      // link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`}
+      // />
+      <PreFormHigher source='admin'
+        // params={params} data={data}
+        // link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`}
+      />
       :
       <ServerError type="notFound" item="School Info" />
 

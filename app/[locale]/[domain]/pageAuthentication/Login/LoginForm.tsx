@@ -17,8 +17,6 @@ const LoginForm = (
   const showParent = (node.hasSecondary || node.hasPrimary || node.hasVocational)
   const [parent, setParent] = useState<boolean>(false);
 
-  console.log(parent);
-
   const { t } = useTranslation("common");
   return (
     <>

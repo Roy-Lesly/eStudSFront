@@ -4,7 +4,6 @@ import React, { FC, useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeDomain, EdgeMainCourse, EdgeCourse, EdgeLevel, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
@@ -31,6 +30,7 @@ export const metadata: Metadata = {
 };
 
 const List = ({ params, data, searchParams, admins }: { params: any; data: any, searchParams: any, admins: any }) => {
+  
   const router = useRouter();
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -46,6 +46,7 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
     { header: `${t("Class")}`, accessor: "node.specialty.mainSpecialty.specialtyName", align: "left" },
     { header: `${t("Year")}`, accessor: "node.specialty.academicYear", align: "center" },
     { header: `${t("level")}`, accessor: "node.specialty.level.level", align: "center" },
+    { header: `${t("Sem")}`, accessor: "node.semester", align: "center" },
     { header: `${t("Resit")}`, accessor: "node.countResit", align: "center" },
     {
       header: `${t("View")}`, align: "center",
@@ -219,7 +220,7 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
               extraData={{
                 specialties: data?.allSpecialties?.edges,
                 mainCourses: data?.allMainCourses?.edges,
-                teachers: [...data?.allCustomusers?.edges, ...admins?.allCustomusers?.edges]
+                teachers: [...data?.allCustomUsers?.edges, ...admins?.allCustomUsers?.edges]
               }}
             />}
             openState={showModal?.show || false}

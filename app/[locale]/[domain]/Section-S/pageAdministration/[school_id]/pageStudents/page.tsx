@@ -96,8 +96,9 @@ const GET_DATA = gql`
       node {
         id session
         customuser {
-          id fullName, matricle sex telephone dob pob email address parentTelephone 
+          id fullName, matricle sex telephone dob pob email address 
           nationality regionOfOrigin
+          fatherName motherName fatherTelephone motherTelephone parentAddress
         }
         classroomsec { academicYear level stream }
         programsec { name }

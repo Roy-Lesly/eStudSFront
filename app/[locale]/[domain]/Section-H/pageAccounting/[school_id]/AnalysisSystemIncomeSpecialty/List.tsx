@@ -179,21 +179,10 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
                     :
                     <ServerError type="notFound" item="Income" />
                 },
-                // {
-                //   label: 'Others', content: data?.transactionTotalsBySpecialty?.length ?
-                //         <MyTableComp
-                //         data={
-                //           data?.transactionTotalsBySpecialty?.sort((a: TransactionTotalsBySpecialty, b: TransactionTotalsBySpecialty) => {
-                //             return a.specialtyName > b.specialtyName ? 1 : a.specialtyName < b.specialtyName ? -1 : 0
-                //           })}
-                //         columns={ColumnsOthers}
-                //       />
-                //     :
-                //     <ServerError type="notFound" item="Income" />
-                // },
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={"setActiveTab"}
             />
           )
             :

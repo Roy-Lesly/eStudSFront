@@ -20,8 +20,7 @@ const page = async ({
     domain: p.domain,
     query: GET_DATA,
     variables: {
-      telephone: sp?.telephone,
-      // academicYear: getAcademicYear(),
+      telephone: sp?.telephone
     },
   });
 
@@ -57,9 +56,11 @@ const GET_DATA = gql`
         edges {
           node {
             id registrationNumber fullName sex dob pob address telephone email
-            nationality highestCertificate regionOfOrigin yearObtained specialtyOne specialtyTwo
+            nationality highestCertificate regionOfOrigin yearObtained
             academicYear level fatherName motherName fatherTelephone motherTelephone parentAddress
             campus { id campus }
+            specialtyOne { id specialtyName }
+            specialtyTwo { id specialtyName }
           }
         }
       }

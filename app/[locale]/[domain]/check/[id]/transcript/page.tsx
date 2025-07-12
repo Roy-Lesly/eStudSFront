@@ -1,33 +1,23 @@
 import React from 'react';
 import StudentProfile from './StudentProfile';
 import { gql } from '@apollo/client';
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { decodeUrlID } from '@/utils/functions';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const page = async (
-  { params, searchParams }:
-  { params: any, searchParams: any }
+  { params }:
+    { params: any }
 ) => {
 
   const p = await params;
-  const sp: { n: number } = await searchParams;
 
-  const client = getApolloClient(p.domain);
-    let data;
-    try {
-      const result = await client.query<any>({
-        query: GET_DATA,
-        variables: {
-          id: p?.id,
-          role: "STUDENT",
-          timestamp: new Date().getTime()
-        },
-        fetchPolicy: 'no-cache'
-      });
-      data = result.data;
-    } catch (error: any) {
-      errorLog(error);
-      data = null;
-    }
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      id: decodeUrlID(p?.id)
+    },
+  });
 
   return (
     <StudentProfile
@@ -53,7 +43,8 @@ const GET_DATA = gql`
       node {
         id session
         customuser {
-          id photo fullName, matricle sex telephone dob pob email address parent parentTelephone 
+          id photo fullName, matricle sex telephone dob pob email address
+          fatherName motherName fatherTelephone motherTelephone parentAddress 
           nationality highestCertificate yearObtained regionOfOrigin
         }
         specialty { 
@@ -63,6 +54,7 @@ const GET_DATA = gql`
           mainSpecialty { specialtyName } 
         }
         program { name }
+        infoData
       }
     }
   }

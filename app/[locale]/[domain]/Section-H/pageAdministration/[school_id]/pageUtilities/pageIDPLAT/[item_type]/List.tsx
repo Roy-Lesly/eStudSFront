@@ -8,14 +8,14 @@ import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
-import { EdgeSchoolFees, EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolHigherInfo, EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import ServerError from '@/ServerError';
 import { useTranslation } from 'react-i18next';
 import { FaMoneyBillWave } from 'react-icons/fa';
-import PaymentIDPLAT from '@/components/componentsTwo/formsAdmin/PaymentIDPLAT';
+import PaymentIDPLATTransaction from '@/components/componentsTwo/formsAdmin/PaymentIDPLATTransaction';
 
 
 export const metadata: Metadata = {
@@ -23,22 +23,22 @@ export const metadata: Metadata = {
   description: "This is ID Card Page Admin Settings",
 };
 
-const List = ({ p, data, sp, school }: { p: any; data: EdgeSchoolFees[], sp: any, school: EdgeSchoolHigherInfo }) => {
+const List = ({ p, data, sp, school }: { p: any; data: EdgeTransactions[], sp: any, school: EdgeSchoolHigherInfo }) => {
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<"single" | "multiple">();
-  const [selectedFees, setSelectedFees] = useState<EdgeSchoolFees | null>(null);
+  const [selectedFees, setSelectedFees] = useState<EdgeTransactions | null>(null);
 
-  const Columns: TableColumn<EdgeSchoolFees>[] = [
-    { header: "#", align: "center", render: (_item: EdgeSchoolFees, index: number) => index + 1, },
-    { header: `${t("Matricle")}`, accessor: "node.userprofile.customuser.matricle", align: "left" },
-    { header: `${t("Full Name")}`, accessor: "node.userprofile.customuser.fullName", align: "left" },
-    { header: `${t("Class")}`, accessor: "node.userprofile.specialty.mainSpecialty.specialtyName", align: "left" },
+  const Columns: TableColumn<EdgeTransactions>[] = [
+    { header: "#", align: "center", render: (_item: EdgeTransactions, index: number) => index + 1, },
+    { header: `${t("Matricle")}`, accessor: "node.schoolfees.userprofile.customuser.matricle", align: "left" },
+    { header: `${t("Full Name")}`, accessor: "node.schoolfees.userprofile.customuser.fullName", align: "left" },
+    { header: `${t("Class")}`, accessor: "node.schoolfees.userprofile.specialty.mainSpecialty.specialtyName", align: "left" },
     {
       header: `${t("Year / Level")}`, align: "left", render: (item) => <button
         className=""
       >
-        {item.node?.userprofile?.specialty.academicYear} / {item.node?.userprofile?.specialty?.level.level}
+        {item.node?.schoolfees?.userprofile?.specialty.academicYear} / {item.node?.schoolfees?.userprofile?.specialty?.level.level}
       </button>,
     },
     {
@@ -105,32 +105,28 @@ const List = ({ p, data, sp, school }: { p: any; data: EdgeSchoolFees[], sp: any
 
       <div className="bg-gray-50 flex flex-col gap-2 items-center justify-center w-full">
 
-        {data ? (
-          data.length ? (
-            <MyTableComp
-              data={
-                data.sort((a: EdgeSchoolFees, b: EdgeSchoolFees) => {
-                  const academicYearA = a.node?.userprofile?.specialty?.academicYear;
-                  const academicYearB = b.node?.userprofile?.specialty?.academicYear;
-                  const fullNameA = a.node?.userprofile?.customuser.fullName.toLowerCase();
-                  const fullNameB = b.node?.userprofile?.customuser.fullName.toLowerCase();
+        {data ?
+          <MyTableComp
+            data={
+              data.sort((a: EdgeTransactions, b: EdgeTransactions) => {
+                const academicYearA = a.node?.schoolfees?.userprofile?.specialty?.academicYear;
+                const academicYearB = b.node?.schoolfees?.userprofile?.specialty?.academicYear;
+                const fullNameA = a.node?.schoolfees?.userprofile?.customuser.fullName.toLowerCase();
+                const fullNameB = b.node?.schoolfees?.userprofile?.customuser.fullName.toLowerCase();
 
-                  if (academicYearA > academicYearB) return -1;
-                  if (academicYearA < academicYearB) return 1;
+                if (academicYearA > academicYearB) return -1;
+                if (academicYearA < academicYearB) return 1;
 
-                  return fullNameA.localeCompare(fullNameB);
-                })}
-              columns={Columns}
-            />
-          ) : (
-            <ServerError type="notFound" item="ID cards" />
-          )
-        ) : (
+                return fullNameA.localeCompare(fullNameB);
+              })}
+            columns={Columns}
+          />
+          :
           <ServerError type="network" item="ID cards" />
-        )}
+        }
 
         {(modalOpen === "single" && selectedFees) || modalOpen === "multiple" ?
-          <PaymentIDPLAT
+          <PaymentIDPLATTransaction
             source={"admin"}
             setModalOpen={setModalOpen}
             data={

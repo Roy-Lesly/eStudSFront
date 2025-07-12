@@ -330,7 +330,7 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
                   label={t("Gender")}
                   type="select"
                   placeholder={t("Gender")}
-                  options={["Male", "Female"]}
+                  options={["MALE", "FEMALE"]}
                   value={formData.personalInfo.sex}
                   onChange={(e) => handleChange('personalInfo', 'sex', e.target.value)}
                 />

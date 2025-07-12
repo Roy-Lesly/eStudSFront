@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: "This is Courses Page Admin Settings",
 };
 
-const List = ({ data }: { params: any; data: any, searchParams: any }) => {
+const List = ({ data, params }: { params: any; data: any, searchParams: any }) => {
     const { t } = useTranslation("common");
     const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
     const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -57,6 +57,7 @@ const List = ({ data }: { params: any; data: any, searchParams: any }) => {
 
         <MyModal
             component={<ModalCUDCourse
+                params={params}
                 setOpenModal={setShowModal}
                 actionType={showModal?.type || "create"}
                 selectedItem={selectedItem}

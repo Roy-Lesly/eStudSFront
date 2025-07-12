@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import FinalPage from './FinalPage';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { EdgeClassRoomSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 
 
 const CountryList = countryList().getData();
@@ -54,7 +55,11 @@ type FormData = {
 };
 
 
-const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpecialties: any, params: { domain: string, school_id: string } }) => {
+const AdmissionForm = (
+  { data, dataClassroomsSec, params }:
+  { data: any, dataClassroomsSec: EdgeClassRoomSec[], params: { domain: string, school_id: string } }
+) => {
+
   const { t } = useTranslation();
   const steps = [
     `${t("Personal Info")}`,
@@ -67,7 +72,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
 
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
-  const [optionsSpecialties, setOptionsSpecialties] = useState<{ id: string, name: string }[]>();
+  const [optionsClassroomSec, setOptionsClassroomSec] = useState<{ id: string, name: string }[]>();
   const [optionsPrograms, setOptionsPrograms] = useState<{ id: string, name: string }[]>();
   const [optionsLevels, setOptionsLevels] = useState<{ id: string, name: string }[]>();
   const [selectedLevel, setSelectedLevel] = useState<string>();
@@ -140,50 +145,40 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
   };
 
   useEffect(() => {
-    if (data && dataSpecialties.allSpecialties?.edges) {
+    if (data && dataClassroomsSec) {
       setSelectedLevel(data?.allPreinscriptions?.edges[0].node?.level.replace("A_", ""));
       setFormData((prev) => {
-        const preinscription = data?.allPreinscriptions?.edges[0]?.node;
+        const preinscriptionSec = data?.allPreinscriptionsSec?.edges[0]?.node;
 
-        if (!preinscription) return prev; // Prevent errors if data is missing
+        if (!preinscriptionSec) return prev; // Prevent errors if data is missing
 
-        let specialty = dataSpecialties?.allSpecialties?.edges?.find((item: EdgeSpecialty) => {
+        let classroomsec = dataClassroomsSec?.find((item: EdgeClassRoomSec) => {
           return (
-            decodeUrlID(item.node.mainSpecialty.id) === preinscription.specialtyOne &&
-            item.node.academicYear === preinscription.academicYear &&
-            item.node.level.level.toString() === preinscription.level.replace("A_", "")
+            // item.node.level === preinscriptionSec.seriesOne.classroom &&
+            item.node.academicYear === preinscriptionSec.academicYear &&
+            item.node.level.replace("A_", "") === preinscriptionSec.level.replace("A_", "")
           );
         });
 
-        if (!specialty) {
-          specialty = dataSpecialties?.allSpecialties?.edges?.find((item: EdgeSpecialty) => {
-            return (
-              decodeUrlID(item.node.mainSpecialty.id) === preinscription.specialtyTwo &&
-              item.node.academicYear === preinscription.academicYear &&
-              item.node.level.level.toString() === preinscription.level.replace("A_", "")
-            );
-          });
-        }
-
-        const program = data?.allPrograms?.edges?.find(
-          (item: EdgeProgram) => decodeUrlID(item.node.id) === preinscription.program
+        const programsec = data?.allPrograms?.edges?.find(
+          (item: EdgeProgram) => decodeUrlID(item.node.id) === decodeUrlID(preinscriptionSec.program.id)
         );
 
         return {
           ...prev,
           classAssignment: {
             ...prev.classAssignment,
-            specialtyId: decodeUrlID(specialty?.node.id || ""),
-            programId: decodeUrlID(program?.node.id) || "1",
+            classroomsecId: decodeUrlID(classroomsec?.node.id || ""),
+            programsecId: decodeUrlID(programsec?.node.id) || "1",
           },
         };
       });
-      const f = dataSpecialties.allSpecialties.edges.sort((a: EdgeSpecialty, b: EdgeSpecialty) =>
-        a.node.mainSpecialty.specialtyName > b.node.mainSpecialty.specialtyName ? 1 : a.node.mainSpecialty.specialtyName < b.node.mainSpecialty.specialtyName ? -1 : 0)
-        .map((item: EdgeSpecialty) => {
-          return { "id": decodeUrlID(item.node.id), "name": `${item.node.mainSpecialty.specialtyName} - ${item.node.level.level} - ${item.node.academicYear}` }
+      const f = dataClassroomsSec.sort((a: EdgeClassRoomSec, b: EdgeClassRoomSec) =>
+        a.node.level > b.node.level ? 1 : a.node.level < b.node.level ? -1 : 0)
+        .map((item: EdgeClassRoomSec) => {
+          return { "id": decodeUrlID(item.node.id), "name": `${item.node.level} - ${item.node.academicYear}` }
         })
-      if (f) { setOptionsSpecialties(f.filter((item: any) => item.name.includes(data.allPreinscriptions.edges[0].node.level.replace("A_", "")))) }
+      if (f) { setOptionsClassroomSec(f.filter((item: any) => item.name.includes(data.allPreinscriptions.edges[0].node.level.replace("A_", "")))) }
     }
     if (data && data.allPrograms?.edges) {
       const f = data.allPrograms.edges.sort((a: EdgeProgram, b: EdgeProgram) => a.node.name > b.node.name ? 1 : a.node.name < b.node.name ? -1 : 0).map((item: EdgeProgram) => {
@@ -332,9 +327,9 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
   };
 
 
-  const filterSpeciaties = (lev: any) => {
-    setOptionsSpecialties(dataSpecialties.allSpecialties.edges?.filter((spec: EdgeSpecialty) =>
-      spec.node.level.level == lev).map((item: EdgeSpecialty) => { return { "id": decodeUrlID(item.node.id), "name": `${item.node.mainSpecialty.specialtyName} - ${item.node.level.level} - ${item.node.academicYear}` } })
+  const filterClassroomSec = (lev: any) => {
+    setOptionsClassroomSec(dataClassroomsSec?.filter((spec: EdgeClassRoomSec) =>
+      spec.node.level == lev).map((item: EdgeClassRoomSec) => { return { "id": decodeUrlID(item.node.id), "name": `${item.node.level} - ${item.node.academicYear}` } })
     )
     setSelectedLevel(lev)
   }
@@ -613,7 +608,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 placeholder={t("Specialty")}
                 value={formData.classAssignment.specialtyId}
                 onChange={(e) => { handleChange('classAssignment', 'specialtyId', e.target.value); }}
-                options={optionsSpecialties}
+                options={optionsClassroomSec}
               />
               <MyInputField
                 id="level"
@@ -622,7 +617,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
                 type="select"
                 placeholder={t("Level")}
                 value={selectedLevel ? selectedLevel : ""}
-                onChange={(e) => { filterSpeciaties(e.target.value) }}
+                onChange={(e) => { filterClassroomSec(e.target.value) }}
                 options={optionsLevels}
               />
               <MyInputField
@@ -660,7 +655,7 @@ const AdmissionForm = ({ data, dataSpecialties, params }: { data: any, dataSpeci
       case 3:
         return (
           <FinalPage setCurrentStep={setCurrentStep} currentStep={currentStep} formData={formData} t={t}
-            optionsSpecialties={optionsSpecialties}
+            optionsSpecialties={optionsClassroomSec}
             optionsPrograms={optionsPrograms}
           />
 

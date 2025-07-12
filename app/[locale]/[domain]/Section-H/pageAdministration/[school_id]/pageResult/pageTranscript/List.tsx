@@ -14,7 +14,6 @@ import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
 import ExcelExporter from '@/ExcelExporter';
 import MyTabs from '@/MyTabs';
-import { decodeUrlID } from '@/utils/functions';
 
 
 const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: { params: any; dataPending: any, dataApproved: any, dataPrinted: any, searchParams: any }) => {
@@ -104,6 +103,7 @@ const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: 
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            source={`Section-H/pageAdministration/${params.school_id}/pageResult/pageTranscript/?`}
           />
         ) : (
           <ServerError type="network" item="Transcript" />

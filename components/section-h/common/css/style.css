@@ -6,6 +6,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .z-1 {
+    z-index: 1;
+  }
+}
+
 @layer base {
     body {
         @apply relative z-1 bg-whiten font-satoshi text-base font-normal text-body;

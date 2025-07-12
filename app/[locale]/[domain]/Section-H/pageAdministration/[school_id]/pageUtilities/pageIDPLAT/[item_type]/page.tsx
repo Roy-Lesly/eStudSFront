@@ -26,21 +26,23 @@ const page = async ({
   }
   paginationParams.fullName = sp?.fullName ? sp.fullName : ""
   paginationParams.telephone = sp?.telephone ? sp.telephone : ""
+  paginationParams.idPaid = p?.item_type === "ID" ? false : undefined
+  paginationParams.platformPaid = p?.item_type === "PLATFORM" ? false : undefined
 
   const data = await queryServerGraphQL({
     domain: p?.domain,
     query: GET_DATA,
     variables: {
       ...removeEmptyFields(paginationParams),
+      reason: p?.item_type,
       schoolId: parseInt(p.school_id),
       schoolId2: parseInt(p.school_id)
     },
   });
 
-
   return (
     <List
-      data={data?.allSchoolFees?.edges}
+      data={data?.allTransactions?.edges}
       school={data?.allSchoolInfos?.edges[0]}
       p={p}
       sp={sp}
@@ -59,6 +61,7 @@ export const metadata: Metadata = {
 
 const GET_DATA = gql`
   query GetAllData(
+      $reason: String!
       $schoolId: Decimal!
       $schoolId2: ID!
       $fullName: String
@@ -80,8 +83,9 @@ const GET_DATA = gql`
           }
         }
       }
-      allSchoolFees (
+      allTransactions (
         schoolId: $schoolId
+        reason: $reason
         fullName: $fullName
         idPaid: $idPaid
         platformPaid: $platformPaid
@@ -93,21 +97,27 @@ const GET_DATA = gql`
         edges {
           node {
             id
-            platformPaid
-            idPaid
-            userprofile {
+            amount
+            createdAt
+            updatedAt
+            reason
+            schoolfees {
               id
-              session
-              customuser { 
-                id matricle fullName
-              }
-              specialty { 
+              platformPaid
+              idPaid
+              userprofile {
                 id
-                academicYear
-                mainSpecialty { specialtyName }
-                level { level }
-                tuition
-                school { schoolIdentification { idCharges platformCharges }}
+                session
+                customuser { 
+                  id matricle fullName
+                }
+                specialty { 
+                  id
+                  academicYear
+                  mainSpecialty { specialtyName }
+                  level { level }
+                  tuition
+                }
               }
             }
           }

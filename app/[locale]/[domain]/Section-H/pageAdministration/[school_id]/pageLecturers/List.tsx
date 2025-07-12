@@ -162,6 +162,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            source={`Section-H/pageAdministration/${params.school_id}/pageLecturers/?`}
           />
         ) : (
           <ServerError type="network" item="Users" />

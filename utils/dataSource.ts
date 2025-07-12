@@ -56,6 +56,32 @@ export const SECONDARY_LEVEL_CHOICES_FRENCH = [
     "Terminal"
 ]
 
+export const CYCLE_CHOICES = [
+    { name: "FIRST", value: "FIRST" },
+    { name: "SECOND", value: "SECOND" },
+]
+
+export const SECONDARY_LEVEL_OBJECT_ENGLISH = [
+    { level: "FORM 1", cycle: "FIRST", select: false },
+    { level: "FORM 2", cycle: "FIRST", select: false },
+    { level: "FORM 3", cycle: "FIRST", select: false },
+    { level: "FORM 4", cycle: "FIRST", select: false },
+    { level: "FORM 5", cycle: "FIRST", select: true },
+    { level: "LOWER SIXTH", cycle: "SECOND", select: true },
+    { level: "UPPER SIXTH", cycle: "SECOND", select: true }
+]
+
+
+export const SECONDARY_LEVEL_OBJECT_FRENCH = [
+    { level: "6EME", cycle: "FIRST", select: false },
+    { level: "5EME", cycle: "FIRST", select: false },
+    { level: "4EME", cycle: "FIRST", select: false },
+    { level: "3EME", cycle: "FIRST", select: false },
+    { level: "2ND", cycle: "FIRST", select: true },
+    { level: "1ERE", cycle: "SECOND", select: true },
+    { level: "TERMINAL", cycle: "SECOND", select: true }
+]
+
 
 export const PRIMARY_LEVEL_CHOICES_ENGLISH = [
     "PRE-NURSERY", 

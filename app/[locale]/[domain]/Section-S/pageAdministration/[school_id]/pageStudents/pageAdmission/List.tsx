@@ -11,11 +11,16 @@ import { decodeUrlID } from '@/functions';
 import AdmissionForm from './AdmissionForm';
 import { FaArrowDown } from 'react-icons/fa';
 import Link from 'next/link';
+import { EdgeClassRoomSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 
 
-const List = ({ params, dataPreinscription, dataSpecialties, searchParams }: { params: any; dataPreinscription: any, dataSpecialties: any, searchParams: any }) => {
+const List = (
+    { params, dataPreinscription, dataClassroomsSec, searchParams }:
+    { params: any; dataPreinscription: any, dataClassroomsSec: EdgeClassRoomSec[], searchParams: any }
+) => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-
+console.log(dataPreinscription);
+console.log(dataClassroomsSec);
     return (
         <DefaultLayout
             pageType='admin'
@@ -50,18 +55,18 @@ const List = ({ params, dataPreinscription, dataSpecialties, searchParams }: { p
 
                 <div className="bg-white mt-2 mx-auto rounded shadow w-full">
 
-                    {dataSpecialties?.allSpecialties ?
-                        dataSpecialties?.allSpecialties?.edges.length ?
+                    {dataClassroomsSec ?
+                        dataClassroomsSec.length ?
                             <AdmissionForm
                                 data={dataPreinscription}
-                                dataSpecialties={dataSpecialties}
+                                dataClassroomsSec={dataClassroomsSec}
                                 params={params}
                             />
                             :
                             <div className='flex flex-col gap-16 items-center justify-center  py-20 '>
                                 <span className='text-red rounded py-2 px-6 tracking-wider text-2xl font-bold'>No Specialties / Classes Found</span>
                                 <Link
-                                    href={`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties`}
+                                    href={`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageAcademics/pageClassrooms`}
                                     className='text-teal-800 flex gap-4 text-xl tracking-wider font-semibold'
                                 >
                                     Click to Create
