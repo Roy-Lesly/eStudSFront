@@ -5,16 +5,17 @@ import { gql } from '@apollo/client';
 import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
+import { EdgeLevel } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
-import { EdgeHall } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeMainSubject } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
 
-const ModalCUDHall = ({
-    actionType, selectedItem, setOpenModal, params
+const ModalCUDMainSubject = ({
+    actionType, selectedItem, setOpenModal, params, section
 }: {
-    params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeHall | null, setOpenModal: any
+    params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeMainSubject | null, setOpenModal: any, section: "Secondary" | "Primary"
 }) => {
 
     const { t } = useTranslation();
@@ -22,9 +23,7 @@ const ModalCUDHall = ({
     const user: JwtPayload = jwtDecode(token ? token : "");
 
     const [formData, setFormData] = useState({
-        name: selectedItem && actionType !== "create" ? selectedItem.node.name : '',
-        floor: selectedItem && actionType !== "create" ? selectedItem.node.floor : '',
-        capacity: selectedItem && actionType !== "create" ? selectedItem.node.capacity : '',
+        subjectName: selectedItem && actionType !== "create" ? selectedItem.node.subjectName : '',
         delete: selectedItem && actionType === "delete" ? true : false,
     })
 
@@ -36,15 +35,11 @@ const ModalCUDHall = ({
         }));
     };
 
-
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let dataToSubmit: any = {
             ...formData,
-            name: formData.name.toUpperCase(),
-            floor: formData.floor,
-            capacity: parseInt(formData.capacity.toString()),
+            subjectName: formData.subjectName.toUpperCase(),
             updatedById: user.user_id,
             delete: actionType === "delete"
         }
@@ -64,10 +59,10 @@ const ModalCUDHall = ({
         const res = await ApiFactory({
             newData: dataToSubmit,
             editData: dataToSubmit,
-            mutationName: "createUpdateDeleteHall",
-            modelName: "hall",
+            mutationName: section === "Secondary" ? "createUpdateDeleteMainSubjectSec" : "createUpdateDeleteMainSubjectPrim",
+            modelName: section === "Secondary" ? "mainsubjectsec" : "mainsubjectprim",
             successField: "id",
-            query,
+            query: section === "Secondary" ? querySec : queryPrim,
             router: null,
             params,
             redirect: false,
@@ -101,40 +96,14 @@ const ModalCUDHall = ({
 
                     <div className='flex flex-row gap-2 justify-between'>
                         <MyInputField
-                            id="name"
-                            name="name"
-                            value={formData.name}
+                            id="subjectName"
+                            name="subjectName"
+                            value={formData.subjectName}
                             onChange={handleChange}
-                            label={t("Hall Name")}
-                            placeholder={t("Enter Hall Name")}
+                            label={t("Subject Name")}
+                            placeholder={t("Enter Subject Name")}
                             type='text'
                             required
-                        />
-                    </div>
-
-                    <div className='flex flex-row gap-2 justify-between'>
-                        <MyInputField
-                            id="capacity"
-                            name="capacity"
-                            value={formData.capacity.toString()}
-                            onChange={handleChange}
-                            label={t("Hall Capacity")}
-                            placeholder={t("Enter Hall Capacity")}
-                            type='text'
-                            required
-                        />
-                    </div>
-
-                    <div className='flex flex-row gap-2 justify-between'>
-                        <MyInputField
-                            id="floor"
-                            name="floor"
-                            label={t("Floor")}
-                            type="select"
-                            placeholder={t("Select Floor")}
-                            value={formData.floor}
-                            options={["Base", "1", "2", "3", "4"].map((item: string) => item)}
-                            onChange={(e) => handleChange(e)}
                         />
                     </div>
 
@@ -154,26 +123,49 @@ const ModalCUDHall = ({
     )
 }
 
-export default ModalCUDHall
+export default ModalCUDMainSubject
 
 
 
-export const query = gql`
+export const querySec = gql`
     mutation CreateUpdateDelete(
         $id: ID,
-        $name: String!,
-        $floor: String!,
-        $capacity: Int!,
-        $delete: Boolean!
+        $subjectName: String!,
+        $delete: Boolean!,
+        $createdById: ID,
+        $updatedById: ID!
     ) {
-        createUpdateDeleteHall (
+        createUpdateDeleteMainSubjectSec (
             id: $id,
-            name: $name,
-            floor: $floor,
-            capacity: $capacity,
-            delete: $delete
+            subjectName: $subjectName,
+            delete: $delete,
+            createdById: $createdById,
+            updatedById: $updatedById
         ) {
-            hall {
+            mainsubjectsec {
+              id
+            }  
+        } 
+    }
+`
+
+
+export const queryPrim = gql`
+    mutation CreateUpdateDelete(
+        $id: ID,
+        $subjectName: String!,
+        $delete: Boolean!,
+        $createdById: ID,
+        $updatedById: ID!
+    ) {
+        createUpdateDeleteMainSubjectPrim (
+            id: $id,
+            subjectName: $subjectName,
+            delete: $delete,
+            createdById: $createdById,
+            updatedById: $updatedById
+        ) {
+            mainsubjectprim {
               id
             }  
         } 

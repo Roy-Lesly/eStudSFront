@@ -1,4 +1,4 @@
-import { NodeCustomUser } from "./interfaceGraphql";
+import { NodeCustomUser, NodeSchoolIdentification, NodeSchoolInfoHigher } from "./interfaceGraphql";
 
 interface PageInfo {
   hasNextPage: boolean;
@@ -39,21 +39,10 @@ export interface NodeProgramPrim {
   description: string;
 }
 
-export interface NodeSchoolIdentificationSecondary {
-  id: string;
-}
-
-export interface NodeSchoolInfoSecondary {
-  id: string;
-  campus: string;
-  school_identification: NodeSchoolIdentificationSecondary;
-  seq_limit: number;
-  exam_limit: number;
-}
 
 export interface NodeClassRoomPrim {
   id: string;
-  school: NodeSchoolInfoSecondary;
+  school: NodeSchoolInfoHigher;
   stream: string;
   level: string;
   select: boolean;
@@ -166,14 +155,6 @@ export interface EdgeSeries {
 }
 
 
-export interface EdgeSchoolIdentificationSecondary {
-  node: NodeSchoolIdentificationSecondary;
-}
-
-export interface EdgeSchoolInfoSecondary {
-  node: NodeSchoolInfoSecondary;
-}
-
 export interface EdgeClassRoomPrim {
   node: NodeClassRoomPrim;
 }
@@ -212,9 +193,3 @@ export interface AllSeries {
   };
 }
 
-export interface AllSchoolIdentificationSecondary {
-  allSchoolIdentification: {
-    edges: EdgeSchoolIdentificationSecondary[];
-    pageInfo: PageInfo;
-  };
-}

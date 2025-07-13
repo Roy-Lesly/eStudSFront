@@ -160,7 +160,7 @@ export const GetMenuAdministration = (): MenuSection[] => {
         // },
         {
           icon: <Settings />, label: t("Settings"), route: "#", children: [
-            { label: t("School Profile"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/pageSchool`, icon: <School2 /> },
+            { label: t("School Profile"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/pageSchoolInfo`, icon: <School2 /> },
             // { label: t("Academic Year Settings"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/academic-year`, icon: <CalendarDays /> },
             // { label: t("Term/Session Management"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/terms`, icon: <CalendarDays /> },
             { label: t("Classrooms"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/pageClassrooms`, icon: <School2 /> },

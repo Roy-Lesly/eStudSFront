@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description: "This is Main-Subject Page Admin Settings",
 };
 
-const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
+const List = ({ p, data, s }: { p: any; data: any, s: any }) => {
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
   const user = token ? jwtDecode<JwtPayload>(token) : null;
@@ -39,11 +39,11 @@ const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       searchComponent={<></>}
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -61,8 +61,8 @@ const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
         department={t("Details")}
         subRoute={t("List")}
         pageName={t("Student Details")}
-        mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
-        subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
+        mainLink={`${p.domain}/Section-H/pageAdministration/${p.school_id}/Settings/Students/${p.profile_id}`}
+        subLink={`${p.domain}/Section-H/pageAdministration/${p.school_id}/Settings/Students/${p.profile_id}`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
@@ -75,23 +75,23 @@ const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
                     label: t("Info"),
                     content: <Info
                       searchParams={s}
-                      data={data.allSchoolFees.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]}
-                      params={params}
+                      data={data.allSchoolFees.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
+                      params={p}
                       hasMark={hasMark}
                     />
                   },
                   {
                     label: t("Classes"),
-                    content: <Classes data={data?.allSchoolFees?.edges} params={params} />
+                    content: <Classes data={data?.allSchoolFees?.edges} params={p} />
                   },
                   ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("FEES") ?
                     [
                       {
                         label: t("Fees"),
                         content: <Fees
-                          p={params}
+                          p={p}
                           schoolFees={data?.allSchoolFees?.edges.length ? data?.allSchoolFees?.edges[0].node : null}
-                          data={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]}
+                          data={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
                         />
                       }
                     ] : []),
@@ -101,8 +101,8 @@ const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
                         label: t("Moratoire"),
                         content: <Moratoire
                           results={data.allResults?.edges.sort((a: EdgeResult, b: EdgeResult) => a.node.course.mainCourse.courseName > b.node.course.mainCourse.courseName ? 1 : a.node.course.mainCourse.courseName < b.node.course.mainCourse.courseName ? -1 : 0)}
-                          data={data?.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]}
-                          params={params}
+                          data={data?.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
+                          params={p}
                         />
                       },
                     ] : []),
@@ -111,8 +111,8 @@ const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
                       {
                         label: t("Results"),
                         content: <Results
-                          params={params}
-                          fees={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(params.student_id))[0]}
+                          params={p}
+                          fees={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
                           data={data.allResults?.edges.sort((a: EdgeResult, b: EdgeResult) => a.node.course.mainCourse.courseName > b.node.course.mainCourse.courseName ? 1 : a.node.course.mainCourse.courseName < b.node.course.mainCourse.courseName ? -1 : 0)}
                         />
                       }
@@ -120,6 +120,7 @@ const List = ({ params, data, s }: { params: any; data: any, s: any }) => {
                 ]}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
+                source={`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageStudents/${p.student_id}`}
               />
               :
               <ServerError type="notFound" item={t("Student Info")} />

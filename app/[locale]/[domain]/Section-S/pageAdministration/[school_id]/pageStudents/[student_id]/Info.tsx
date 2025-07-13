@@ -57,8 +57,11 @@ const Info = (
     address: string;
     telephone: string;
     email: string;
-    parent: string;
-    parentTelephone: string;
+    parentAddress: string;
+    fatherTelephone: string;
+    motherTelephone: string;
+    fatherName: string;
+    motherName: string;
     nationality: string;
     regionOfOrigin: string;
     highestCertificate: string;
@@ -80,8 +83,11 @@ const Info = (
     address: data?.node?.userprofile.customuser.address || '',
     telephone: data?.node?.userprofile.customuser.telephone || '',
     email: data?.node?.userprofile.customuser.email || '',
-    parent: data?.node?.userprofile.customuser.parent || '',
-    parentTelephone: data?.node?.userprofile.customuser.parentTelephone || '',
+    parentAddress: data?.node?.userprofile.customuser.parentAddress || '',
+    fatherTelephone: data?.node?.userprofile.customuser.fatherTelephone || '',
+    motherTelephone: data?.node?.userprofile.customuser.motherTelephone || '',
+    fatherName: data?.node?.userprofile.customuser.fatherName || '',
+    motherName: data?.node?.userprofile.customuser.motherName || '',
     nationality: data?.node?.userprofile.customuser.nationality || '',
     regionOfOrigin: data?.node?.userprofile.customuser.regionOfOrigin || '',
     highestCertificate: data?.node?.userprofile.customuser.highestCertificate || '',
@@ -459,21 +465,56 @@ const Info = (
             </h2>
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
               <div>
-                <label className="text-gray-600 text-sm">Parent Name</label>
+                <label className="text-gray-600 text-sm">{t("Father's Name")}</label>
                 <input
                   type="text"
-                  name="parent"
-                  value={student.parent}
+                  name="fatherName"
+                  value={student.fatherName}
                   onChange={handleChange}
                   className="border p-2 rounded w-full"
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Parent Telephone</label>
+                <label className="text-gray-600 text-sm">{t("Mother's Name")}</label>
                 <input
-                  type="tel"
-                  name="parentTelephone"
-                  value={student.parentTelephone}
+                  type="text"
+                  name="motherName"
+                  value={student.motherName}
+                  onChange={handleChange}
+                  className="border p-2 rounded w-full"
+                />
+              </div>
+            </div>
+            <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+              <div>
+                <label className="text-gray-600 text-sm">{t("Father's Telephone")}</label>
+                <input
+                  type="text"
+                  name="fatherTelephone"
+                  value={student.fatherTelephone}
+                  onChange={handleChange}
+                  className="border p-2 rounded w-full"
+                />
+              </div>
+              <div>
+                <label className="text-gray-600 text-sm">{t("Mother's Telephone")}</label>
+                <input
+                  type="text"
+                  name="motherName"
+                  value={student.motherTelephone}
+                  onChange={handleChange}
+                  className="border p-2 rounded w-full"
+                />
+              </div>
+            </div>
+
+            <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+              <div>
+                <label className="text-gray-600 text-sm">{t("Parent's Address")}</label>
+                <input
+                  type="text"
+                  name="parentAddress"
+                  value={student.parentAddress}
                   onChange={handleChange}
                   className="border p-2 rounded w-full"
                 />

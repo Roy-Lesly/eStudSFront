@@ -4,6 +4,7 @@ import { gql } from '@apollo/client'
 import { decodeUrlID } from '@/functions'
 import { Metadata } from 'next';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Info Page",
@@ -21,31 +22,24 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
         id: params.profile_id,
         userprofileId: parseInt(decodeUrlID(p.student_id)),
         customuserId: parseInt(decodeUrlID(sp.user)),
         schoolId: p.school_id,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    
-    data = null;
-  }
+    },
+  });
 
 
   return (
     <div>
-      <List params={p} data={data} s={sp} />
+      <List
+        p={p}
+        data={data}
+        s={sp} />
     </div>
   )
 }

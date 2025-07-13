@@ -29,7 +29,9 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
   const Columns: TableColumn<EdgeClassRoomSec>[] = [
     { header: "#", align: "center", render: (_item: EdgeClassRoomSec, index: number) => index + 1, },
     { header: `${t("Class")}`, accessor: "node.level", align: "left" },
+    { header: `${t("Section")}`, accessor: "node.stream", align: "center" },
     { header: `${t("Year")}`, accessor: "node.academicYear", align: "center" },
+    { header: `${t("Fees")}`, accessor: "node.tuition", align: "center" },
     { header: `${t("Students")}`, accessor: "node.studentCount", align: "center" },
     {
       header: `${t("View")}`, align: "center",

@@ -45,7 +45,7 @@ export interface NodePreInscription {
   address: string;
   telephone: string;
   email: string;
-  campus: NodeSchoolHigherInfo;
+  campus: NodeSchoolInfoHigher;
   fatherName: string;
   motherName: string;
   fatherTelephone: string;
@@ -159,7 +159,7 @@ export interface NodeSchoolIdentification {
 }
 
 // School interface
-export interface NodeSchoolHigherInfo {
+export interface NodeSchoolInfoHigher {
   id: string;
   schoolIdentification: NodeSchoolIdentification;
   prefix: string;
@@ -167,6 +167,7 @@ export interface NodeSchoolHigherInfo {
   schoolType: string;
   schoolName: string;
   shortName: string;
+  mainSchool: boolean;
   address: string;
   region: string;
   town: string;
@@ -176,6 +177,7 @@ export interface NodeSchoolHigherInfo {
   website: string;
   latitude: number;
   longitude: number;
+  landingMessageMain: string;
   logoCampus: string;
   registrationSeperateTuition: boolean;
   welcome_message: string;
@@ -184,12 +186,17 @@ export interface NodeSchoolHigherInfo {
   telephone: string;
   campus: string;
   schoolfeesControl: string;
+  seqLimit: number;
   caLimit: number;
   examLimit: number;
   resitLimit: number;
   bgLogoSlip: string;
   bgLogoTranscript: string;
   colors: string;
+  welcomeMessage: string;
+  emailNotification: boolean;
+  smsNotification: boolean;
+  waNotification: boolean;
 }
 
 // Domain interface
@@ -221,7 +228,7 @@ export interface NodeSpecialty {
   academicYear: string;
   resultType: string;
   level: NodeLevel;
-  school: NodeSchoolHigherInfo;
+  school: NodeSchoolInfoHigher;
   tuition: number;
   registration: number;
   paymentOne: number;
@@ -454,8 +461,8 @@ export interface EdgeSchoolIdentification {
   node: NodeSchoolIdentification;
 }
 
-export interface EdgeSchoolHigherInfo {
-  node: NodeSchoolHigherInfo;
+export interface EdgeSchoolInfoHigher {
+  node: NodeSchoolInfoHigher;
 }
 
 export interface EdgeDomain {
@@ -619,10 +626,11 @@ export interface AllCoursesResponse {
 
 
 export interface NodeHall {
-  id: number;
+  id: string;
   name: string;
+  floor: string;
   capacity: number;
-  school: NodeSchoolHigherInfo;
+  school: NodeSchoolInfoHigher;
 }
 
 export interface EdgeHall {
