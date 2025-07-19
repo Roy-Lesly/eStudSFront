@@ -15,7 +15,7 @@ export const mutationCreateUpdateUserProfileSec = async (
     seriesId: formData?.seriesId,
     additionalSubjectsIds: formData?.additionalSubjectsIds,
     active: formData?.active,
-    programsecId: formData?.programsecId,
+    programsec: formData?.programsec,
     session: capitalizeFirstLetter(formData?.session),
     createdById: formData?.createdById,
     updatedById: formData?.updatedById,
@@ -62,7 +62,7 @@ const queryUserprofileSec = gql`
     $additionalSubjectsIds: [ID]
 
     $active: Boolean
-    $programsecId: ID
+    $programsec: String
     $session: String
     $createdById: ID
     $updatedById: ID
@@ -77,7 +77,7 @@ const queryUserprofileSec = gql`
       additionalSubjectsIds: $additionalSubjectsIds
 
       active: $active
-      programsecId: $programsecId
+      programsec: $programsec
       session: $session
       createdById: $createdById
       updatedById: $updatedById

@@ -82,5 +82,6 @@ const GET_DATA = gql`
       }
     }
     allAcademicYearsSec
+    getLevelsSec
   }
 `;

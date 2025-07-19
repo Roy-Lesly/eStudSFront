@@ -3,8 +3,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { EdgeClassRoomSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { decodeUrlID } from '@/utils/functions';
 
-const Confirmation = ({ formData, onNext, onPrevious, setCurrentStep }: any) => {
+const Confirmation = (
+  { formData, onNext, onPrevious, setCurrentStep, dataClassroomsSec }: any
+) => {
   const { t } = useTranslation('common');
 
   const renderRow = (label: string, value: string) => (
@@ -14,6 +18,8 @@ const Confirmation = ({ formData, onNext, onPrevious, setCurrentStep }: any) => 
     </div>
   );
 
+
+  console.log(formData);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -72,10 +78,10 @@ const Confirmation = ({ formData, onNext, onPrevious, setCurrentStep }: any) => 
             {t('Edit')}
           </button>
         </div>
-        {renderRow(t('Classroom'), formData.classAssignment.classroom)}
+        {renderRow(t('Classroom'), dataClassroomsSec.find((item: EdgeClassRoomSec) => decodeUrlID(item.node.id) === formData.classAssignment.classroomsecId).node.level)}
         {renderRow(t('Series ID'), formData.classAssignment.seriesId)}
-        {renderRow(t('Program ID'), formData.classAssignment.programsecId)}
-        {renderRow(t('Additional Subjects IDs'), formData.classAssignment.additionalsubjectsIds || 'None')}
+        {renderRow(t('Program'), formData.classAssignment.programsec)}
+        {renderRow(t('Additional Subjects'), formData.classAssignment.additionalsubjectsIds || 'None')}
         {renderRow(t('Session'), formData.classAssignment.session)}
         {renderRow(t('Active'), formData.classAssignment.active ? 'Yes' : 'No')}
       </section>

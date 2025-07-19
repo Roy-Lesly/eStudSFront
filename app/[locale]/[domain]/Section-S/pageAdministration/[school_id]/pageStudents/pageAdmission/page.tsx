@@ -112,7 +112,7 @@ const GET_DATA = gql`
           id registrationNumber firstName lastName fullName dob pob address sex email 
           fatherName motherName fatherTelephone motherTelephone parentAddress session
           level academicYear stream
-          program { id name }
+          program
           seriesOne { id name }
           seriesTwo { id name }
           nationality highestCertificate regionOfOrigin yearObtained
@@ -128,14 +128,7 @@ const GET_DATA = gql`
         }
       }
     }
-    allProgramsSec {
-      edges {
-        node {
-          id 
-          name
-        }
-      }
-    }
+    getProgramsSec
     allAcademicYearsSec
   }
 `;

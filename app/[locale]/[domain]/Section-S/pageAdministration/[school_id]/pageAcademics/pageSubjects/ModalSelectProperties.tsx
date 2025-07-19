@@ -1,10 +1,8 @@
 import MyInputField from '@/MyInputField';
-import { JwtPayload } from '@/serverActions/interfaces';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
-import { SECONDARY_LEVEL_CHOICES_ENGLISH, SECONDARY_LEVEL_CHOICES_FRENCH, SECONDARY_LEVEL_OBJECT_ENGLISH, SECONDARY_LEVEL_OBJECT_FRENCH } from '@/utils/dataSource';
 import { gql, useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 
@@ -16,8 +14,8 @@ interface FormData {
 }
 
 const ModalSelectProperties = (
-    { setOpenModal, params, apiYears }:
-        { setOpenModal: any, params: any, apiYears: any }
+    { setOpenModal, params, apiYears, apiLevels }:
+        { setOpenModal: any, params: any, apiYears: any, apiLevels: string[] }
 ) => {
     const { t } = useTranslation();
     const router = useRouter();
@@ -135,7 +133,7 @@ console.log(loadingClassrooms);
                             type="select"
                             placeholder={t("Select Level")}
                             value={formData.level}
-                            options={(formData.system === "ENGLISH" ? SECONDARY_LEVEL_CHOICES_ENGLISH : SECONDARY_LEVEL_CHOICES_FRENCH).map((item: string) => item)}
+                            options={(formData.system === "ENGLISH" ? apiLevels.slice(0, 7) : apiLevels.slice(7, 14)).map((item: string) => item)}
                             onChange={(e) => handleChange('level', e.target.value)}
                         />
                     </div>

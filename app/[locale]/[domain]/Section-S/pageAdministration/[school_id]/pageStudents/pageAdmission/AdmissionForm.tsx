@@ -31,6 +31,8 @@ const AdmissionForm = (
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  console.log(preinscription);
+
   const [formData, setFormData] = useState({
     personalInfo: {
       firstName: preinscription?.firstName || '',
@@ -64,7 +66,7 @@ const AdmissionForm = (
       customuserId: '',
       classroomsecId: decodeUrlID(myClassroom?.id) || '',
       seriesId: parseInt(decodeUrlID(preinscription?.seriesOne?.id)) || '',
-      programsecId: parseInt(decodeUrlID(preinscription?.program?.id)) || '',
+      programsec: preinscription?.program.replace("_", " "),
       additionalSubjectsIds: null,
       session: preinscription?.session || 'Morning',
       active: true,
@@ -157,11 +159,9 @@ const AdmissionForm = (
           setFormData={setFormData}
           onNext={handleNext}
           onPrevious={handlePrevious}
-          loading={loading}
-          setLoading={setLoading}
           myClassroom={myClassroom}
           dataClassroomsSec={dataClassroomsSec}
-          programsData={data?.allProgramsSec?.edges}
+          programsData={data?.getProgramsSec}
         />
       }
 
@@ -173,6 +173,7 @@ const AdmissionForm = (
           onPrevious={handlePrevious}
           loading={loading}
           setCurrentStep={setCurrentStep}
+          dataClassroomsSec={dataClassroomsSec}
           programsData={data?.allProgramsSec?.edges}
         />
       }

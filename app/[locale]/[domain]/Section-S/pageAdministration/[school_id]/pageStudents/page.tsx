@@ -99,7 +99,7 @@ const GET_DATA = gql`
           fatherName motherName fatherTelephone motherTelephone parentAddress
         }
         classroomsec { academicYear level stream }
-        programsec { name }
+        programsec
       }
     }
   }

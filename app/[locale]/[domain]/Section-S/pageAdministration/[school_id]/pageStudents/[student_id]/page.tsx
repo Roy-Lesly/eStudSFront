@@ -84,7 +84,7 @@ const GET_DATA = gql`
               level
               school { schoolName campus colors schoolIdentification { logo platformCharges idCharges } schoolfeesControl }
             }
-            programsec { id name }
+            programsec
           }
           transactionssec {
             amount
@@ -98,11 +98,7 @@ const GET_DATA = gql`
         }
       }
     }
-    allProgramsSec {
-      edges {
-        node { id name }
-      }
-    }
+    getProgramsSec
     allResultsSec(
       studentId: $userprofilesecId
       active: true

@@ -10,7 +10,6 @@ export const mutationCreateUpdateCustomuser = async (
 ) => {
 
     let dataCustomuser: any = {
-      id: formData?.id || null,
       password: formData?.password?.toString().toUpperCase() || "12345",
       username: formData?.username?.toString().toUpperCase(),
       role: formData?.role,
@@ -49,11 +48,12 @@ export const mutationCreateUpdateCustomuser = async (
       delete: false,
     };
 
-    dataCustomuser = { ...removeEmptyFields(dataCustomuser) }
-
-    console.log(dataCustomuser);
-
-    return
+    if (formData.id) {
+      dataCustomuser = { 
+        ...formData,
+        id: formData.id
+      }
+    }
 
     const userSuccessFieldData = await ApiFactory({
       newData: dataCustomuser,

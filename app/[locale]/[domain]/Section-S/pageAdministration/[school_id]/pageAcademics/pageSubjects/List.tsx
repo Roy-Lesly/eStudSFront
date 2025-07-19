@@ -6,7 +6,7 @@ import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/section-h/Table/MyTableComp';
-import { EdgeSubject, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeSubjectSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import ExcelExporter from '@/ExcelExporter';
 import ButtonAction from '@/section-h/Buttons/ButtonAction';
@@ -25,8 +25,8 @@ const List = ({ params, data, sp, apiYears }: { params: any; data: any, sp: any,
 
   console.log(data);
 
-  const Columns: TableColumn<EdgeSubject>[] = [
-    { header: "#", align: "center", render: (_item: EdgeSubject, index: number) => index + 1, },
+  const Columns: TableColumn<EdgeSubjectSec>[] = [
+    { header: "#", align: "center", render: (_item: EdgeSubjectSec, index: number) => index + 1, },
     { header: `${t("Subject")}`, accessor: "node.mainsubject.subjectName", align: "left" },
     { header: `${t("Class")}`, accessor: "node.classroomsec.level", align: "left" },
     { header: `${t("Section")}`, accessor: "node.classroomsec.stream", align: "center" },
@@ -98,31 +98,34 @@ const List = ({ params, data, sp, apiYears }: { params: any; data: any, sp: any,
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {
-          data ?
-            <MyTableComp
-              columns={Columns}
-              data={
-                data.sort((a: EdgeSubject, b: EdgeSubject) => {
-                  const levelA = a.node.classroomsec?.level.toLowerCase();
-                  const levelB = b.node.classroomsec?.level.toLowerCase();
-                  return levelA.localeCompare(levelB);
-                })}
-              table_title={t("Assigned Subjects")}
-              button_type={"add"}
-              button_action={() => {setShowModal({ show: true, type: "create" }) }}
-            />
-            :
-            null
+            data ?
+              <MyTableComp
+                columns={Columns}
+                data={
+                  data.sort((a: EdgeSubjectSec, b: EdgeSubjectSec) => {
+                    const levelA = a.node.classroomsec?.level.toLowerCase();
+                    const levelB = b.node.classroomsec?.level.toLowerCase();
+                    return levelA.localeCompare(levelB);
+                  })}
+                table_title={t("Assigned Subjects")}
+                button_type={"add"}
+                button_action={() => { setShowModal({ show: true, type: "create" }) }}
+              />
+              :
+              null
           }
         </div>
 
 
         {<MyModal
-          component={<ModalSelectProperties
-            params={params}
-            apiYears={apiYears}
-            setOpenModal={setShowModal}
-          />}
+          component={
+            <ModalSelectProperties
+              params={params}
+              apiYears={apiYears}
+              apiLevels={data?.getLevelsSec}
+              setOpenModal={setShowModal}
+            />
+          }
           openState={showModal?.show || false}
           onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}
