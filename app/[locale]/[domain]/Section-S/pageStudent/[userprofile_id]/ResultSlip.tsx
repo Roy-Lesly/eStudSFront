@@ -12,20 +12,20 @@ import {
 import { saveAs } from "file-saver";
 import { pdf } from "@react-pdf/renderer";
 import { FiDownload } from "react-icons/fi";
-import { EdgeResult, NodeSchoolFees } from "@/Domain/schemas/interfaceGraphql";
 import { calcTotalandGrade } from "@/functions";
 import { QrCodeBase64 } from "@/components/QrCodeBase64";
 import { protocol, RootApi } from "@/utils/config";
 import { useParams } from "next/navigation";
+import { EdgeResultSecondary, NodeSchoolFeesSec } from "@/utils/Domain/schemas/interfaceGraphqlSecondary";
 
 
 const MyPDF = (
     { p, results, schoolFees, semester, qrCodeDataUrl, resitPublished }:
-        { p: any, results: EdgeResult[]; schoolFees: NodeSchoolFees, semester: "I" | "II", qrCodeDataUrl: string, resitPublished: boolean }
+        { p: any, results: EdgeResultSecondary[]; schoolFees: NodeSchoolFeesSec, semester: "I" | "II", qrCodeDataUrl: string, resitPublished: boolean }
 ) => {
-    const schoolInfo = schoolFees?.userprofile?.specialty?.school;
-    const profileInfo = schoolFees?.userprofile;
-    const logoUrl = schoolFees?.userprofile?.specialty?.school?.logoCampus;
+    const schoolInfo = schoolFees?.userprofilesec?.classroomsec?.school;
+    const profileInfo = schoolFees?.userprofilesec;
+    const logoUrl = schoolFees?.userprofilesec?.classroomsec?.school?.logoCampus;
 
     return (
         <Document>
@@ -75,9 +75,9 @@ const MyPDF = (
                         {profileInfo?.customuser?.fullName}
                     </Text>
                     <View style={styles.studentLineRow}>
-                        <Text style={styles.studentLine}>Specialty: {profileInfo?.specialty?.mainSpecialty?.specialtyName}</Text>
-                        <Text style={styles.studentLine}>| Level: {profileInfo?.specialty?.level?.level}</Text>
-                        <Text style={styles.studentLine}>| Academic Year: {profileInfo?.specialty?.academicYear}</Text>
+                        <Text style={styles.studentLine}>Specialty: {profileInfo?.classroomsec?.level}</Text>
+                        <Text style={styles.studentLine}>| Level: {profileInfo?.classroomsec?.level}</Text>
+                        <Text style={styles.studentLine}>| Academic Year: {profileInfo?.classroomsec?.academicYear}</Text>
                     </View>
                 </View>
 
@@ -85,39 +85,36 @@ const MyPDF = (
 
                 {/* Table Header */}
                 <View style={[styles.tableRow, styles.tableHeader]}>
-                    <Text style={styles.courseNameCell}>Course Name</Text>
-                    <Text style={styles.otherCell}>CA</Text>
-                    <Text style={styles.otherCell}>Exam</Text>
-                    <Text style={styles.otherCell}>Resit</Text>
+                    <Text style={styles.courseNameCell}>Subject Name</Text>
+                    <Text style={styles.otherCell}>Seq 1</Text>
+                    <Text style={styles.otherCell}>Seq 2</Text>
+                    <Text style={styles.otherCell}>Seq 3</Text>
+                    <Text style={styles.otherCell}>Seq 4</Text>
+                    <Text style={styles.otherCell}>Seq 5</Text>
+                    <Text style={styles.otherCell}>Seq 6</Text>
                     <Text style={styles.otherCell}>Total</Text>
                     <Text style={styles.lastCell}>Grade</Text>
                 </View>
 
                 {/* Table Rows */}
                 {results.map(({ node }, index) => {
-                    const courseName = node.course?.mainCourse?.courseName || "-";
+                    const courseName = node.subjectsec?.mainsubject?.subjectName || "-";
                     const info = node.infoData ? JSON.parse(node.infoData) : {};
 
                     return (
                         <View key={index} style={[styles.tableRow, { fontSize: 9 }]}>
                             <Text style={[styles.courseNameCell, { paddingHorizontal: 3 }]}>
-                                {node.course.mainCourse.courseName}
+                                {node.subjectsec?.mainsubject.subjectName}
                             </Text>
-                            <Text style={[styles.otherCell, info.ca < (schoolInfo.caLimit / 2) ? styles.redText : {}]}>
-                                {info.ca ?? "-"}
+                            <Text style={[styles.otherCell, info.ca < (schoolInfo.seqLimit / 2) ? styles.redText : {}]}>
+                                {info.seq_1 ?? "-"}
                             </Text>
-                            <Text style={[styles.otherCell, info.exam < (schoolInfo.examLimit / 2) ? styles.redText : {}]}>
-                                {info.exam ?? "-"}
-                            </Text>
-                            <Text style={[styles.otherCell, info.resit < (schoolInfo.resitLimit / 2) ? styles.redText : {}]}>
-                                {resitPublished ? info.resit ?? "-" : ""}
-                            </Text>
-                            <Text style={[styles.otherCell, info.average < 50 ? styles.redText : {}]}>
+                            {/* <Text style={[styles.otherCell, info.average < 50 ? styles.redText : {}]}>
                                 {resitPublished ? info.average ? calcTotalandGrade(info.ca, info.exam, info.resit).mark : "-" : (calcTotalandGrade(info.ca, info.exam, null).mark)}
                             </Text>
                             <Text style={[styles.lastCell, info.average < 50 ? styles.redText : {}]}>
                                 {resitPublished ? info.average ? calcTotalandGrade(info.ca, info.exam, info.resit).grade : "-" : (calcTotalandGrade(info.ca, info.exam, null).grade)}
-                            </Text>
+                            </Text> */}
                         </View>
                     );
                 })}
@@ -128,13 +125,13 @@ const MyPDF = (
 
 const ResultSlip = ({
     data,
-    schoolFees,
+    schoolFeesSec,
     semester,
     resitPublished,
     fileName = `result-slip Semester-${semester}.pdf`,
 }: {
-    data: EdgeResult[];
-    schoolFees: NodeSchoolFees;
+    data: EdgeResultSecondary[];
+    schoolFeesSec: NodeSchoolFeesSec;
     semester: "I" | "II" | any;
     resitPublished: boolean;
     fileName?: string;
@@ -145,7 +142,7 @@ const ResultSlip = ({
     const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
     useEffect(() => {
-        const url = `${protocol}${params.domain}${RootApi}/check/${schoolFees?.userprofile.id}/resultslip/?n=1`;
+        const url = `${protocol}${params.domain}${RootApi}/check/${schoolFeesSec?.userprofilesec.id}/resultslip/?n=1`;
         QrCodeBase64(url).then(setQrCodeDataUrl);
     }, []);
 
@@ -154,7 +151,7 @@ const ResultSlip = ({
             <MyPDF
                 p={params}
                 results={data}
-                schoolFees={schoolFees}
+                schoolFees={schoolFeesSec}
                 semester={semester}
                 resitPublished={resitPublished}
                 qrCodeDataUrl={qrCodeDataUrl}

@@ -5,7 +5,7 @@ import { capitalizeFirstLetter, decodeUrlID } from '@/utils/functions';
 import {
   EdgeMainSpecialty,
   EdgeProgram,
-  EdgeSchoolHigherInfo
+  EdgeSchoolInfoHigher
 } from '@/utils/Domain/schemas/interfaceGraphql';
 
 const Confirmation = ({
@@ -91,7 +91,7 @@ const Confirmation = ({
         {renderRow(
           'CAMPUS',
           data?.allSchoolInfos?.edges.find(
-            (item: EdgeSchoolHigherInfo) =>
+            (item: EdgeSchoolInfoHigher) =>
               parseInt(decodeUrlID(item.node.id)) ===
               parseInt(formData.medicalHistory.campus.toString())
           )?.node.campus

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import BackGround from '../BackGround';
-import { EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
 import { ActionResetPassword } from '@/utils/serverActions/AuthActions';
 import { protocol } from '@/utils/config';
 import { ResetPasswordEmail } from '@/utils/Domain/configDom';
@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import ForgotPasswordForm from './ForgotPasswordForm';
 
-const Display = ({ p, school }: { p: any, school: EdgeSchoolHigherInfo }) => {
+const Display = ({ p, school }: { p: any, school: EdgeSchoolInfoHigher }) => {
 
     const [loading, setLoading] = useState(false);
     const router = useRouter();

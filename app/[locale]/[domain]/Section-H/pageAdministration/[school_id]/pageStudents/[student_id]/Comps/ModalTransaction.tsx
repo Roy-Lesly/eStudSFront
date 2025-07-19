@@ -51,10 +51,6 @@ const ModalTransaction = (
     }
   );
 
-  console.log(apiAccountNames);
-  console.log(loading);
-  console.log(error);
-
   useEffect(() => {
     if (formData.reason === "PLATFORM CHARGES" && parseInt(formData.amount) != platformCharges) {
       setFormData({ ...formData, amount: platformCharges.toString() });

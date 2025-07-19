@@ -8,7 +8,7 @@ import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
-import { EdgeSchoolHigherInfo, EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolInfoHigher, EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description: "This is ID Card Page Admin Settings",
 };
 
-const List = ({ p, data, sp, school }: { p: any; data: EdgeTransactions[], sp: any, school: EdgeSchoolHigherInfo }) => {
+const List = ({ p, data, sp, school }: { p: any; data: EdgeTransactions[], sp: any, school: EdgeSchoolInfoHigher }) => {
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<"single" | "multiple">();

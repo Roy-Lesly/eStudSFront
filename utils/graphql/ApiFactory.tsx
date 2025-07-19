@@ -35,7 +35,7 @@ export const ApiFactory = async ({
   actionLabel = "processing",
   getFileMap
 }: SubmitOptions) => {
-  const items = Array.isArray(newData) ? newData : [newData];
+  const items = Array.isArray(newData || editData) ? (newData || editData) : [(newData || editData)];
   const successMessages: string[] = [];
   const errorMessages: string[] = [];
   let responseFieldData: any = null;
@@ -45,6 +45,10 @@ export const ApiFactory = async ({
     if (editData?.id) {
       // res = { ...res, id: parseInt(decodeUrlID(editData.id)) };
     }
+
+    console.log(res);
+    console.log(newData);
+    console.log(editData);
 
 
     try {

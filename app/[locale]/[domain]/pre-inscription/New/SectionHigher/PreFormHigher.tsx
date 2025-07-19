@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { capitalizeFirstLetter, decodeUrlID, getAcademicYear } from '@/functions';
 import MyInputField from '@/MyInputField';
 import React, { useEffect, useState } from 'react'
-import { EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql';
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { CertificateOptions, RegionList } from '@/constants';
@@ -153,7 +153,7 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
         if (f) { setOptionsPrograms(f) }
       }
       if (data && data?.allSchoolInfos?.edges.length) {
-        const f = data.allSchoolInfos.edges.map((item: EdgeSchoolHigherInfo) => {
+        const f = data.allSchoolInfos.edges.map((item: EdgeSchoolInfoHigher) => {
           return { "id": decodeUrlID(item.node.id), "name": `${item.node.campus.replace("_", "-")} - ${item.node?.town} - ${item.node?.address}` }
         })
 
@@ -255,7 +255,7 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
               // id: parseInt(decodeUrlID(data.node.userprofile.customuser.id)),
               sex: capitalizeFirstLetter(newData.sex),
               email: newData.email.toLowerCase(),
-              campus: source === "admin" ? data.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus : formData.medicalHistory.campus.toString(),
+              campus: source === "admin" ? data.allSchoolInfos?.edges.filter((item: EdgeSchoolInfoHigher) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus : formData.medicalHistory.campus.toString(),
             }
           });
 
@@ -482,17 +482,17 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
                 />
               </div>
 
-               <div className='flex flex-col gap-2 md:flex-row md:gap-4 w-full'>
-                  <MyInputField
-                    id="grade"
-                    name="grade"
-                    label={t("Subjects Grade")}
-                    type="textArea"
-                    placeholder={"e.g History: E"}
-                    value={formData.medicalHistory.grade}
-                    onChange={(e) => handleChange('medicalHistory', 'grade', e.target.value)}
-                  />
-                </div>
+              <div className='flex flex-col gap-2 md:flex-row md:gap-4 w-full'>
+                <MyInputField
+                  id="grade"
+                  name="grade"
+                  label={t("Subjects Grade")}
+                  type="textArea"
+                  placeholder={"e.g History: E"}
+                  value={formData.medicalHistory.grade}
+                  onChange={(e) => handleChange('medicalHistory', 'grade', e.target.value)}
+                />
+              </div>
 
               <div className='flex flex-col gap-2 md:flex-row'>
                 <MyInputField

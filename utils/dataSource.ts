@@ -35,75 +35,8 @@ export const LandingPageTitle = [
 ]
 
 
-export const SECONDARY_LEVEL_CHOICES_ENGLISH = [
-    "FORM 1", 
-    "FORM 2", 
-    "FORM 3", 
-    "FORM 4", 
-    "FORM 5", 
-    "LOWER SIXTH", 
-    "UPPER SIXTH"
-]
-
-
-export const SECONDARY_LEVEL_CHOICES_FRENCH = [
-    "6eme", 
-    "5eme", 
-    "4eme", 
-    "3eme", 
-    "2nd", 
-    "1erè", 
-    "Terminal"
-]
 
 export const CYCLE_CHOICES = [
     { name: "FIRST", value: "FIRST" },
     { name: "SECOND", value: "SECOND" },
-]
-
-export const SECONDARY_LEVEL_OBJECT_ENGLISH = [
-    { level: "FORM 1", cycle: "FIRST", select: false },
-    { level: "FORM 2", cycle: "FIRST", select: false },
-    { level: "FORM 3", cycle: "FIRST", select: false },
-    { level: "FORM 4", cycle: "FIRST", select: false },
-    { level: "FORM 5", cycle: "FIRST", select: true },
-    { level: "LOWER SIXTH", cycle: "SECOND", select: true },
-    { level: "UPPER SIXTH", cycle: "SECOND", select: true }
-]
-
-
-export const SECONDARY_LEVEL_OBJECT_FRENCH = [
-    { level: "6EME", cycle: "FIRST", select: false },
-    { level: "5EME", cycle: "FIRST", select: false },
-    { level: "4EME", cycle: "FIRST", select: false },
-    { level: "3EME", cycle: "FIRST", select: false },
-    { level: "2ND", cycle: "FIRST", select: true },
-    { level: "1ERE", cycle: "SECOND", select: true },
-    { level: "TERMINAL", cycle: "SECOND", select: true }
-]
-
-
-export const PRIMARY_LEVEL_CHOICES_ENGLISH = [
-    "PRE-NURSERY", 
-    "NURSERY 1", 
-    "NURSERY 2", 
-    "CLASS 1", 
-    "CLASS 2", 
-    "CLASS 3", 
-    "CLASS 4", 
-    "CLASS 5", 
-    "CLASS 6",
-]
-
-
-export const PRIMARY_LEVEL_CHOICES_FRENCH = [
-    "CRECHE", 
-    "PETITE SECTION", 
-    "GRANDE SECTION", 
-    "SIL", 
-    "CP", 
-    "CE 1", 
-    "CE 2", 
-    "CM 1", 
-    "CM 2", 
 ]

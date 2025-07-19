@@ -3,7 +3,6 @@ import React from 'react'
 import { removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
@@ -20,24 +19,25 @@ const EditPage = async ({
 
   const paginationParams: Record<string, any> = {};
 
+  paginationParams.stream = sp?.stream
   paginationParams.level = sp?.level
-  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : `${new Date().getFullYear()}`
+  // paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : `${new Date().getFullYear()}`
 
   const data = await queryServerGraphQL({
-    domain: p?.domain,
-    query: GET_DATA,
+    domain: p.domain,
+    query: GET_DATA_CLASSROOM_PRIM,
     variables: {
       ...removeEmptyFields(paginationParams),
-      schoolId: parseInt(p.school_id),
+      schoolId: p.school_id,
     },
   });
 
   return (
     <div>
       <List
-      params={p}
-      data={data}
-      searchParams={sp}
+        params={p}
+        data={data}
+        sp={sp}
       />
     </div>
   )
@@ -56,14 +56,16 @@ export const metadata: Metadata = {
 
 
 
-const GET_DATA = gql`
+export const GET_DATA_CLASSROOM_PRIM = gql`
  query GetData(
+   $id: ID,
    $schoolId: Decimal,
    $academicYear: String,
    $level: String,
   ) {
     allClassroomsPrim(
       last: 100,
+      id: $id
       schoolId: $schoolId
       academicYear: $academicYear
       level: $level
@@ -72,11 +74,15 @@ const GET_DATA = gql`
         node {
           id 
           academicYear
+          school { id }
+          level
+          cycle
           registration tuition paymentOne paymentTwo paymentThree
           school { campus}
+          studentCount
         }
       }
     }
-    allAcademicYears
+    allAcademicYearsPrim
   }
 `;

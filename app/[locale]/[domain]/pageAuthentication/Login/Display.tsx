@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
 import { useTranslation } from "react-i18next";
-import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { gql } from '@apollo/client';
 import BackGround from '../BackGround';
@@ -14,7 +14,7 @@ import LoginForm from './LoginForm';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 
 
-const Display = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], params: any }) => {
+const Display = ({ params, schools }: { schools: EdgeSchoolInfoHigher[], params: any }) => {
     const { t } = useTranslation("common");
     const router = useRouter();
     const [loading, setLoading] = useState(false);

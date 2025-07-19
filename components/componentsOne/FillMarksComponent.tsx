@@ -1,5 +1,5 @@
 'use client';
-import { EdgeResult, EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeResult, EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import React, { useState } from 'react';
 import MyInputField from '../MyInputField';
@@ -13,7 +13,7 @@ import MyTableComp from '../section-h/Table/MyTableComp';
 
 const FillMarksComponent = (
     { values, formData, setFormData, schoolInfo, params }:
-        { values: any, formData: EdgeResult[], setFormData: any, schoolInfo: EdgeSchoolHigherInfo, params: any }
+        { values: any, formData: EdgeResult[], setFormData: any, schoolInfo: EdgeSchoolInfoHigher, params: any }
 ) => {
 
     const [dataToSubmit, setDataToSubmit] = useState<any[]>([]); // Initialized as an empty array

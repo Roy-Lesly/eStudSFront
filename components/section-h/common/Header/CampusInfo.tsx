@@ -1,5 +1,5 @@
 import { protocol } from '@/config'
-import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql'
+import { EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql'
 import { GetSchoolInfoUrl } from '@/Domain/Utils-H/appControl/appConfig'
 import { GetSchoolInfoInter } from '@/Domain/Utils-H/appControl/appInter'
 import { decodeUrlID, getData } from '@/functions'
@@ -25,26 +25,26 @@ const GET_DATA = gql`
 
 const CampusInfo = () => {
 
-    const domain = useParams().domain;
-    const [ count, setCount ] = useState(0)
-    const [ schoolInfo, setSchoolInfo ] = useState<EdgeSchoolHigherInfo>()
+  const domain = useParams().domain;
+  const [count, setCount] = useState(0)
+  const [schoolInfo, setSchoolInfo] = useState<EdgeSchoolInfoHigher>()
 
-      const { data, loading, error } = useQuery(GET_DATA);
+  const { data, loading, error } = useQuery(GET_DATA);
 
-    useEffect(() => {
-        const school = localStorage.getItem("school");
-        if (count == 0 && school && !loading && data?.allSchoolInfos?.edges?.length){
-            setSchoolInfo(data?.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) => decodeUrlID(item.node.id) === school)[0])
-            setCount(1)
-        }
-    }, [ count, domain, data ])
+  useEffect(() => {
+    const school = localStorage.getItem("school");
+    if (count == 0 && school && !loading && data?.allSchoolInfos?.edges?.length) {
+      setSchoolInfo(data?.allSchoolInfos?.edges.filter((item: EdgeSchoolInfoHigher) => decodeUrlID(item.node.id) === school)[0])
+      setCount(1)
+    }
+  }, [count, domain, data])
 
   return (
     <div>
-        {schoolInfo && <div className='tracking-widest'>
-            <span className='dark:text-white flex font-semibold text-slate-800 text-xl'>{schoolInfo.node.schoolName}</span>
-            <span className='flex font-medium gap-4 space-x-10'>{schoolInfo.node.campus.replace("_", "-")}, {schoolInfo.node.address}, {schoolInfo.node.region} </span>
-        </div>}
+      {schoolInfo && <div className='tracking-widest'>
+        <span className='dark:text-white flex font-semibold text-slate-800 text-xl'>{schoolInfo.node.schoolName}</span>
+        <span className='flex font-medium gap-4 space-x-10'>{schoolInfo.node.campus.replace("_", "-")}, {schoolInfo.node.address}, {schoolInfo.node.region} </span>
+      </div>}
     </div>
   )
 }

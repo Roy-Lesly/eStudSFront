@@ -22,16 +22,12 @@ const page = async ({
 
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.after = sp?.after
-  paginationParams.before = sp?.before
   paginationParams.fullName = sp?.fullName
   paginationParams.sex = sp?.sex
   paginationParams.matricle = sp?.matricle
   paginationParams.academicYear = sp?.academicYear
-  paginationParams.session = sp?.session
-  paginationParams.specialtyName = sp?.specialtyName
   paginationParams.schoolId = parseInt(p.school_id)
-  paginationParams.level = parseInt(sp?.level ? Array.isArray(sp.level) ? searchParams.level[0] : searchParams.level : "")
+  paginationParams.level = sp?.level
   paginationParams.academicYear = sp?.academicYear
 
 
@@ -76,6 +72,7 @@ const GET_DATA = gql`
   $matricle: String,
   $academicYear: String,
   $session: String,
+  $level: String,
   $schoolId: Decimal!
 ) {
   allUserprofilesSec(
@@ -87,6 +84,7 @@ const GET_DATA = gql`
     matricle: $matricle,
     academicYear: $academicYear,
     session: $session,  
+    level: $level,  
     schoolId: $schoolId,
     isActive: true,
     isStaff: false,

@@ -18,11 +18,13 @@ import { useTranslation } from 'react-i18next';
 import { decodeUrlID } from '@/utils/functions';
 
 
-const List = ({ params, dataYears, dataPending }: { params: any, dataYears: string[], dataPending: EdgePreInscription[], searchParams: any }) => {
+const List = (
+  { params, dataYears, dataPending, sp }:
+  { params: any, dataYears: string[], dataPending: EdgePreInscription[], sp: any }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(sp?.tab || 0);
 
   const Columns: TableColumn<EdgePreInscription>[] = [
     { header: "#", align: "center", responsiveHidden: true, render: (_item: EdgePreInscription, index: number) => index + 1, },
@@ -50,7 +52,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
     {
       header: "Admit", align: "center", hideColumn: activeTab == 1 ? true : false, render: (item) => <button
         className="bg-green-400 gap-2 items-center justify-center p-2 rounded-full"
-        onClick={() => router.push(`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?id=${item.node.id}`)}
+        onClick={() => router.push(`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?preId=${item.node.id}`)}
       >
         <FaArrowRightLong size={22} color='black' />
       </button>,
@@ -64,7 +66,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
       searchComponent={
         <SearchMultiple
           names={["fullName", "registrationNumber"]}
-          link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`}
+          link={`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/PreInscription`}
           select={[
             { type: 'select', name: 'academicYear', dataSelect: dataYears },
           ]}
@@ -137,7 +139,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          source={`${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/PreInscription/`}
+          source={`Section-S/pageAdministration/${params.school_id}/pageStudents/PreInscription/?`}
         />
           :
           <ServerError type="network" item="PreInscription" />

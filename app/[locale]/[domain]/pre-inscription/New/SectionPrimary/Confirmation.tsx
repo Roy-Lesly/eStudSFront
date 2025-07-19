@@ -2,8 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { capitalizeFirstLetter, decodeUrlID } from '@/utils/functions';
-import { EdgeProgram, EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
-import { EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeProgram, EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
 
 const Confirmation = ({
   formData,
@@ -57,22 +56,6 @@ const Confirmation = ({
         {renderRow(t('Place of Birth'), formData.personalInfo.pob)}
       </section>
 
-      {/* Contact Information */}
-      <section className="bg-white rounded-lg shadow p-4">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold text-gray-700">
-            {t('Contact Information')}
-          </h3>
-          <button
-            onClick={() => setCurrentStep(currentStep - 3)}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            {t('Edit')}
-          </button>
-        </div>
-        {renderRow(t('Telephone'), formData.personalInfo.telephone)}
-        {renderRow(t('Email'), formData.personalInfo.email)}
-      </section>
 
       {/* Other Information */}
       <section className="bg-white rounded-lg shadow p-4">
@@ -88,19 +71,11 @@ const Confirmation = ({
         {renderRow(
           'CAMPUS',
           data?.allSchoolInfos?.edges.find(
-            (item: EdgeSchoolHigherInfo) =>
+            (item: EdgeSchoolInfoHigher) =>
               parseInt(decodeUrlID(item.node.id)) ===
               parseInt(formData.medicalHistory.campus.toString())
           )?.node.campus
         )}
-        {renderRow(
-          t('Highest Certificate'),
-          formData.medicalHistory.highest_certificate === 'Other'
-            ? capitalizeFirstLetter(formData.medicalHistory.highest_certificate_other.toLowerCase())
-            : formData.medicalHistory.highest_certificate
-        )}
-        {renderRow(t('Year Obtained'), formData.medicalHistory.year_obtained)}
-        {renderRow(t('Grade'), formData.medicalHistory.grade)}
         {renderRow(t('Nationality'), formData.medicalHistory.nationality)}
         {renderRow(
           t('Region Of Origin'),
@@ -128,10 +103,7 @@ const Confirmation = ({
           </button>
         </div>
         {renderRow(t('Classroom'), formData.classAssignment.level)}
-        {renderRow(t('Program'), data.allProgramsprim.edges.find(
-          (item: EdgeProgram) =>
-            decodeUrlID(item.node.id) === formData.classAssignment.programId
-        )?.node.name.replace("_", " "))}
+        {renderRow(t('Program'), formData.classAssignment.program)}
       </section>
     </motion.div>
   );

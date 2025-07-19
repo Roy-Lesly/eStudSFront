@@ -137,6 +137,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          source={`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/PreInscription/`}
         />
           :
           <ServerError type="network" item="PreInscription" />

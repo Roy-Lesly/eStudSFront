@@ -1,4 +1,4 @@
-import { NodeCustomUser, NodeProgram } from "./interfaceGraphql";
+import { NodeCustomUser, NodeProgram, NodeSchoolIdentification, NodeSchoolInfoHigher } from "./interfaceGraphql";
 
 interface PageInfo {
   hasNextPage: boolean;
@@ -23,6 +23,7 @@ export interface NodeUserProfileSec {
   program: NodeProgram;
   session: string;
   active: false;
+  infoData: string;
 }
 
 
@@ -34,21 +35,9 @@ export interface NodeSeries {
 }
 
 
-export interface NodeSchoolIdentificationSecondary {
-  id: string;
-}
-
-export interface NodeSchoolInfoSecondary {
-  id: string;
-  campus: string;
-  school_identification: NodeSchoolIdentificationSecondary;
-  seq_limit: number;
-  exam_limit: number;
-}
-
 export interface NodeClassRoomSec {
   id: string;
-  school: NodeSchoolInfoSecondary;
+  school: NodeSchoolInfoHigher;
   stream: string;
   cycle: string;
   level: string;
@@ -67,9 +56,9 @@ export interface NodeMainSubject {
   subjectName: string;
 }
 
-export interface NodeSubject {
+export interface NodeSubjectSec {
   id: string;
-  mainSubject: NodeMainSubject;
+  mainsubject: NodeMainSubject;
   classroomsec: NodeClassRoomSec;
   subjectCode: string;
   subjectType: string;
@@ -81,19 +70,22 @@ export interface NodeSubject {
 }
 
 
-export interface ResultInfo {
-  [key: string]: number | null; // Keys like "seq_1", "seq_2", etc., with numeric or null values
-}
+// export interface ResultInfo {
+//   [key: string]: number | null; // Keys like "seq_1", "seq_2", etc., with numeric or null values
+// }
 
 
 export interface NodeResultSecondary {
   id: string;
   student: NodeUserProfileSec // Represents the "student" ForeignKey
-  subject: NodeSubject | null; // Represents the "subject" ForeignKey
-  info: ResultInfo; // JSONField structure
+  subjectsec: NodeSubjectSec | null; // Represents the "subject" ForeignKey
+  infoData: string | any; // JSONField structure
+  logs: string; // JSONField structure
   active?: true;
   createdAt?: string;
+  createdBy?: NodeCustomUser;
   updatedAt?: string;
+  updatedBy?: NodeCustomUser;
 }
 
 
@@ -114,13 +106,14 @@ export interface EdgeTransactionsSecSet {
   }[];
 }
 
+export interface SetTransactionsSet { id: string, status: string, amount: number, reason: string, paymentMethod: string, ref: string, createdAt: string }
 export interface NodeSchoolFeesSec {
   id: string;
   userprofilesec: NodeUserProfileSec;
   platformPaid: boolean,
   idPaid: boolean,
   balance: number,
-  transactionssecSet: EdgeTransactionsSecSet;
+  transactionssec: SetTransactionsSet[];
   updatedAt: string;
   updatedBy: NodeCustomUser;
 }
@@ -161,14 +154,6 @@ export interface EdgeSeries {
   node: NodeSeries;
 }
 
-export interface EdgeSchoolIdentificationSecondary {
-  node: NodeSchoolIdentificationSecondary;
-}
-
-export interface EdgeSchoolInfoSecondary {
-  node: NodeSchoolInfoSecondary;
-}
-
 export interface EdgeClassRoomSec {
   node: NodeClassRoomSec;
 }
@@ -177,8 +162,8 @@ export interface EdgeMainSubject {
   node: NodeMainSubject;
 }
 
-export interface EdgeSubject {
-  node: NodeSubject;
+export interface EdgeSubjectSec {
+  node: NodeSubjectSec;
 }
 
 export interface EdgePublishSecondary {

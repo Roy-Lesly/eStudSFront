@@ -3,7 +3,6 @@ import React from 'react'
 import { removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
@@ -26,16 +25,12 @@ const EditPage = async ({
 
   const data = await queryServerGraphQL({
     domain: p.domain,
-    query: GET_DATA,
+    query: GET_DATA_CLASSROOM_SEC,
     variables: {
       ...removeEmptyFields(paginationParams),
       schoolId: p.school_id,
     },
   });
-
-  console.log(data);
-  console.log(`${new Date().getFullYear()}`);
-
 
   return (
     <div>
@@ -61,8 +56,9 @@ export const metadata: Metadata = {
 
 
 
-const GET_DATA = gql`
+export const GET_DATA_CLASSROOM_SEC = gql`
  query GetData(
+   $id: ID,
    $schoolId: Decimal,
    $stream: String,
    $academicYear: String,
@@ -70,6 +66,7 @@ const GET_DATA = gql`
   ) {
     allClassroomsSec(
       last: 100,
+      id: $id
       schoolId: $schoolId
       stream: $stream
       academicYear: $academicYear

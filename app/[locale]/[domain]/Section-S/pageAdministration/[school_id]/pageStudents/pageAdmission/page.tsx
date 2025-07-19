@@ -9,8 +9,8 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 export const metadata: Metadata = {
-    title: "Admission Page",
-    description: "This is Admission Page Admin Settings",
+  title: "Admission Page",
+  description: "This is Admission Page Admin Settings",
 };
 
 
@@ -18,8 +18,8 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-    params: any;
-    searchParams: any;
+  params: any;
+  searchParams: any;
 }) => {
   const p = await params;
   const sp = await searchParams;
@@ -30,33 +30,33 @@ const EditPage = async ({
   paginationParams.level = sp?.level
   paginationParams.academicYear = sp?.academicYear
   paginationParams.domainName = sp?.domainName
-  const client = getApolloClient(p.domain);
 
-    const dataPreinscription = await queryServerGraphQL({
-      domain: p.domain,
-      query: GET_DATA,
-      variables: {
-        id: parseInt(decodeUrlID(sp?.id)),
-        schoolId: parseInt(p.school_id),
-      },
-    });
+  const dataPreinscription = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      id: parseInt(decodeUrlID(sp?.preId)),
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
-    const dataClassroomsec = await queryServerGraphQL({
-      domain: p.domain,
-      query: GET_DATA_CLASSROOMS,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        schoolId: parseInt(p.school_id),
-      },
-    });
+  const dataClassroomsec = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_CLASSROOMS,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      id: parseInt(decodeUrlID(sp?.classId)),
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
   return (
     <div>
-      <List 
-      params={p} 
-      dataPreinscription={dataPreinscription} 
-      searchParams={sp} 
-      dataClassroomsSec={dataClassroomsec?.allClassroomsSec} 
+      <List
+        params={p}
+        dataPreinscription={dataPreinscription}
+        searchParams={sp}
+        dataClassroomsSec={dataClassroomsec?.allClassroomsSec?.edges}
       />
     </div>
   )
@@ -81,6 +81,8 @@ const GET_DATA_CLASSROOMS = gql`
           id 
           academicYear
           level
+          stream
+          select
           school { campus }
         }
       }
@@ -108,8 +110,8 @@ const GET_DATA = gql`
       edges {
         node {
           id registrationNumber firstName lastName fullName dob pob address sex email 
-          fatherName motherName fatherTelephone motherTelephone session
-          level academicYear
+          fatherName motherName fatherTelephone motherTelephone parentAddress session
+          level academicYear stream
           program { id name }
           seriesOne { id name }
           seriesTwo { id name }

@@ -25,6 +25,8 @@ const LevelForm = dynamic(() => import("./formSettings/LevelForm"), { loading: (
 const ProgramForm = dynamic(() => import("./formSettings/ProgramForm"), { loading: () => <MyLoadingModal /> });
 const CreateFeePreselectForm = dynamic(() => import("./formAccounting/CreateFeePreselectForm"), { loading: () => <MyLoadingModal /> });
 const PayPlatFormAndIdCardForm = dynamic(() => import("./formsUtility/PayPlatFormAndIdCardForm"), { loading: () => <MyLoadingModal /> });
+const PayPlatFormAndIdCardFormSec = dynamic(() => import("./formsUtility/PayPlatFormAndIdCardFormSec"), { loading: () => <MyLoadingModal /> });
+const PayPlatFormAndIdCardFormPrim = dynamic(() => import("./formsUtility/PayPlatFormAndIdCardFormPrim"), { loading: () => <MyLoadingModal /> });
 const PayFeesForm = dynamic(() => import("./formsAdmin/PayFeesForm"), { loading: () => <MyLoadingModal /> });
 const AssignStudentToSpecialtyForm = dynamic(() => import("./formsProfiles/AssignStudentToSpecialtyForm"), { loading: () => <MyLoadingModal /> });
 const AdmitStudentFromPreInscriptionForm = dynamic(() => import("./formsProfiles/AdmitStudentFromPreInscriptionForm"), { loading: () => <MyLoadingModal /> });
@@ -58,6 +60,8 @@ const forms: {
   account: (type, params, setOpen, data) => <AccountForm type={type} data={data} params={params} setOpen={setOpen} />,
   pay_fees: (type, params, setOpen, data, extra_data,) => <PayFeesForm type={type} params={params} data={data} setOpen={setOpen} extra_data={extra_data} />,
   platform_and_id_card: (type, params, setOpen, data, extra_data) => <PayPlatFormAndIdCardForm type={type} params={params} setOpen={setOpen} data={data} extra_data={extra_data} />,
+  platform_and_id_card_sec: (type, params, setOpen, data, extra_data) => <PayPlatFormAndIdCardFormSec type={type} params={params} setOpen={setOpen} data={data} extra_data={extra_data} />,
+  platform_and_id_card_prim: (type, params, setOpen, data, extra_data) => <PayPlatFormAndIdCardFormPrim type={type} params={params} setOpen={setOpen} data={data} extra_data={extra_data} />,
   create_fees_preselect: (type, params, setOpen, data) => <CreateFeePreselectForm apiDomains={data} params={params} setOpen={setOpen} />,
   timetable_select_month: (type, params, setOpen, data) => <TimeTableSelectMonth data={data} type={type} params={params} setOpen={setOpen} />,
   timetable_clock_in_form: (type, params, setOpen, data, extra_data) => <ClockInOutForm data={data} type={type} params={params} setOpen={setOpen} />,
@@ -100,6 +104,8 @@ const FormModal = ({
 
   | "platform_charge"
   | "platform_and_id_card"
+  | "platform_and_id_card_sec"
+  | "platform_and_id_card_prim"
   | "parent"
   | "subject"
   | "class"

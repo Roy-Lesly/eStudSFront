@@ -106,6 +106,8 @@ const GET_DATA_SECONDARY = gql`
   $schoolType: String!
  ) {
   allAcademicYears
+  getProgramsSec
+  getLevelsSec
 
   allSchoolInfos (
     schoolType: $schoolType
@@ -113,15 +115,6 @@ const GET_DATA_SECONDARY = gql`
     edges {
       node {
         id campus town address schoolIdentification { name }
-      }
-    }
-  }
-  allProgramssec(
-    last: 50
-  ) {
-    edges {
-      node {
-        id name
       }
     }
   }
@@ -163,15 +156,8 @@ const GET_DATA_PRIMARY = gql`
       }
     }
   }
-  allProgramsprim(
-    last: 50
-  ) {
-    edges {
-      node {
-        id name
-      }
-    }
-  }
+  getProgramsPrim
+  getLevelsPrim
 }
 `;
 

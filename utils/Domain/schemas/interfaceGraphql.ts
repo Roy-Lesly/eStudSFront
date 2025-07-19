@@ -98,6 +98,8 @@ export interface NodeCustomUser {
   yearObtained: string;
   infoData: string | any;
   isActive: boolean;
+  password: string;
+  passwordSet: boolean;
   createdAt: string;
 }
 

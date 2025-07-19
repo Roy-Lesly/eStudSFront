@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
-import Header from '@/section-h/Header/Header';
+import Header from '@/section-s/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
@@ -46,7 +46,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     {
       header: `${t("View")}`, align: "center",
       render: (item) => <button
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
+        onClick={() => router.push(`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
         className="bg-green-200 p-2 rounded-full"
       >
         <FaRightLong color="green" size={21} />
@@ -67,8 +67,8 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       // />}
       searchComponent={
         <SearchMultiple
-          names={['fullName', 'specialtyName', 'level', 'sex', 'academicYear']}
-          link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents`}
+          names={['fullName', 'level', 'sex', 'academicYear']}
+          link={`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents`}
           select={[
             // { type: 'select', name: 'sex', dataSelect: ['MALE', 'FEMALE'] },
             // { type: 'select', name: 'academicYear', dataSelect: data?.allAcademicYears },

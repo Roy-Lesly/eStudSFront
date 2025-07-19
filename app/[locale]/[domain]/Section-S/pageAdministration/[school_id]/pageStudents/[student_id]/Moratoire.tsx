@@ -2,18 +2,21 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { EdgeResult, EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { GrStatusGood } from 'react-icons/gr';
 import { FaTimes } from 'react-icons/fa';
 import ResultsEdit from './Comps/ResultsEdit';
 import MoratoireCheck from './Comps/MoratoireCheck';
+import { EdgeResultSecondary, EdgeSchoolFeesSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { useTranslation } from 'react-i18next';
 
-const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: EdgeResult[], params: any }) => {
+
+const Moratoire = ({ data, results, params }: { data: EdgeSchoolFeesSec, results: EdgeResultSecondary[], params: any }) => {
+    const { t } = useTranslation("common");
     const [selectedSemester, setSelectedSemester] = useState<string>('I');
     const [viewMoratoire, setViewMoratoire] = useState<boolean>(false);
     const balance = data?.node?.balance
     const statusPlatform = data?.node?.platformPaid
-    const info = JSON.parse(data?.node?.userprofile?.infoData)
+    const info = JSON.parse(data?.node?.userprofilesec?.infoData)
     const statusMoratoire = info?.moratoire?.status ?? null;
     const approvedSchedule = info?.moratoire?.approvedSchedule ?? null;
     const cumulativeTotalMoratoire = sumTotalAmounts(approvedSchedule)
@@ -25,8 +28,8 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
       };
 
 
-    if (!info.moratoire){
-        return <div>No Moratoire</div>
+    if (!info?.moratoire){
+        return <div>{t("No Moratoire")}</div>
     }
 
 
@@ -57,7 +60,7 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6 }}
                 >
-                    {data?.node?.userprofile?.customuser?.fullName || "Student Name"}
+                    {data?.node?.userprofilesec?.customuser?.fullName || "Student Name"}
                 </motion.h1>
                 <motion.h2
                     className="text-gray-700 text-lg"
@@ -65,13 +68,13 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.7 }}
                 >
-                    Class: {data?.node?.userprofile?.specialty?.mainSpecialty?.specialtyName}
+                    Class: {data?.node?.userprofilesec?.classroomsec?.level}
                 </motion.h2>
                 <div className="text-gray-700 text-lg">
-                    Level: {data?.node?.userprofile?.specialty?.level.level || "N/A"}
+                    Level: {data?.node?.userprofilesec?.classroomsec?.level || "N/A"}
                 </div>
                 <div>
-                    Year: {data?.node?.userprofile.specialty.academicYear || "N/A"}
+                    Year: {data?.node?.userprofilesec.classroomsec.academicYear || "N/A"}
                 </div>
             </div>
 
@@ -109,8 +112,9 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     statusMoratoire={statusMoratoire}
                     respectPayment={respectPayment}
                 >
-                    {selectedSemester === 'I' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "I")} /> : null}
-                    {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "II")} /> : null}
+                    {selectedSemester === 'I' ? <ResultsEdit params={params} canEdit={false} data={results} /> : null}
+                    {/* {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "II")} /> : null} */}
+                    {/* {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "III")} /> : null} */}
                 </MoratoireCheck>
 
             </div>

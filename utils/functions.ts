@@ -60,7 +60,7 @@ export const addOneYear = (year: string) => {
 
 export const removeEmptyFields = (obj: Record<string, any>) => {
     return Object.fromEntries(
-        Object.entries(obj).filter(([_, value]) => value !== '')
+        Object.entries(obj).filter(([_, value]) => (value !== '' || value != undefined || value != null))
     );
 };
 

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaDownload } from "react-icons/fa6";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { EdgePreInscription, EdgeSchoolHigherInfo, EdgeMainSpecialty } from "@/utils/Domain/schemas/interfaceGraphql";
+import { EdgePreInscription, EdgeSchoolInfoHigher, EdgeMainSpecialty } from "@/utils/Domain/schemas/interfaceGraphql";
 import { useTranslation } from "react-i18next";
 import { decodeUrlID } from "@/utils/functions";
 import PreInscriptionPrint from "./PreInscriptionPrint";
@@ -21,14 +21,14 @@ const PreInscriptionForm = ({
   p: any;
   data: EdgePreInscription;
   dataMainSpecialties: EdgeMainSpecialty[];
-  dataSchool: EdgeSchoolHigherInfo[];
+  dataSchool: EdgeSchoolInfoHigher[];
 }) => {
 
   const { t } = useTranslation("common");
   const [showPrint, setShowPrint] = useState<boolean>(false);
   const specialtyOne = dataMainSpecialties?.filter((sp: EdgeMainSpecialty) => decodeUrlID(sp.node.id) == decodeUrlID(data?.node?.specialtyOne.id))[0]
   const specialtyTwo = dataMainSpecialties?.filter((sp: EdgeMainSpecialty) => decodeUrlID(sp.node.id) == decodeUrlID(data?.node?.specialtyTwo.id))[0]
-  const school = dataSchool?.filter((item: EdgeSchoolHigherInfo) => decodeUrlID(item.node.id) === decodeUrlID(data?.node?.campus.id))[0]
+  const school = dataSchool?.filter((item: EdgeSchoolInfoHigher) => decodeUrlID(item.node.id) === decodeUrlID(data?.node?.campus.id))[0]
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
   useEffect(() => {

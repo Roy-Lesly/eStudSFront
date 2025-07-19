@@ -15,24 +15,22 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolInfoHigher, params: 
       const { t } = useTranslation();
       const token = localStorage.getItem('token');
       const user: JwtPayload = jwtDecode(token ? token : "");
-  
 
-  console.log(data);
 
   const [school, setSchool] = useState<NodeSchoolInfoHigher>({
     id: decodeUrlID(data?.node?.id) || '',
     campus: data?.node?.campus || '',
     prefix: data?.node?.prefix || '',
     method: data?.node?.method || 0,
-    schoolName: data?.node?.schoolName || '',
+    schoolName: data?.node?.schoolName.toUpperCase() || '',
     schoolType: data?.node?.schoolType || '',
-    shortName: data?.node?.shortName || '',
+    shortName: data?.node?.shortName.toUpperCase() || '',
     mainSchool: data?.node?.mainSchool || false,
     country: data?.node?.country || '',
-    address: data?.node?.address || '',
-    region: data?.node?.region || '',
-    town: data?.node?.town || '',
-    email: data?.node?.email || '',
+    address: data?.node?.address.toUpperCase() || '',
+    region: data?.node?.region.toUpperCase() || '',
+    town: data?.node?.town.toUpperCase() || '',
+    email: data?.node?.email.toLowerCase() || '',
     telephone: data?.node?.telephone || '',
     seqLimit: data?.node?.seqLimit || 0,
     examLimit: data?.node?.examLimit || 0,
@@ -43,23 +41,21 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolInfoHigher, params: 
     waNotification: data?.node?.waNotification || false,
     poBox: data?.node?.poBox || '',
     niu: data?.node?.niu || '',
-    website: data?.node?.website || '',
+    website: data?.node?.website.toLowerCase() || '',
     latitude: data?.node?.latitude || 0,
     longitude: data?.node?.longitude || 0,
     landingMessageMain: data?.node?.landingMessageMain || '',
     logoCampus: data?.node?.logoCampus || '',
     registrationSeperateTuition: data?.node?.registrationSeperateTuition || false,
     schoolfeesControl: data?.node?.schoolfeesControl || '',
-    welcomeMessage: data?.node?.welcomeMessage || '',
-    welcome_message: data?.node?.welcome_message || '',
+    welcomeMessage: data?.node?.welcomeMessage.toUpperCase() || '',
+    welcome_message: data?.node?.welcome_message?.toUpperCase() || '',
     radius: data?.node?.radius || 0,
     bgLogoSlip: data?.node?.bgLogoSlip || '',
     bgLogoTranscript: data?.node?.bgLogoTranscript || '',
     colors: data?.node?.colors || '',
     schoolIdentification: data?.node?.schoolIdentification || { id: '' },
   });
-
-  console.log(school);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target;
@@ -72,7 +68,6 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolInfoHigher, params: 
     setSchool((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const limits: (keyof NodeSchoolInfoHigher)[] = ["seqLimit", "examLimit", "caLimit", "resitLimit"];
   const limits: (keyof NodeSchoolInfoHigher)[] = ["seqLimit", "examLimit"];
   const notificationKeys: (keyof NodeSchoolInfoHigher)[] = [
     "emailNotification",
@@ -146,7 +141,7 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolInfoHigher, params: 
             className="w-full border border-gray-300 p-3 rounded-md font-bold text-lg"
           />
         </div>
-        <div className='flex flex-row gap-2 justify-between'>
+        {/* <div className='flex flex-row gap-2 justify-between'>
           <MyInputField
             id="schoolType"
             name="schoolType"
@@ -154,10 +149,10 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolInfoHigher, params: 
             type="select"
             placeholder={t("Select School Type")}
             value={school.schoolType}
-            options={["Section_H", "Section_S", "Section_P", "Section_V"].map((item: string) => item)}
+            options={["Section-H", "Section-S", "Section-P", "Section-V"].map((item: string) => item)}
             onChange={handleChange}
           />
-        </div>
+        </div> */}
         <div>
           <label className="text-slate-700 block mb-1">{t("Town")}</label>
           <input

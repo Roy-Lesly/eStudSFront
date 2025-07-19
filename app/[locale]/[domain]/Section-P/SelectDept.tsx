@@ -9,7 +9,7 @@ import { ArrowLeft, LogOut, Building2, School, BookOpen, ShieldCheck } from 'luc
 
 import { decodeUrlID } from '@/functions';
 import { JwtPayload } from '@/serverActions/interfaces';
-import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql';
 
 const SECTION_COLORS = {
   SECTION_H: 'bg-blue-800 hover:bg-blue-600',
@@ -47,16 +47,16 @@ const SelectDept = ({
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   const user: JwtPayload | null = token ? jwtDecode(token) : null;
 
-  const schools: EdgeSchoolHigherInfo[] =
-    data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolHigherInfo) =>
+  const schools: EdgeSchoolInfoHigher[] =
+    data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolInfoHigher) =>
       user?.school.includes(parseInt(decodeUrlID(item.node.id)))
     ) || [];
 
   const grouped = {
-    SECTION_H: [] as EdgeSchoolHigherInfo[],
-    SECTION_S: [] as EdgeSchoolHigherInfo[],
-    SECTION_V: [] as EdgeSchoolHigherInfo[],
-    SECTION_P: [] as EdgeSchoolHigherInfo[],
+    SECTION_H: [] as EdgeSchoolInfoHigher[],
+    SECTION_S: [] as EdgeSchoolInfoHigher[],
+    SECTION_V: [] as EdgeSchoolInfoHigher[],
+    SECTION_P: [] as EdgeSchoolInfoHigher[],
   };
 
   schools.forEach((school) => {
@@ -88,15 +88,14 @@ const SelectDept = ({
                   .map((item) => (
                     <Link
                       key={item.node.id}
-                      href={`/${params.domain}/${
-                        item.node.schoolType === 'SECTION_S'
+                      href={`/${params.domain}/${item.node.schoolType === 'SECTION_S'
                           ? 'Section-S'
                           : item.node.schoolType === 'SECTION_P'
-                          ? 'Section-P'
-                          : item.node.schoolType === 'SECTION_V'
-                          ? 'Section-V'
-                          : 'Section-H'
-                      }/page${page}/${decodeUrlID(item.node.id)}/?id=${user?.user_id}`}
+                            ? 'Section-P'
+                            : item.node.schoolType === 'SECTION_V'
+                              ? 'Section-V'
+                              : 'Section-H'
+                        }/page${page}/${decodeUrlID(item.node.id)}/?id=${user?.user_id}`}
                       onClick={() => localStorage.setItem('school', decodeUrlID(item.node.id))}
                       className={`group rounded-xl shadow-md text-white p-5 transition-all flex items-start gap-3 ${SECTION_COLORS[item.node.schoolType as keyof typeof SECTION_COLORS]}`}
                     >

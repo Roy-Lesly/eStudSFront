@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { capitalizeFirstLetter, decodeUrlID, getAcademicYear } from '@/functions';
 import MyInputField from '@/MyInputField';
 import React, { useEffect, useState } from 'react'
-import { EdgeProgram, EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql';
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { CertificateOptions, RegionList } from '@/constants';
@@ -11,9 +11,7 @@ import { gql } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import Confirmation from './Confirmation';
 import { EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
-import { SECONDARY_LEVEL_CHOICES_ENGLISH, SECONDARY_LEVEL_CHOICES_FRENCH } from '@/utils/dataSource';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
-import { stream } from 'xlsx';
 
 
 const steps = ['Personal Info', 'Role / Dept', 'Specialty', 'Confirmation'];
@@ -48,7 +46,7 @@ type FormData = {
   };
   classAssignment: {
     academic_year: string;
-    programsecId: string;
+    program: string;
     level: string;
     session: string;
     stream: string;
@@ -72,6 +70,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
   const [optionsSeries, setOptionsSeries] = useState<{ id: number, name: string }[]>();
   const [optionsCampuses, setOptionsCampuses] = useState<{ id: number, name: string }[]>();
   const [optionsProgramsSec, setOptionsProgramsSec] = useState<{ id: number, name: string }[]>();
+  const [optionsLevels, setOptionsLevels] = useState<{ id: number, name: string }[]>();
   const [optionsYears, setOptionsYears] = useState<{ id: string, name: string }[]>();
 
   const [formData, setFormData] = useState({
@@ -102,7 +101,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
     },
     classAssignment: {
       academic_year: '',
-      programsecId: '',
+      program: '',
       level: '',
       session: '',
       class: '',
@@ -127,8 +126,8 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
         const { campus, nationality, highest_certificate, grade, year_obtained, region_of_origin, mother_name, father_telephone } = formData.medicalHistory;
         return [nationality, highest_certificate, grade, year_obtained, region_of_origin, campus.toString()].every((field) => String(field.trim()) !== '');
       case 2:
-        const { academic_year, programsecId, level, session, stream } = formData.classAssignment;
-        return [academic_year, programsecId, level, session, stream].every((field) => String(field).trim() !== '' && (Array.isArray(field) ? field.every(item => String(item).trim() !== '') : true));
+        const { academic_year, program, level, session, stream } = formData.classAssignment;
+        return [academic_year, program, level, session, stream].every((field) => String(field).trim() !== '' && (Array.isArray(field) ? field.every(item => String(item).trim() !== '') : true));
 
       default:
         return true;
@@ -137,12 +136,6 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
 
   useEffect(() => {
     if (count === 0) {
-      // if (data && data.allClassroomsSec?.edges) {
-      //   const f = data.allClassroomsSec.edges.sort((a: EdgeClassRoomSec, b: EdgeClassRoomSec) => a.node.level > b.node.level ? 1 : a.node.level < b.node.level ? -1 : 0).map((item: EdgeClassRoomSec) => {
-      //     return { "id": decodeUrlID(item.node.id), "name": `${item.node.level.replace("_", "-")} - ${item.node.academicYear}` }
-      //   })
-      //   if (f) { setOptionsClassroom(f) }
-      // }
       if (data && data.allAcademicYears) {
         const f = data.allAcademicYears.slice(0, 2).map((item: string) => ({
           id: item,
@@ -152,14 +145,14 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
           setOptionsYears(f);
         }
       }
-      if (data && data.allProgramssec?.edges) {
-        const f = data.allProgramssec.edges.map((item: EdgeProgram) => {
-          return { "id": decodeUrlID(item.node.id), "name": `${item.node.name}` }
-        })
-        if (f) { setOptionsProgramsSec(f) }
+      if (data?.getProgramsSec?.length) {
+        setOptionsProgramsSec(data?.getProgramsSec.map((item: string) => { return { id: item, name: item } }))
+      }
+      if (data?.getLevelsSec?.length) {
+        setOptionsLevels(data?.getLevelsSec.map((item: string) => { return { id: item, name: item } }))
       }
       if (data && data?.allSchoolInfos?.edges.length) {
-        const f = data.allSchoolInfos.edges.map((item: EdgeSchoolHigherInfo) => {
+        const f = data.allSchoolInfos.edges.map((item: EdgeSchoolInfoHigher) => {
           return { "id": decodeUrlID(item.node.id), "name": `${item.node.campus.replace("_", "-")} - ${item.node?.town} - ${item.node?.address}` }
         })
 
@@ -267,7 +260,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
       grade: formData.medicalHistory.grade,
 
       academicYear: formData.classAssignment.academic_year,
-      programId: formData.classAssignment.programsecId,
+      program: formData.classAssignment.program,
       level: formData.classAssignment.level,
       stream: formData.classAssignment.stream,
       session: formData.classAssignment.session,
@@ -306,6 +299,8 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
   };
 
   const last_20_years = Array.from({ length: 25 }, (_, i) => (currentYear - i).toString());
+
+  console.log(optionsLevels);
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -604,15 +599,15 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
               </div>
 
               <MyInputField
-                  id="level"
-                  name="level"
-                  label={t("Classroom")}
-                  type="select"
-                  placeholder={t("Select a Class")}
-                  value={formData.classAssignment.level}
-                  onChange={(e) => handleChange('classAssignment', 'level', e.target.value)}
-                  options={schoolSystem === "English Section" ? SECONDARY_LEVEL_CHOICES_ENGLISH : schoolSystem === "French Section" ? SECONDARY_LEVEL_CHOICES_FRENCH : []}
-                />
+                id="level"
+                name="level"
+                label={t("Classroom")}
+                type="select"
+                placeholder={t("Select a Class")}
+                value={formData.classAssignment.level}
+                onChange={(e) => handleChange('classAssignment', 'level', e.target.value)}
+                options={(schoolSystem === "English Section" || params.locale === "en") ?  optionsLevels?.slice(0, 7) : optionsLevels?.slice(7, 14) }
+              />
 
               <div className='flex md:flex-row flex-col justify-between gap-4'>
                 <MyInputField
@@ -655,8 +650,8 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
                   label={t("Program")}
                   type="select"
                   placeholder={t("Program")}
-                  value={formData.classAssignment.programsecId}
-                  onChange={(e) => handleChange('classAssignment', 'programsecId', e.target.value)}
+                  value={formData.classAssignment.program}
+                  onChange={(e) => handleChange('classAssignment', 'program', e.target.value)}
                   options={optionsProgramsSec}
                 />
               </div>
@@ -796,7 +791,7 @@ const query = gql`
     $academicYear: String!
     $session: String!
     $level: String!
-    $programId: ID!
+    $program: String!
     $seriesOneId: ID!
     $seriesTwoId: ID
     $action: String!
@@ -828,7 +823,7 @@ const query = gql`
       academicYear: $academicYear
       session: $session
       level: $level
-      programId: $programId
+      program: $program
       seriesOneId: $seriesOneId
       seriesTwoId: $seriesTwoId
       action: $action

@@ -1,12 +1,12 @@
 "use client";
-import { EdgePreInscription, EdgeSchoolHigherInfo } from "@/utils/Domain/schemas/interfaceGraphql";
+import { EdgePreInscription, EdgeSchoolInfoHigher } from "@/utils/Domain/schemas/interfaceGraphql";
 import { useTranslation } from "react-i18next";
 import HeaderForm from "../HeaderForm";
 
 const PreInscriptionPrint = ({
   p, data, qrCodeDataUrl, componentRef, school, specialtyOne, specialtyTwo
 }: {
-  p: any, data: EdgePreInscription, qrCodeDataUrl: string, componentRef: any, school: EdgeSchoolHigherInfo, specialtyOne: any, specialtyTwo: any
+  p: any, data: EdgePreInscription, qrCodeDataUrl: string, componentRef: any, school: EdgeSchoolInfoHigher, specialtyOne: any, specialtyTwo: any
 }) => {
 
   const { t } = useTranslation("common");
@@ -42,7 +42,7 @@ const PreInscriptionPrint = ({
               qrCodeDataUrl={qrCodeDataUrl}
               logoCampus={school?.node?.logoCampus}
             />
-            
+
 
             {/* Details */}
             <div className="grid grid-cols-2 gap-6 text-sm text-gray-700 pt-4">

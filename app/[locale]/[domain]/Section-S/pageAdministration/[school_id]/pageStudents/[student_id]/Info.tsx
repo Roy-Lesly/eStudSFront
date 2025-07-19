@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { gql } from '@apollo/client';
 import ButtonUpdate from '@/section-h/Buttons/ButtonUpdate';
 import { JwtPayload } from '@/serverActions/interfaces';
@@ -19,13 +18,15 @@ import IDComp2 from '../../pageResult/pageIDCard/[specialty_id]/IDComp2';
 import IDComp1 from '../../pageResult/pageIDCard/[specialty_id]/IDComp1';
 import { QrCodeBase64 } from '@/components/QrCodeBase64';
 import { protocol, RootApi } from '@/utils/config';
-import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { EdgeSchoolFeesSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutationCreateUpdateCustomuser';
+import { boolean } from 'zod';
 
 
 const Info = (
   { data, params, searchParams, hasMark }
     :
-    { data: EdgeSchoolFees, params: any, searchParams: any, hasMark: boolean }
+    { data: EdgeSchoolFeesSec, params: any, searchParams: any, hasMark: boolean }
 ) => {
 
   const { t } = useTranslation();
@@ -34,7 +35,7 @@ const Info = (
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
   useEffect(() => {
-    const url = `${protocol}${params.domain}${RootApi}/check/${decodeUrlID(data?.node?.userprofile?.id)}/idcard/?n=1`;
+    const url = `${protocol}${params.domain}${RootApi}/check/${decodeUrlID(data?.node?.userprofilesec?.id)}/S/idcard/?n=1`;
     QrCodeBase64(url).then(setQrCodeDataUrl);
   }, []);
 
@@ -68,35 +69,39 @@ const Info = (
     yearObtained: string;
     schoolIds: string[];
     deptIds: number[];
+    password: string;
+    passwordSet: boolean;
     infoData: string;
     delete: boolean;
     prefix: string;
   }>({
-    role: data?.node?.userprofile.customuser.role || '',
-    photo: data?.node?.userprofile.customuser?.photo || '',
-    firstName: data?.node?.userprofile.customuser.firstName || '',
-    lastName: data?.node?.userprofile.customuser.lastName || '',
-    fullName: data?.node?.userprofile.customuser.fullName || '',
-    sex: data?.node?.userprofile.customuser.sex || '',
-    dob: data?.node?.userprofile.customuser.dob || '',
-    pob: data?.node?.userprofile.customuser.pob || '',
-    address: data?.node?.userprofile.customuser.address || '',
-    telephone: data?.node?.userprofile.customuser.telephone || '',
-    email: data?.node?.userprofile.customuser.email || '',
-    parentAddress: data?.node?.userprofile.customuser.parentAddress || '',
-    fatherTelephone: data?.node?.userprofile.customuser.fatherTelephone || '',
-    motherTelephone: data?.node?.userprofile.customuser.motherTelephone || '',
-    fatherName: data?.node?.userprofile.customuser.fatherName || '',
-    motherName: data?.node?.userprofile.customuser.motherName || '',
-    nationality: data?.node?.userprofile.customuser.nationality || '',
-    regionOfOrigin: data?.node?.userprofile.customuser.regionOfOrigin || '',
-    highestCertificate: data?.node?.userprofile.customuser.highestCertificate || '',
-    yearObtained: data?.node?.userprofile.customuser.yearObtained || '',
+    role: data?.node?.userprofilesec?.customuser.role || '',
+    photo: data?.node?.userprofilesec?.customuser?.photo || '',
+    firstName: data?.node?.userprofilesec?.customuser.firstName || '',
+    lastName: data?.node?.userprofilesec?.customuser.lastName || '',
+    fullName: data?.node?.userprofilesec?.customuser.fullName || '',
+    sex: data?.node?.userprofilesec?.customuser.sex || '',
+    dob: data?.node?.userprofilesec?.customuser.dob || '',
+    pob: data?.node?.userprofilesec?.customuser.pob || '',
+    address: data?.node?.userprofilesec?.customuser.address || '',
+    telephone: data?.node?.userprofilesec?.customuser.telephone || '',
+    email: data?.node?.userprofilesec?.customuser.email || '',
+    parentAddress: data?.node?.userprofilesec?.customuser.parentAddress || '',
+    fatherTelephone: data?.node?.userprofilesec?.customuser.fatherTelephone || '',
+    motherTelephone: data?.node?.userprofilesec?.customuser.motherTelephone || '',
+    fatherName: data?.node?.userprofilesec?.customuser.fatherName || '',
+    motherName: data?.node?.userprofilesec?.customuser.motherName || '',
+    nationality: data?.node?.userprofilesec?.customuser.nationality || '',
+    regionOfOrigin: data?.node?.userprofilesec?.customuser.regionOfOrigin || '',
+    highestCertificate: data?.node?.userprofilesec?.customuser.highestCertificate || '',
+    yearObtained: data?.node?.userprofilesec?.customuser.yearObtained || '',
+    password: data?.node?.userprofilesec?.customuser.password || '',
+    passwordSet: data?.node?.userprofilesec?.customuser?.password ? true : false,
     schoolIds: [params.school_id],
     deptIds: [],
-    infoData: data?.node?.userprofile.customuser.infoData || JSON.stringify({}),
+    infoData: data?.node?.userprofilesec?.customuser.infoData || JSON.stringify({}),
     delete: false,
-    prefix: data?.node?.userprofile.customuser.prefix ? data?.node?.userprofile.customuser?.prefix : "x"
+    prefix: data?.node?.userprofilesec?.customuser.prefix ? data?.node?.userprofilesec?.customuser?.prefix : "x"
   });
 
   const handleChange = (e: any) => {
@@ -112,20 +117,31 @@ const Info = (
       for (let index = 0; index < [student].length; index++) {
         const newData = [student][index];
 
-        await ApiFactory({
-          newData: { id: parseInt(decodeUrlID(data?.node?.userprofile.customuser.id)), ...newData, delete: false },
-          mutationName: "createUpdateDeleteCustomUser",
-          modelName: "customuser",
-          successField: "id",
-          query,
+        const resUserId = await mutationCreateUpdateCustomuser({
+          formData: { ...newData, id: parseInt(decodeUrlID(data?.node?.userprofilesec?.customuser?.id)), delete: false },
+          p: params,
           router: null,
-          params: params,
-          redirect: false,
-          reload: true,
-          returnResponseField: false,
-          redirectPath: ``,
-          actionLabel: "processing",
-        });
+          routeToLink: "",
+        })
+        if (resUserId?.length > 5) {
+          alert(t("Operation Successful"))
+          window.location.reload();
+        }
+
+        // await ApiFactory({
+        //   newData: { id: parseInt(decodeUrlID(data?.node?.userprofilesec?.customuser.id)), ...newData, delete: false },
+        //   mutationName: "createUpdateDeleteCustomuser",
+        //   modelName: "customuser",
+        //   successField: "id",
+        //   query,
+        //   router: null,
+        //   params: params,
+        //   redirect: false,
+        //   reload: true,
+        //   returnResponseField: false,
+        //   redirectPath: ``,
+        //   actionLabel: "processing",
+        // });
 
       }
     }
@@ -200,12 +216,12 @@ const Info = (
             searchParams={searchParams}
             qrCodeDataUrl={qrCodeDataUrl}
           /> */}
-          <IDComp2
+          {/* <IDComp2
             data={[data]}
             params={params}
             searchParams={searchParams}
             qrCodeDataUrl={qrCodeDataUrl}
-          />
+          /> */}
         </div>
         :
 
@@ -219,7 +235,7 @@ const Info = (
           {/* Basic Information */}
           <motion.div variants={sectionVariants} className="mb-8">
             <h2 className="border-b font-semibold mb-4 pb-2 text-gray-800 text-xl">
-              Basic Information
+              {t("Basic Information")}
             </h2>
 
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
@@ -238,9 +254,9 @@ const Info = (
                   <img
                     src={
                       selectedImage ||
-                      (data?.node.userprofile.customuser.photo
-                        ? `https://api${params.domain}.e-conneq.com/media/` + data?.node?.userprofile.customuser.photo
-                        : "")
+                      (data?.node.userprofilesec?.customuser?.photo
+                        ? `https://api${params.domain}.e-conneq.com/media/` + data?.node?.userprofilesec?.customuser.photo
+                        : "x")
                     }
                     alt="Photo"
                     className={`bg-white border object-cover rounded-md cursor-pointer`}
@@ -253,6 +269,7 @@ const Info = (
                   data={
                     {
                       id: parseInt(decodeUrlID(params.student_id)),
+                      section: "S",
                       type: "idcard",
                       domain: params.domain,
                       size: 100
@@ -262,9 +279,9 @@ const Info = (
 
                 {/* <div className="flex h-full items-center justify-center md:w-1/3 rounded w-full">
                   <img
-                    src={data?.node?.userprofile.code ? `https://api${params.domain}.e-conneq.com/media/` + data?.node.userprofile.code : "https://apitest.e-conneq.com/media/LogoEconneq.png"}
+                    src={data?.node?.userprofilesec?.code ? `https://api${params.domain}.e-conneq.com/media/` + data?.node.userprofilesec?.code : "https://apitest.e-conneq.com/media/LogoEconneq.png"}
                     alt="Code"
-                    className={`${data?.node.userprofile.code ? data?.node.userprofile.code : "opacity-90"} border-gray-100 object-cover rounded-md `}
+                    className={`${data?.node.userprofilesec?.code ? data?.node.userprofilesec?.code : "opacity-90"} border-gray-100 object-cover rounded-md `}
                   />
                 </div> */}
 
@@ -300,7 +317,7 @@ const Info = (
                   <input
                     type="text"
                     name="x"
-                    value={data?.node?.userprofile.customuser.matricle}
+                    value={data?.node?.userprofilesec?.customuser.matricle}
                     onChange={handleChange}
                     className="border p-2 rounded w-full"
                     required
@@ -500,7 +517,7 @@ const Info = (
                 <label className="text-gray-600 text-sm">{t("Mother's Telephone")}</label>
                 <input
                   type="text"
-                  name="motherName"
+                  name="motherTelephone"
                   value={student.motherTelephone}
                   onChange={handleChange}
                   className="border p-2 rounded w-full"

@@ -3,9 +3,18 @@ import { QRCodeCanvas } from 'qrcode.react';
 import { protocol, RootApi } from '@/utils/config';
 
 const QrCodeGenerator = (
-    { data }: { data: { domain: string, id: number, type: "idcard" | "transcript" | "slip", size?: number } }
+    { data }:
+    { data: 
+        { 
+            domain: string,
+            section: "H" | "S" | "P" | "V",
+            id: number,
+            type: "idcard" | "transcript" | "slip",
+            size?: number
+        }
+    }
 ) => {
-    const u = `${protocol}${data.domain}${RootApi}/check/${data.id}/${data.type}`
+    const u = `${protocol}${data.domain}${RootApi}/check/${data.id}/${data.section}/${data.type}`
     console.log(u);
 
     const [url, setUrl] = useState(u);

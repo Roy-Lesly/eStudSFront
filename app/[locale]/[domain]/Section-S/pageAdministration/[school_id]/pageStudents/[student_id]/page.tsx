@@ -27,7 +27,7 @@ const page = async ({
     query: GET_DATA,
     variables: {
         id: params.profile_id,
-        userprofileId: parseInt(decodeUrlID(p.student_id)),
+        userprofilesecId: parseInt(decodeUrlID(p.student_id)),
         customuserId: parseInt(decodeUrlID(sp.user)),
         schoolId: p.school_id,
     },
@@ -39,7 +39,7 @@ const page = async ({
       <List
         p={p}
         data={data}
-        s={sp} />
+        sp={sp} />
     </div>
   )
 }
@@ -50,10 +50,10 @@ export default page
 const GET_DATA = gql`
  query GetData(
     $customuserId: Decimal,
-    $userprofileId: Decimal,
+    $userprofilesecId: Decimal,
     $schoolId: Decimal!
 ) {
-    allSchoolFees(
+    allSchoolFeesSec(
       customuserId: $customuserId, 
       first: 10, 
       schoolId: $schoolId
@@ -64,16 +64,16 @@ const GET_DATA = gql`
           platformPaid
           idPaid
           balance
-          userprofile {
+          userprofilesec {
             id
             session
-            code
             infoData
             customuser { 
-              id role matricle firstName lastName photo sex dob pob email telephone address fullName parent parentTelephone about photo
-              nationality highestCertificate yearObtained regionOfOrigin infoData
+              id role fullName matricle firstName lastName photo sex dob pob email telephone address
+              fatherName motherName fatherTelephone motherTelephone parentAddress about photo
+              nationality highestCertificate yearObtained regionOfOrigin infoData password
             }
-            specialty { 
+            classroomsec { 
               id
               academicYear
               registration
@@ -81,13 +81,12 @@ const GET_DATA = gql`
               paymentOne
               paymentTwo
               paymentThree
-              mainSpecialty { specialtyName }
-              level { level }
+              level
               school { schoolName campus colors schoolIdentification { logo platformCharges idCharges } schoolfeesControl }
             }
-            program { id name }
+            programsec { id name }
           }
-          transactions {
+          transactionssec {
             amount
             createdAt
             paymentMethod
@@ -99,13 +98,14 @@ const GET_DATA = gql`
         }
       }
     }
-    allPrograms {
+    allProgramsSec {
       edges {
         node { id name }
       }
     }
-    allResults(
-      studentId: $userprofileId
+    allResultsSec(
+      studentId: $userprofilesecId
+      active: true
     ) {
       edges {
         node {
@@ -113,15 +113,14 @@ const GET_DATA = gql`
           infoData
           student { 
             customuser { fullName}
-            specialty { 
+            classroomsec { 
               academicYear
-              level { level}
-              mainSpecialty {
-                specialtyName
-              }
+              level
             }
           }
-          course { semester mainCourse { courseName}}
+          subjectsec { id mainsubject { subjectName}}
+          createdBy { id}
+          updatedBy { id}
         }
       }
     }

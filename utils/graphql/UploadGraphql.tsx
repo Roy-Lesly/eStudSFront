@@ -47,7 +47,6 @@ export async function uploadGraphQLMutation({
   const subdomain = params?.domain;
   let subdomainData = Subdomains.find(d => d.subdomain === subdomain);
   if (!subdomainData) {
-    console.log("No Valid Subdomain");
     return
   }
 

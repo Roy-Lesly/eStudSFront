@@ -1,18 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import Sidebar from '@/section-h/Sidebar/Sidebar';
-import Header from '@/section-h/Header/Header';
-import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
+import Sidebar from '@/section-s/Sidebar/Sidebar';
+import Header from '@/section-s/Header/Header';
 import { decodeUrlID } from '@/functions';
-import { Metadata } from 'next';
 import Info from './Info';
 import Fees from './Fees';
 import Results from './Results';
 import Classes from './Classes';
 import DefaultLayout from '@/DefaultLayout';
-import { EdgeResult, EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
-import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import MyTabs from '@/MyTabs';
 import { jwtDecode } from 'jwt-decode';
 import Moratoire from './Moratoire';
@@ -20,20 +17,18 @@ import { useTranslation } from 'react-i18next';
 import { JwtPayload } from '@/serverActions/interfaces';
 import ServerError from '@/ServerError';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { EdgeResultSecondary, EdgeSchoolFeesSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 
 
-export const metadata: Metadata = {
-  title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
-};
-
-const List = ({ p, data, s }: { p: any; data: any, s: any }) => {
+const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
+  console.log(data);
+  // console.log(sp);
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
   const user = token ? jwtDecode<JwtPayload>(token) : null;
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(sp?.tab || 0);
   const hasMark = hasAnyMarks(data?.allResults?.edges);
 
   return (
@@ -57,32 +52,25 @@ const List = ({ p, data, s }: { p: any; data: any, s: any }) => {
         />
       }
     >
-      <Breadcrumb
-        department={t("Details")}
-        subRoute={t("List")}
-        pageName={t("Student Details")}
-        mainLink={`${p.domain}/Section-H/pageAdministration/${p.school_id}/Settings/Students/${p.profile_id}`}
-        subLink={`${p.domain}/Section-H/pageAdministration/${p.school_id}/Settings/Students/${p.profile_id}`}
-      />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-            data.allSchoolFees ?
+            data.allSchoolFeesSec ?
               <MyTabs
                 tabs={[
                   {
                     label: t("Info"),
                     content: <Info
-                      searchParams={s}
-                      data={data.allSchoolFees.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
+                      searchParams={sp}
+                      data={data.allSchoolFeesSec.edges.filter((item: EdgeSchoolFeesSec) => decodeUrlID(item.node.userprofilesec.id) === decodeUrlID(p.student_id))[0]}
                       params={p}
                       hasMark={hasMark}
                     />
                   },
                   {
                     label: t("Classes"),
-                    content: <Classes data={data?.allSchoolFees?.edges} params={p} />
+                    content: <Classes data={data?.allSchoolFeesSec?.edges} params={p} />
                   },
                   ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("FEES") ?
                     [
@@ -90,8 +78,8 @@ const List = ({ p, data, s }: { p: any; data: any, s: any }) => {
                         label: t("Fees"),
                         content: <Fees
                           p={p}
-                          schoolFees={data?.allSchoolFees?.edges.length ? data?.allSchoolFees?.edges[0].node : null}
-                          data={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
+                          schoolFeesSec={data?.allSchoolFeesSec?.edges.length ? data?.allSchoolFeesSec?.edges[0].node : null}
+                          data={data.allSchoolFeesSec?.edges.filter((item: EdgeSchoolFeesSec) => decodeUrlID(item.node.userprofilesec.id) === decodeUrlID(p.student_id))[0]}
                         />
                       }
                     ] : []),
@@ -100,8 +88,12 @@ const List = ({ p, data, s }: { p: any; data: any, s: any }) => {
                       {
                         label: t("Moratoire"),
                         content: <Moratoire
-                          results={data.allResults?.edges.sort((a: EdgeResult, b: EdgeResult) => a.node.course.mainCourse.courseName > b.node.course.mainCourse.courseName ? 1 : a.node.course.mainCourse.courseName < b.node.course.mainCourse.courseName ? -1 : 0)}
-                          data={data?.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
+                          results={data.allResultsSec?.edges.sort((a: EdgeResultSecondary, b: EdgeResultSecondary) => {
+                            const aName = a?.node?.subjectsec?.mainsubject?.subjectName || '';
+                            const bName = b?.node?.subjectsec?.mainsubject?.subjectName || '';
+                            return aName.localeCompare(bName);
+                          })}
+                          data={data?.allSchoolFeesSec?.edges.filter((item: EdgeSchoolFeesSec) => decodeUrlID(item.node.userprofilesec.id) === decodeUrlID(p.student_id))[0]}
                           params={p}
                         />
                       },
@@ -112,15 +104,18 @@ const List = ({ p, data, s }: { p: any; data: any, s: any }) => {
                         label: t("Results"),
                         content: <Results
                           params={p}
-                          fees={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
-                          data={data.allResults?.edges.sort((a: EdgeResult, b: EdgeResult) => a.node.course.mainCourse.courseName > b.node.course.mainCourse.courseName ? 1 : a.node.course.mainCourse.courseName < b.node.course.mainCourse.courseName ? -1 : 0)}
-                        />
+                          fees={data.allSchoolFeesSec?.edges.filter((item: EdgeSchoolFeesSec) => decodeUrlID(item.node.userprofilesec.id) === decodeUrlID(p.student_id))[0]}
+                          data={data.allResultsSec?.edges.sort((a: EdgeResultSecondary, b: EdgeResultSecondary) => {
+                            const aName = a?.node?.subjectsec?.mainsubject?.subjectName || '';
+                            const bName = b?.node?.subjectsec?.mainsubject?.subjectName || '';
+                            return aName.localeCompare(bName);
+                          })} />
                       }
                     ] : []),
                 ]}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
-                source={`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageStudents/${p.student_id}`}
+                source={`Section-S/pageAdministration/${p.school_id}/pageStudents/${p.student_id}?`}
               />
               :
               <ServerError type="notFound" item={t("Student Info")} />
@@ -135,7 +130,7 @@ const List = ({ p, data, s }: { p: any; data: any, s: any }) => {
 export default List;
 
 
-function hasAnyMarks(results: EdgeResult[]) {
+function hasAnyMarks(results: EdgeResultSecondary[]) {
   if (!results) return false;
   return results?.some(result => {
     try {

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { FaCheckCircle, FaPlus, FaTimesCircle } from 'react-icons/fa';
-import { NodeSchoolFees, SetTransactions } from '@/Domain/schemas/interfaceGraphql';
+import { SetTransactions } from '@/Domain/schemas/interfaceGraphql';
 import ModalTransaction from './Comps/ModalTransaction';
+import { EdgeSchoolFeesSec, NodeSchoolFeesSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 
 
-const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeSchoolFees }) => {
+const Fees = ({ data, p, schoolFeesSec }: { data: EdgeSchoolFeesSec, p: any, schoolFeesSec: NodeSchoolFeesSec }) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
@@ -47,15 +48,15 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
       >
         <div className='flex gap-4 justify-center w-full'>
           <span className="font-medium text-gray-700">1st Installment</span>
-          <span className="font-bold text-red-600">{data.node.userprofile.specialty.paymentOne.toLocaleString()} F</span>
+          <span className="font-bold text-red-600">{data.node.userprofilesec.classroomsec.paymentOne.toLocaleString()} F</span>
         </div>
         <div className='flex gap-4 justify-center w-full'>
           <span className="font-medium text-gray-700">2nd Installment</span>
-          <span className="font-bold text-red-600">{data.node.userprofile.specialty.paymentTwo.toLocaleString()} F</span>
+          <span className="font-bold text-red-600">{data.node.userprofilesec.classroomsec.paymentTwo.toLocaleString()} F</span>
         </div>
         <div className='flex gap-4 justify-center w-full'>
           <span className="font-medium text-gray-700">3rd Installment</span>
-          <span className="font-bold text-red-600">{data.node.userprofile.specialty.paymentThree.toLocaleString()} F</span>
+          <span className="font-bold text-red-600">{data.node.userprofilesec.classroomsec.paymentThree.toLocaleString()} F</span>
         </div>
       </motion.div>
 
@@ -69,13 +70,13 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
           visible: { opacity: 1, x: 0, transition: { delay: 0.2, duration: 0.5 } },
         }}
       >
-        {data.node.userprofile ? (
+        {data.node.userprofilesec ? (
           <div
             className="bg-slate-50 flex gap-4 items-center justify-center p-4 rounded-lg shadow-xl"
           >
             <span className="font-medium text-gray-600">Tuition</span>
             <span className="font-bold text-lg text-slate-950">
-              {data.node.userprofile.specialty.tuition.toLocaleString()} F
+              {data.node.userprofilesec.classroomsec.tuition.toLocaleString()} F
             </span>
           </div>
         ) : null}
@@ -85,7 +86,7 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
           >
             <span className="font-medium text-gray-600">Paid</span>
             <span className="font-bold text-lg text-slate-950">
-              {(data.node.userprofile.specialty.tuition - data.node.balance).toLocaleString()} F
+              {(data.node.userprofilesec.classroomsec.tuition - data.node.balance).toLocaleString()} F
             </span>
           </div>
         ) : null}
@@ -120,7 +121,7 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
               </tr>
             </thead>
             <tbody>
-              {data.node.transactions.map((transaction: SetTransactions, index: number) => (
+              {data.node.transactionssec?.map((transaction: SetTransactions, index: number) => (
                 <motion.tr
                   key={index}
                   initial={{ opacity: 0, x: 30 }}
@@ -144,7 +145,7 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
           setModalOpen={setModalOpen}
           data={data.node}
           p={p}
-          schoolFees={schoolFees}
+          schoolFeesSec={schoolFeesSec}
         />
         :
         null}

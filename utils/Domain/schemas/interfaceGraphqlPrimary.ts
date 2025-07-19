@@ -79,11 +79,11 @@ export interface ResultInfo {
 }
 
 
-export interface NodeResultSecondary {
+export interface NodeResultPrimary {
   id: string;
   student: NodeUserProfilePrim // Represents the "student" ForeignKey
   subject: NodeSubject | null; // Represents the "subject" ForeignKey
-  info: ResultInfo; // JSONField structure
+  infoData: string | any; // JSONField structure
   active?: true;
   createdAt?: string;
   updatedAt?: string;
@@ -171,8 +171,8 @@ export interface EdgePublishSecondary {
   node: NodePublishSecondary;
 }
 
-export interface EdgeResultSecondary {
-  node: NodeResultSecondary;
+export interface EdgeResultPrimary {
+  node: NodeResultPrimary;
 }
 
 export interface EdgeSchoolFeesPrim {

@@ -9,32 +9,32 @@ import { LogOut, School, Building2, BookOpen, ShieldCheck, ArrowLeft } from 'luc
 import Loader from '@/section-h/common/Loader';
 import { decodeUrlID } from '@/functions';
 import { JwtPayload } from '@/serverActions/interfaces';
-import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
+import { EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
 
 
 const ICONS = {
-  SECTION_H: <Building2 className="w-6 h-6" />,
-  SECTION_S: <School className="w-6 h-6" />,
-  SECTION_V: <BookOpen className="w-6 h-6" />,
-  SECTION_P: <ShieldCheck className="w-6 h-6" />,
+  "SECTION-H": <Building2 className="w-6 h-6" />,
+  "SECTION-S": <School className="w-6 h-6" />,
+  "SECTION-V": <BookOpen className="w-6 h-6" />,
+  "SECTION-P": <ShieldCheck className="w-6 h-6" />,
 };
 
 const COLORS = {
-  SECTION_H: 'bg-blue-900 hover:bg-blue-700',
-  SECTION_S: 'bg-teal-700 hover:bg-teal-500',
-  SECTION_V: 'bg-green-800 hover:bg-green-600',
-  SECTION_P: 'bg-purple-700 hover:bg-purple-600',
+  "SECTION-H": 'bg-blue-900 hover:bg-blue-700',
+  "SECTION-S": 'bg-teal-700 hover:bg-teal-500',
+  "SECTION-V": 'bg-green-800 hover:bg-green-600',
+  "SECTION-P": 'bg-purple-700 hover:bg-purple-600',
 };
 
 const LABELS = {
-  SECTION_H: 'Higher Section',
-  SECTION_S: 'Secondary Section',
-  SECTION_V: 'Vocational Section',
-  SECTION_P: 'Primary Section',
+  "SECTION-H": 'Higher Section',
+  "SECTION-S": 'Secondary Section',
+  "SECTION-V": 'Vocational Section',
+  "SECTION-P": 'Primary Section',
 };
 
-const SECTION_ORDER = ['SECTION_H', 'SECTION_S', 'SECTION_V', 'SECTION_P'];
+const SECTION_ORDER = ['SECTION-H', 'SECTION-S', 'SECTION-V', 'SECTION-P'];
 
 const SelectDept = () => {
   const { t } = useTranslation();
@@ -45,7 +45,7 @@ const SelectDept = () => {
 
   const [user, setUser] = useState<JwtPayload | null>(null);
   const [dept, setDept] = useState<string>('');
-  const [schools, setSchools] = useState<EdgeSchoolHigherInfo[]>([]);
+  const [schools, setSchools] = useState<EdgeSchoolInfoHigher[]>([]);
 
   useEffect(() => {
     const access = localStorage.getItem('token');
@@ -62,7 +62,7 @@ const SelectDept = () => {
           role === 'accounting' ? 'pageAccounting' : null;
 
     const decoded = jwtDecode(access) as JwtPayload;
-    const userSchools = data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolHigherInfo) =>
+    const userSchools = data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolInfoHigher) =>
       decoded.school.includes(parseInt(decodeUrlID(item.node.id)))
     ) || [];
 
@@ -73,10 +73,10 @@ const SelectDept = () => {
 
   if (loading) return <Loader />;
 
-  const groupedSchools = SECTION_ORDER.reduce((acc: Record<string, EdgeSchoolHigherInfo[]>, key) => {
-    acc[key] = schools.filter((s) => s.node.schoolType === key);
+  const groupedSchools = SECTION_ORDER.reduce((acc: Record<string, EdgeSchoolInfoHigher[]>, key) => {
+    acc[key] = schools.filter((s) => s.node.schoolType.toUpperCase() === key);
     return acc;
-  }, {} as Record<string, EdgeSchoolHigherInfo[]>);
+  }, {} as Record<string, EdgeSchoolInfoHigher[]>);
 
   return (
     <section className="min-h-screen px-4 md:px-8 py-10 flex flex-col items-center bg-gray-50">
@@ -86,7 +86,7 @@ const SelectDept = () => {
         {error ? <p className="text-red flex flex-col">
           {t('error')}: {error?.message}
           <span>{t("Check Network Status")}</span>
-          </p> : null}
+        </p> : null}
 
         <Link href="/pageAuthentication/Logout" aria-label="Logout">
           <LogOut color='white' className="mx-auto border text-red-500 hover:text-red-700 w-12 h-12 my-3 rounded-full p-3 bg-red transition" />
@@ -107,12 +107,12 @@ const SelectDept = () => {
                 {LABELS[section as keyof typeof LABELS]}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {sectionData?.sort((a: EdgeSchoolHigherInfo, b: EdgeSchoolHigherInfo) => (a.node.campus > b.node.campus) ? 1 : (a.node.campus < b.node.campus) ? -1 : 0).map(({ node }) => (
+                {sectionData?.sort((a: EdgeSchoolInfoHigher, b: EdgeSchoolInfoHigher) => (a.node.campus > b.node.campus) ? 1 : (a.node.campus < b.node.campus) ? -1 : 0).map(({ node }) => (
                   <Link
                     key={node.id}
-                    href={`/${domain}/${node.schoolType.replace('SECTION_', 'Section-')}/${dept}/${decodeUrlID(node.id)}?id=${user?.user_id}`}
+                    href={`/${domain}/${node.schoolType.replace('SECTION-', 'Section-')}/${dept}/${decodeUrlID(node.id)}?id=${user?.user_id}`}
                     onClick={() => localStorage.setItem('school', decodeUrlID(node.id))}
-                    className={`w-full rounded-xl shadow-md text-white border p-4 transition-all flex items-center justify-center gap-4 ${COLORS[node.schoolType as keyof typeof COLORS]}`}
+                    className={`w-full rounded-xl shadow-md text-white border p-4 transition-all flex items-center justify-center gap-4 ${COLORS[node.schoolType.toUpperCase() as keyof typeof COLORS]}`}
                   >
                     {ICONS[node.schoolType as keyof typeof ICONS]}
                     <div className="flex flex-col justify-center text-center w-[75%]">
@@ -120,7 +120,7 @@ const SelectDept = () => {
                       <div className='flex gap-4 items-center justify-center text-sm'>
                         <span className="text-white/80">{node.town}</span>
                         <span className="text-white/70">{node.address}</span>
-                      </div>                     
+                      </div>
                       <span className="text-yellow-300 font-semibold mt-1">{node.campus.replace('_', '-')}</span>
 
                     </div>

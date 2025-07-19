@@ -252,6 +252,7 @@ const Info = (
                   data={
                     {
                       id: parseInt(decodeUrlID(params.student_id)),
+                      section: "H",
                       type: "idcard",
                       domain: params.domain,
                       size: 100

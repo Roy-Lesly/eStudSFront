@@ -138,7 +138,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          source={`Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription/?`}
+          source={`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription/?`}
 
         />
           :

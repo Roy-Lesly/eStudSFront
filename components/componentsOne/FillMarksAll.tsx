@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import ButtonUpdate from "@/section-h/Buttons/ButtonUpdate";
-import { EdgeResult, EdgeSchoolHigherInfo } from "@/Domain/schemas/interfaceGraphql";
+import { EdgeResult, EdgeSchoolInfoHigher } from "@/Domain/schemas/interfaceGraphql";
 import FillMarksComponent from "@/components/componentsOne/FillMarksComponent";
 
 
@@ -24,7 +24,7 @@ const itemVariants = {
 
 
 
-const FillMarksAll = ({ values, data, params, schoolInfo }: { values: any, data: EdgeResult[], params: any, schoolInfo: EdgeSchoolHigherInfo }) => {
+const FillMarksAll = ({ values, data, params, schoolInfo }: { values: any, data: EdgeResult[], params: any, schoolInfo: EdgeSchoolInfoHigher }) => {
 
     const defaultFormData = data.map((item: EdgeResult) => {
         // const infoData = typeof item.node.infoData === "string" ? JSON.parse(item.node.infoData) : {};

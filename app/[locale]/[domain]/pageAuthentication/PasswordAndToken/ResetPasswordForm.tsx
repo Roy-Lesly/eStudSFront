@@ -1,6 +1,6 @@
 "use client";
 import { protocol, RootApi } from '@/utils/config';
-import { EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
 import { LogIn, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 const ResetPasswordForm = (
     { params, school, handleSubmit, handleChange, loading }:
-        { params: any, school: EdgeSchoolHigherInfo, handleChange: any, handleSubmit: any, loading: boolean }
+        { params: any, school: EdgeSchoolInfoHigher, handleChange: any, handleSubmit: any, loading: boolean }
 ) => {
 
     const { t } = useTranslation("common");

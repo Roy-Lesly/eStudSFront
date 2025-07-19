@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 import { FaPowerOff } from 'react-icons/fa';
 import { JwtPayload } from '@/serverActions/interfaces';
-import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql';
 import { decodeUrlID } from '@/functions';
 
 const SelectDept = ({ params, data, page }: { params: any; data: any, page: "Administration" | "Lecturer" | "Accounting" }) => {
@@ -14,7 +14,7 @@ const SelectDept = ({ params, data, page }: { params: any; data: any, page: "Adm
   const token = localStorage.getItem('token');
   const user: JwtPayload | null = token ? jwtDecode(token) : null;
 
-  const schools = data?.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) =>
+  const schools = data?.allSchoolInfos?.edges.filter((item: EdgeSchoolInfoHigher) =>
     user?.school.includes(parseInt(decodeUrlID(item.node.id)))
   );
 
@@ -31,28 +31,26 @@ const SelectDept = ({ params, data, page }: { params: any; data: any, page: "Adm
       {/* Campus Selection */}
       <main className="gap-6 grid grid-cols-1 md:grid-cols-2 md:max-w-3xl mt-8">
         {user && schools ? (
-          schools.sort((a:EdgeSchoolHigherInfo, b:EdgeSchoolHigherInfo) => a.node.campus > b.node.campus ? 1 : a.node.campus < b.node.campus ? -1 : 0).map((item: EdgeSchoolHigherInfo) => (
+          schools.sort((a: EdgeSchoolInfoHigher, b: EdgeSchoolInfoHigher) => a.node.campus > b.node.campus ? 1 : a.node.campus < b.node.campus ? -1 : 0).map((item: EdgeSchoolInfoHigher) => (
             <Link
               key={item.node.id}
-              href={`/${params.domain}/${
-                item.node.schoolType === 'SECTION_H'
+              href={`/${params.domain}/${item.node.schoolType === 'SECTION_H'
                   ? 'Section-H'
                   : item.node.schoolType === 'SECTION_S'
-                  ? 'Section-S'
-                  : item.node.schoolType === 'SECTION_P'
-                  ? 'Section-P'
-                  : 'Section-V'
-              }/page${page}/${decodeUrlID(item.node.id)}/?id=${user.user_id}`}
+                    ? 'Section-S'
+                    : item.node.schoolType === 'SECTION_P'
+                      ? 'Section-P'
+                      : 'Section-V'
+                }/page${page}/${decodeUrlID(item.node.id)}/?id=${user.user_id}`}
               className="group"
             >
               <div
-                className={`${
-                  item.node.schoolType === 'SECTION_H'
+                className={`${item.node.schoolType === 'SECTION_H'
                     ? 'bg-blue-800 group-hover:bg-blue-500'
                     : item.node.schoolType === 'SECTION_S'
-                    ? 'bg-teal-700 group-hover:bg-teal-500'
-                    : 'bg-green-800 group-hover:bg-green-500'
-                } transition-all duration-300 rounded-lg shadow-md flex flex-col items-center justify-center p-6 text-white font-semibold text-lg h-36`}
+                      ? 'bg-teal-700 group-hover:bg-teal-500'
+                      : 'bg-green-800 group-hover:bg-green-500'
+                  } transition-all duration-300 rounded-lg shadow-md flex flex-col items-center justify-center p-6 text-white font-semibold text-lg h-36`}
                 onClick={() => localStorage.setItem('school', decodeUrlID(item.node.id))}
               >
                 <span className="text-center text-lg">{item.node.schoolName}</span>
