@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import MedicalInfoForm from './steps/MedicalInfoForm';
+import ParentlInfoForm from './steps/ParentlInfoForm';
 import ClassAssignmentForm from './steps/ClassAssignmentForm';
 import PersonalInfoForm from './steps/PersonalInfoForm';
 import ConfirmationPage from './steps/Confirmation';
@@ -42,17 +42,6 @@ const AdmissionForm = (
       dob: preinscription?.dob || '',
       pob: preinscription?.pob || '',
       telephone: preinscription?.fatherTelephone || '',
-      email: preinscription?.email || '',
-      fatherName: preinscription?.fatherName || '',
-      motherName: preinscription?.motherName || '',
-      fatherTelephone: preinscription?.fatherTelephone || '',
-      motherTelephone: preinscription?.motherTelephone || '',
-      parentAddress: preinscription?.parentAddress || '',
-      password: '',
-    },
-    medicalHistory: {
-      role: 'student',
-      deptNames: ['Student'],
       allergies: '',
       medicalHistory: '',
       nationality: preinscription?.nationality || '',
@@ -61,6 +50,17 @@ const AdmissionForm = (
       yearObtained: preinscription?.yearObtained || '',
       regionOfOrigin: preinscription?.regionOfOrigin || '',
       regionOfOriginOther: preinscription?.regionOfOrigin || '',
+    },
+    parentInfo: {
+      role: 'student',
+      deptNames: ['Student'],
+      email: preinscription?.email || '',
+      fatherName: preinscription?.fatherName || '',
+      motherName: preinscription?.motherName || '',
+      fatherTelephone: preinscription?.fatherTelephone || '',
+      motherTelephone: preinscription?.motherTelephone || '',
+      parentAddress: preinscription?.parentAddress || '',
+      password: '',
     },
     classAssignment: {
       customuserId: '',
@@ -81,7 +81,7 @@ const AdmissionForm = (
 
     const formDataUser = {
       ...formData.personalInfo,
-      ...formData.medicalHistory,
+      ...formData.parentInfo,
       username: formData.personalInfo.firstName?.toString().toUpperCase(),
       role: "student",
       schoolIds: [parseInt(params.school_id)],
@@ -111,9 +111,9 @@ const AdmissionForm = (
           router: null,
           routeToLink: "",
         })
-        if (resProfileId?.length > 5){
+        if (resProfileId?.length > 5) {
           router.push(`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/${resProfileId}`)
-          alert("Operation Successful");
+          alert(t("Operation Successful") + " " + `✅`)
         }
       }
     } catch (error) {
@@ -145,7 +145,7 @@ const AdmissionForm = (
       }
 
       {currentStep === 1 &&
-        <MedicalInfoForm
+        <ParentlInfoForm
           formData={formData}
           setFormData={setFormData}
           onNext={handleNext}

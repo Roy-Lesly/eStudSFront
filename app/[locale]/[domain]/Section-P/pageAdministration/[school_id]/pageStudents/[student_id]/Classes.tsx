@@ -2,17 +2,17 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { decodeUrlID } from '@/functions';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import { EdgeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
-const Classes = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
+const Classes = ({ data, params }: { data: EdgeSchoolFeesPrim[], params: any }) => {
 
     const router = useRouter();
     const { t } = useTranslation("common");
-    const thisUserprofile = data.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) == decodeUrlID(params.student_id))[0].node?.userprofile
+    const thisUserprofileprim = data.filter((item: EdgeSchoolFeesPrim) => decodeUrlID(item.node.userprofileprim.id) == decodeUrlID(params.student_id))[0].node?.userprofileprim
 
     const sectionVariants = {
         hidden: { opacity: 0, y: 50 },
@@ -38,9 +38,9 @@ const Classes = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
             <div className='gap-2 mb-4 p-4'>
                 <h1>{t("Present Class")}</h1>
                 <div className='flex justify-between'>
-                    <span>{thisUserprofile.specialty.mainSpecialty.specialtyName}</span>
-                    <span>{thisUserprofile.specialty.academicYear}</span>
-                    <span>{thisUserprofile.specialty.level.level}</span>
+                    <span>{thisUserprofileprim?.classroomprim.level}</span>
+                    <span>{thisUserprofileprim?.classroomprim.academicYear}</span>
+                    <span>{thisUserprofileprim?.classroomprim.level}</span>
                 </div>
             </div>
 
@@ -53,25 +53,24 @@ const Classes = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
                 <thead>
                     <tr className="bg-blue-600 text-white">
                         <th className="px-4 py-2 text-left">#</th>
-                        <th className="px-4 py-2 text-left">Class</th>
-                        <th className="px-4 py-2 text-left">Academic Year</th>
-                        <th className="px-4 py-2 text-left">Level</th>
-                        <th className="px-4 py-2 text-left">Campus</th>
-                        <th className="px-4 py-2 text-left">Go to</th>
+                        <th className="px-4 py-2 text-left">{t("Class")}</th>
+                        <th className="px-4 py-2 text-left">{t("Academic Year")}</th>
+                        <th className="px-4 py-2 text-left">{t("Level")}</th>
+                        <th className="px-4 py-2 text-left">{t("Campus")}</th>
+                        <th className="px-4 py-2 text-left">{t("Go to")}</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {data.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) !== decodeUrlID(params.student_id))?.map((sch: EdgeSchoolFees, index: number) => (
+                    {data.filter((item: EdgeSchoolFeesPrim) => decodeUrlID(item.node.userprofileprim.id) !== decodeUrlID(params.student_id))?.map((sch: EdgeSchoolFeesPrim, index: number) => (
                         <motion.tr key={index} variants={sectionVariants} className="border-b hover:bg-gray-50">
                             <td className="px-4 py-2">{index + 1}</td>
-                            <td className="px-4 py-2">{sch.node.userprofile.specialty.mainSpecialty?.specialtyName}</td>
-                            <td className="px-4 py-2">{sch.node.userprofile.specialty.academicYear}</td>
-                            <td className="px-4 py-2">{sch.node.userprofile.specialty.level?.level}</td>
-                            <td className="px-4 py-2">{sch.node.userprofile.specialty.school?.campus}</td>
+                            <td className="px-4 py-2">{sch.node.userprofileprim.classroomprim.level}</td>
+                            <td className="px-4 py-2">{sch.node.userprofileprim.classroomprim.academicYear}</td>
+                            <td className="px-4 py-2">{sch.node.userprofileprim.classroomprim.school?.campus}</td>
                             <td className="px-4 py-2">
                                 <button
-                                    onClick={() => router.push(`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${sch.node.userprofile.id}/?user=${sch.node.userprofile.customuser.id}`)}
+                                    onClick={() => router.push(`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${sch.node.userprofileprim.id}/?user=${sch.node.userprofileprim.customuser.id}`)}
                                     className="bg-green-200 p-1 rounded-full"
                                 >
                                     <FaRightLong color="green" size={21} />

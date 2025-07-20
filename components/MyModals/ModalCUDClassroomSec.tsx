@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
-import { CYCLE_CHOICES, SECONDARY_LEVEL_OBJECT_ENGLISH, SECONDARY_LEVEL_OBJECT_FRENCH } from '@/utils/dataSource';
+import { CYCLE_CHOICES } from '@/utils/dataSource';
 import { EdgeClassRoomSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { jwtDecode } from 'jwt-decode';
 
@@ -29,14 +29,14 @@ interface FormData {
 }
 
 const ModalCUDClassroomSec = (
-  { params, setOpenModal, selectedItem, actionType, extraData }
+  { params, setOpenModal, selectedItem, actionType, apiLevel }
     :
     {
       params: { school_id: string, locale: string },
       setOpenModal: any,
       selectedItem: EdgeClassRoomSec | null,
       actionType: 'create' | 'update' | 'delete' | string,
-      extraData: { fields: EdgeField[] }
+      apiLevel: string[]
     }
 ) => {
   const { t } = useTranslation();
@@ -62,16 +62,16 @@ const ModalCUDClassroomSec = (
     delete: selectedItem != null && actionType === 'delete'
   });
 
-  useEffect(() => {
-    if (!formData.cycle) return;
-    const source = system === 'ENGLISH' ? SECONDARY_LEVEL_OBJECT_ENGLISH : SECONDARY_LEVEL_OBJECT_FRENCH;
-    let filtered = source.filter(item => item.cycle === formData.cycle);
-    if (formData.select) {
-      const sel = formData.select.toString().toUpperCase();
-      filtered = filtered.filter(item => item.select.toString().toUpperCase() === sel);
-    }
-    setLevelOptions(filtered?.map((item: any) => item.level));
-  }, [formData.cycle, formData.select, system]);
+  // useEffect(() => {
+  //   if (!formData.cycle) return;
+  //   const source = system === 'ENGLISH' ? apiLevel : apiLevel;
+  //   let filtered = source.filter(item => item.cycle === formData.cycle);
+  //   if (formData.select) {
+  //     const sel = formData.select.toString().toUpperCase();
+  //     filtered = filtered.filter(item => item.select.toString().toUpperCase() === sel);
+  //   }
+  //   setLevelOptions(filtered?.map((item: any) => item.level));
+  // }, [formData.cycle, formData.select, system]);
 
   const handleChange = <K extends keyof FormData>(field: K, value: FormData[K]) => {
     setFormData(prev => ({

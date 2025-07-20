@@ -601,12 +601,25 @@ export function getAcademicYear(): string {
     const month = today.getMonth(); // 0 = January, 7 = August
 
     if (month < 7) {
-        // Before August: academic year spans previous year to current year
         return `${year - 1}/${year}`;
     } else {
-        // August or later: academic year spans current year to next year
         return `${year}/${year + 1}`;
     }
+}
+
+
+export function getAcademicYearList(): string[] {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 0 = January, 7 = August
+    let thisYearList = [];
+
+    if (month < 7) {
+        thisYearList = [ `${year - 2}/${year - 1}`, `${year - 1}/${year}` ];
+    } else {
+        thisYearList = [ `${year - 1}/${year}` , `${year}/${year + 1}` ];
+    }
+    return thisYearList
 }
 
 

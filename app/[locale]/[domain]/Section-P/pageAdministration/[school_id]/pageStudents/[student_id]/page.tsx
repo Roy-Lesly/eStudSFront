@@ -4,6 +4,7 @@ import { gql } from '@apollo/client'
 import { decodeUrlID } from '@/functions'
 import { Metadata } from 'next';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Info Page",
@@ -21,31 +22,24 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
         id: params.profile_id,
-        userprofileId: parseInt(decodeUrlID(p.student_id)),
+        userprofileprimId: parseInt(decodeUrlID(p.student_id)),
         customuserId: parseInt(decodeUrlID(sp.user)),
         schoolId: p.school_id,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    
-    data = null;
-  }
+    },
+  });
 
 
   return (
     <div>
-      <List params={p} data={data} s={sp} />
+      <List
+        p={p}
+        data={data}
+        sp={sp} />
     </div>
   )
 }
@@ -56,10 +50,10 @@ export default page
 const GET_DATA = gql`
  query GetData(
     $customuserId: Decimal,
-    $userprofileId: Decimal,
+    $userprofileprimId: Decimal,
     $schoolId: Decimal!
 ) {
-    allSchoolFees(
+    allSchoolFeesPrim(
       customuserId: $customuserId, 
       first: 10, 
       schoolId: $schoolId
@@ -70,16 +64,15 @@ const GET_DATA = gql`
           platformPaid
           idPaid
           balance
-          userprofile {
+          userprofileprim {
             id
-            session
-            code
             infoData
             customuser { 
-              id role matricle firstName lastName photo sex dob pob email telephone address fullName parent parentTelephone about photo
-              nationality highestCertificate yearObtained regionOfOrigin infoData
+              id role fullName matricle firstName lastName photo sex dob pob email telephone address
+              fatherName motherName fatherTelephone motherTelephone parentAddress about photo
+              nationality highestCertificate yearObtained regionOfOrigin infoData password
             }
-            specialty { 
+            classroomprim { 
               id
               academicYear
               registration
@@ -87,13 +80,12 @@ const GET_DATA = gql`
               paymentOne
               paymentTwo
               paymentThree
-              mainSpecialty { specialtyName }
-              level { level }
+              level
               school { schoolName campus colors schoolIdentification { logo platformCharges idCharges } schoolfeesControl }
             }
-            program { id name }
+            programprim
           }
-          transactions {
+          transactionsprim {
             amount
             createdAt
             paymentMethod
@@ -105,13 +97,10 @@ const GET_DATA = gql`
         }
       }
     }
-    allPrograms {
-      edges {
-        node { id name }
-      }
-    }
-    allResults(
-      studentId: $userprofileId
+    getProgramsPrim
+    allResultsPrim(
+      studentId: $userprofileprimId
+      active: true
     ) {
       edges {
         node {
@@ -119,15 +108,14 @@ const GET_DATA = gql`
           infoData
           student { 
             customuser { fullName}
-            specialty { 
+            classroomprim { 
               academicYear
-              level { level}
-              mainSpecialty {
-                specialtyName
-              }
+              level
             }
           }
-          course { semester mainCourse { courseName}}
+          subjectprim { id mainsubjectprim { subjectName}}
+          createdBy { id}
+          updatedBy { id}
         }
       }
     }

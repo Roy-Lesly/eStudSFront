@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface AccessGuardProps {
   children: ReactNode;
@@ -9,16 +10,19 @@ interface AccessGuardProps {
 }
 
 const MoratoireCheck = ({ children, statusMoratoire = "Pending", respectPayment = false }: AccessGuardProps) => {
+  
+  const { t } = useTranslation("common");
+  
   if (respectPayment && statusMoratoire === "Approved") {
     return <>{children}</>;
   }
 
 
   if (!respectPayment) {
-    return <div>Failed Agreement</div>;
+    return <div>{t("Failed Agreement")}</div>;
   }
 
-  return <div>Not Approved Yet</div>;
+  return <div>{t("Not Approved Yet")}</div>;
 
 };
 

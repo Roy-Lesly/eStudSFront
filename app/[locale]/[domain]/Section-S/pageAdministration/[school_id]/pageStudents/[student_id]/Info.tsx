@@ -124,7 +124,7 @@ const Info = (
           routeToLink: "",
         })
         if (resUserId?.length > 5) {
-          alert(t("Operation Successful"))
+          alert(t("Operation Successful") + " " + `✅`)
           window.location.reload();
         }
 

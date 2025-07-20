@@ -50,7 +50,7 @@ export const mutationCreateUpdateCustomuser = async (
 
     if (formData.id) {
       dataCustomuser = { 
-        ...formData,
+        ...dataCustomuser,
         id: formData.id
       }
     }

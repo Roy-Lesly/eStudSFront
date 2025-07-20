@@ -76,7 +76,6 @@ export const GET_DATA_CLASSROOM_PRIM = gql`
           academicYear
           school { id }
           level
-          cycle
           registration tuition paymentOne paymentTwo paymentThree
           school { campus}
           studentCount
@@ -84,5 +83,6 @@ export const GET_DATA_CLASSROOM_PRIM = gql`
       }
     }
     allAcademicYearsPrim
+    getLevelsPrim
   }
 `;

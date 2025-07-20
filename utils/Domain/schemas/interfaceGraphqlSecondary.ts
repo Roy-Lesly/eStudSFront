@@ -80,7 +80,7 @@ export interface NodeResultSecondary {
   student: NodeUserProfileSec // Represents the "student" ForeignKey
   subjectsec: NodeSubjectSec | null; // Represents the "subject" ForeignKey
   infoData: string | any; // JSONField structure
-  logs: string; // JSONField structure
+  logs: string | any; // JSONField structure
   active?: true;
   createdAt?: string;
   createdBy?: NodeCustomUser;

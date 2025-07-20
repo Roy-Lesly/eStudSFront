@@ -1,38 +1,40 @@
 "use client";
 
 import { ReactNode } from "react";
-import ActivationError from "@/ActivationError";
-import { EdgeSchoolFees } from "@/Domain/schemas/interfaceGraphql";
+import ActivationErrorSec from "@/components/ActivationErrorSec";
+import { NodeSchoolFeesPrim } from "@/utils/Domain/schemas/interfaceGraphqlPrimary";
+import ActivationErrorPrim from "@/components/ActivationErrorPrim";
 
 interface AccessGuardProps {
   children: ReactNode;
-  fees: EdgeSchoolFees
-  semester: string;
+  fees: NodeSchoolFeesPrim
+  term: number;
   link?: string;
   emptyComp?: boolean;
 }
 
-const FeesCheck = ({ children, semester, fees, link, emptyComp }: AccessGuardProps) => {
-  const schoolfeesControl = fees.node.userprofile.specialty.school.schoolfeesControl.split(",").map(Number);
-  const tuition = fees.node.userprofile.specialty.tuition
-  const paidAmount = fees.node.userprofile.specialty.tuition - fees.node.balance
-  const control = semester === "I" ? schoolfeesControl[1] : schoolfeesControl[4]
+const FeesCheck = ({ children, term, fees, link, emptyComp }: AccessGuardProps) => {
+  console.log(fees);
+  const schoolfeesControl = fees?.userprofileprim.classroomprim.school.schoolfeesControl.split(",").map(Number);
+  const tuition = fees?.userprofileprim.classroomprim.tuition
+  const paidAmount = fees?.userprofileprim?.classroomprim.tuition - fees?.balance
 
-  if (fees.node.balance == 0 || (tuition * control) < (paidAmount + 1)) {
+  
+  if ((paidAmount / tuition) > schoolfeesControl[term-1]) {
     return <>{children}</>;
   }
 
   if (emptyComp) { return <div></div>}
 
-  if (!fees.node.platformPaid) {
-    return <ActivationError
+  if (!fees?.platformPaid) {
+    return <ActivationErrorPrim
       fees={fees}
       type="platform"
       link={link}
     />;
   }
 
-  return <ActivationError
+  return <ActivationErrorPrim
     fees={fees}
     type="fees"
     link={link}

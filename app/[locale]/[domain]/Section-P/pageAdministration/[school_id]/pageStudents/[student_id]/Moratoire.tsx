@@ -2,31 +2,34 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { EdgeResult, EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { GrStatusGood } from 'react-icons/gr';
 import { FaTimes } from 'react-icons/fa';
 import ResultsEdit from './Comps/ResultsEdit';
 import MoratoireCheck from './Comps/MoratoireCheck';
+import { useTranslation } from 'react-i18next';
+import { EdgeResultPrimary, EdgeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
-const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: EdgeResult[], params: any }) => {
-    const [selectedSemester, setSelectedSemester] = useState<string>('I');
+
+const Moratoire = ({ data, results, params }: { data: EdgeSchoolFeesPrim, results: EdgeResultPrimary[], params: any }) => {
+    const { t } = useTranslation("common");
+    const [selectedTerm, setSelectedTerm] = useState<string>('I');
     const [viewMoratoire, setViewMoratoire] = useState<boolean>(false);
     const balance = data?.node?.balance
     const statusPlatform = data?.node?.platformPaid
-    const info = JSON.parse(data?.node?.userprofile?.infoData)
+    const info = JSON.parse(data?.node?.userprofileprim?.infoData)
     const statusMoratoire = info?.moratoire?.status ?? null;
     const approvedSchedule = info?.moratoire?.approvedSchedule ?? null;
     const cumulativeTotalMoratoire = sumTotalAmounts(approvedSchedule)
     const cumulativeBalanceMoratoire = sumDueAmounts(approvedSchedule)
     const respectPayment = (cumulativeTotalMoratoire - cumulativeBalanceMoratoire) >= balance
 
-     const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedSemester(e.target.value);
-      };
+    const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedTerm(e.target.value);
+    };
 
 
-    if (!info.moratoire){
-        return <div>No Moratoire</div>
+    if (!info?.moratoire) {
+        return <div>{t("No Moratoire")}</div>
     }
 
 
@@ -57,7 +60,7 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6 }}
                 >
-                    {data?.node?.userprofile?.customuser?.fullName || "Student Name"}
+                    {data?.node?.userprofileprim?.customuser?.fullName || "Student Name"}
                 </motion.h1>
                 <motion.h2
                     className="text-gray-700 text-lg"
@@ -65,13 +68,13 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.7 }}
                 >
-                    Class: {data?.node?.userprofile?.specialty?.mainSpecialty?.specialtyName}
+                    Class: {data?.node?.userprofileprim?.classroomprim?.level}
                 </motion.h2>
                 <div className="text-gray-700 text-lg">
-                    Level: {data?.node?.userprofile?.specialty?.level.level || "N/A"}
+                    Level: {data?.node?.userprofileprim?.classroomprim?.level || "N/A"}
                 </div>
                 <div>
-                    Year: {data?.node?.userprofile.specialty.academicYear || "N/A"}
+                    Year: {data?.node?.userprofileprim.classroomprim.academicYear || "N/A"}
                 </div>
             </div>
 
@@ -82,10 +85,10 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                 <div className='flex flex-col items-center justify-between md:flex-row'>
                     <div
                         className="flex font-semibold items-center justify-between mb-2 text-slate-800 text-xl">
-                        Semester {selectedSemester} - Results
+                        Semester {selectedTerm} - Results
                     </div>
 
-                    <button 
+                    <button
                         className='border px-4 py-1 rounded bg-blue-50 text-lg font-medium'
                         onClick={() => setViewMoratoire(!viewMoratoire)}
                     >
@@ -94,7 +97,7 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
 
                     <div className="mb-6">
                         <select
-                            value={selectedSemester}
+                            value={selectedTerm}
                             onChange={handleSemesterChange}
                             className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-2 rounded-md shadow-sm text-gray-700 transition"
                         >
@@ -109,8 +112,12 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
                     statusMoratoire={statusMoratoire}
                     respectPayment={respectPayment}
                 >
-                    {selectedSemester === 'I' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "I")} /> : null}
-                    {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "II")} /> : null}
+                    <ResultsEdit
+                        selectedTerm={selectedTerm}
+                        params={params}
+                        canEdit={false}
+                        data={results}
+                    />
                 </MoratoireCheck>
 
             </div>

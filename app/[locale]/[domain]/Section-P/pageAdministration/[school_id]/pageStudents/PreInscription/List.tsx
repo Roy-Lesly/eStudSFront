@@ -10,7 +10,6 @@ import MyTabs from '@/MyTabs';
 import ServerError from '@/ServerError';
 import { EdgePreInscription } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import ButtonAction from '@/Section-P/Buttons/ButtonAction';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -18,11 +17,11 @@ import { decodeUrlID } from '@/utils/functions';
 import MyTableComp from '@/components/section-h/Table/MyTableComp';
 
 
-const List = ({ params, dataYears, dataPending }: { params: any, dataYears: string[], dataPending: EdgePreInscription[], searchParams: any }) => {
+const List = ({ params, dataYears, dataPending, sp }: { params: any, sp: any, dataYears: string[], dataPending: EdgePreInscription[], searchParams: any }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState<number>(parseInt(sp?.tab) || 0);
 
   const Columns: TableColumn<EdgePreInscription>[] = [
     { header: "#", align: "center", responsiveHidden: true, render: (_item: EdgePreInscription, index: number) => index + 1, },
@@ -137,7 +136,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          source={`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/PreInscription/`}
+          source={`Section-P/pageAdministration/${params.school_id}/pageStudents/PreInscription/?`}
         />
           :
           <ServerError type="network" item="PreInscription" />

@@ -19,11 +19,11 @@ const PasswordResetModal = (
     const [passwordNewConfirm, setPasswordNewConfirm] = useState("");
 
     const [resetChangePassword, { loading, error }] = useMutation(PASSWORD_RESET_CHANGE, {
-        onCompleted: () => { 
-            setPasswordOld(""); 
-            setPasswordNew(""); 
+        onCompleted: () => {
+            setPasswordOld("");
+            setPasswordNew("");
             setPasswordNewConfirm("");
-            alert("Operation Successful!"); 
+            alert(t("Operation Successful") + " " + `✅`)
             onClose();
         },
     });

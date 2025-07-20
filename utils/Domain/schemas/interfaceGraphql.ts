@@ -31,7 +31,6 @@ export interface NodeTenantDomain {
   tenant: NodeTenant;
 }
 
-// PreInscription interface
 export interface NodePreInscription {
   id: string;
   registrationNumber: string;

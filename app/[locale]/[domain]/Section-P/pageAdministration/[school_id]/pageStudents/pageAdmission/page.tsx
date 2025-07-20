@@ -40,7 +40,7 @@ const EditPage = async ({
   });
 
 
-  const dataClasses = await queryServerGraphQL({
+  const dataExtra = await queryServerGraphQL({
     domain: p?.domain,
     query: GET_DATA,
     variables: {
@@ -55,7 +55,7 @@ const EditPage = async ({
         params={p}
         dataPreinscription={dataPreinscription}
         searchParams={sp}
-        dataClasses={dataClasses}
+        dataExtra={dataExtra}
       />
     </div>
   )
@@ -72,15 +72,8 @@ const GET_DATA = gql`
    $academicYear: String,
    $level: String,
   ) {
-    allProgramsprim {
-      edges {
-        node {
-          id 
-          name
-        }
-      }
-    }
-    allAcademicYears
+    getProgramsPrim
+    allAcademicYearsPrim
     allSchoolInfos(
       id: $schoolId
     ){
@@ -124,7 +117,8 @@ const GET_DATA_PREINSCRIPTION = gql`
           fullName sex dob pob address status
           fatherName motherName fatherTelephone motherTelephone parentAddress parentEmail
           academicYear admissionStatus action
-          program { id name }
+          program
+          level
           campus { id schoolName campus }
         }
       }

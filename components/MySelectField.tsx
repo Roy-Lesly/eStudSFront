@@ -28,7 +28,7 @@ const MySelectField: React.FC<SelectFieldProps> = ({
   label,
   placeholder,
   defaultValue,
-  isMulti,
+  isMulti = "select-single",
   required = false,
   options = [],
 }) => {
@@ -61,14 +61,14 @@ const MySelectField: React.FC<SelectFieldProps> = ({
       <Select
         defaultValue={defaultValue}
         value={value}
-        isMulti={isMulti === "select-single"}
+        isMulti={isMulti !== "select-single"}
         name={name}
         options={options}
         className="form-group basic-multi-select text-black font-medium"
         classNamePrefix="select"
         required={required}
         placeholder={placeholder}
-        onChange={(e) => onChange(name, parseInt(e?.value || ""))}
+        onChange={onChange}
       />
 
     </div>

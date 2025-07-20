@@ -1,4 +1,4 @@
-import { NodeCustomUser, NodeSchoolIdentification, NodeSchoolInfoHigher } from "./interfaceGraphql";
+import { NodeCustomUser, NodeProgram, NodeSchoolIdentification, NodeSchoolInfoHigher } from "./interfaceGraphql";
 
 interface PageInfo {
   hasNextPage: boolean;
@@ -19,8 +19,9 @@ export interface NodeUserProfilePrim {
   id: string;
   customuser: NodeCustomUser;
   series: NodeSeries[];
-  classroomsec: NodeClassRoomPrim;
-  programsec: NodeProgramPrim;
+  classroomprim: NodeClassRoomPrim;
+  programprim: NodeProgramPrim;
+  infoData: string | any;
   session: string;
   active: false;
 }
@@ -62,8 +63,8 @@ export interface NodeMainSubject {
 
 export interface NodeSubject {
   id: string;
-  mainSubject: NodeMainSubject;
-  classroomsec: NodeClassRoomPrim;
+  mainsubjectprim: NodeMainSubject;
+  classroomprim: NodeClassRoomPrim;
   subjectCode: string;
   subjectType: string;
   subjectCoefficient: string;
@@ -82,11 +83,14 @@ export interface ResultInfo {
 export interface NodeResultPrimary {
   id: string;
   student: NodeUserProfilePrim // Represents the "student" ForeignKey
-  subject: NodeSubject | null; // Represents the "subject" ForeignKey
+  subjectprim: NodeSubject | null; // Represents the "subject" ForeignKey
   infoData: string | any; // JSONField structure
+  logs: string | any; // JSONField structure
   active?: true;
   createdAt?: string;
+  createdBy?: NodeCustomUser;
   updatedAt?: string;
+  updatedBy?: NodeCustomUser;
 }
 
 
@@ -101,26 +105,27 @@ export interface NodePublishSecondary {
 }
 
 
-export interface EdgeTransactionsSecSet {
+export interface EdgeTransactionsPrimSet {
   edges: {
     node: {node: NodeTransactionsPrim};
   }[];
 }
 
+export interface SetTransactionsSet { id: string, status: string, amount: number, reason: string, paymentMethod: string, ref: string, createdAt: string }
 export interface NodeSchoolFeesPrim {
   id: string;
-  userprofilesec: NodeUserProfilePrim;
+  userprofileprim: NodeUserProfilePrim;
   platformPaid: boolean,
   idPaid: boolean,
   balance: number,
-  transactionssecSet: EdgeTransactionsSecSet;
+  transactionsprim: SetTransactionsSet[];
   updatedAt: string;
   updatedBy: NodeCustomUser;
 }
 
 export interface NodeTransactionsPrim {
   id: string;
-  schoolfeesec: NodeSchoolFeesPrim;
+  schoolfeesprim: NodeSchoolFeesPrim;
   amount: number,
   reason: string,
   status: string,
@@ -128,6 +133,37 @@ export interface NodeTransactionsPrim {
   updatedBy: NodeCustomUser;
 }
 
+export interface NodePreInscriptionPrim {
+  id: string;
+  registrationNumber: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  matricle: string;
+  dob: string;
+  pob: string;
+  sex: string;
+  address: string;
+  telephone: string;
+  email: string;
+  campus: NodeSchoolInfoHigher;
+  fatherName: string;
+  motherName: string;
+  fatherTelephone: string;
+  motherTelephone: string;
+  parentAddress: string;
+  about: string;
+  nationality: string;
+  regionOfOrigin: string;
+  highestCertificate: string;
+  yearObtained: string;
+  status: string;
+  admissionStatus: boolean;
+  program: NodeProgram;
+  academicYear: string;
+  level: string;
+  session: string;
+}
 
 
 
@@ -144,8 +180,11 @@ export interface NodeTransactionsPrim {
 
 
 
+export interface EdgePreInscriptionPrim {
+  node: NodePreInscriptionPrim;
+}
 
-// Edge interface
+
 export interface EdgeUserProfilePrim {
   node: NodeUserProfilePrim;
 }

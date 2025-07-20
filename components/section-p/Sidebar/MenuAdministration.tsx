@@ -93,7 +93,7 @@ export const GetMenuAdministration = (): MenuSection[] => {
         },
         {
           icon: <School2 />, label: t("Academics"), route: "#", children: [
-            { label: t("Manage Classes"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageAcademics/classes`, icon: <School2 /> },
+            { label: t("Manage Classes"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageAcademics/pageClassrooms`, icon: <School2 /> },
             { label: t("Manage Series"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageAcademics/series`, icon: <Users /> },
             // { label: t("Manage Sections"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageAcademics/sections`, icon: <Users /> },
             // { label: t("Seating Arrangement"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageAcademics/seating`, icon: <LayoutDashboard /> },

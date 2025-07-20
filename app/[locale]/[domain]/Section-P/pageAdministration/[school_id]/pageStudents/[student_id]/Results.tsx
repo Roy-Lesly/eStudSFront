@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { EdgeResult, EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import FeesCheck from './Comps/FeesCheck';
 import ResultsEdit from './Comps/ResultsEdit';
-import ResultSlip from '@/[locale]/[domain]/Section-H/pageStudent//[userprofile_id]/ResultSlip';
+import ResultSlip from '@/[locale]/[domain]/Section-P/pageStudent//[userprofile_id]/ResultSlip';
+import { useTranslation } from 'react-i18next';
+import { EdgeResultPrimary, EdgeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
-const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolFees, params: any }) => {
-  const [selectedSemester, setSelectedSemester] = useState<string>('I');
+const Results = ({ data, fees, params }: { data: EdgeResultPrimary[], fees: EdgeSchoolFeesPrim, params: any }) => {
+  const { t } = useTranslation("common");
+  const [selectedTerm, setSelectedTerm] = useState<{ value: string, label: string }>({ value: `${t("1")}`, label: `${("1st")} ${t("Term")}` });
 
   const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSemester(e.target.value);
+    const value = e.target.value;
+    const label = e.target.options[e.target.selectedIndex].text;
+    setSelectedTerm({ value, label });
   };
 
   return (
@@ -17,12 +21,12 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="overflow-x-auto p-4"
+      className="overflow-x-auto "
     >
 
 
       {/* Header Section */}
-      <div className="bg-slate-100 flex flex-col gap-4 items-center justify-between mb-4 md:flex-row p-2 rounded w-full">
+      <div className="bg-slate-100 flex flex-col gap-4 items-center justify-between md:flex-row p-2 rounded w-full">
         <motion.h1
           className="font-bold text-gray-800 text-xl"
           initial={{ opacity: 0 }}
@@ -37,13 +41,10 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7 }}
         >
-          Class: {fees?.node?.userprofile?.specialty?.mainSpecialty?.specialtyName}
+          {t("Class")}: {fees?.node?.userprofileprim?.classroomprim?.level}
         </motion.h2>
-        <div className="text-gray-700 text-lg">
-          Level: {fees?.node?.userprofile?.specialty?.level.level || "N/A"}
-        </div>
         <div>
-          Year: {fees?.node?.userprofile.specialty.academicYear || "N/A"}
+          {t("Year")}: {fees?.node?.userprofileprim?.classroomprim?.academicYear || "N/A"}
         </div>
       </div>
 
@@ -51,51 +52,55 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
 
 
       {/* Table Section */}
-      <div className="mb-4 text-black">
+      <div className="mb-2 text-black">
 
         <div className='flex flex-col items-center justify-between md:flex-row'>
           <div
-            className="flex font-semibold items-center justify-between mb-2 text-slate-800 text-xl">
-            Semester {selectedSemester} - Results
+            className="w-full flex font-semibold items-center justify-between mb-2 text-slate-800 text-xl">
+            {selectedTerm?.label} - {t("Results")}
           </div>
 
           <FeesCheck
-            fees={fees}
-            semester={selectedSemester}
-            link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${params.student_id}`}
+            fees={fees?.node}
+            term={parseInt(selectedTerm?.value)}
+            link={`${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/${params.student_id}`}
             emptyComp={true}
           >
             {data && data.length ? <ResultSlip
               data={data}
-              schoolFees={fees.node}
+              schoolFeesPrim={fees?.node}
               resitPublished={true}
-              semester={selectedSemester}
+              semester={selectedTerm}
             /> : null}
           </FeesCheck>
 
 
 
-          <div className="mb-6">
+          <div className="w-32">
             <select
-              value={selectedSemester}
+              value={selectedTerm.value}
               onChange={handleSemesterChange}
               className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-2 rounded-md shadow-sm text-gray-700 transition"
             >
-              <option value="I">1st Semester</option>
-              <option value="II">2nd Semester</option>
+              <option value="1">{("1st")} {t("Term")}</option>
+              <option value="2">{("2nd")} {t("Term")}</option>
+              <option value="3">{("3rd")} {t("Term")}</option>
             </select>
           </div>
         </div>
 
 
         <FeesCheck
-          fees={fees}
-          semester={selectedSemester}
-          link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${params.student_id}`}
+          fees={fees?.node}
+          term={parseInt(selectedTerm.value)}
+          link={`${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/${params.student_id}`}
         >
-          {selectedSemester === 'I' ? <ResultsEdit params={params} canEdit={true} data={data.filter((item) => item.node.course.semester === "I")}  /> : null}
-          {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={true} data={data.filter((item) => item.node.course.semester === "II")}  /> : null}
-
+          <ResultsEdit
+            params={params}
+            canEdit={true}
+            data={data}
+            selectedTerm={selectedTerm.value}
+          />
         </FeesCheck>
 
       </div>

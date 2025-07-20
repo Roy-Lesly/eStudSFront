@@ -8,16 +8,16 @@ import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import { decodeUrlID } from '@/functions';
-import AdmissionForm from './AdmissionForm';
 import { FaArrowDown } from 'react-icons/fa';
 import Link from 'next/link';
+import AdmissionForm from './AdmissionForm';
 
 
-const List = ({ params, dataPreinscription, dataClasses, searchParams }: { params: any; dataPreinscription: any, dataClasses: any, searchParams: any }) => {
+const List = ({ params, dataPreinscription, dataExtra, searchParams }: { params: any; dataPreinscription: any, dataExtra: any, searchParams: any }) => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
     console.log(dataPreinscription);
-    console.log(dataClasses);
+    console.log(dataExtra);
     return (
         <DefaultLayout
             pageType='admin'
@@ -52,18 +52,18 @@ const List = ({ params, dataPreinscription, dataClasses, searchParams }: { param
 
                 <div className="bg-white mt-2 mx-auto rounded shadow w-full">
 
-                    {dataPreinscription && dataClasses?.allClassroomsPrim ?
-                        dataClasses?.allClassroomsPrim?.edges.length ?
+                    {dataPreinscription && dataExtra?.allClassroomsPrim ?
+                        dataExtra?.allClassroomsPrim?.edges.length ?
                             <AdmissionForm
                                 data={dataPreinscription}
-                                dataSpecialties={dataClasses}
+                                dataExtra={dataExtra}
                                 params={params}
                             />
                             :
                             <div className='flex flex-col gap-16 items-center justify-center  py-20 '>
                                 <span className='text-red rounded py-2 px-6 tracking-wider text-2xl font-bold'>No Classes Found</span>
                                 <Link
-                                    href={`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageSettings/pageClassrooms`}
+                                    href={`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageAcademics/pageClassrooms`}
                                     className='text-teal-800 flex gap-4 text-xl tracking-wider font-semibold'
                                 >
                                     Click to Create

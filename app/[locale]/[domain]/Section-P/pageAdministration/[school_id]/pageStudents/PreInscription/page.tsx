@@ -9,8 +9,8 @@ const EditPage = async ({
   params,
   searchParams,
 }: {
-    params: any;
-    searchParams: any;
+  params: any;
+  searchParams: any;
 }) => {
   const p = await params;
   const sp = await searchParams;
@@ -43,11 +43,12 @@ const EditPage = async ({
 
   return (
     <div>
-      <List 
-      params={p} 
-      dataPending={dataPending?.allPreinscriptionsPrim?.edges}
-      dataYears={data?.allAcademicYears} 
-      searchParams={sp} 
+      <List
+        params={p}
+        sp={sp}
+        dataPending={dataPending?.allPreinscriptionsPrim?.edges}
+        dataYears={data?.allAcademicYears}
+        searchParams={sp}
       />
     </div>
   )
@@ -104,10 +105,12 @@ const GET_DATA_PREINSCRIPTION = gql`
         fullName sex dob pob address status
         fatherName motherName fatherTelephone motherTelephone parentAddress parentEmail
         academicYear admissionStatus action
-        program { id name }
+        program
         campus { id schoolName campus }
       }
     }
-  }  
+  } 
+  getProgramsPrim 
+  allAcademicYearsPrim 
 }
 `;

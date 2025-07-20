@@ -12,20 +12,20 @@ import {
 import { saveAs } from "file-saver";
 import { pdf } from "@react-pdf/renderer";
 import { FiDownload } from "react-icons/fi";
-import { EdgeResult, NodeSchoolFees } from "@/Domain/schemas/interfaceGraphql";
 import { calcTotalandGrade } from "@/functions";
 import { QrCodeBase64 } from "@/components/QrCodeBase64";
 import { protocol, RootApi } from "@/utils/config";
 import { useParams } from "next/navigation";
+import { EdgeResultPrimary, NodeSchoolFeesPrim } from "@/utils/Domain/schemas/interfaceGraphqlPrimary";
 
 
 const MyPDF = (
-    { p, results, schoolFees, semester, qrCodeDataUrl, resitPublished }:
-        { p: any, results: EdgeResult[]; schoolFees: NodeSchoolFees, semester: "I" | "II", qrCodeDataUrl: string, resitPublished: boolean }
+    { p, results, schoolFeesPrim, semester, qrCodeDataUrl, resitPublished }:
+        { p: any, results: EdgeResultPrimary[]; schoolFeesPrim: NodeSchoolFeesPrim, semester: "I" | "II", qrCodeDataUrl: string, resitPublished: boolean }
 ) => {
-    const schoolInfo = schoolFees?.userprofile?.specialty?.school;
-    const profileInfo = schoolFees?.userprofile;
-    const logoUrl = schoolFees?.userprofile?.specialty?.school?.logoCampus;
+    const schoolInfo = schoolFeesPrim?.userprofileprim?.classroomprim?.school;
+    const profileInfo = schoolFeesPrim?.userprofileprim;
+    const logoUrl = schoolFeesPrim?.userprofileprim?.classroomprim?.school?.logoCampus;
 
     return (
         <Document>
@@ -75,9 +75,9 @@ const MyPDF = (
                         {profileInfo?.customuser?.fullName}
                     </Text>
                     <View style={styles.studentLineRow}>
-                        <Text style={styles.studentLine}>Specialty: {profileInfo?.specialty?.mainSpecialty?.specialtyName}</Text>
-                        <Text style={styles.studentLine}>| Level: {profileInfo?.specialty?.level?.level}</Text>
-                        <Text style={styles.studentLine}>| Academic Year: {profileInfo?.specialty?.academicYear}</Text>
+                        <Text style={styles.studentLine}>Specialty: {profileInfo?.classroomprim?.level}</Text>
+                        <Text style={styles.studentLine}>| Level: {profileInfo?.classroomprim?.level}</Text>
+                        <Text style={styles.studentLine}>| Academic Year: {profileInfo?.classroomprim?.academicYear}</Text>
                     </View>
                 </View>
 
@@ -95,13 +95,13 @@ const MyPDF = (
 
                 {/* Table Rows */}
                 {results.map(({ node }, index) => {
-                    const courseName = node.course?.mainCourse?.courseName || "-";
+                    const subjectName = node.subjectprim?.mainsubjectprim?.subjectName || "-";
                     const info = node.infoData ? JSON.parse(node.infoData) : {};
 
                     return (
                         <View key={index} style={[styles.tableRow, { fontSize: 9 }]}>
                             <Text style={[styles.courseNameCell, { paddingHorizontal: 3 }]}>
-                                {node.course.mainCourse.courseName}
+                                {subjectName}
                             </Text>
                             <Text style={[styles.otherCell, info.ca < (schoolInfo.caLimit / 2) ? styles.redText : {}]}>
                                 {info.ca ?? "-"}
@@ -128,13 +128,13 @@ const MyPDF = (
 
 const ResultSlip = ({
     data,
-    schoolFees,
+    schoolFeesPrim,
     semester,
     resitPublished,
     fileName = `result-slip Semester-${semester}.pdf`,
 }: {
-    data: EdgeResult[];
-    schoolFees: NodeSchoolFees;
+    data: EdgeResultPrimary[];
+    schoolFeesPrim: NodeSchoolFeesPrim;
     semester: "I" | "II" | any;
     resitPublished: boolean;
     fileName?: string;
@@ -145,7 +145,7 @@ const ResultSlip = ({
     const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
     useEffect(() => {
-        const url = `${protocol}${params.domain}${RootApi}/check/${schoolFees?.userprofile.id}/resultslip/?n=1`;
+        const url = `${protocol}${params.domain}${RootApi}/check/${schoolFeesPrim?.userprofileprim.id}/P/resultslip/?n=1`;
         QrCodeBase64(url).then(setQrCodeDataUrl);
     }, []);
 
@@ -154,7 +154,7 @@ const ResultSlip = ({
             <MyPDF
                 p={params}
                 results={data}
-                schoolFees={schoolFees}
+                schoolFeesPrim={schoolFeesPrim}
                 semester={semester}
                 resitPublished={resitPublished}
                 qrCodeDataUrl={qrCodeDataUrl}

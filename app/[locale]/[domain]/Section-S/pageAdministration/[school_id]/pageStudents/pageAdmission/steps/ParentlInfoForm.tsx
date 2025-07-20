@@ -3,7 +3,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const MedicalInfoForm = ({ formData, setFormData, onNext, onPrevious }: any) => {
+const ParentlInfoForm = ({ formData, setFormData, onNext, onPrevious }: any) => {
   const { medicalHistory } = formData;
   const { t } = useTranslation("common");
 
@@ -20,14 +20,16 @@ const MedicalInfoForm = ({ formData, setFormData, onNext, onPrevious }: any) => 
       {[ 
         { label: 'Role', name: 'role' },
         { label: 'Department Names (comma separated)', name: 'deptNames' },
-        { label: 'Allergies', name: 'allergies' },
-        { label: 'Medical History', name: 'medicalHistory' },
-        { label: 'Nationality', name: 'nationality' },
-        { label: 'Highest Certificate', name: 'highestCertificate' },
-        { label: 'Other Certificate (if any)', name: 'highestCertificateOther' },
-        { label: 'Year Obtained', name: 'yearObtained' },
-        { label: 'Region of Origin', name: 'regionOfOrigin' },
-        { label: 'Other Region (if any)', name: 'regionOfOriginOther' },
+        { label: 'Telephone', name: 'telephone' },
+        { label: 'Email', name: 'email' },
+        { label: 'Fathers Name', name: 'fatherName' },
+        { label: 'Mothers Name', name: 'motherName' },
+        { label: 'Fathers Telephone', name: 'fatherTelephone' },
+        { label: 'Mothers Telephone', name: 'motherTelephone' },
+        { label: 'Parents Address', name: 'parentAddress' },
+        { label: 'Password', name: 'password' },
+        { label: 'Prefix', name: 'prefix' },
+        { label: 'Method', name: 'method' },
       ].map(({ label, name }) => (
         <div key={name} className="flex flex-col gap-1">
           <label htmlFor={name} className="text-gray-800 font-semibold text-sm">{label}</label>
@@ -50,4 +52,4 @@ const MedicalInfoForm = ({ formData, setFormData, onNext, onPrevious }: any) => 
   );
 };
 
-export default MedicalInfoForm;
+export default ParentlInfoForm;

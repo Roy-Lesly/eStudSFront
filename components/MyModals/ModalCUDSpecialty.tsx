@@ -8,7 +8,6 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
 import Select from "react-select"
-// import MySelectField from '../MySelectField';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { useRouter } from 'next/navigation';
 

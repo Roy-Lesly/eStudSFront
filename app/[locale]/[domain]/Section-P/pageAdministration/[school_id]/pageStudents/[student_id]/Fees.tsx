@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { FaCheckCircle, FaPlus, FaTimesCircle } from 'react-icons/fa';
-import { NodeSchoolFees, SetTransactions } from '@/Domain/schemas/interfaceGraphql';
+import { SetTransactions } from '@/Domain/schemas/interfaceGraphql';
 import ModalTransaction from './Comps/ModalTransaction';
+import { EdgeSchoolFeesPrim, NodeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import { useTranslation } from 'react-i18next';
 
 
-const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeSchoolFees }) => {
+const Fees = ({ data, p, schoolFeesPrim }: { data: EdgeSchoolFeesPrim, p: any, schoolFeesPrim: NodeSchoolFeesPrim }) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const { t } = useTranslation("common");
+
+  console.log(data);
 
   return (
     <motion.div
@@ -23,7 +28,7 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
           animate={{ scale: 1 }}
           transition={{ duration: 0.4 }}
         >
-          Financial Status {data.node.platformPaid ? <FaCheckCircle color='green' size={33} /> : <FaTimesCircle color='red' size={33} />}
+          {t("Financial Status")} {data?.node?.platformPaid ? <FaCheckCircle color='green' size={33} /> : <FaTimesCircle color='red' size={33} />}
         </motion.h2>
         <motion.div
           className={`px-4 py-2 rounded-lg text-sm font-semibold `}
@@ -47,15 +52,15 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
       >
         <div className='flex gap-4 justify-center w-full'>
           <span className="font-medium text-gray-700">1st Installment</span>
-          <span className="font-bold text-red-600">{data.node.userprofile.specialty.paymentOne.toLocaleString()} F</span>
+          <span className="font-bold text-red-600">{data.node.userprofileprim.classroomprim.paymentOne.toLocaleString()} F</span>
         </div>
         <div className='flex gap-4 justify-center w-full'>
           <span className="font-medium text-gray-700">2nd Installment</span>
-          <span className="font-bold text-red-600">{data.node.userprofile.specialty.paymentTwo.toLocaleString()} F</span>
+          <span className="font-bold text-red-600">{data.node.userprofileprim.classroomprim.paymentTwo.toLocaleString()} F</span>
         </div>
         <div className='flex gap-4 justify-center w-full'>
           <span className="font-medium text-gray-700">3rd Installment</span>
-          <span className="font-bold text-red-600">{data.node.userprofile.specialty.paymentThree.toLocaleString()} F</span>
+          <span className="font-bold text-red-600">{data.node.userprofileprim.classroomprim.paymentThree.toLocaleString()} F</span>
         </div>
       </motion.div>
 
@@ -69,13 +74,13 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
           visible: { opacity: 1, x: 0, transition: { delay: 0.2, duration: 0.5 } },
         }}
       >
-        {data.node.userprofile ? (
+        {data.node.userprofileprim ? (
           <div
             className="bg-slate-50 flex gap-4 items-center justify-center p-4 rounded-lg shadow-xl"
           >
             <span className="font-medium text-gray-600">Tuition</span>
             <span className="font-bold text-lg text-slate-950">
-              {data.node.userprofile.specialty.tuition.toLocaleString()} F
+              {data.node.userprofileprim.classroomprim.tuition.toLocaleString()} F
             </span>
           </div>
         ) : null}
@@ -85,7 +90,7 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
           >
             <span className="font-medium text-gray-600">Paid</span>
             <span className="font-bold text-lg text-slate-950">
-              {(data.node.userprofile.specialty.tuition - data.node.balance).toLocaleString()} F
+              {(data.node.userprofileprim.classroomprim.tuition - data.node.balance).toLocaleString()} F
             </span>
           </div>
         ) : null}
@@ -120,7 +125,7 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
               </tr>
             </thead>
             <tbody>
-              {data.node.transactions.map((transaction: SetTransactions, index: number) => (
+              {data.node.transactionsprim?.map((transaction: SetTransactions, index: number) => (
                 <motion.tr
                   key={index}
                   initial={{ opacity: 0, x: 30 }}
@@ -144,7 +149,7 @@ const Fees = ({ data, p, schoolFees }: { data: any, p: any, schoolFees: NodeScho
           setModalOpen={setModalOpen}
           data={data.node}
           p={p}
-          schoolFees={schoolFees}
+          schoolFeesPrim={schoolFeesPrim}
         />
         :
         null}

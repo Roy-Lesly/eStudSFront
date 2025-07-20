@@ -7,19 +7,20 @@ import { decodeUrlID } from '@/functions';
 import { gql, useQuery } from '@apollo/client';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { useTranslation } from 'react-i18next';
-import { EdgeAccount, NodeSchoolFees } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeAccount } from '@/utils/Domain/schemas/interfaceGraphql';
+import { NodeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
 
 const ModalTransaction = (
-  { setModalOpen, data, p, schoolFees }:
-  { setModalOpen: any; data: any, p: any, schoolFees: NodeSchoolFees }
+  { setModalOpen, data, p, schoolFeesPrim }:
+    { setModalOpen: any; data: any, p: any, schoolFeesPrim: NodeSchoolFeesPrim }
 ) => {
   const [clicked, setClicked] = useState<boolean>(false)
   const [reasons, setReasons] = useState<EdgeAccount[]>([])
   const { t } = useTranslation("common");
   const [canSubmit, setCanSubmit] = useState(true);
-  const platformCharges = schoolFees?.userprofile?.specialty?.school?.schoolIdentification?.platformCharges || 0
-  const idCard = schoolFees?.userprofile?.specialty?.school?.schoolIdentification?.idCharges || 0
+  const platformCharges = schoolFeesPrim?.userprofileprim?.classroomprim?.school?.schoolIdentification?.platformCharges || 0
+  const idCard = schoolFeesPrim?.userprofileprim?.classroomprim?.school?.schoolIdentification?.idCharges || 0
 
   const [formData, setFormData] = useState({
     amount: '',
@@ -39,25 +40,27 @@ const ModalTransaction = (
   };
 
   const { data: reasonsApi, loading, error } = useQuery(GET_ACCOUNTS,
-     {
-            variables: {
-                year: schoolFees?.userprofile?.specialty?.academicYear,
-                status: true
-            }
-        }
+    {
+      variables: {
+        year: schoolFeesPrim?.userprofileprim?.classroomprim?.academicYear,
+        status: true
+      }
+    }
   );
+
+  console.log(reasonsApi);
 
   useEffect(() => {
     if (formData.reason === "PLATFORM CHARGES" && parseInt(formData.amount) != platformCharges) {
       setFormData({ ...formData, amount: platformCharges.toString() });
-      if (schoolFees.platformPaid && formData.reason === "PLATFORM CHARGES") {
+      if (schoolFeesPrim.platformPaid && formData.reason === "PLATFORM CHARGES") {
         alert(t("Account Activated Already"));
         setCanSubmit(false);
       }
     }
     else if (formData.reason === "IDCARD" && parseInt(formData.amount) != idCard) {
       setFormData({ ...formData, amount: idCard.toString() });
-      if (schoolFees.idPaid && formData.reason === "IDCARD") {
+      if (schoolFeesPrim.idPaid && formData.reason === "IDCARD") {
         alert(t("Already Paid For ID-CARD"));
         setCanSubmit(false);
       }
@@ -65,8 +68,8 @@ const ModalTransaction = (
     else if (formData.reason !== "IDCARD" && formData.reason !== "PLATFORM CHARGES") {
       setCanSubmit(true);
     }
-    if (reasonsApi?.allAccounts?.edges && reasons.length < 1) {
-      setReasons(reasonsApi?.allAccounts?.edges)
+    if (reasonsApi?.allAccountsPrim?.edges && reasons.length < 1) {
+      setReasons(reasonsApi?.allAccountsPrim?.edges)
     }
   }, [formData, reasonsApi])
 
@@ -82,7 +85,7 @@ const ModalTransaction = (
     setClicked(true)
     const newData = {
       ...formData,
-      schoolfeesId: decodeUrlID(data.id),
+      schoolfeesprimId: decodeUrlID(data.id),
       amount: parseInt(formData.amount),
       account: formData.reason,
       operationType: "income",
@@ -93,8 +96,8 @@ const ModalTransaction = (
 
     await ApiFactory({
       newData: { id: parseInt(decodeUrlID(data?.node?.userprofile.customuser.id)), ...newData, delete: false },
-      mutationName: "createUpdateDeleteTransaction",
-      modelName: "transactions",
+      mutationName: "createUpdateDeleteTransactionPrim",
+      modelName: "transactionprim",
       successField: "id",
       query,
       router: null,
@@ -155,7 +158,7 @@ const ModalTransaction = (
               className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
             >
               <option value="">{t("Select Reason")}</option>
-              {reasons && reasons?.length ? reasons.map((r: EdgeAccount) => <option key={r.node.name} value={r.node.name}>{r.node.name} {r.node?.year}</option>) : null }
+              {reasons && reasons?.length ? reasons.map((r: EdgeAccount) => <option key={r.node.name} value={r.node.name}>{r.node.name} {r.node?.year}</option>) : null}
             </select>
           </div>
 
@@ -183,7 +186,7 @@ const ModalTransaction = (
               required
               className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
             >
-              <option value="">Select payment method</option>
+              <option value="">{t("Select payment method")}</option>
               {PAYMENT_METHODS.map((pm: string) => (
                 <option key={pm} value={pm}>
                   {pm}
@@ -224,14 +227,14 @@ const ModalTransaction = (
             {clicked ? <div
               className="bg-green-600 cursor-pointer duration-150 flex font-semibold hover:bg-green-700 items-center justify-center py-2 rounded-lg text-center text-white transition w-48"
             >
-              Submitt...
+              {t("Submitt...")}
             </div>
               :
               <button
                 type="submit"
                 className="bg-green-600 duration-150 flex font-semibold hover:bg-green-700 items-center justify-center py-2 rounded-lg text-center text-white transition w-48"
               >
-                Submit
+                {t("Submit")}
               </button>}
           </div>
         </form>
@@ -246,7 +249,7 @@ export default ModalTransaction;
 const query = gql`
     mutation CreateTransaction(
       $reason: String!
-      $schoolfeesId: ID!
+      $schoolfeesprimId: ID!
       $paymentMethod: String!
       $amount: Int!
       $ref: String!
@@ -258,9 +261,9 @@ const query = gql`
       $status: String!
       $delete: Boolean!
     ) {
-      createUpdateDeleteTransaction(
+      createUpdateDeleteTransactionPrim(
         reason: $reason
-        schoolfeesId: $schoolfeesId
+        schoolfeesprimId: $schoolfeesprimId
         paymentMethod: $paymentMethod
         amount: $amount
         ref: $ref
@@ -272,7 +275,7 @@ const query = gql`
         status: $status
         delete: $delete
       ) {
-        transactions {
+        transactionprim {
           id
           amount
           reason
@@ -283,11 +286,11 @@ const query = gql`
 
 
 
-  const GET_ACCOUNTS = gql`
+const GET_ACCOUNTS = gql`
   query GetAllData (
     $year: String!
   ) {
-    allAccounts (
+    allAccountsPrim (
       status: true,
       year: $year
     ) {

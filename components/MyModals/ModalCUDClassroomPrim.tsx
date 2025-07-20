@@ -1,11 +1,10 @@
-import { EdgeField, EdgeMainSpecialty } from '@/Domain/schemas/interfaceGraphql';
-import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
+import { capitalizeFirstLetter, decodeUrlID, getAcademicYearList } from '@/functions';
 import MyInputField from '@/MyInputField';
 import { JwtPayload } from '@/serverActions/interfaces';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import { motion } from 'framer-motion';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
@@ -13,7 +12,9 @@ import { EdgeClassRoomPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimar
 
 
 interface FormData {
+  schoolId: number
   level: string
+  language: string
   academicYear: string
   registration: string
   tuition: string
@@ -24,20 +25,21 @@ interface FormData {
 }
 
 const ModalCUDClassroomPrim = (
-  { params, setOpenModal, selectedItem, actionType, extraData }
+  { params, setOpenModal, selectedItem, actionType, apiYears, apiLevels }
     :
     {
-      params: { school_id: string }, setOpenModal: any, selectedItem: EdgeClassRoomPrim, actionType: "create" | "update" | "delete" | string,
-      extraData: { fields: EdgeField[] }
+      apiLevels: string[], apiYears: string[], params: { school_id: string, locale: string }, setOpenModal: any, selectedItem: EdgeClassRoomPrim | null, actionType: "create" | "update" | "delete" | string
     }
 ) => {
-
   const { t } = useTranslation();
   const token = localStorage.getItem('token');
   const user: JwtPayload = jwtDecode(token ? token : "");
+  const [optionsLevel, setOptionsLevel] = useState<string[]>(params?.locale === "fr" ? apiLevels.slice(9, 18) : apiLevels.slice(0, 9))
 
   const [formData, setFormData] = useState<FormData>({
+    schoolId: parseInt(params.school_id),
     academicYear: selectedItem ? selectedItem.node.academicYear.toString() : "",
+    language: params?.locale === "fr" ? "FRENCH" : "ENGLISH",
     level: selectedItem ? selectedItem.node.level.toString() : "",
     registration: selectedItem ? selectedItem.node.registration.toString() : "0",
     tuition: selectedItem ? selectedItem.node.tuition.toString() : "0",
@@ -46,6 +48,11 @@ const ModalCUDClassroomPrim = (
     paymentThree: selectedItem ? selectedItem.node.paymentThree.toString() : "0",
     delete: selectedItem && actionType === "delete" ? true : false,
   });
+
+  useEffect(() => {
+    setOptionsLevel(optionsLevel)
+  }, [ formData.language ])
+
   const handleChange = <K extends keyof FormData>(
     field: K,
     value: FormData[K]
@@ -62,8 +69,10 @@ const ModalCUDClassroomPrim = (
           ? value // Leave booleans unchanged
           : value,
     }));
+    if (field == "language"){
+      setOptionsLevel(value === "French" ? apiLevels.slice(9, 18) : apiLevels.slice(0, 9))
+    }
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,36 +80,28 @@ const ModalCUDClassroomPrim = (
     if (!confirmCreate) {
       return;
     }
-    let dataToSubmit: any = formData
-    console.log(actionType);
-    if (actionType === "create") {
-      dataToSubmit = {
-        ...formData,
-        registration: parseInt(formData.registration),
-        tuition: parseInt(formData.registration),
-        paymentOne: parseInt(formData.paymentOne),
-        paymentTwo: parseInt(formData.paymentTwo),
-        paymentThree: parseInt(formData.paymentThree),
-        schoolId: params.school_id,
-        createdById: user.user_id,
-        delete: false
-      }
+    let dataToSubmit: any = {
+      ...formData,
+      registration: parseInt(formData.registration),
+      tuition: parseInt(formData.tuition),
+      paymentOne: parseInt(formData.paymentOne),
+      paymentTwo: parseInt(formData.paymentTwo),
+      paymentThree: parseInt(formData.paymentThree),
     }
+
     if ((actionType === "update" || actionType === "delete") && selectedItem) {
       dataToSubmit = {
-        ...formData,
+        ...dataToSubmit,
         id: parseInt(decodeUrlID(selectedItem.node.id)),
         updatedById: user.user_id,
         delete: actionType === "delete",
       }
     }
 
-    console.log(dataToSubmit);
-
     const res = await ApiFactory({
       newData: dataToSubmit,
       editData: dataToSubmit,
-      mutationName: "createUpdateDeleteclassroomPrim",
+      mutationName: "createUpdateDeleteClassroomPrim",
       modelName: "classroomprim",
       successField: "id",
       query,
@@ -132,26 +133,41 @@ const ModalCUDClassroomPrim = (
           <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl"><FaTimes color='red' /></button>
         </div>
 
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <div className='flex flex-row gap-2 justify-between'>
+            <MyInputField
+              id="language"
+              name="language"
+              label={t("language")}
+              type="select"
+              placeholder={t("Select language")}
+              value={formData.language}
+              onChange={(e) => handleChange('language', (e.target.value))}
+              options={[ "FRENCH", "ENGLISH" ]}
+            />
+          </div>
 
           <div className='flex flex-row gap-2 justify-between'>
             <MyInputField
               id="level"
               name="level"
               label={t("Level")}
-              type="text"
+              type="select"
               placeholder={t("Select Level")}
               value={formData.level}
               onChange={(e) => handleChange('level', (e.target.value))}
+              options={selectedItem ? [...optionsLevel, formData.level] : optionsLevel}
             />
             <MyInputField
               id="academicYear"
               name="academicYear"
               label={t("Academic Year")}
-              type="text"
+              type="select"
               placeholder={t("Select Academic Year")}
               value={formData.academicYear}
               onChange={(e) => handleChange('academicYear', (e.target.value))}
+              options={getAcademicYearList()}
             />
           </div>
 

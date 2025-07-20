@@ -14,14 +14,15 @@ import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import MyModal from '@/MyModals/MyModal';
 import { useTranslation } from 'react-i18next';
-import ModalCUDClassroomSec from '@/components/MyModals/ModalCUDClassroomSec';
+import { EdgeClassRoomPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import ModalCUDClassroomPrim from '@/components/MyModals/ModalCUDClassroomPrim';
 
 
 const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
-  const [selectedItem, setSelectedItem] = useState<EdgeClassRoomSec | null>(null);
+  const [selectedItem, setSelectedItem] = useState<EdgeClassRoomPrim | null>(null);
   const router = useRouter();
 
   console.log(data);
@@ -29,7 +30,6 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
   const Columns: TableColumn<EdgeClassRoomSec>[] = [
     { header: "#", align: "center", render: (_item: EdgeClassRoomSec, index: number) => index + 1, },
     { header: `${t("Class")}`, accessor: "node.level", align: "left" },
-    { header: `${t("Section")}`, accessor: "node.stream", align: "center" },
     { header: `${t("Year")}`, accessor: "node.academicYear", align: "center" },
     { header: `${t("Fees")}`, accessor: "node.tuition", align: "center" },
     { header: `${t("Students")}`, accessor: "node.studentCount", align: "center" },
@@ -98,17 +98,18 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {
-          data?.allClassroomsSec ?
+          data ?
             <MyTableComp
               columns={Columns}
               data={
-                data?.allClassroomsSec?.edges.sort((a: EdgeClassRoomSec, b: EdgeClassRoomSec) => {
+                data?.allClassroomsPrim?.edges.sort((a: EdgeClassRoomPrim, b: EdgeClassRoomPrim) => {
                   const levelA = a.node.level.toLowerCase();
                   const levelB = b.node.level.toLowerCase();
                   return levelA.localeCompare(levelB);
                 })}
               table_title={t("Classrooms")}
               button_type={"add"}
+              setActionType={() => {}}
               button_action={() => {setShowModal({ show: true, type: "create" }); setSelectedItem(null)}}
             />
             :
@@ -118,13 +119,16 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
 
 
         {<MyModal
-          component={<ModalCUDClassroomSec
+          component={
+          <ModalCUDClassroomPrim
             params={params}
             setOpenModal={setShowModal}
             actionType={showModal?.type || "create"}
             selectedItem={selectedItem}
-            extraData={{ fields: data?.allFields?.edges }}
-          />}
+            apiLevels={data?.getLevelsPrim}
+            apiYears={data?.allAcademicYearsPrim}
+          />
+        }
           openState={showModal?.show || false}
           onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}
