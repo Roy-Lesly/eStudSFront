@@ -59,7 +59,7 @@ const ModalCUDMainSubject = ({
         const res = await ApiFactory({
             newData: dataToSubmit,
             editData: dataToSubmit,
-            mutationName: section === "Secondary" ? "createUpdateDeleteMainSubjectSec" : "createUpdateDeleteMainSubjectPrim",
+            mutationName: section === "Secondary" ? "createUpdateDeleteMainSubjectSec" : "createUpdateDeleteMainsubjectPrim",
             modelName: section === "Secondary" ? "mainsubjectsec" : "mainsubjectprim",
             successField: "id",
             query: section === "Secondary" ? querySec : queryPrim,
@@ -142,7 +142,7 @@ export const querySec = gql`
             createdById: $createdById,
             updatedById: $updatedById
         ) {
-            mainsubjectsec {
+            mainsubjectprim {
               id
             }  
         } 
@@ -158,7 +158,7 @@ export const queryPrim = gql`
         $createdById: ID,
         $updatedById: ID!
     ) {
-        createUpdateDeleteMainSubjectPrim (
+        createUpdateDeleteMainsubjectPrim (
             id: $id,
             subjectName: $subjectName,
             delete: $delete,

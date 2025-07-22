@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import BackGround from '../BackGround';
 import ResetPasswordForm from './ResetPasswordForm';
-import { EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
 import { ActionConfirmResetPassword, ActionResetPassword } from '@/utils/serverActions/AuthActions';
 import { protocol } from '@/utils/config';
 import { ResetPasswordEmail } from '@/utils/Domain/configDom';
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import { ResetPasswordConfirmUrl } from '@/utils/Domain/Utils-H/userControl/userConfig';
 
-const Display = ({ p, school }: { p: any, school: EdgeSchoolInfoHigher }) => {
+const Display = ({ p, school }: { p: any, school: EdgeSchoolHigherInfo }) => {
 
     const [loading, setLoading] = useState(false);
     const router = useRouter();

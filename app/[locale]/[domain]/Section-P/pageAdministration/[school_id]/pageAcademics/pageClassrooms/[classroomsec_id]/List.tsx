@@ -2,13 +2,12 @@
 
 import React, { useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import DefaultLayout from '@/DefaultLayout';
 import { EdgeCourse, EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
-
 import MyTabs from '@/MyTabs';
 import ExcelExporter from '@/ExcelExporter';
 import Info from './Info';
@@ -150,6 +149,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={"setActiveTab"}
             />
           ) : (
             <ServerError type="network" item="Class" />

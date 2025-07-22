@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { capitalizeFirstLetter, decodeUrlID, getAcademicYear } from '@/functions';
 import MyInputField from '@/MyInputField';
 import React, { useEffect, useState } from 'react'
-import { EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { CertificateOptions, RegionList } from '@/constants';
@@ -152,7 +152,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
         setOptionsLevels(data?.getLevelsSec.map((item: string) => { return { id: item, name: item } }))
       }
       if (data && data?.allSchoolInfos?.edges.length) {
-        const f = data.allSchoolInfos.edges.map((item: EdgeSchoolInfoHigher) => {
+        const f = data.allSchoolInfos.edges.map((item: EdgeSchoolHigherInfo) => {
           return { "id": decodeUrlID(item.node.id), "name": `${item.node.campus.replace("_", "-")} - ${item.node?.town} - ${item.node?.address}` }
         })
 
@@ -606,7 +606,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
                 placeholder={t("Select a Class")}
                 value={formData.classAssignment.level}
                 onChange={(e) => handleChange('classAssignment', 'level', e.target.value)}
-                options={(schoolSystem === "English Section" || params.locale === "en") ?  optionsLevels?.slice(0, 7) : optionsLevels?.slice(7, 14) }
+                options={(schoolSystem === "English Section" || params.locale === "en") ? optionsLevels?.slice(0, 7) : optionsLevels?.slice(7, 14)}
               />
 
               <div className='flex md:flex-row flex-col justify-between gap-4'>

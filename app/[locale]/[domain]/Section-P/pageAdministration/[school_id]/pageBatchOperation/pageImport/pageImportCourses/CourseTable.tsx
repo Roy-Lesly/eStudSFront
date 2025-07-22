@@ -6,6 +6,7 @@ import { ActionCreate } from '@/serverActions/actionGeneral';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { FaArrowDown } from 'react-icons/fa6';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const CourseTable = ({ params, selectedYearCourses, setToImportCourses, toImportCourses, toImportSpecialty }: GetCourseInter[] | any) => {
 

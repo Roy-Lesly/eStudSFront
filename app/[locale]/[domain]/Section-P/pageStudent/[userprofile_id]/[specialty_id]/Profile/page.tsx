@@ -1,8 +1,8 @@
 import React from "react";
-import getApolloClient, { errorLog } from "@/functions";
 import { Metadata } from "next";
 import { gql } from "@apollo/client";
 import List from "./List";
+import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
 
 export const metadata: Metadata = {
   title: "My Profile",
@@ -18,25 +18,13 @@ const page = async ({
 
   const p = await params;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
         id: parseInt(p.userprofile_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    if (error.networkError && error.networkError.result) {
-    }
-    data = null;
-  }
-
+    },
+  });
 
   return (
     <List

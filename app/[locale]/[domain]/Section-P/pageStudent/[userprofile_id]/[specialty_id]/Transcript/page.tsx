@@ -1,52 +1,43 @@
-import getApolloClient from '@/functions';
 import { Metadata } from 'next';
 import React from 'react'
 import { gql } from '@apollo/client';
 import DisplayPage from './DisplayPage';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 
 export const metadata: Metadata = {
-    title: "Transcript Page",
-    description: "Student Transcript Page",
+  title: "Transcript Page",
+  description: "Student Transcript Page",
 };
 
 const page = async ({
-    params,
-    searchParams,
+  params,
+  searchParams,
 }: {
-    params: any;
-    searchParams: any;
+  params: any;
+  searchParams: any;
 }) => {
 
   const p = await params;
   const sp = await searchParams;
 
-    const client = getApolloClient(p.domain);
-    let data;
-    try {
-        const result = await client.query<any>({
-            query: GET_DATA,
-            variables: {
-                userprofileId: parseInt(p.userprofile_id),
-                specialtyId: parseInt(p.specialty_id),
-            },
-            fetchPolicy: 'no-cache'
-        });
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      userprofileId: parseInt(p.userprofile_id),
+      specialtyId: parseInt(p.specialty_id),
+    },
+  });
 
-        data = result.data;
-    } catch (error: any) {
-        // console.log(error, 111)
-        data = null;
-    }
+  return (
+    <div className='h-screen mb-2 mt-2 rounded text-black'>
 
-    return (
-        <div className='h-screen mb-2 mt-2 rounded text-black'>
+      <DisplayPage data={data} params={p} />
 
-            <DisplayPage data={data} params={p} />
-
-        </div>
-    )
+    </div>
+  )
 
 }
 

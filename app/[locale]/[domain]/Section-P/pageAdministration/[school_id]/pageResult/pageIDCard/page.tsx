@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
+import { removeEmptyFields } from '@/utils/functions'
 
 
 const page = async ({
@@ -16,42 +17,33 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = { };
-  
+  const paginationParams: Record<string, any> = {};
+
   paginationParams.specialtyName = sp?.specialtyName
   paginationParams.academicYear = sp?.academicYear
   paginationParams.level = parseInt(sp?.level || "")
   paginationParams.schoolId = parseInt(p.school_id)
 
-  const client = getApolloClient(p.domain);
   let data;
-  let dataExtra;
-  if (sp?.academicYear && sp?.level ) {
-    try {
-      const result = await client.query<any>({
-        query: GET_DATA,
-        variables: {
-          ...removeEmptyFields(paginationParams),
-          timestamp: new Date().getTime()
-        },
-        fetchPolicy: 'no-cache'
-      });
-      data = result.data;
-    } catch (error: any) {
-      errorLog(error);
-      data = null;
-    }
-  }
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_EXTRA,
-      fetchPolicy: 'no-cache'
+
+  if (sp?.academicYear && sp?.level) {
+    data = await queryServerGraphQL({
+      domain: p?.domain,
+      query: GET_DATA,
+      variables: {
+        ...removeEmptyFields(paginationParams),
+      },
     });
-    dataExtra = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    dataExtra = null;
   }
+
+  const dataExtra = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_EXTRA,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      admissionStatus: false,
+    },
+  });
 
   return (
     <div>

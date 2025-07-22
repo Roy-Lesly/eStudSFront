@@ -76,15 +76,13 @@ export const ApiFactory = async ({
         }
       }
 
-      console.log(result);
-
       if (result?.id) {
         successMessages.push(result?.[successField] || "Unnamed item");
         if (returnResponseField) {
           responseFieldData = result?.[successField]
         }
       } else if (result === null) {
-        successMessages.push("✅ Operation Successful");
+        successMessages.push("Operation Successful ✅");
       } else if (response?.errors?.[0]?.message?.includes("duplicate")) {
         errorMessages.push(`Record or File Already Exists ❌`);
       } else if (response?.errors?.[0]?.message?.includes("You can only upload")) {
@@ -105,7 +103,7 @@ export const ApiFactory = async ({
 
   let alertMessage = "";
   if (successMessages.length > 0) {
-    alertMessage += `✅ Successfully Submitted`;
+    alertMessage += `Successfully Submitted ✅ `;
     if (returnResponseObject || returnResponseField) return responseFieldData;
     // if (returnResponseObject) return responseFieldData;
     else if (redirect) { router.push(redirectPath); }

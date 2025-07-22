@@ -1,14 +1,15 @@
 'use client';
-import { EdgePublish, EdgeResult, EdgeSchoolFees, EdgeTranscriptApplications } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeResult, EdgeTranscriptApplications } from '@/Domain/schemas/interfaceGraphql';
 import { motion } from 'framer-motion';
 import { GrClose, GrStatusGood } from 'react-icons/gr';
 import { gql } from '@apollo/client';
-import getApolloClient, { decodeUrlID } from '@/functions';
+import { decodeUrlID } from '@/functions';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { useRouter } from 'next/navigation';
 import PaymentStatus from '../PaymentStatus';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 
 const DisplayPage = ({ data, params }: { data: any, params: { domain: string, userprofile_id: string } }) => {

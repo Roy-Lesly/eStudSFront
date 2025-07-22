@@ -1,6 +1,6 @@
 "use client";
 import { protocol, RootApi } from '@/utils/config';
-import { EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
 import { Lock, LogIn, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 const LoginForm = (
   { handleChange, params, loading, handleLogin, school }:
-    { handleChange: any, params: any, loading: boolean, handleLogin: any, school: EdgeSchoolInfoHigher }
+    { handleChange: any, params: any, loading: boolean, handleLogin: any, school: EdgeSchoolHigherInfo }
 ) => {
 
   const node = school?.node?.schoolIdentification

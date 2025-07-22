@@ -1,4 +1,4 @@
-import { NodeCustomUser, NodeProgram, NodeSchoolIdentification, NodeSchoolInfoHigher } from "./interfaceGraphql";
+import { NodeCustomUser, NodeProgram, NodeSchoolIdentification, NodeSchoolHigherInfo } from "./interfaceGraphql";
 
 interface PageInfo {
   hasNextPage: boolean;
@@ -37,7 +37,7 @@ export interface NodeSeries {
 
 export interface NodeClassRoomSec {
   id: string;
-  school: NodeSchoolInfoHigher;
+  school: NodeSchoolHigherInfo;
   stream: string;
   cycle: string;
   level: string;
@@ -102,7 +102,7 @@ export interface NodePublishSecondary {
 
 export interface EdgeTransactionsSecSet {
   edges: {
-    node: {node: NodeTransactionsSec};
+    node: { node: NodeTransactionsSec };
   }[];
 }
 

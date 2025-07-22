@@ -1,10 +1,11 @@
 import { NodeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
-import { decodeUrlID, errorLog } from '@/functions';
+import { decodeUrlID } from '@/functions';
 import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 interface Props {

@@ -1,4 +1,4 @@
-import { NodeCustomUser, NodeProgram, NodeSchoolIdentification, NodeSchoolInfoHigher } from "./interfaceGraphql";
+import { NodeCustomUser, NodeProgram, NodeSchoolIdentification, NodeSchoolHigherInfo } from "./interfaceGraphql";
 
 interface PageInfo {
   hasNextPage: boolean;
@@ -43,7 +43,7 @@ export interface NodeProgramPrim {
 
 export interface NodeClassRoomPrim {
   id: string;
-  school: NodeSchoolInfoHigher;
+  school: NodeSchoolHigherInfo;
   stream: string;
   level: string;
   select: boolean;
@@ -61,7 +61,7 @@ export interface NodeMainSubject {
   subjectName: string;
 }
 
-export interface NodeSubject {
+export interface NodeSubjectPrim {
   id: string;
   mainsubjectprim: NodeMainSubject;
   classroomprim: NodeClassRoomPrim;
@@ -83,7 +83,7 @@ export interface ResultInfo {
 export interface NodeResultPrimary {
   id: string;
   student: NodeUserProfilePrim // Represents the "student" ForeignKey
-  subjectprim: NodeSubject | null; // Represents the "subject" ForeignKey
+  subjectprim: NodeSubjectPrim | null; // Represents the "subject" ForeignKey
   infoData: string | any; // JSONField structure
   logs: string | any; // JSONField structure
   active?: true;
@@ -107,7 +107,7 @@ export interface NodePublishSecondary {
 
 export interface EdgeTransactionsPrimSet {
   edges: {
-    node: {node: NodeTransactionsPrim};
+    node: { node: NodeTransactionsPrim };
   }[];
 }
 
@@ -146,7 +146,7 @@ export interface NodePreInscriptionPrim {
   address: string;
   telephone: string;
   email: string;
-  campus: NodeSchoolInfoHigher;
+  campus: NodeSchoolHigherInfo;
   fatherName: string;
   motherName: string;
   fatherTelephone: string;
@@ -202,8 +202,8 @@ export interface EdgeMainSubject {
   node: NodeMainSubject;
 }
 
-export interface EdgeSubject {
-  node: NodeSubject;
+export interface EdgeSubjectPrim {
+  node: NodeSubjectPrim;
 }
 
 export interface EdgePublishSecondary {

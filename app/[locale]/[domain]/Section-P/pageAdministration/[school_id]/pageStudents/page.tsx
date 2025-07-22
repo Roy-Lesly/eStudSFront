@@ -22,16 +22,13 @@ const page = async ({
 
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.after = sp?.after
-  paginationParams.before = sp?.before
   paginationParams.fullName = sp?.fullName
   paginationParams.sex = sp?.sex
+  paginationParams.level = sp?.level
   paginationParams.matricle = sp?.matricle
   paginationParams.academicYear = sp?.academicYear
   paginationParams.session = sp?.session
-  paginationParams.specialtyName = sp?.specialtyName
   paginationParams.schoolId = parseInt(p.school_id)
-  paginationParams.level = parseInt(sp?.level ? Array.isArray(sp.level) ? searchParams.level[0] : searchParams.level : "")
   paginationParams.academicYear = sp?.academicYear
 
 
@@ -44,9 +41,6 @@ const page = async ({
       timestamp: new Date().getTime()
     },
   });
-
-  console.log(data);
-
 
   return (
     <div>
@@ -68,25 +62,21 @@ export const metadata: Metadata = {
 
 
 const GET_DATA = gql`
- query GetUserProfiles(
-  $after: String,
-  $before: String,
+ query GetData(
   $fullName: String,
   $sex: String,
+  $level: String,
   $matricle: String,
   $academicYear: String,
-  $session: String,
   $schoolId: Decimal!
 ) {
-  allUserprofilesSec(
+  allUserprofilesPrim(
     last: 100,
-    after: $after,
-    before: $before,
     fullName: $fullName,
     sex: $sex,
+    level: $level,
     matricle: $matricle,
     academicYear: $academicYear,
-    session: $session,  
     schoolId: $schoolId,
     isActive: true,
     isStaff: false,
@@ -94,13 +84,14 @@ const GET_DATA = gql`
   ) {
     edges {
       node {
-        id session
+        id
         customuser {
-          id fullName, matricle sex telephone dob pob email address parentTelephone 
+          id fullName, matricle sex telephone dob pob email address
+          fatherTelephone motherTelephone
           nationality regionOfOrigin
         }
-        classroomsec { academicYear level stream }
-        programsec { name }
+        classroomprim { academicYear level }
+        programprim
       }
     }
   }

@@ -45,7 +45,7 @@
     "**/*.js",
     "**/*.jsx",
     ".next/types/**/*.ts"
-, "app/[locale]/[domain]/Section-H/pageAdministration/[school_id]/pageManagement/pageFinancial"  ],
+, "app/[locale]/[domain]/Section-H/pageAdministration/[school_id]/pageManagement/pageFinancial", "app/[locale]/[domain]/pre-inscription/Check/[section]/Registered/PreInscriptionFormPrimarytsx"  ],
   "exclude": [
     "node_modules"
   ],

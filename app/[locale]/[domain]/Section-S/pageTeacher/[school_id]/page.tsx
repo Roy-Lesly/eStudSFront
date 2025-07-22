@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import React from 'react';
 import Image from 'next/image';
-import getApolloClient, { errorLog } from '@/functions';
 import { protocol, RootApi } from '@/config';
 import { gql } from '@apollo/client';
 import initTranslations from '@/initTranslations';
 import Continue from './Continue';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 const page = async ({
@@ -17,24 +17,15 @@ const page = async ({
   const p = await params
 
   const { t } = await initTranslations(p.locale, ["common"])
-  const { domain, school_id } = p;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        id: school_id,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      id: p.school_id,
+    },
+  });
+
 
 
   return (
@@ -46,7 +37,7 @@ const page = async ({
             <Image
               width={200}
               height={200}
-              src={`${protocol}api${domain}${RootApi}/media/` + data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
+              src={`${protocol}api${p.domain}${RootApi}/media/` + data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
               alt={`${data.allSchoolInfos?.edges[0].node?.schoolName || 'School'} Logo`}
               className="hidden md:block rounded-full"
               priority
@@ -54,7 +45,7 @@ const page = async ({
             <Image
               width={130}
               height={130}
-              src={`${protocol}api${domain}${RootApi}/media/` + data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
+              src={`${protocol}api${p.domain}${RootApi}/media/` + data.allSchoolInfos?.edges[0].node.schoolIdentification?.logo || '/placeholder-logo.png'}
               alt={`${data.allSchoolInfos?.edges[0].node?.schoolName || 'School'} Logo`}
               className="block md:hidden rounded-full"
               priority

@@ -6,7 +6,7 @@ import Sidebar from '@/section-h/Sidebar/Sidebar';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { PDFViewer } from "@react-pdf/renderer";
-import { GetMenuAdministration } from '@/components/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/components/section-p/Sidebar/MenuAdministration';
 import TransOneYear from '../Comps/TransOneYear';
 import TransTwoYear from '../Comps/TransTwoYear';
 import TransThreeYear from '../Comps/TransThreeYear';

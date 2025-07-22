@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
@@ -141,7 +141,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         department="Lecturers"
         subRoute="List"
         pageName="Lecturers"
-        mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageLecturers`}
+        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/pageLecturers`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
@@ -152,16 +152,17 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               {
                 label: 'Admins',
                 icon: <div className='bg-teal-500 p-2 rounded-full' onClick={() => { setShowModal({ show: true, type: "admin" }) }}><FaPlus color="white" size={20} /></div>,
-                content: data.admins?.allCustomUsers?.edges.length ? <DataComp data={data.admins.allCustomUsers.edges} title="Admins" /> : <ServerError type="notFound" item="Admin Users" />
+                content: data.admins?.allCustomusers?.edges.length ? <DataComp data={data.admins.allCustomusers.edges} title="Admins" /> : <ServerError type="notFound" item="Admin Users" />
               },
               {
                 label: 'Lecturers',
                 icon: <div className='bg-teal-500 p-2 rounded-full' onClick={() => { setShowModal({ show: true, type: "teacher" }) }}><FaPlus color="white" size={20} /></div>,
-                content: data.lects?.allCustomUsers?.edges.length ? <DataComp data={data.lects.allCustomUsers.edges} title="Lecturers" /> : <ServerError type="notFound" item="Admin Users" />
+                content: data.lects?.allCustomusers?.edges.length ? <DataComp data={data.lects.allCustomusers.edges} title="Lecturers" /> : <ServerError type="notFound" item="Admin Users" />
               },
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            source={`Section-S/pageAdministration/${params.school_id}/pageLecturers/?`}
           />
         ) : (
           <ServerError type="network" item="Users" />

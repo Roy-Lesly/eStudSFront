@@ -54,7 +54,7 @@ const AdmissionForm = (
       role: 'student',
       deptNames: ['Student'],
       // telephone: preinscription?.fatherTelephone || '',
-      telephone: new Date().toDateString().slice(3, 16),
+      telephone: new Date().toString().slice(3, 16),
       email: preinscription?.email || '',
       fatherName: preinscription?.fatherName || '',
       motherName: preinscription?.motherName || '',

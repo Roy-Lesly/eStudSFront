@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { decodeUrlID, errorLog } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
+import { decodeUrlID } from '@/utils/functions'
 
 
 const page = async ({
@@ -16,22 +17,14 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
+ const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
       variables: {
         schoolId: parseInt(p.school_id),
         specialtyId: parseInt(decodeUrlID(p.specialty_id))
       },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
+  });
 
   return (
     <div>

@@ -3,6 +3,7 @@ import React from 'react'
 import getApolloClient from '@/functions';
 import { gql } from '@apollo/client';
 import SelectDept from '../SelectDept';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const EditPage = async ({
   params,

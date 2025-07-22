@@ -12,7 +12,7 @@ import MyTabs from '@/MyTabs';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TransactionTotalsByDomain } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import { GetMenuAccounting } from '@/components/section-h/Sidebar/MenuAccounting';
+import { GetMenuAccounting } from '@/components/section-s/Sidebar/MenuAccounting';
 
 
 export const metadata: Metadata = {
@@ -144,6 +144,7 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={"setActiveTab"}
             />
           )
             :

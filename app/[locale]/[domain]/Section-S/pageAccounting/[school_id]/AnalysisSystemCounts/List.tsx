@@ -9,7 +9,7 @@ import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import MyTabs from '@/MyTabs';
-import { GetMenuAccounting } from '@/section-h/Sidebar/MenuAccounting';
+import { GetMenuAccounting } from '@/section-s/Sidebar/MenuAccounting';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { CountByDomain, CountBySpecialty } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
@@ -127,6 +127,7 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={"setActiveTab"}
             />
           )
             :

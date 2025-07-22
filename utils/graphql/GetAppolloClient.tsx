@@ -16,10 +16,10 @@ export default function getApolloClient(
   options?: { csrfToken?: string }
 ): ApolloClient<NormalizedCacheObject> {
 
-  // Use provided token (from headers/server), or get from cookies (on client only)
   const csrfToken = options?.csrfToken || (!isServer() ? Cookies.get("csrftoken") : "");
 
   const uri = protocol + (external ? domain : ('api' + domain)) + RootApi + '/graphql/'
+console.log(uri);
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',

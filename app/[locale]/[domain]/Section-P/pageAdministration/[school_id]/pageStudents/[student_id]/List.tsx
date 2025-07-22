@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import Sidebar from '@/section-s/Sidebar/Sidebar';
-import Header from '@/section-s/Header/Header';
+import Sidebar from '@/section-h/Sidebar/Sidebar';
+import Header from '@/section-h/Header/Header';
 import { decodeUrlID } from '@/functions';
 import Info from './Info';
 import Fees from './Fees';
 import Results from './Results';
 import Classes from './Classes';
 import DefaultLayout from '@/DefaultLayout';
-import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import MyTabs from '@/MyTabs';
 import { jwtDecode } from 'jwt-decode';
 import Moratoire from './Moratoire';

@@ -1,8 +1,9 @@
 import React from 'react'
 import List from './List'
 import { gql } from '@apollo/client'
-import getApolloClient, { removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { Metadata } from 'next';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Counts",
@@ -17,8 +18,8 @@ const page = async ({
   searchParams?: any
 }) => {
 
-   const p = await params;
-          const sp = await searchParams;
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = {};
 

@@ -55,8 +55,9 @@ const List = ({ data }: { params: any; data: any, searchParams: any }) => {
 
 
 
-        <MyModal
+        {/* <MyModal
             component={<ModalCUDCourse
+                params={p}
                 setOpenModal={setShowModal}
                 actionType={showModal?.type || "create"}
                 selectedItem={selectedItem}
@@ -66,7 +67,7 @@ const List = ({ data }: { params: any; data: any, searchParams: any }) => {
             onClose={() => setShowModal({ show: false, type: "create" })}
             title={showModal?.type || ""}
             classname=''
-        />
+        /> */}
 
 
     </div>

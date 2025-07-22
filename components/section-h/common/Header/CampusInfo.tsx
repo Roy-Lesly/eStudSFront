@@ -1,5 +1,5 @@
 import { protocol } from '@/config'
-import { EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql'
+import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql'
 import { GetSchoolInfoUrl } from '@/Domain/Utils-H/appControl/appConfig'
 import { GetSchoolInfoInter } from '@/Domain/Utils-H/appControl/appInter'
 import { decodeUrlID, getData } from '@/functions'
@@ -27,14 +27,14 @@ const CampusInfo = () => {
 
   const domain = useParams().domain;
   const [count, setCount] = useState(0)
-  const [schoolInfo, setSchoolInfo] = useState<EdgeSchoolInfoHigher>()
+  const [schoolInfo, setSchoolInfo] = useState<EdgeSchoolHigherInfo>()
 
   const { data, loading, error } = useQuery(GET_DATA);
 
   useEffect(() => {
     const school = localStorage.getItem("school");
     if (count == 0 && school && !loading && data?.allSchoolInfos?.edges?.length) {
-      setSchoolInfo(data?.allSchoolInfos?.edges.filter((item: EdgeSchoolInfoHigher) => decodeUrlID(item.node.id) === school)[0])
+      setSchoolInfo(data?.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) => decodeUrlID(item.node.id) === school)[0])
       setCount(1)
     }
   }, [count, domain, data])

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
@@ -116,12 +116,12 @@ const List = ({ params, data, searchParams }: { params: any; data: EdgeSchoolFee
                       Back <FaLeftLong color='red' size={27} />
                     </button>
                   </div>
-                    <IDComp2
+                    {/* <IDComp2
                       data={dataToPrint} // still an array, but just one item
                       params={params}
                       searchParams={searchParams}
                       qrCodeDataUrl={qrCodeDataUrl} // just that user's QR
-                    />
+                    /> */}
                 </div>
 
 

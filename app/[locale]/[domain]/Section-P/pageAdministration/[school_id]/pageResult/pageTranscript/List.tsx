@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
@@ -104,6 +104,7 @@ const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: 
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            source={`/Section-P/pageAdministration`}
           />
         ) : (
           <ServerError type="network" item="Transcript" />

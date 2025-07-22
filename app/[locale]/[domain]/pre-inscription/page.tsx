@@ -71,7 +71,8 @@ const page = async (
         {/* CTA Buttons */}
         <div className="mt-6 flex gap-4">
           <Link
-            href="/pre-inscription/Check"
+            // href="/pre-inscription/Check"
+            href={`/pre-inscription/Check/${ trueCount === 1 ? activeSection : sp?.section || "higher"}`}
             className="bg-blue-500 text-white font-semibold px-2 md:px-5 py-2 md:py-3 rounded-lg shadow-md hover:bg-blue-400 transition-all"
           >
             {t("Check Status")} 📑

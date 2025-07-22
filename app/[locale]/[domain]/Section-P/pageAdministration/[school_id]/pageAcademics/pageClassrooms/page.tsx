@@ -55,8 +55,7 @@ export const metadata: Metadata = {
 
 
 
-
-export const GET_DATA_CLASSROOM_PRIM = gql`
+const GET_DATA_CLASSROOM_PRIM = gql`
  query GetData(
    $id: ID,
    $schoolId: Decimal,

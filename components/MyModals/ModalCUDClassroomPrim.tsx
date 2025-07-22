@@ -25,7 +25,7 @@ interface FormData {
 }
 
 const ModalCUDClassroomPrim = (
-  { params, setOpenModal, selectedItem, actionType, apiYears, apiLevels }
+  { params, setOpenModal, selectedItem, actionType, apiLevels }
     :
     {
       apiLevels: string[], apiYears: string[], params: { school_id: string, locale: string }, setOpenModal: any, selectedItem: EdgeClassRoomPrim | null, actionType: "create" | "update" | "delete" | string

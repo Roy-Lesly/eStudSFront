@@ -124,6 +124,7 @@ const StudentIDCard2 = (
             data={
               {
                 id: parseInt(decodeUrlID(params.student_id)),
+                section: "S",
                 type: "idcard",
                 domain: params.domain,
                 size: 63

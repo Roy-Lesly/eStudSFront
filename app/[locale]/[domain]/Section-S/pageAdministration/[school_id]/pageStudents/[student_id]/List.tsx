@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Sidebar from '@/section-s/Sidebar/Sidebar';
-import Header from '@/section-s/Header/Header';
+import Sidebar from '@/section-s/Sidebar/Sidebar'; import Header from '@/section-h/Header/Header';
 import { decodeUrlID } from '@/functions';
 import Info from './Info';
 import Fees from './Fees';

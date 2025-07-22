@@ -2,7 +2,7 @@ import React from 'react'
 import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const page = async ({
   params,
@@ -15,67 +15,39 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(`${p.tenant_name}`, true);
-  let dataPlatformPaid;
-  let dataPlatformPending;
-  let dataTransactions;
+  const dataPlatformPaid = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_PLATFORM_PAID,
+    variables: {
+      // schoolId: (params.school_id),
+      specialtyName: sp?.specialty,
+      fullName: sp?.fullName,
+      level: sp?.level,
+      academicYear: sp?.academicYear,
+    },
+  });
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_PLATFORM_PAID,
-      variables: {
-        // schoolId: (params.school_id),
-        specialtyName: sp?.specialty,
-        fullName: sp?.fullName,
-        level: sp?.level,
-        academicYear: sp?.academicYear,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataPlatformPaid = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    dataPlatformPaid = null;
-  }
+  const dataPlatformPending = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_PLATFORM_PENDING,
+    variables: {
+      specialtyName: sp?.specialty,
+      fullName: sp?.fullName,
+      level: sp?.level,
+      academicYear: sp?.academicYear,
+    },
+  });
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_PLATFORM_PENDING,
-      variables: {
-        // schoolId: parseInt(params.school_id),
-        specialtyName: sp?.specialty,
-        fullName: sp?.fullName,
-        level: sp?.level,
-        academicYear: sp?.academicYear,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataPlatformPending = result.data;
-  } catch (error: any) {
-    console.log(error, 81)
-    dataPlatformPending = null;
-  }
-
-  try {
-    const result = await client.query<any>({
-      query: GET_LAST_PLATFORM_TRANSACTIONS,
-      variables: {
-        // schoolId: parseInt(params.school_id),
-        specialtyName: sp?.specialty,
-        fullName: sp?.fullName,
-        level: sp?.level,
-        academicYear: sp?.academicYear,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataTransactions = result.data;
-  } catch (error: any) {
-    console.log(error, 81)
-    dataTransactions = null;
-  }
+  const dataTransactions = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_LAST_PLATFORM_TRANSACTIONS,
+    variables: {
+      specialtyName: sp?.specialty,
+      fullName: sp?.fullName,
+      level: sp?.level,
+      academicYear: sp?.academicYear,
+    },
+  });
 
   return (
     <List

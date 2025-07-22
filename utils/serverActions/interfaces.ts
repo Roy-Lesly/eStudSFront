@@ -139,6 +139,20 @@ export interface UserProfileInter {
 }
 
 
+
+
+export interface UserProfilePrimInter {
+    id: number,
+    customuser: CustomUserInter
+    specialty?: SpecialtyInter
+    program?: ProgramInter
+    session: string
+    created_at: string
+    updated_at: string
+}
+
+
+
 export interface SelectedPromoteStudentInter {
     user_id: number,
     created_by_id: number

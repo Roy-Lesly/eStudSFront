@@ -36,7 +36,7 @@ const ResultsEdit = ({ data, canEdit, params, selectedTerm }: { data: EdgeResult
         },
         {
             header: `${t("Subject Name")}`,
-            accessor: 'node.subjectprim.mainsubject.subjectName',
+            accessor: 'node.subjectprim.mainsubjectprim.subjectName',
             align: 'left',
         },
         {
@@ -52,10 +52,11 @@ const ResultsEdit = ({ data, canEdit, params, selectedTerm }: { data: EdgeResult
                                 key={idx}
                                 id={field}
                                 name={field}
-                                label={field.replace("_", " ")}
+                                // label={field.replace("_", " ")}
+                                label={""}
                                 value={String(item.node.infoData[field]) || ''}
                                 onChange={(e) => handleInputChange(e, index, field)}
-                                placeholder={`${field}`}
+                                placeholder={`${field.replace("_", " ")}`}
                                 type="number"
                                 min={0}
                                 max={20}
@@ -167,8 +168,8 @@ const ResultsEdit = ({ data, canEdit, params, selectedTerm }: { data: EdgeResult
 
                 const res = await ApiFactory({
                     newData: newData,
-                    mutationName: "createUpdateDeleteResultSec",
-                    modelName: "resultsec",
+                    mutationName: "createUpdateDeleteResultPrim",
+                    modelName: "resultprim",
                     successField: "id",
                     query,
                     router: null,
@@ -183,7 +184,7 @@ const ResultsEdit = ({ data, canEdit, params, selectedTerm }: { data: EdgeResult
             }
 
             if (count === dataToSubmit.length) {
-                alert(t("Operation Completed"))
+                alert(t("Operation Completed") + " " + "✅")
                 window.location.reload();
             } else {
                 alert(t("Operation Failed"))
@@ -194,7 +195,7 @@ const ResultsEdit = ({ data, canEdit, params, selectedTerm }: { data: EdgeResult
     return (
         <div>
             {data.length < 1 ?
-                <div className='flex items-center justify-center my-20'>No Results For This Semester</div>
+                <div className='flex items-center justify-center my-20'>{t("No Results For This Semester")}</div>
                 :
                 <div className='flex items-center justify-center w-full'>
                     <MyTableComp
@@ -212,6 +213,9 @@ const ResultsEdit = ({ data, canEdit, params, selectedTerm }: { data: EdgeResult
 
 export default ResultsEdit
 
+
+
+
 const query = gql`
 mutation Result(
     $id: ID!, 
@@ -220,18 +224,15 @@ mutation Result(
     $updatedById: ID!, 
     $delete: Boolean!, 
 ) {
-    createUpdateDeleteResultSec(
+    createUpdateDeleteResultPrim(
         id: $id, 
         infoData: $infoData
         createdById: $createdById
         updatedById: $updatedById 
         delete: $delete 
     ) {
-        resultsec {
+        resultprim {
             id
-            subjectprim { mainsubject {subjectName}}
-            student { customuser { fullName}}
-            infoData
         }
     }
 }

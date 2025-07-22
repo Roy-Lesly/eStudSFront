@@ -5,10 +5,11 @@ import { gql } from '@apollo/client';
 import { EdgeCustomUser, EdgeDepartment } from '@/Domain/schemas/interfaceGraphql';
 import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
-import getApolloClient, { capitalizeFirstLetter, decodeUrlID, errorLog } from '@/functions';
+import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { CertificateOptions, RegionList } from '@/constants';
 import { FaTimes } from 'react-icons/fa';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 const CreateLecturer = ({
@@ -100,7 +101,7 @@ const CreateLecturer = ({
         await ApiFactory({
             newData: dataToSubmit,
             editData: dataToSubmit,
-            mutationName: "createUpdateDeleteCustomUser",
+            mutationName: "createUpdateDeleteCustomuser",
             modelName: "customuser",
             successField: "id",
             query,
@@ -304,7 +305,7 @@ export default CreateLecturer
 
 
 export const query = gql`
-    mutation CreateUpdateDeleteCustomUser(
+    mutation Data(
         $id: ID,
         $schoolIds: [ID]!,
         $firstName: String!,
@@ -323,10 +324,10 @@ export const query = gql`
         $nationality: String!,
         $regionOfOrigin: String!,
         $prefix: String!,
-        $infoData: JSONString!,
+        $infoData: String!,
         $delete: Boolean!,
     ) {
-        createUpdateDeleteCustomUser(
+        createUpdateDeleteCustomuser(
             id: $id,
             schoolIds: $schoolIds,
             firstName: $firstName,

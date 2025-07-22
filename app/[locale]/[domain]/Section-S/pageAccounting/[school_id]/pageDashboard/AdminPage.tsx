@@ -2,7 +2,7 @@ import React from 'react';
 import SearchComp from './SearchComp';
 import UserCard from '@/components/componentsTwo/UserCard';
 import FinanceChart from '@/components/componentsTwo/FinanceChart';
-import SpecialtyLevelIncountChart from '@/components/componentsTwo/SpecialtyLevelIncomeChart';
+// import SpecialtyLevelIncountChart from '@/components/componentsTwo/SpecialtyLevelIncomeChart';
 
 const AdminPage = (
   { p, sp, sortedAcadYears, apiLevels, financeChartData, userCardData, specialtyLevelCountChartData }

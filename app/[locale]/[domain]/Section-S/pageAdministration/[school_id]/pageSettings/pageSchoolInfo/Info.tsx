@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { EdgeSchoolInfoHigher, NodeSchoolInfoHigher } from "@/Domain/schemas/interfaceGraphql";
+import { EdgeSchoolHigherInfo, NodeSchoolHigherInfo } from "@/Domain/schemas/interfaceGraphql";
 import { decodeUrlID } from "@/functions";
 import { useTranslation } from "react-i18next";
 import { ApiFactory } from "@/utils/graphql/ApiFactory";
@@ -11,13 +11,13 @@ import { jwtDecode } from "jwt-decode";
 import { gql } from "@apollo/client";
 import MyInputField from "@/components/MyInputField";
 
-const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolInfoHigher, params: any }) => {
-      const { t } = useTranslation();
-      const token = localStorage.getItem('token');
-      const user: JwtPayload = jwtDecode(token ? token : "");
+const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: any }) => {
+  const { t } = useTranslation();
+  const token = localStorage.getItem('token');
+  const user: JwtPayload = jwtDecode(token ? token : "");
 
 
-  const [school, setSchool] = useState<NodeSchoolInfoHigher>({
+  const [school, setSchool] = useState<NodeSchoolHigherInfo>({
     id: decodeUrlID(data?.node?.id) || '',
     campus: data?.node?.campus || '',
     prefix: data?.node?.prefix || '',
@@ -68,44 +68,44 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolInfoHigher, params: 
     setSchool((prev) => ({ ...prev, [name]: value }));
   };
 
-  const limits: (keyof NodeSchoolInfoHigher)[] = ["seqLimit", "examLimit"];
-  const notificationKeys: (keyof NodeSchoolInfoHigher)[] = [
+  const limits: (keyof NodeSchoolHigherInfo)[] = ["seqLimit", "examLimit"];
+  const notificationKeys: (keyof NodeSchoolHigherInfo)[] = [
     "emailNotification",
     "smsNotification",
     "waNotification",
   ];
 
-  
-      const handleSubmit = async (e: React.FormEvent) => {
-          e.preventDefault();
-          let newData: any = {
-              ...school,
-              schoolIdentificationId: parseInt(decodeUrlID(school.schoolIdentification.id)),
-              seqLimit: parseInt(school.seqLimit.toString()),
-              examLimit: parseInt(school.examLimit.toString()),
-              // caLimit: parseInt(school.caLimit.toString()),
-              // resitLimit: parseInt(school.resitLimit.toString()),
-              radius: parseInt(school.radius.toString()),
-              updatedById: user.user_id,
-              delete: false
-          }
-  
-          const res = await ApiFactory({
-              newData,
-              editData: newData,
-              mutationName: "createUpdateDeleteSchoolInfoHigher",
-              modelName: "schoolinfohigher",
-              successField: "id",
-              query,
-              router: null,
-              params,
-              redirect: false,
-              reload: true,
-              returnResponseField: false,
-              redirectPath: ``,
-              actionLabel: "processing",
-          });
-      };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let newData: any = {
+      ...school,
+      schoolIdentificationId: parseInt(decodeUrlID(school.schoolIdentification.id)),
+      seqLimit: parseInt(school.seqLimit.toString()),
+      examLimit: parseInt(school.examLimit.toString()),
+      // caLimit: parseInt(school.caLimit.toString()),
+      // resitLimit: parseInt(school.resitLimit.toString()),
+      radius: parseInt(school.radius.toString()),
+      updatedById: user.user_id,
+      delete: false
+    }
+
+    const res = await ApiFactory({
+      newData,
+      editData: newData,
+      mutationName: "createUpdateDeleteSchoolInfoHigher",
+      modelName: "schoolinfohigher",
+      successField: "id",
+      query,
+      router: null,
+      params,
+      redirect: false,
+      reload: true,
+      returnResponseField: false,
+      redirectPath: ``,
+      actionLabel: "processing",
+    });
+  };
 
   return (
     <motion.form

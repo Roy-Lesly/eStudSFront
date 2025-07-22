@@ -2,7 +2,7 @@ import React from 'react'
 import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const page = async ({
   params,
@@ -15,27 +15,16 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(`${p.tenant_name}`, true);
-  let data;
-
-  try {
-    const result = await client.query<any>({
+   const data = await queryServerGraphQL({
+      domain: p?.domain,
       query: GET_DATA_RESULT,
       variables: {
-        // schoolId: parseInt(params.school_id),
         fullName: sp?.fullName || "",
         courseName: sp?.courseName || "",
         semester: sp?.semester || "",
         academicYear: sp?.academicYear || "",
-        timestamp: new Date().getTime()
       },
-      fetchPolicy: 'no-cache'
     });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
 
 
   return (

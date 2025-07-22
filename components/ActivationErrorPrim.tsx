@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import FormModal from './componentsTwo/FormModal';
 import { FaPlus } from 'react-icons/fa';
 import { useParams } from 'next/navigation';
-import ModalTransaction from '@/app/[locale]/[domain]/Section-P/pageAdministration/[school_id]/pageStudents/[student_id]/Comps/ModalTransaction';
+// import ModalTransaction from '@/app/[locale]/[domain]/Section-P/pageAdministration/[school_id]/pageStudents/[student_id]/Comps/ModalTransaction';
 import { NodeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
 
@@ -114,12 +114,13 @@ const ActivationErrorPrim = (
         :
 
         showFees ?
-          <ModalTransaction
-            setModalOpen={setShowFees}
-            p={null}
-            schoolFeesPrim={fees}
-            data={fees}
-          />
+        <></>
+          // <ModalTransaction
+          //   setModalOpen={setShowFees}
+          //   p={null}
+          //   schoolFeesPrim={fees}
+          //   data={fees}
+          // />
           :
           showPlatform ?
             <>Platform</>

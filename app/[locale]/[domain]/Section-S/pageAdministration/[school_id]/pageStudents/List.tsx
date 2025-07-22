@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
-import Header from '@/section-s/Header/Header';
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
@@ -102,7 +101,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       />
 
       <div className="bg-gray-50 flex flex-col gap-2 items-center justify-center w-full">
-{/* 
+        {/* 
         <button
           onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Admit`)}
           className="bg-blue-600 flex focus:outline-none gap-2 hover:bg-blue-700 items-center mb-2 px-4 py-2 rounded text-white"

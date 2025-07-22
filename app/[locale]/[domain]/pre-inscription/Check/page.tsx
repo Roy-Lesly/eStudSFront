@@ -1,7 +1,7 @@
 import React from 'react'
 import { Metadata } from 'next';
 import NotificationError from '@/section-h/common/NotificationError';
-import CheckForm from './CheckForm';
+// import CheckForm from './H/CheckForm';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 import { getAcademicYear } from '@/utils/functions';
 import { gql } from '@apollo/client';
@@ -33,11 +33,7 @@ const page = async ({
   return (
     <>
       <div className='flex flex-col items-center justify-center w-full'>
-        <CheckForm
-          p={p}
-          sp={sp}
-          data={data?.allPreinscriptions?.edges}
-        />
+        
       </div>
     </>
   )

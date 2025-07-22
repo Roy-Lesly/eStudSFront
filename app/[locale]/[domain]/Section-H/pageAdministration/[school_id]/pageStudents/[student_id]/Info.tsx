@@ -34,7 +34,7 @@ const Info = (
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
   useEffect(() => {
-    const url = `${protocol}${params.domain}${RootApi}/check/${decodeUrlID(data?.node?.userprofile?.id)}/idcard/?n=1`;
+    const url = `${protocol}${params.domain}${RootApi}/check/${decodeUrlID(data?.node?.userprofile?.id)}/H/idcard/?n=1`;
     QrCodeBase64(url).then(setQrCodeDataUrl);
   }, []);
 

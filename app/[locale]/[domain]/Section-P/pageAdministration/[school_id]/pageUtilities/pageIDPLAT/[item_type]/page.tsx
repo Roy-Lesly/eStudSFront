@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 import { platform } from 'os'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
+import { removeEmptyFields } from '@/utils/functions'
 
 
 const page = async ({
@@ -17,17 +18,12 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(p.domain);
-  let data;
-
   let searchP: any = {
     fullName: sp?.fullName,
     specialtyName: sp?.specialtyName,
     level: sp?.level,
     academicYear: sp?.academicYear,
   }
-
-  searchP = removeEmptyFields(searchP)
 
   if (p?.item_type === "ID") {
     searchP.idPaid = false;
@@ -36,24 +32,16 @@ const page = async ({
   }
 
   console.log(searchP);
-
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        ...searchP,
+   const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      ...removeEmptyFields(searchP),
         schoolId: parseInt(p.school_id),
         schoolId2: parseInt(p.school_id),
         status: "Pending"
-      },
-      fetchPolicy: 'no-cache'
-    });
-
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    data = null;
-  }
+    },
+  });
 
   return (
     <List

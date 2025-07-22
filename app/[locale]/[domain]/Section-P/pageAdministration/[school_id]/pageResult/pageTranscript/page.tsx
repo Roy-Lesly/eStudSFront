@@ -4,6 +4,7 @@ import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 import getApolloClient from '@/utils/graphql/GetAppolloClient'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
 
 
 const page = async ({
@@ -17,57 +18,39 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = { };
+  const paginationParams: Record<string, any> = {};
 
-  const date =  new Date().getFullYear()
-  
+  const date = new Date().getFullYear()
+
   paginationParams.fullName = sp?.fullName
   paginationParams.academicYear = sp?.academicYear
   paginationParams.schoolId = parseInt(p.school_id)
 
   const client = getApolloClient(p.domain);
-  let dataPending;
-  let dataApproved;
-  let dataPrinted;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_PENDING,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataPending = result.data;
-  } catch (error: any) {
-    dataPending = null;
-  }
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_APPROVED,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataApproved = result.data;
-  } catch (error: any) {
-    dataApproved = null;
-  }
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_PRINTED,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataPrinted = result.data;
-  } catch (error: any) {
-    dataPrinted = null;
-  }
+
+  const dataPending = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_PENDING,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+    },
+  });
+
+  const dataApproved = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_APPROVED,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+    },
+  });
+
+  const dataPrinted = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_PRINTED,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+    },
+  });
 
   return (
     <div>

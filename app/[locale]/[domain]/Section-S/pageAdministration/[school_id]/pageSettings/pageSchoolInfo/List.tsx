@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import Sidebar from '@/section-s/Sidebar/Sidebar';
-import Header from '@/section-s/Header/Header';
+import Sidebar from '@/section-s/Sidebar/Sidebar'; import Header from '@/section-h/Header/Header';
 import Info from './Info';
 import DefaultLayout from '@/DefaultLayout';
-import { EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import MyTabs from '@/MyTabs';
 import { jwtDecode } from 'jwt-decode';
@@ -15,7 +14,7 @@ import ServerError from '@/ServerError';
 
 
 
-const List = ({ p, data, s }: { p: any; data: EdgeSchoolInfoHigher | any, s: any }) => {
+const List = ({ p, data, s }: { p: any; data: EdgeSchoolHigherInfo | any, s: any }) => {
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
   const user = token ? jwtDecode<JwtPayload>(token) : null;
@@ -49,38 +48,38 @@ const List = ({ p, data, s }: { p: any; data: EdgeSchoolInfoHigher | any, s: any
       <div className="bg-gray-50 flex flex-col items-center justify-center">
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-              <MyTabs
-                tabs={[
-                  {
-                    label: t("Info"),
-                    content: <Info
-                      // searchParams={s}
-                      data={data}
-                      params={p}
-                    />
-                  },
+            <MyTabs
+              tabs={[
+                {
+                  label: t("Info"),
+                  content: <Info
+                    // searchParams={s}
+                    data={data}
+                    params={p}
+                  />
+                },
 
-                  // {
-                  //   label: t("Classes"),
-                  //   content: <Classes data={data?.allSchoolFees?.edges} params={params} />
-                  // },
+                // {
+                //   label: t("Classes"),
+                //   content: <Classes data={data?.allSchoolFees?.edges} params={params} />
+                // },
 
-                  // ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("FEES") ?
-                  //   [
-                  //     {
-                  //       label: t("Fees"),
-                  //       content: <Fees
-                  //         p={params}
-                  //         schoolFees={data?.allSchoolFees?.edges.length ? data?.allSchoolFees?.edges[0].node : null}
-                  //         data={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
-                  //       />
-                  //     }
-                  //   ] : []),
-                ]}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                source={`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageStudents/${p.student_id}`}
-              />
+                // ...(user?.is_staff || user?.page.map((item: string) => item.toUpperCase()).includes("FEES") ?
+                //   [
+                //     {
+                //       label: t("Fees"),
+                //       content: <Fees
+                //         p={params}
+                //         schoolFees={data?.allSchoolFees?.edges.length ? data?.allSchoolFees?.edges[0].node : null}
+                //         data={data.allSchoolFees?.edges.filter((item: EdgeSchoolFees) => decodeUrlID(item.node.userprofile.id) === decodeUrlID(p.student_id))[0]}
+                //       />
+                //     }
+                //   ] : []),
+              ]}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              source={`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageStudents/${p.student_id}`}
+            />
             :
             <ServerError type="network" item='' />}
         </div>

@@ -6,8 +6,8 @@ import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '@/DefaultLayout';
-import PreForm from '@/[locale]/[domain]/pre-inscription/New/PreForm';
 import ServerError from '@/ServerError';
+import PreFormPrimary from '@/app/[locale]/[domain]/pre-inscription/New/SectionPrimary/PreFormPrimary';
 
 
 const Form = ({ params, data }: { params: any; data: any }) => {
@@ -32,7 +32,7 @@ const Form = ({ params, data }: { params: any; data: any }) => {
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           searchComponent={
-          <></>
+            <></>
           }
         />
       }
@@ -44,11 +44,13 @@ const Form = ({ params, data }: { params: any; data: any }) => {
         mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/`}
         subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/`}
       />
-      
+
       {data ?
-      <PreForm source='admin' params={params} data={data} link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`} />
-      :
-      <ServerError type="notFound" item="School Info" />
+        <PreFormPrimary
+          source='admin' params={params} data={data}
+        />
+        :
+        <ServerError type="notFound" item="School Info" />
 
       }
 

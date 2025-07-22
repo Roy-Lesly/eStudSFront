@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Sidebar from '@/section-s/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
+import Sidebar from '@/section-p/Sidebar/Sidebar';
+import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/section-h/Table/MyTableComp';
@@ -98,37 +98,37 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {
-          data ?
-            <MyTableComp
-              columns={Columns}
-              data={
-                data?.allClassroomsPrim?.edges.sort((a: EdgeClassRoomPrim, b: EdgeClassRoomPrim) => {
-                  const levelA = a.node.level.toLowerCase();
-                  const levelB = b.node.level.toLowerCase();
-                  return levelA.localeCompare(levelB);
-                })}
-              table_title={t("Classrooms")}
-              button_type={"add"}
-              setActionType={() => {}}
-              button_action={() => {setShowModal({ show: true, type: "create" }); setSelectedItem(null)}}
-            />
-            :
-            null
+            data ?
+              <MyTableComp
+                columns={Columns}
+                data={
+                  data?.allClassroomsPrim?.edges.sort((a: EdgeClassRoomPrim, b: EdgeClassRoomPrim) => {
+                    const levelA = a.node.level.toLowerCase();
+                    const levelB = b.node.level.toLowerCase();
+                    return levelA.localeCompare(levelB);
+                  })}
+                table_title={t("Classrooms")}
+                button_type={"add"}
+                setActionType={() => { }}
+                button_action={() => { setShowModal({ show: true, type: "create" }); setSelectedItem(null) }}
+              />
+              :
+              null
           }
         </div>
 
 
         {<MyModal
           component={
-          <ModalCUDClassroomPrim
-            params={params}
-            setOpenModal={setShowModal}
-            actionType={showModal?.type || "create"}
-            selectedItem={selectedItem}
-            apiLevels={data?.getLevelsPrim}
-            apiYears={data?.allAcademicYearsPrim}
-          />
-        }
+            <ModalCUDClassroomPrim
+              params={params}
+              setOpenModal={setShowModal}
+              actionType={showModal?.type || "create"}
+              selectedItem={selectedItem}
+              apiLevels={data?.getLevelsPrim}
+              apiYears={data?.allAcademicYearsPrim}
+            />
+          }
           openState={showModal?.show || false}
           onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}

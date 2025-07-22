@@ -11,7 +11,7 @@ import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TransactionTotalsByStudent } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import ExcelExporter from '@/ExcelExporter';
-import { GetMenuAccounting } from '@/components/section-h/Sidebar/MenuAccounting';
+import { GetMenuAccounting } from '@/components/section-s/Sidebar/MenuAccounting';
 
 export const metadata: Metadata = {
   title: "Student Acount Details",

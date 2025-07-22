@@ -8,8 +8,8 @@ import QrCodeGenerator from "@/components/QrCodeGenerator";
 import { decodeUrlID } from "@/utils/functions";
 
 const StudentIDCard1 = (
-  { data, params, imageSource }: 
-  { data: EdgeSchoolFees, params: any, imageSource: string }
+  { data, params, imageSource }:
+    { data: EdgeSchoolFees, params: any, imageSource: string }
 ) => {
   const school = data?.node?.userprofile?.specialty?.school
   const student = data?.node?.userprofile
@@ -121,15 +121,16 @@ const StudentIDCard1 = (
 
 
               <QrCodeGenerator
-            data={
-              {
-                id: parseInt(decodeUrlID(params.student_id)),
-                type: "idcard",
-                domain: params.domain,
-                size: 63
-              }
-            }
-          />
+                data={
+                  {
+                    id: parseInt(decodeUrlID(params.student_id)),
+                    section: "H",
+                    type: "idcard",
+                    domain: params.domain,
+                    size: 63
+                  }
+                }
+              />
 
             </div>
 

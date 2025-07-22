@@ -1,10 +1,10 @@
 import NotificationError from '@/section-h/common/NotificationError';
-import getApolloClient, { errorLog } from '@/functions';
 import React, { FC } from 'react';
 import DisplayFees from './DisplayFees';
 import { gql } from '@apollo/client';
 import { EdgeSchoolFees, EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
 import initTranslations from '@/initTranslations';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 const page = async ({
@@ -19,21 +19,15 @@ const page = async ({
   const sp = await searchParams
 
   const { t } = await initTranslations(p.locale, ["common"])
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
+
+   const data = await queryServerGraphQL({
+      domain: p?.domain,
       query: GET_DATA,
       variables: {
         first: 40,
         userprofileId: p.userprofile_id,
       },
     });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    data = null;
-  }
 
   return (
     <div className='mt-16 px-2'>

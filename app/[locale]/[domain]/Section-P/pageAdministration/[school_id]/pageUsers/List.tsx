@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
@@ -180,6 +180,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            source={"setActiveTab"}
           />
         ) : (
           <ServerError type="network" item="Users" />

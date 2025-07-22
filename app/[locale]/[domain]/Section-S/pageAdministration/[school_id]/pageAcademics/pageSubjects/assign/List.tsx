@@ -1,8 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
-import Header from '@/section-s/Header/Header';
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import { useTranslation } from 'react-i18next';
 import { EdgeMainSubject, EdgeSubject } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
@@ -109,13 +108,13 @@ const List = (
                         {selectedSubjects?.length ?
                             <div className='flex justify-center'>
                                 <button
-                                onClick={() => router.push(`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageAcademics/pageSubjects/fill/?classId=${sp?.classId}&ids=${JSON.stringify(selectedSubjects)}`)}
-                                className="flex justify-center text-center w-32 items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors duration-200"
-                                aria-label={t("Next")}
-                            >
-                                {t("Next")}
-                                <ArrowRightIcon className="w-5 h-5" />
-                            </button>
+                                    onClick={() => router.push(`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageAcademics/pageSubjects/fill/?classId=${sp?.classId}&ids=${JSON.stringify(selectedSubjects)}`)}
+                                    className="flex justify-center text-center w-32 items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors duration-200"
+                                    aria-label={t("Next")}
+                                >
+                                    {t("Next")}
+                                    <ArrowRightIcon className="w-5 h-5" />
+                                </button>
                             </div>
                             :
                             null}

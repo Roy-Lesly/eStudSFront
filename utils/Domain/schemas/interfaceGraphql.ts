@@ -44,7 +44,7 @@ export interface NodePreInscription {
   address: string;
   telephone: string;
   email: string;
-  campus: NodeSchoolInfoHigher;
+  campus: NodeSchoolHigherInfo;
   fatherName: string;
   motherName: string;
   fatherTelephone: string;
@@ -160,6 +160,48 @@ export interface NodeSchoolIdentification {
 }
 
 // School interface
+export interface NodeSchoolHigherInfo {
+  id: string;
+  schoolIdentification: NodeSchoolIdentification;
+  prefix: string;
+  method: number;
+  schoolType: string;
+  schoolName: string;
+  shortName: string;
+  mainSchool: boolean;
+  address: string;
+  region: string;
+  town: string;
+  country: string;
+  poBox: string;
+  niu: string;
+  website: string;
+  latitude: number;
+  longitude: number;
+  landingMessageMain: string;
+  logoCampus: string;
+  registrationSeperateTuition: boolean;
+  welcome_message: string;
+  radius: number;
+  email: string;
+  telephone: string;
+  campus: string;
+  schoolfeesControl: string;
+  seqLimit: number;
+  caLimit: number;
+  examLimit: number;
+  resitLimit: number;
+  bgLogoSlip: string;
+  bgLogoTranscript: string;
+  colors: string;
+  welcomeMessage: string;
+  emailNotification: boolean;
+  smsNotification: boolean;
+  waNotification: boolean;
+}
+
+
+// To be Deleted
 export interface NodeSchoolInfoHigher {
   id: string;
   schoolIdentification: NodeSchoolIdentification;
@@ -229,7 +271,7 @@ export interface NodeSpecialty {
   academicYear: string;
   resultType: string;
   level: NodeLevel;
-  school: NodeSchoolInfoHigher;
+  school: NodeSchoolHigherInfo;
   tuition: number;
   registration: number;
   paymentOne: number;
@@ -300,7 +342,7 @@ export interface NodePublish {
 
 export interface EdgeTransactionsSet {
   edges: {
-    node: {node: NodeTransactions};
+    node: { node: NodeTransactions };
   }[];
 
 }
@@ -308,7 +350,7 @@ export interface EdgeTransactionsSet {
 
 export interface Milestone {
   amount: number;
-  dueDate: string; 
+  dueDate: string;
 }
 
 export interface NodeMoratoire {
@@ -423,12 +465,12 @@ export interface NodeSysConstant {
 
 
 export interface EdgeTenant {
-    node: NodeTenant;
+  node: NodeTenant;
 };
 
 
 export interface EdgeTenantDomain {
-    node: NodeTenantDomain;
+  node: NodeTenantDomain;
 };
 
 
@@ -462,8 +504,13 @@ export interface EdgeSchoolIdentification {
   node: NodeSchoolIdentification;
 }
 
+export interface EdgeSchoolHigherInfo {
+  node: NodeSchoolHigherInfo;
+}
+
+// To be deleted
 export interface EdgeSchoolInfoHigher {
-  node: NodeSchoolInfoHigher;
+  node: NodeSchoolHigherInfo;
 }
 
 export interface EdgeDomain {
@@ -529,7 +576,7 @@ export interface EdgeSysConstants {
 
 
 
-  
+
 
 
 // Query response interface
@@ -540,7 +587,7 @@ export interface AllCustomUsersResponse {
   };
 }
 
-export interface  AllUserProfilesResponse {
+export interface AllUserProfilesResponse {
   allUserProfiles: {
     edges: EdgeUserProfile[];
     pageinfoData: PageInfo;
@@ -631,7 +678,7 @@ export interface NodeHall {
   name: string;
   floor: string;
   capacity: number;
-  school: NodeSchoolInfoHigher;
+  school: NodeSchoolHigherInfo;
 }
 
 export interface EdgeHall {

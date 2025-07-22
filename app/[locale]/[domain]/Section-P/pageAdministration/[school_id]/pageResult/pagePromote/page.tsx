@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, errorLog, getData, removeEmptyFields } from '@/functions';
+import { removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const EditPage = async ({
   params,
@@ -23,24 +24,15 @@ const EditPage = async ({
   paginationParams.domainName = sp?.domainName
   paginationParams.level = sp?.level
   paginationParams.academicYear = sp?.academicYear ? sp.academicYear : `${new Date().getFullYear() - (new Date().getMonth() + 1 <= 7 ? 2 : 1)}`;
-  const client = getApolloClient(p.domain);
-    let data;
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA,
-          variables: {
-            ...removeEmptyFields(paginationParams),
+
+   const data = await queryServerGraphQL({
+      domain: p?.domain,
+      query: GET_DATA,
+      variables: {
+        ...removeEmptyFields(paginationParams),
             schoolId: p.school_id,
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-      errorLog(error);
-      
-      data = null;
-    }
+      },
+    });
 
   return (
     <div>

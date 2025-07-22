@@ -5,6 +5,7 @@ import initTranslations from "@/initTranslations";
 import { gql } from "@apollo/client";
 import getApolloClient, { errorLog } from "@/utils/graphql/GetAppolloClient";
 import { capitalizeFirstLetter, decodeUrlID } from "@/utils/functions";
+import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
 
 
 const page = async (
@@ -18,23 +19,14 @@ const page = async (
   const p = await params;
 
   const { t } = await initTranslations(p.locale, ['common']);
-    const client = getApolloClient(p.domain);
-    let data;
-  
-    try {
-      const result = await client.query<any>({
-        query: GET_PROFILE,
-        variables: {
-          id: p?.userprofile_id
-        },
-        fetchPolicy: 'no-cache'
-      });
-      data = result.data;
-    } catch (error: any) {
-      errorLog(error)
-      data = null;
-    }
 
+    const data = await queryServerGraphQL({
+      domain: p.domain,
+      query: GET_PROFILE,
+      variables: {
+          id: p?.userprofile_id
+      },
+    });
 
 
   const menuList = [

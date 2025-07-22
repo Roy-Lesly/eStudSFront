@@ -2,8 +2,7 @@
 
 import React, { FC, useState } from 'react';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
-import Header from '@/section-s/Header/Header';
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/section-h/Table/MyTableComp';
@@ -28,9 +27,9 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
     {
       header: "View", align: "center",
       render: (item) => <div className='flex flex-row gap-2 justify-center w-full'>
-      <ButtonAction data={item} type='edit' action={() => {setShowModal({ show: true, type: "update"}); setSelectedItem(item) }} />
-      <ButtonAction data={item} type='delete' action={() => {setShowModal({ show: true, type: "delete"}); setSelectedItem(item) }} />
-    </div>,
+        <ButtonAction data={item} type='edit' action={() => { setShowModal({ show: true, type: "update" }); setSelectedItem(item) }} />
+        <ButtonAction data={item} type='delete' action={() => { setShowModal({ show: true, type: "delete" }); setSelectedItem(item) }} />
+      </div>,
     },
   ];
   return (
@@ -60,14 +59,14 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-              <MyTableComp
-                data={data.sort((a: EdgeMainSubject, b: EdgeMainSubject) => a.node.subjectName > b.node.subjectName ? 1 : a.node.subjectName < b.node.subjectName ? -1 : 0)}
-                columns={Columns}
-                table_title={t("Subject List")}
-                button_type={"add"}
-                button_action={() => { setShowModal({ type: "create", show: true })}}
-              />
-              :
+            <MyTableComp
+              data={data.sort((a: EdgeMainSubject, b: EdgeMainSubject) => a.node.subjectName > b.node.subjectName ? 1 : a.node.subjectName < b.node.subjectName ? -1 : 0)}
+              columns={Columns}
+              table_title={t("Subject List")}
+              button_type={"add"}
+              button_action={() => { setShowModal({ type: "create", show: true }) }}
+            />
+            :
             <ServerError type='network' item='' />}
         </div>
 
@@ -81,7 +80,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
             section={"Secondary"}
           />}
           openState={showModal?.show || false}
-          onClose={() => setShowModal({ show: false, type: "create"})}
+          onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}
           classname=''
         />

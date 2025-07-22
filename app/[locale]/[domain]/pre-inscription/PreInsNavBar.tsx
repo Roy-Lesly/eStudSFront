@@ -1,4 +1,4 @@
-import { ConfigData, protocol, RootApi } from "@/config";
+import { protocol, RootApi } from "@/config";
 import { EdgeSchoolIdentification } from "@/Domain/schemas/interfaceGraphql";
 import initTranslations from "@/initTranslations";
 import { Metadata } from "next";

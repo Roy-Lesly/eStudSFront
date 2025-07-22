@@ -10,7 +10,7 @@ import Loader from '@/section-h/common/Loader';
 import { decodeUrlID } from '@/functions';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { useTranslation } from 'react-i18next';
-import { EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
 
 
 const ICONS = {
@@ -45,7 +45,7 @@ const SelectDept = () => {
 
   const [user, setUser] = useState<JwtPayload | null>(null);
   const [dept, setDept] = useState<string>('');
-  const [schools, setSchools] = useState<EdgeSchoolInfoHigher[]>([]);
+  const [schools, setSchools] = useState<EdgeSchoolHigherInfo[]>([]);
 
   useEffect(() => {
     const access = localStorage.getItem('token');
@@ -62,7 +62,7 @@ const SelectDept = () => {
           role === 'accounting' ? 'pageAccounting' : null;
 
     const decoded = jwtDecode(access) as JwtPayload;
-    const userSchools = data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolInfoHigher) =>
+    const userSchools = data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolHigherInfo) =>
       decoded.school.includes(parseInt(decodeUrlID(item.node.id)))
     ) || [];
 
@@ -73,10 +73,10 @@ const SelectDept = () => {
 
   if (loading) return <Loader />;
 
-  const groupedSchools = SECTION_ORDER.reduce((acc: Record<string, EdgeSchoolInfoHigher[]>, key) => {
+  const groupedSchools = SECTION_ORDER.reduce((acc: Record<string, EdgeSchoolHigherInfo[]>, key) => {
     acc[key] = schools.filter((s) => s.node.schoolType.toUpperCase() === key);
     return acc;
-  }, {} as Record<string, EdgeSchoolInfoHigher[]>);
+  }, {} as Record<string, EdgeSchoolHigherInfo[]>);
 
   return (
     <section className="min-h-screen px-4 md:px-8 py-10 flex flex-col items-center bg-gray-50">
@@ -107,7 +107,7 @@ const SelectDept = () => {
                 {LABELS[section as keyof typeof LABELS]}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {sectionData?.sort((a: EdgeSchoolInfoHigher, b: EdgeSchoolInfoHigher) => (a.node.campus > b.node.campus) ? 1 : (a.node.campus < b.node.campus) ? -1 : 0).map(({ node }) => (
+                {sectionData?.sort((a: EdgeSchoolHigherInfo, b: EdgeSchoolHigherInfo) => (a.node.campus > b.node.campus) ? 1 : (a.node.campus < b.node.campus) ? -1 : 0).map(({ node }) => (
                   <Link
                     key={node.id}
                     href={`/${domain}/${node.schoolType.replace('SECTION-', 'Section-')}/${dept}/${decodeUrlID(node.id)}?id=${user?.user_id}`}

@@ -19,9 +19,9 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const apiData: ResultInter[] | any = await getData(
-    protocol + "api" + p.domain + GetResultUrl, {...sp}, p.domain
-  );
+  // const apiData: ResultInter[] | any = await getData(
+  //   protocol + "api" + p.domain + GetResultUrl, {...sp}, p.domain
+  // );
   
   return (
     

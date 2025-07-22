@@ -4,6 +4,7 @@ import  { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
 
 const page = async ({
   params,
@@ -23,44 +24,25 @@ const page = async ({
 
   const t = removeEmptyFields(paginationParams)
   const client = getApolloClient(p.domain);
-  let dataAdmins;
-  let dataLects;
 
-  // GET ADMINS
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_ADMIN,
-      variables: {
-        ...t,
+ 
+  const dataAdmins = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_ADMIN,
+    variables: {
+      ...t,
         schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataAdmins = result.data;
-  } catch (error: any) {
+    },
+  });
 
-    dataAdmins = null;
-  }
-
-
-  // GET LECTURERS
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_LECTURERS,
-      variables: {
-        ...t,
+  const dataLects = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_LECTURERS,
+    variables: {
+      ...t,
         schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataLects = result.data;
-  } catch (error: any) {
-    errorLog(error);
-
-    dataLects = null;
-  }
+    },
+  });
 
   return (
     <div>
@@ -95,7 +77,7 @@ const GET_DATA_LECTURERS = gql`
       }
     }
   }
-  allCustomUsers(
+  allCustomusers(
     isActive: true
     schoolId: $schoolId
     last: 250
@@ -123,7 +105,7 @@ const GET_DATA_ADMIN = gql`
   $telephone: String,
   $sex: String,
 ) {
-  allCustomUsers(
+  allCustomusers(
     isActive: true
     schoolId: $schoolId
     last: 250

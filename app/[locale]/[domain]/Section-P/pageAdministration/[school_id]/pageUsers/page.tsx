@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, getData, removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
 
 const page = async ({
   params,
@@ -23,66 +24,35 @@ const page = async ({
   paginationParams.isActive = sp?.fullName ? "" : true
 
   const removed = removeEmptyFields(paginationParams)
-  console.log(removed);
-  console.log(removed);
-  console.log(removed);
-  console.log(removed);
-  const client = getApolloClient(p.domain);
-  let dataAdmins;
-  let dataLects;
-  let dataStuds;
 
-  try {
-    const result = await client.query<any>({
+    const dataAdmins = await queryServerGraphQL({
+      domain: p.domain,
       query: GET_DATA_ADMIN,
       variables: {
         ...removed,
         schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
       },
-      fetchPolicy: 'no-cache'
     });
-    dataAdmins = result.data;
-  } catch (error: any) {
-    
-    dataAdmins = null;
-  }
 
+    const dataLects = await queryServerGraphQL({
+      domain: p.domain,
+      query: GET_DATA_LECTURERS,
+      variables: {
+        ...removed,
+        schoolId: parseInt(p.school_id),
+      },
+    });
 
-  try {
-    const result = await client.query<any>({
+    const dataStuds = await queryServerGraphQL({
+      domain: p.domain,
       query: GET_DATA_STUDENTS,
       variables: {
         ...removed,
         orRole: ["admin", "teacher"],
         schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
       },
-      fetchPolicy: 'no-cache'
     });
-    dataStuds = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    dataStuds = null;
-  }
 
-
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_LECTURERS,
-      variables: {
-        ...removed,
-        schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataLects = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    
-    dataLects = null;
-  }
 
   return (
     <div>

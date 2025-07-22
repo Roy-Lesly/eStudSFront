@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import React from 'react'
-import getApolloClient, { errorLog } from '@/functions';
 import { gql } from '@apollo/client';
 import SelectDept from '../SelectDept';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const EditPage = async ({
   params,
@@ -12,21 +12,10 @@ const EditPage = async ({
 
   const p = await params
 
-const client = getApolloClient(p.domain);
-    let data;
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA,
-          variables: {
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-      errorLog(error)
-      
-    }
+ const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+  });
 
   return (
     <div>

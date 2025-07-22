@@ -1,7 +1,7 @@
 'use client';
 
 import { EdgeClassRoomPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
-import { decodeUrlID, getAcademicYear, getAcademicYearList } from '@/utils/functions';
+import { decodeUrlID, getAcademicYearList } from '@/utils/functions';
 import { gql } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

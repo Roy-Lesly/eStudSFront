@@ -2,21 +2,21 @@ import { Metadata } from 'next';
 import React, { Suspense } from 'react'
 import NotificationError from '@/section-h/common/NotificationError';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import List from './List';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 export const metadata: Metadata = {
-    title: "My Courses",
-    description: "My Courses Page",
+  title: "My Courses",
+  description: "My Courses Page",
 };
 
 const page = async ({
-    params,
-    searchParams
+  params,
+  searchParams
 }: {
   params: any;
   searchParams: any;
@@ -25,45 +25,37 @@ const page = async ({
   const p = await params
   const sp = await searchParams
 
-    const Columns: TableColumn<EdgeCourse>[] = [
-        { header: "#", align: "center", render: (_item: EdgeCourse, index: number) => index + 1, },
-        { header: "Course Name", accessor: "node.mainCourse.courseName", align: "left" },
-    ]
+  const Columns: TableColumn<EdgeCourse>[] = [
+    { header: "#", align: "center", render: (_item: EdgeCourse, index: number) => index + 1, },
+    { header: "Course Name", accessor: "node.mainCourse.courseName", align: "left" },
+  ]
 
-    const client = getApolloClient(p.domain);
-    let data;
-    try {
-        const result = await client.query<any>({
-            query: GET_DATA,
-            variables: {
-                specialtyId: p.specialty_id,
-                timestamp: new Date().getTime()
-            },
-            fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-        console.log(error, 35)
-    }
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      specialtyId: p.specialty_id,
+    },
+  });
 
-    return (
-        <div>
-            {sp && <NotificationError errorMessage={sp} />}
+  return (
+    <div>
+      {sp && <NotificationError errorMessage={sp} />}
 
-            <div className='h-screen mx-1 my-16 p-1 rounded text-black'>
+      <div className='h-screen mx-1 my-16 p-1 rounded text-black'>
 
-                <div className='flex font-semibold items-center justify-center mb-2 text-xl'>MY COURSES</div>
+        <div className='flex font-semibold items-center justify-center mb-2 text-xl'>MY COURSES</div>
 
-                <Suspense fallback={<div>Loading ...</div>}>
+        <Suspense fallback={<div>Loading ...</div>}>
 
-                    <List params={p} data={data} searchParams={sp} />
+          <List params={p} data={data} searchParams={sp} />
 
-                </Suspense>
+        </Suspense>
 
-            </div>
+      </div>
 
-        </div>
-    )
+    </div>
+  )
 }
 
 export default page

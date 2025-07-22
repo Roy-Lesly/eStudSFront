@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { capitalizeFirstLetter, decodeUrlID, getAcademicYear } from '@/functions';
 import MyInputField from '@/MyInputField';
 import React, { useEffect, useState } from 'react'
-import { EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSchoolInfoHigher } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { CertificateOptions, RegionList } from '@/constants';
@@ -149,7 +149,7 @@ const PreFormVocational = ({ data, source }: { source: "admin" | "student", data
         if (f) { setOptionsPrograms(f) }
       }
       if (data && data?.allSchoolInfos?.edges.length) {
-        const f = data.allSchoolInfos.edges.map((item: EdgeSchoolInfoHigher) => {
+        const f = data.allSchoolInfos.edges.map((item: EdgeSchoolHigherInfo) => {
           return { "id": decodeUrlID(item.node.id), "name": `${item.node.campus.replace("_", "-")} - ${item.node?.town} - ${item.node?.address}` }
         })
 
@@ -249,7 +249,7 @@ const PreFormVocational = ({ data, source }: { source: "admin" | "student", data
               // id: parseInt(decodeUrlID(data.node.userprofile.customuser.id)),
               sex: capitalizeFirstLetter(newData.sex),
               email: newData.email.toLowerCase(),
-              campus: source === "admin" ? data.allSchoolInfos?.edges.filter((item: EdgeSchoolInfoHigher) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus : formData.medicalHistory.campus.toString(),
+              campus: source === "admin" ? data.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus : formData.medicalHistory.campus.toString(),
             }
           });
 

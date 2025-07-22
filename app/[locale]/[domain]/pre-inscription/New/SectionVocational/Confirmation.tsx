@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { capitalizeFirstLetter, decodeUrlID } from '@/utils/functions';
-import { EdgeMainSpecialty, EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeMainSpecialty, EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
 
 
 const Confirmation = (
@@ -55,7 +55,7 @@ const Confirmation = (
         <div className="space-y-2">
           <h3 className="font-semibold text-gray-700 text-lg">{t("Other Information")}</h3>
           <div className="flex gap-2 md:flex-row md:gap-10">
-            <p className='w-1/2'><strong>CAMPUS:</strong> {data.allSchoolInfos?.edges.filter((item: EdgeSchoolInfoHigher) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus || 'N/A'} </p>
+            <p className='w-1/2'><strong>CAMPUS:</strong> {data.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus || 'N/A'} </p>
           </div>
           <div className="flex gap-2 md:flex-row md:gap-10">
             <p className='w-1/2'><strong>{t("Highest Certificate")}:</strong> {(formData.medicalHistory.highest_certificate === "Other" ? capitalizeFirstLetter(formData.medicalHistory.highest_certificate_other.toLowerCase()) : formData.medicalHistory.highest_certificate) || 'N/A'}</p>

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { capitalizeFirstLetter, decodeUrlID } from '@/utils/functions';
-import { EdgeSchoolInfoHigher } from '@/utils/Domain/schemas/interfaceGraphql';
+import { EdgeSchoolHigherInfo } from '@/utils/Domain/schemas/interfaceGraphql';
 import { EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 
 const Confirmation = ({
@@ -88,7 +88,7 @@ const Confirmation = ({
         {renderRow(
           'CAMPUS',
           data?.allSchoolInfos?.edges.find(
-            (item: EdgeSchoolInfoHigher) =>
+            (item: EdgeSchoolHigherInfo) =>
               parseInt(decodeUrlID(item.node.id)) ===
               parseInt(formData.medicalHistory.campus.toString())
           )?.node.campus

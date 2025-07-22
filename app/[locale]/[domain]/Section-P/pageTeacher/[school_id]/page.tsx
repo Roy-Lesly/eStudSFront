@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import React from 'react';
 import Image from 'next/image';
-import getApolloClient, { errorLog } from '@/functions';
 import { protocol, RootApi } from '@/config';
 import { gql } from '@apollo/client';
 import initTranslations from '@/initTranslations';
 import Continue from './Continue';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 const page = async ({
@@ -19,22 +19,13 @@ const page = async ({
   const { t } = await initTranslations(p.locale, ["common"])
   const { domain, school_id } = p;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        id: school_id,
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
+ const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      id: school_id,
+    },
+  });
 
 
   return (

@@ -1,8 +1,9 @@
 import React from 'react'
 import { gql } from '@apollo/client'
-import getApolloClient, { removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { Metadata } from 'next';
 import List from './List';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Income-Specialty",
