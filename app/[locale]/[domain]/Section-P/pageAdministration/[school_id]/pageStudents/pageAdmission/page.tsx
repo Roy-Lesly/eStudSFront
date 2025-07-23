@@ -79,7 +79,7 @@ const GET_DATA = gql`
     ){
       edges {
         node {
-          prefix method
+          id
         }
       }
     }
@@ -117,8 +117,8 @@ const GET_DATA_PREINSCRIPTION = gql`
           fullName sex dob pob address status
           fatherName motherName fatherTelephone motherTelephone parentAddress parentEmail
           academicYear admissionStatus action
-          program
-          level
+          regionOfOrigin nationality
+          program level
           campus { id schoolName campus }
         }
       }

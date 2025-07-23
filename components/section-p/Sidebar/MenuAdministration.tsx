@@ -66,7 +66,7 @@ export const GetMenuAdministration = (): MenuSection[] => {
         {
           icon: <Users />, label: t("Students"), route: "#", children: [
             { label: t("Student List"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents`, icon: <Users /> },
-            { label: t("New Admission"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/pageAdmission`, icon: <UserPlus /> },
+            { label: t("New Admission"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/pageNewPreinscription`, icon: <UserPlus /> },
             { label: t("Pre-Enrolment"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/PreInscription`, icon: <UserPlus /> },
             // { label: t("Class Promotion"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/promotion`, icon: <BadgeCheck /> },
             // { label: t("Attendance"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/attendance`, icon: <ClipboardList /> },
@@ -77,18 +77,17 @@ export const GetMenuAdministration = (): MenuSection[] => {
         {
           icon: <UserPlus />, label: t("Teachers"), route: "#", children: [
             { label: t("Teacher List"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageLecturers`, icon: <Users /> },
-            { label: t("Add Teacher"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageLecturers/add`, icon: <UserPlus /> },
-            { label: t("Subject Allocation"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageLecturers/allocation`, icon: <NotebookPen /> },
-            { label: t("Timetable Assignment"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageLecturers/timetable`, icon: <CalendarDays /> },
-            { label: t("Teacher Attendance"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageLecturers/attendance`, icon: <ClipboardCheck /> },
+            // { label: t("Subject Allocation"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageLecturers/allocation`, icon: <NotebookPen /> },
+            // { label: t("Timetable Assignment"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageLecturers/timetable`, icon: <CalendarDays /> },
+            // { label: t("Teacher Attendance"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageLecturers/attendance`, icon: <ClipboardCheck /> },
           ]
         },
         {
           icon: <Users />, label: t("User Management"), route: "#", children: [
             { label: t("Parent List"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageUsers/parents`, icon: <Users /> },
-            { label: t("Users & Roles"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageUsers/roles`, icon: <UserPlus /> },
-            { label: t("Permissions"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageUsers/permissions`, icon: <Settings /> },
-            { label: t("Login History"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageUsers/history`, icon: <ClipboardList /> },
+            // { label: t("Users & Roles"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageUsers/roles`, icon: <UserPlus /> },
+            // { label: t("Permissions"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageUsers/permissions`, icon: <Settings /> },
+            // { label: t("Login History"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageUsers/history`, icon: <ClipboardList /> },
           ]
         },
         {
@@ -158,8 +157,8 @@ export const GetMenuAdministration = (): MenuSection[] => {
         // },
         {
           icon: <Settings />, label: t("Settings"), route: "#", children: [
-            { label: t("School Profile"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/pageSchoolInfo`, icon: <School2 /> },
             { label: t("Subjects List"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/pageMainSubjects`, icon: <BookOpen /> },
+            { label: t("School Profile"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/pageSchoolInfo`, icon: <School2 /> },
             // { label: t("Class/Grade Levels"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/pageLevels`, icon: <School2 /> },
             // { label: t("Theme Preferences"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/theme`, icon: <Cog /> },
             // { label: t("SMS/Email Settings"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageSettings/notifications`, icon: <MessageCircle /> },

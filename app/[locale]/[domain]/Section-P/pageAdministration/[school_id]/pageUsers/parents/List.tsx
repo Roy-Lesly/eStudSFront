@@ -16,11 +16,6 @@ import { EdgeUserProfilePrim, TableColumn } from '@/utils/Domain/schemas/interfa
 import MyTableComp from '@/components/section-h/Table/MyTableComp';
 
 
-export const metadata: Metadata = {
-  title: "Student Page",
-  description: "This is Student Page Admin Settings",
-};
-
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -28,15 +23,25 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
   const Columns: TableColumn<EdgeUserProfilePrim>[] = [
     { header: "#", align: "center", render: (_item: EdgeUserProfilePrim, index: number) => index + 1, },
-    { header: `${t("Matricle")}`, accessor: "node.customuser.matricle", align: "left" },
-    { header: `${t("Full Name")}`, accessor: "node.customuser.fullName", align: "left" },
-    { header: `${t("Gender")}`, accessor: "node.customuser.sex", align: "center" },
-    {
-      header: `${t("Year / Level")}`, align: "left", render: (item) => <button
-        className=""
-      >
-        {item.node.classroomprim?.academicYear} / {item.node.classroomprim?.level}
-      </button>,
+    { header: `${t("Student")}`, align: "left", render: (item) => <div className="flex flex-col">
+        <span>{item.node.customuser?.firstName}</span>
+        <span>{item.node.customuser?.lastName}</span>
+      </div>,
+    },
+    { header: `${t("Parents Names")}`, align: "left", render: (item) => <div className="flex flex-col">
+        <span>{item.node.customuser?.fatherName}</span>
+        <span>{item.node.customuser?.motherName}</span>
+      </div>,
+    },
+    { header: `${t("Parents Telephones")}`, align: "left", render: (item) => <div className="flex flex-col">
+        <span>{item.node.customuser?.fatherTelephone}</span>
+        <span>{item.node.customuser?.motherTelephone}</span>
+      </div>,
+    },
+    { header: `${t("Class Info")}`, align: "left", render: (item) => <div className="flex flex-col">
+        <span>{item.node.classroomprim?.level}</span>
+        <span>{item.node.classroomprim?.academicYear}</span>
+      </div>,
     },
     // { header: `${t("Class")}`, accessor: "node.stream", align: "left" },
     // { header: `${t("Section")}`, accessor: "node.classroomprim.stream", align: "left" },
@@ -44,7 +49,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     {
       header: `${t("View")}`, align: "center",
       render: (item) => <button
-        onClick={() => router.push(`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
+        onClick={() => router.push(`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageUsers/parents/${item.node.id}/?user=${item.node.customuser.id}&ft=${item.node.customuser?.fatherTelephone}&mt=${item.node.customuser?.motherTelephone}`)}
         className="bg-green-200 p-2 rounded-full"
       >
         <FaRightLong color="green" size={21} />
@@ -57,7 +62,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       pageType='admin'
       domain={params.domain}
       // downloadComponent={<ExcelExporter
-      //   data={data?.allUserProfiles?.edges}
+      //   data={data?.allUserProfilesPrim?.edges}
       //   title="ClassList"
       //   type="UserProfile"
       //   page="list_student_specialty"
@@ -66,11 +71,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       searchComponent={
         <SearchMultiple
           names={['fullName', 'level', 'sex', 'academicYear']}
-          link={`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents`}
-          select={[
-            // { type: 'select', name: 'sex', dataSelect: ['MALE', 'FEMALE'] },
-            // { type: 'select', name: 'academicYear', dataSelect: data?.allAcademicYears },
-          ]}
+          link={`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageUsers/parents`}
         />
       }
       sidebar={
@@ -99,8 +100,8 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               data.allUserprofilesPrim?.edges.sort((a: EdgeUserProfilePrim, b: EdgeUserProfilePrim) => {
                 const academicYearA = a.node.classroomprim.academicYear;
                 const academicYearB = b.node.classroomprim.academicYear;
-                const fullNameA = a.node.customuser.fullName.toLowerCase();
-                const fullNameB = b.node.customuser.fullName.toLowerCase();
+                const fullNameA = a.node.customuser?.fatherName.toLowerCase();
+                const fullNameB = b.node.customuser?.fatherName.toLowerCase();
 
                 if (academicYearA > academicYearB) return -1;
                 if (academicYearA < academicYearB) return 1;
@@ -108,12 +109,12 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 return fullNameA.localeCompare(fullNameB);
               })}
             columns={Columns}
-            table_title={`${t("Students List")}`}
-            button_action={() => router.push(`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/pageNewPreinscription`)}
-            button_type={"add"}
+            table_title={`${t("Parents List")}`}
+            // button_action={() => router.push(`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/pageNewPreinscription`)}
+            // button_type={"add"}
           />
           :
-          <ServerError type="network" item="Students" />
+          <ServerError type="network" item="Parents" />
         }
 
 

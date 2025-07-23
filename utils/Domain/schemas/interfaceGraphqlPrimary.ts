@@ -44,7 +44,7 @@ export interface NodeProgramPrim {
 export interface NodeClassRoomPrim {
   id: string;
   school: NodeSchoolHigherInfo;
-  stream: string;
+  cycle: string;
   level: string;
   select: boolean;
   option: string;
@@ -145,7 +145,7 @@ export interface NodePreInscriptionPrim {
   sex: string;
   address: string;
   telephone: string;
-  email: string;
+  parentEmail: string;
   campus: NodeSchoolHigherInfo;
   fatherName: string;
   motherName: string;

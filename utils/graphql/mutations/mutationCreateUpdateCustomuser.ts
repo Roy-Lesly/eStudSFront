@@ -9,15 +9,17 @@ export const mutationCreateUpdateCustomuser = async (
   { formData: any, p: any, routeToLink: string, router: any }
 ) => {
 
+  console.log(formData);
+
     let dataCustomuser: any = {
       password: formData?.password?.toString().toUpperCase() || "12345",
       username: formData?.username?.toString().toUpperCase(),
       role: formData?.role,
       passwordSet: formData?.passwordSet || false,
-      language: formData?.language,
-      schoolIds: formData.schoolIds,
+      language: formData?.language || "En",
+      schoolIds: formData?.schoolIds,
       deptIds: formData?.schoolIds || [],
-      email: formData?.email.toLowerCase(),
+      email: formData?.email?.toLowerCase() || formData?.parentEmail.toLowerCase(),
       emailConfirmed: formData?.emailConfirmed || false,
 
       firstName: formData?.firstName?.toString().toUpperCase(),
@@ -25,7 +27,7 @@ export const mutationCreateUpdateCustomuser = async (
       about: capitalizeFirstLetter(formData?.about),
       fullName: formData?.firstName?.toString().toUpperCase() + " " + formData?.lastName?.toString().toUpperCase(),
       address: formData?.address?.toString().toUpperCase(),
-      sex: formData?.sex.toUpperCase(),
+      sex: formData?.sex?.toUpperCase(),
       telephone: formData?.telephone,
       title: formData?.title?.toString().toUpperCase(),
       pob: formData?.pob?.toString().toUpperCase(),
@@ -43,7 +45,6 @@ export const mutationCreateUpdateCustomuser = async (
       highestCertificate: formData?.highestCertificate,
       yearObtained: formData?.yearObtained,
       isHod: formData?.isHod,
-      prefix: formData?.prefix,
 
       delete: false,
     };

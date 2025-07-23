@@ -16,11 +16,12 @@ import MyTabs from '@/MyTabs';
 import { FaPlus } from 'react-icons/fa';
 import CreateLecturer from './CreateLecturerModal';
 import { FaRightLong } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
 
 
 export const metadata: Metadata = {
-  title: "Lecturers Page",
-  description: "This is Lecturers Page Admin Settings",
+  title: "Teachers Page",
+  description: "This is Teachers Page Admin Settings",
 };
 
 
@@ -37,8 +38,9 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
 
+  const { t } = useTranslation("common");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(searchParams?.tab) || 0);
   const [selectedItem, setSelectedItem] = useState<EdgeCustomUser | null>(null);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "admin" | "teacher" }>();
 
@@ -106,7 +108,6 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     </div>
   }
 
-  console.log(data.admins?.allCustomUsers);
 
   return (
     <DefaultLayout
@@ -137,12 +138,6 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         />
       }
     >
-      <Breadcrumb
-        department="Lecturers"
-        subRoute="List"
-        pageName="Lecturers"
-        mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageLecturers`}
-      />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
 
@@ -150,12 +145,12 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
           <MyTabs
             tabs={[
               {
-                label: 'Admins',
+                label: `${t("Admins")}`,
                 icon: <div className='bg-teal-500 p-2 rounded-full' onClick={() => { setShowModal({ show: true, type: "admin" }) }}><FaPlus color="white" size={20} /></div>,
                 content: data.admins?.allCustomusers?.edges.length ? <DataComp data={data.admins.allCustomusers.edges} title="Admins" /> : <ServerError type="notFound" item="Admin Users" />
               },
               {
-                label: 'Lecturers',
+                label: `${t("Teachers")}`,
                 icon: <div className='bg-teal-500 p-2 rounded-full' onClick={() => { setShowModal({ show: true, type: "teacher" }) }}><FaPlus color="white" size={20} /></div>,
                 content: data.lects?.allCustomusers?.edges.length ? <DataComp data={data.lects.allCustomusers.edges} title="Lecturers" /> : <ServerError type="notFound" item="Admin Users" />
               },

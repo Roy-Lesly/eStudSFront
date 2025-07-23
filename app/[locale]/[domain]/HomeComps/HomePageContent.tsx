@@ -58,15 +58,15 @@ const HomePageContent = ({
         </motion.div>
 
         <motion.div
-          className="flex flex-col gap-4 items-center justify-center mt-2 text-center z-10"
+          className="flex flex-col gap-4 items-center justify-center mt-2 text-center md:z-10"
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <h2 className="drop-shadow-2xl font-bold md:text-4xl md:w-full mt-10 text-2xl text-center text-slate-100 tracking-widest w-[60%]">
+          <h2 className="drop-shadow-2xl font-bold lg:text-4xl w-full mt-4 md:mt-10 text-xl md:text-2xl text-center text-slate-100 tracking-widest">
             {data?.node.messageOne.toUpperCase()}
           </h2>
-          <h2 className="drop-shadow-2xl font-bold md:text-4xl md:w-full mb-10 text-2xl text-center text-slate-100 tracking-widest w-[60%]">
+          <h2 className="drop-shadow-2xl font-bold w-full mb-10 md:text-2xl text-lg text-center text-slate-100 tracking-wider">
             {data?.node.messageTwo.toUpperCase()}
           </h2>
         </motion.div>

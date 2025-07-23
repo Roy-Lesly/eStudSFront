@@ -26,11 +26,11 @@ const page = async ({
 
             <Suspense fallback={<div>Loading ...</div>}>
 
-                <ResultDisplay
+                {/* <ResultDisplay
                     params={p}
                     resultType='exam'
                     title='exam'
-                />
+                /> */}
 
             </Suspense>
 

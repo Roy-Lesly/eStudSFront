@@ -25,7 +25,7 @@ const ParentInfo = ({ formData, setFormData, onNext, onPrevious }: any) => {
           { label: 'Mothers Name', name: 'motherName' },
           { label: 'Fathers Telephone', name: 'fatherTelephone' },
           { label: 'Mothers Telephone', name: 'motherTelephone' },
-          { label: 'Parents Email', name: 'email', placeHolder: "e.g name@email.com" },
+          { label: 'Parents Email', name: 'parentEmail', placeHolder: "e.g name@email.com" },
           { label: 'Parents Address', name: 'parentAddress' },
           { label: 'Parents Password', name: 'password', type: "password" },
         ].map(({ label, name, type, placeHolder }) => (

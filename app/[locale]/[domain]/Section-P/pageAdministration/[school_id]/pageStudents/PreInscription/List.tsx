@@ -15,6 +15,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { decodeUrlID } from '@/utils/functions';
 import MyTableComp from '@/components/section-h/Table/MyTableComp';
+import { FaPlus } from 'react-icons/fa';
+import Link from 'next/link';
 
 
 const List = ({ params, dataYears, dataPending, sp }: { params: any, sp: any, dataYears: string[], dataPending: EdgePreInscription[], searchParams: any }) => {
@@ -88,7 +90,16 @@ const List = ({ params, dataYears, dataPending, sp }: { params: any, sp: any, da
       }
     >
 
-      <div className="bg-gray-50 mt-10 flex flex-col items-center justify-center">
+      <div className="bg-gray-50 flex flex-col items-center justify-center">
+
+        <Link
+          className='rounded-lg shadow-lg mb-3 bg-teal-50 px-4 py-2 cursor-pointer flex items-center justify-end gap-2 font-bold text-xl'
+          href={`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/pageNewPreinscription`}
+        >
+          <span>{t("New Student")}</span>
+          <button className='bg-green-500 p-1 rounded-full'><FaPlus size={25} color="white" /></button>
+        </Link>
+
         {dataPending ? <MyTabs
           tabs={[
             {

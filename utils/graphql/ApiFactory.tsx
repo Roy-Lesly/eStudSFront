@@ -46,11 +46,6 @@ export const ApiFactory = async ({
       // res = { ...res, id: parseInt(decodeUrlID(editData.id)) };
     }
 
-    console.log(res);
-    console.log(newData);
-    console.log(editData);
-
-
     try {
       const response = await uploadGraphQLMutation({
         query: query.loc?.source.body || "",

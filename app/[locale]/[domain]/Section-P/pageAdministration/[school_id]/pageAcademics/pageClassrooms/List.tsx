@@ -31,6 +31,7 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
     { header: "#", align: "center", render: (_item: EdgeClassRoomSec, index: number) => index + 1, },
     { header: `${t("Class")}`, accessor: "node.level", align: "left" },
     { header: `${t("Year")}`, accessor: "node.academicYear", align: "center" },
+    { header: `${t("Section")}`, accessor: "node.cycle", align: "center" },
     { header: `${t("Fees")}`, accessor: "node.tuition", align: "center" },
     { header: `${t("Students")}`, accessor: "node.studentCount", align: "center" },
     {

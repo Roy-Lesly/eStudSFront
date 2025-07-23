@@ -55,7 +55,7 @@ const GET_DATA = gql`
       edges {
         node {
           id
-          campus prefix method
+          campus moratoireDeadline
           schoolName schoolType shortName mainSchool
           country address region town
           email telephone seqLimit examLimit

@@ -164,6 +164,7 @@ export interface NodeSchoolHigherInfo {
   id: string;
   schoolIdentification: NodeSchoolIdentification;
   prefix: string;
+  moratoireDeadline: string;
   method: number;
   schoolType: string;
   schoolName: string;

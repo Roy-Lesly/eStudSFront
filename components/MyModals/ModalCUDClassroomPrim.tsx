@@ -14,6 +14,7 @@ import { EdgeClassRoomPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimar
 interface FormData {
   schoolId: number
   level: string
+  cycle: string
   language: string
   academicYear: string
   registration: string
@@ -41,6 +42,7 @@ const ModalCUDClassroomPrim = (
     academicYear: selectedItem ? selectedItem.node.academicYear.toString() : "",
     language: params?.locale === "fr" ? "FRENCH" : "ENGLISH",
     level: selectedItem ? selectedItem.node.level.toString() : "",
+    cycle: selectedItem ? selectedItem.node.cycle.toString() : "",
     registration: selectedItem ? selectedItem.node.registration.toString() : "0",
     tuition: selectedItem ? selectedItem.node.tuition.toString() : "0",
     paymentOne: selectedItem ? selectedItem.node.paymentOne.toString() : "0",
@@ -145,6 +147,16 @@ const ModalCUDClassroomPrim = (
               value={formData.language}
               onChange={(e) => handleChange('language', (e.target.value))}
               options={[ "FRENCH", "ENGLISH" ]}
+            />
+            <MyInputField
+              id="cycle"
+              name="cycle"
+              label={t("Section")}
+              type="select"
+              placeholder={t("Select Section")}
+              value={formData.cycle}
+              onChange={(e) => handleChange('cycle', (e.target.value))}
+              options={[ "NURSERY", "PRIMARY" ]}
             />
           </div>
 
@@ -254,6 +266,7 @@ const query = gql`
     $id: ID,
     $academicYear: String!,
     $level: String!,
+    $cycle: String!,
     $registration: Int!,
     $tuition: Int!,
     $paymentOne: Int!,
@@ -268,6 +281,7 @@ const query = gql`
       id: $id,
       academicYear: $academicYear,
       level: $level,
+      cycle: $cycle,
       registration: $registration,
       tuition: $tuition,
       paymentOne: $paymentOne,

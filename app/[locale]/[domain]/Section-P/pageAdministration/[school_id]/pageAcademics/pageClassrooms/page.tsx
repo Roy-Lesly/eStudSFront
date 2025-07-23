@@ -74,7 +74,7 @@ const GET_DATA_CLASSROOM_PRIM = gql`
           id 
           academicYear
           school { id }
-          level
+          level cycle
           registration tuition paymentOne paymentTwo paymentThree
           school { campus}
           studentCount

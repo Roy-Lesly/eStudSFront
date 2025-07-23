@@ -32,12 +32,14 @@ const LoginForm = (
         <h1 className="text-xl font-bold mt-2 text-center">{school?.node?.schoolIdentification?.name}</h1>
 
         <div className='flex gap-16 justify-center items-center w-full px-4'>
-          <h1 className="text-xl text-teal-300 font-bold mt-6 text-center my-2">{t("LOGIN")}</h1>
+          <h1 className="w-1/4 text-xl text-teal-300 font-bold mt-6 text-center my-2"></h1>
+          <h1 className="w-full text-xl text-teal-300 font-bold mt-6 text-center my-2">{parent ? t("PARENT") : null} {t("LOGIN")}</h1>
+
           {showParent ? <button
-            onClick={() => setParent(true)}
-            className="py-2 px-6 rounded-2xl bg-slate-200 text-xl text-teal-700 font-bold mt-6 text-center my-2"
+            onClick={() => setParent(!parent)}
+            className={`${parent ? "bg-slate-300 text-xl text-blue-500 font-bold px-4" : "text-teal-500 font-medium bg-slate-700 px-4"} w-1/4 rounded-2xl mt-6 py-1 text-center my-2`}
           >
-            {t("Login As Parent")}
+            {parent ? t("Back") : t("As Parent")}
           </button>
             : null
           }
@@ -50,13 +52,13 @@ const LoginForm = (
       >
 
 
-        {showParent ? <div className="relative flex items-center">
+        {parent ? <div className="relative flex items-center">
           <User className="absolute left-4 text-slate-700" size={20} />
           <input
             type="text"
-            name='matricle'
+            name='telephone'
             required
-            placeholder={t("Enter Matricle or Username")}
+            placeholder={t("Enter Telephone Number")}
             onChange={handleChange}
             className="w-full pl-16 pr-4 py-4 text-xl text-teal-800 font-semibold rounded-md bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -108,7 +110,8 @@ const LoginForm = (
             }`}
         >
           <LogIn size={18} />
-          {loading ? `${t("Login In")} ...` : `${t("Login")}`}
+          {!loading ? parent ? t("Login As Parent") : t("Login") : t("Login In")}
+          {/* {loading ? `${t("Login In")} ...` : `${t("Login")}`} */}
         </button>
 
 

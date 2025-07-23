@@ -135,9 +135,9 @@ const CreateLecturer = ({
                     <button onClick={() => { setOpenModal(false) }} className="font-bold text-xl"><FaTimes color='red' /></button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                <form onSubmit={handleSubmit} className="flex flex-col md:gap-2">
 
-                    <div className='flex flex-row gap-2 justify-between'>
+                    <div className='flex flex-row gap-1 justify-between'>
                         <MyInputField
                             id="firstName"
                             name="firstName"
@@ -159,7 +159,7 @@ const CreateLecturer = ({
                         />
                     </div>
 
-                    <div className='flex flex-row gap-2 justify-between'>
+                    <div className='flex md:flex-row flex-col gap-2 justify-between'>
 
                         <MyInputField
                             id="sex"

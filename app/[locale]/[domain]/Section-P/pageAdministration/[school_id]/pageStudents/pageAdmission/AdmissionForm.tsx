@@ -55,7 +55,7 @@ const AdmissionForm = (
       deptNames: ['Student'],
       // telephone: preinscription?.fatherTelephone || '',
       telephone: new Date().toString().slice(3, 16),
-      email: preinscription?.email || '',
+      parentEmail: preinscription?.parentEmail || '',
       fatherName: preinscription?.fatherName || '',
       motherName: preinscription?.motherName || '',
       fatherTelephone: preinscription?.fatherTelephone || '',
@@ -96,6 +96,7 @@ const AdmissionForm = (
       delete: false,
     }
 
+    console.log(formDataUser);
 
     try {
       const resUserId = await mutationCreateUpdateCustomuser({
@@ -104,6 +105,7 @@ const AdmissionForm = (
         router: null,
         routeToLink: "",
       })
+      console.log(resUserId);
 
       if (resUserId.length > 5) {
         const formDataProfile = {

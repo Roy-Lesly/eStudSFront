@@ -20,6 +20,7 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
     id: decodeUrlID(data?.node?.id) || '',
     campus: data?.node?.campus || '',
     prefix: data?.node?.prefix || '',
+    moratoireDeadline: data?.node?.moratoireDeadline || '',
     method: data?.node?.method || 0,
     schoolName: data?.node?.schoolName.toUpperCase() || '',
     schoolType: data?.node?.schoolType || '',
@@ -134,15 +135,6 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
             className="w-full border border-gray-300 p-3 rounded-md font-bold text-lg"
           />
         </div>
-        <div>
-          <label className="text-slate-700 block mb-1">{t("Prefix")}</label>
-          <input
-            name="prefix"
-            value={school.prefix}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md font-bold text-lg"
-          />
-        </div>
         {/* <div className='flex flex-row gap-2 justify-between'>
           <MyInputField
             id="schoolType"
@@ -214,6 +206,16 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
             className="w-full border border-gray-300 p-3 rounded-md font-bold text-lg"
           />
         </div>
+         <div>
+          <label className="text-slate-700 block mb-1">{t("Moratorium Deadline")}</label>
+          <input
+            name="moratoireDeadline"
+            type="date"
+            value={school.moratoireDeadline}
+            onChange={handleChange}
+            className="w-full border border-gray-300 p-3 rounded-md font-bold text-lg"
+          />
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -275,7 +277,7 @@ export default SchoolInfoForm;
 export const query = gql`
   mutation CreateUpdateDeleteSchoolInfoHigher(
     $id: ID
-    $prefix: String
+    $moratoireDeadline: String
     $campus: String
     $schoolName: String!
     $schoolType: String
@@ -313,8 +315,8 @@ export const query = gql`
   ) {
     createUpdateDeleteSchoolInfoHigher(
       id: $id
-      prefix: $prefix
       campus: $campus
+      moratoireDeadline: $moratoireDeadline
       schoolName: $schoolName
       schoolType: $schoolType
       shortName: $shortName
