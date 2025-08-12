@@ -14,7 +14,7 @@ import SearchMultiple from '@/section-h/Search/SearchMultiple';
 
 export const metadata: Metadata = {
   title: "Transactions Page",
-  description: "This is Transactions Section",
+  description: "e-conneq School System. Transactions Section",
 };
 
 const List = ({ params, data }: { data: any, params: any; searchParams: any }) => {
@@ -69,10 +69,10 @@ const List = ({ params, data }: { data: any, params: any; searchParams: any }) =
         pageName="Activations"
         mainLink=""
       />
-         <>
+      <>
         {data ?
           data.allSchoolFees.edges.length > 0 ?
-          <></>
+            <></>
             // <ListPendingPlatformPage params={params} data={data.allSchoolFees.edges} />
             :
             <div>No School Fees</div>

@@ -23,7 +23,8 @@ const CheckFormHigher = ({ data, p, sp }: { data: EdgePreInscription[]; p: any; 
         }
     }
 
-    const onSubmit = () => {
+    const onSubmit = (e?: any) => {
+        e?.preventDefault();
         setClicked(true);
         setSearching(true);
         const queryString = new URLSearchParams(removeEmptyFields(formData)).toString();
@@ -80,7 +81,7 @@ const CheckFormHigher = ({ data, p, sp }: { data: EdgePreInscription[]; p: any; 
                 {t('Enter your telephone number to verify your pre-enrollment or admission status')}.
             </p>
 
-            <form className="flex flex-col gap-6 px-4">
+            <form onSubmit={onSubmit} className="flex flex-col gap-6 px-4">
                 <label>{t('Telephone')}</label>
                 <input
                     name="telephone"

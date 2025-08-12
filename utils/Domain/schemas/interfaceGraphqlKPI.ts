@@ -1,4 +1,19 @@
-import { AcademicYearUrl } from './../Utils-H/appControl/appConfig';
+export type TestResult = {
+  name: string;
+  type: string;
+  status: boolean;
+  detail: string;
+};
+
+export type AppReport = {
+  appName: string;
+  passed: number;
+  failed: number;
+  total: number;
+  results: TestResult[];
+};
+
+
 export type CountByDomain = {
     domainName: string;
     specialties: number;

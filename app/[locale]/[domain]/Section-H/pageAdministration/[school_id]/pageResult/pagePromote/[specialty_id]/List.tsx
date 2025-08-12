@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
@@ -14,22 +14,30 @@ import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaCheck } from 'react-icons/fa';
 import ModalPromote from './ModalPromote';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
+import { useTranslation } from 'react-i18next';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 
 export const metadata: Metadata = {
   title: "Fields Page",
-  description: "This is Fields Page Admin Settings",
+  description: "e-conneq School System. Fields Page Admin Settings",
 };
 
 const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNextSpec: any, searchParams: any }) => {
+  const { t } = useTranslation("common");
+  const sp = useSearchParams();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [loadingNextStudents, setLoadingNextStudents] = useState<boolean>(false);
   const [profilesToPromote, setProfilesToPromote] = useState<EdgeUserProfile[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
-  const [selectedSpecialtyNextID, setSelectedSpecialtyNextID] = useState<string | null>(null);
+  const [selectedSpecialtyNext, setSelectedSpecialtyNext] = useState<EdgeSpecialty>();
+
 
   const Columns: TableColumn<EdgeUserProfile>[] = [
     { header: "#", align: "center", render: (_item: EdgeUserProfile, index: number) => index + 1, },
@@ -39,17 +47,20 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
       render: (item) => {
         const isSelected = profilesToPromote.some((profile) => profile.node.id === item.node.id);
         const info = item.node.infoData ? JSON.parse(item.node.infoData.toString()) : {}; // Parse the info JSON field
-        const isPromoted = info.status === "promoted";
-        return isPromoted ? (
-          <span className="font-semibold text-green-500">Promoted</span>
-        ) : (
+        const isPromoted = info.status === "promoted";        
+        const foundInNext = dataNextSpec?.allUserProfiles?.edges.some(
+          (nextItem: EdgeUserProfile) => nextItem.node.customuser.fullName === item.node.customuser.fullName
+        );
+        return (isPromoted || foundInNext) ?
+          <span className="font-semibold text-green-500">{t("Promotted")}</span>
+        :
           <button
             onClick={() => toggleProfileSelection(item)}
             className={`p-1 rounded-full ${isSelected ? 'bg-green-500' : 'bg-green-200'}`}
           >
             {isSelected ? <FaCheck color="white" size={21} /> : <FaRightLong color="green" size={21} />}
           </button>
-        );
+        ;
       },
     },
   ];
@@ -79,77 +90,72 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
     }
   };
 
-  const [createUserProfile] = useMutation(CREATE_PROFILES);
-  const [updateUserProfile] = useMutation(UPDATE_PROFILE);
-
   const confirmPromotion = async () => {
 
     const token = localStorage.getItem("token")
     const user: JwtPayload | any = jwtDecode(token ? token : "")
-    if (profilesToPromote.length > 0 && user.user_id && selectedSpecialtyNextID) {
-      const successMessages: string[] = [];
-      const errorMessages: string[] = [];
+    if (profilesToPromote.length > 0 && user.user_id && selectedSpecialtyNext?.node?.id) {
+      let count = 0
       for (let index = 0; index < profilesToPromote.length; index++) {
         const prof = profilesToPromote[index].node;
-        const data = {
-          specialtyId: parseInt(decodeUrlID(selectedSpecialtyNextID)),
+        const newData = {
+          specialtyId: parseInt(decodeUrlID(selectedSpecialtyNext.node.id)),
           customuserId: parseInt(decodeUrlID(prof.customuser.id)),
           programId: parseInt(decodeUrlID(prof.program.id)),
           session: capitalizeFirstLetter(prof.session),
-          infoData: JSON.stringify({"status": "N/A"}),
+          infoData: "{}",
           delete: false
         }
-        console.log(data)
-        try {
-          const result = await createUserProfile({
-            variables: {
-              ...data
-            }
-          });
-
-          if (result.data.createUpdateDeleteUserProfile.userprofile.id) {
-            successMessages.push(
-              `${result.data.createUpdateDeleteUserProfile.userprofile.customuser.fullName} - ${result.data.createUpdateDeleteUserProfile.userprofile.customuser.fullName}`
-            );
-            let currentInfo = {};
-            try {
-              currentInfo = JSON.parse(prof.infoData.toString() || '{}');
-            } catch (e) {
-              console.error("Error parsing info field", e);
-            }
-  
-            const updatedInfo = {
-              ...currentInfo,
-              status: 'promoted',
-              promoted_by: user.user_id,
-              date: new Date().toISOString(),
-            };
-
-            await updateUserProfile({
-              variables: {
-                id: parseInt(decodeUrlID(prof.id)),
-                infoData: JSON.stringify(updatedInfo),
-                delete: false
-              }
-            });
-          }
-        } catch (error: any) {
-          errorMessages.push(`Error Creating ${prof.customuser?.fullName}: ${error.message}`);
-        }
+        const res = await ApiFactory({
+          newData,
+          mutationName: "createUpdateDeleteUserProfile",
+          modelName: "userprofile",
+          successField: "id",
+          query,
+          router: null,
+          params: params,
+          redirect: false,
+          reload: false,
+          returnResponseField: true,
+          redirectPath: ``,
+          actionLabel: "processing",
+        });
+        count = count + (res ? 1 : 0)
       }
-
-      let alertMessage = "";
-      if (successMessages.length > 0) {
-        alertMessage += `✅ Successfully Promotted`;
+      if (count === profilesToPromote.length) {
+        alert(t("Operation Completed"))
         window.location.reload();
+      } else {
+        alert(t("Operation Failed"))
       }
-      if (errorMessages.length > 0) {
-        alertMessage += `❌ Errors occurred:\n${errorMessages.join("\n")}`;
-      }
-      alert(alertMessage);
     }
     setShowConfirmModal(false);
     setProfilesToPromote([]);
+  };
+
+  useEffect(() => {
+    if (selectedSpecialtyNext?.node?.id) {
+      setLoadingNextStudents(false);
+    }
+  }, [dataNextSpec])
+
+
+  const onChangeNextSpecialty = (nextId: string) => {
+    setLoadingNextStudents(true)
+    const ns: EdgeSpecialty = dataNextSpec?.allSpecialties?.edges?.find(
+      (item: any) => item.node.id === nextId
+    );
+    if (!ns || !ns?.node?.id) return;
+    setSelectedSpecialtyNext(ns);
+    const newParams: Record<string, string> = {};
+    sp.forEach((value, key) => {
+      newParams[key] = value;
+    });
+    newParams.spec = ns.node.mainSpecialty?.specialtyName || '';
+    const queryString = new URLSearchParams(newParams).toString();
+    router.push(
+      `/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pagePromote/${params.specialty_id}/?${queryString}`
+    );
   };
 
 
@@ -180,9 +186,8 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
       <Breadcrumb
         department="Promotion"
         subRoute="List"
-        pageName="Promotion - Select Students"
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Result/pagePromote/${params.profile_id}`}
-        subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Result/pagePromote/${params.profile_id}`}
+        pageName={`${t("Promotion - Select Students")}`}
+        mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Result/pagePromote/${params.profile_id}`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
@@ -216,13 +221,13 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
                 <ServerError type="network" item="Promotion" />
               )}
 
-              {profilesToPromote.length > 0 && selectedSpecialtyNextID && (
+              {!loadingNextStudents && profilesToPromote.length > 0 && selectedSpecialtyNext?.node?.id && (
                 <div className="flex items-center justify-center m-4">
                   <button
                     onClick={() => setShowConfirmModal(true)}
                     className="bg-blue-500 px-4 py-2 rounded text-white"
                   >
-                    Promote
+                    {t("Promote")}
                   </button>
                 </div>
               )}
@@ -233,7 +238,7 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
               <div className='flex flex-row font-medium gap-4 items-center justify-center py-1'>
                 <select
                   className="px-2 py-1"
-                  onChange={(e) => setSelectedSpecialtyNextID(e.target.value)}
+                  onChange={(e) => onChangeNextSpecialty(e.target.value)}
                 >
                   <option value={''}>------------------</option>
                   {dataNextSpec?.allSpecialties?.edges?.map((item: EdgeSpecialty) => <option key={item.node.id} value={item.node.id}>
@@ -241,30 +246,35 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
                   </option>)}
                 </select>
               </div>
-              {dataNextSpec ? (
-                dataNextSpec?.allUserProfiles?.edges.length ?
-                  <MyTableComp
-                    data={
-                      dataNextSpec?.allUserProfiles?.edges.sort((a: EdgeUserProfile, b: EdgeUserProfile) => {
-                        const fullNameA = a.node.customuser.fullName.toLowerCase();
-                        const fullNameB = b.node.customuser.fullName.toLowerCase();
-                        if (fullNameA > fullNameB) return 1;
-                        if (fullNameA < fullNameB) return -1;
-                      })}
-                    columns={ColumnsNext}
-                  />
+              {!loadingNextStudents ?
+                dataNextSpec ?
+                  dataNextSpec?.allUserProfiles?.edges.length ?
+                    <MyTableComp
+                      data={
+                        dataNextSpec?.allUserProfiles?.edges.sort((a: EdgeUserProfile, b: EdgeUserProfile) => {
+                          const fullNameA = a.node.customuser.fullName.toLowerCase();
+                          const fullNameB = b.node.customuser.fullName.toLowerCase();
+                          if (fullNameA > fullNameB) return 1;
+                          if (fullNameA < fullNameB) return -1;
+                        })}
+                      columns={ColumnsNext}
+                    />
+                    :
+                    <ServerError type="notFound" item="Students" />
                   :
-                  <ServerError type="notFound" item="Classes" />
-              ) : (
-                <ServerError type="network" item="Promotion" />
-              )}
+                  <ServerError type="network" item="Promotion" />
+                :
+                <span className="bg-white dark:bg-black flex items-center justify-center w-full py-10">
+                  <span className="animate-spin border-4 border-primary border-solid border-t-transparent h-16 rounded-full w-16"></span>
+                </span>
+              }
             </div>
 
           </div>
 
         </div>
 
-        {showConfirmModal && selectedSpecialtyNextID && profilesToPromote.length && (
+        {showConfirmModal && selectedSpecialtyNext?.node?.id && profilesToPromote.length && (
           <ModalPromote
             onCancel={() => setShowConfirmModal(false)}
             onPromote={confirmPromotion}
@@ -280,32 +290,7 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
 export default List;
 
 
-
-const UPDATE_PROFILE = gql`
-mutation UpdateProfiles(
-    $id: ID!,
-    $infoData: JSONString!,
-    $delete: Boolean!,
-) {
-    createUpdateDeleteUserProfile(
-        id: $id 
-        infoData: $infoData
-        delete: $delete
-    ) {
-        userprofile {
-            id
-            customuser { fullName matricle }
-            specialty { 
-              academicYear 
-              level { level}
-              mainSpecialty{ specialtyName}
-            }
-        }
-    }
-}
-`;
-
-const CREATE_PROFILES = gql`
+const query = gql`
 mutation CreateProfiles(
     $customuserId: ID!, 
     $session: String!, 

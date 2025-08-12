@@ -2,7 +2,7 @@ import React from 'react'
 import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const page = async ({
   params,
@@ -52,7 +52,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Management",
-  description: "This is Manangement Page Settings",
+  description: "e-conneq School System. Manangement Page Settings",
 };
 
 

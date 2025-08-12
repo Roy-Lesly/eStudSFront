@@ -17,10 +17,10 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = { };
+  const paginationParams: Record<string, any> = {};
 
-  const date =  new Date().getFullYear()
-  
+  const date = new Date().getFullYear()
+
   paginationParams.fullName = sp?.fullName
   paginationParams.academicYear = sp?.academicYear
   paginationParams.schoolId = parseInt(p.school_id)
@@ -80,7 +80,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Transcript",
-  description: "This is Transcript Page",
+  description: "e-conneq School System. Transcript Page",
 };
 
 

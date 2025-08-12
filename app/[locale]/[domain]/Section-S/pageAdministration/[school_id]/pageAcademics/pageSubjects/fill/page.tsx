@@ -1,10 +1,8 @@
 import { Metadata } from 'next';
 import React from 'react'
-import { decodeUrlID } from '@/functions';
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 import List from './List';
-import { GET_DATA_CLASSROOM_SEC } from '../../pageClassrooms/page';
 
 
 const EditPage = async ({
@@ -46,11 +44,11 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Subjects-Management",
-  description: "This is Subjects-Management Page",
+  description: "e-conneq School System. Subjects-Management Page",
 };
 
 
-export const GET_DATA = gql`
+const GET_DATA = gql`
  query GetData(
     $ids: [ID!]
   ) {

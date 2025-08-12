@@ -8,8 +8,11 @@ import { useTranslation } from 'react-i18next';
 
 const ClassAssignmentForm = (
     { formData, setFormData, onNext, onPrevious, classroomList, myClassroom, programsData }:
-        { formData: any, setFormData: any, onNext: any, onPrevious: any, classroomList: EdgeClassRoomPrim[] | null, myClassroom?: EdgeClassRoomPrim, programsData: string[] }
+    { formData: any, setFormData: any, onNext: any, onPrevious: any, classroomList: EdgeClassRoomPrim[] | null, myClassroom?: EdgeClassRoomPrim, programsData: string[] }
 ) => {
+
+    console.log(formData);
+    console.log(classroomList);
 
     const [warning, setWarning] = useState(true)
     const { classAssignment } = formData;
@@ -58,14 +61,14 @@ const ClassAssignmentForm = (
 
     const classId = classAssignment?.classroomprimId || decodeUrlID(myClassroom?.node.id || "");
     const filteredClassroom = optionClassrooms?.find(item => item.value == classId);
-    if ((!classAssignment?.classroomprimId || !filteredClassroom?.value) && warning) {
+    if ( (!classAssignment?.classroomprimId || !filteredClassroom?.value) && !warning) {
         alert(t("No Classroom Found"));
         setWarning(false);
     }
 
     return (
-        <div className="space-y-5">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900">{t("Class Assignment")}</h2>
+        <div className="bg-white p-2 md:p-4 rounded-lg shadow-2xl space-y-4 md:space-y-6">
+            <h2 className="text-2xl font-bold mb-4 text-blue-800 bg-slate-300 text-center rounded-lg py-1">{t("Class Assignment")}</h2>
 
             <div className="flex flex-col gap-1">
                 <label className="text-gray-800 font-semibold text-sm">{t("Academic Year")}</label>
@@ -93,8 +96,8 @@ const ClassAssignmentForm = (
                     <option value="">{t("Select Classroom")}</option>
                     {optionClassrooms?.filter((item: any) => item.label.includes(formData?.classAssignment?.selectedAcademicYear))
                         .map(({ value, label }) => (
-                        <option key={value} value={value}>{label}</option>
-                    ))}
+                            <option key={value} value={value}>{label}</option>
+                        ))}
                 </select>
             </div>
 

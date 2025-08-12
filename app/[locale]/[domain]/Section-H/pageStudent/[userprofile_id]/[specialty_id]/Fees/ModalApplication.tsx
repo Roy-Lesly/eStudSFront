@@ -1,14 +1,16 @@
-import { NodeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
-import { decodeUrlID, errorLog } from '@/functions';
+import { NodeMoratoire, NodeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
+import { decodeUrlID } from '@/functions';
 import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 interface Props {
     schoolFee: NodeSchoolFees;
+    moratoire: NodeMoratoire;
     onClose: any;
 }
 
@@ -17,7 +19,7 @@ type MilestoneType = {
     due_date: string;
 }
 
-const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
+const ModalMoratoireApplication: React.FC<Props> = ({ schoolFee, onClose, moratoire }) => {
     const { t } = useTranslation()
     const [reason, setReason] = useState<string>()
     const [milestone, setMilestone] = useState<MilestoneType[]>([])
@@ -40,7 +42,7 @@ const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
         // 2. Due Date Validation (not more than 7 months from now)
         const acadYear = schoolFee.userprofile.specialty.academicYear.slice(5, 9)
         const now = new Date();
-        const maxDate = new Date(`${acadYear}-05-20`)
+        const maxDate = new Date(schoolFee?.userprofile?.specialty?.school?.moratoireDeadline)
         const minDate = new Date();
         minDate.setDate(now.getDate() + 7);
 
@@ -71,7 +73,6 @@ const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
 
             try {
                 const result = await createMoratoire({ variables: newMoratoire });
-                console.log(result, 82)
                 const t = result?.data?.createUpdateMoratoire?.moratoire
                 if (t?.id) {
                     alert(`Transaction Successful`)
@@ -203,11 +204,11 @@ const ModalApplication: React.FC<Props> = ({ schoolFee, onClose }) => {
     );
 };
 
-export default ModalApplication;
+export default ModalMoratoireApplication;
 
 
 const CREATE_DATA = gql`
-    mutation CreateTransaction(
+    mutation Data(
       $action: String!
       $userprofileId: ID!
       $reason: String!

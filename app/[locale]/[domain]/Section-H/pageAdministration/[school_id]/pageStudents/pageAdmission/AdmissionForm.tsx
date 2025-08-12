@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
-import { gql } from '@apollo/client';
 import MyInputField from '@/MyInputField';
 import { EdgeLevel, EdgeMainSpecialty, EdgePreInscription, EdgeProgram, EdgeSpecialty, NodeSchoolHigherInfo, NodeSpecialty } from '@/Domain/schemas/interfaceGraphql';
 import { useRouter } from 'next/navigation';
@@ -14,8 +13,9 @@ import countryList from "react-select-country-list";
 import Select from "react-select";
 import { useTranslation } from 'react-i18next';
 import FinalPage from './FinalPage';
-import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutationCreateUpdateCustomuser';
+import { mutationCreateUpdateUserProfile } from '@/utils/graphql/mutations/mutationCreateUpdateUserProfile';
 
 
 const CountryList = countryList().getData();
@@ -36,6 +36,7 @@ type FormData = {
     motherTelephone: string;
     parentAddress: string;
     password: string;
+    infoData: string;
   };
   medicalHistory: {
     role: string;
@@ -59,9 +60,13 @@ type FormData = {
 
 const AdmissionForm = (
   { data, dataSpecialties, params, dataSchoolInfo, dataPrograms, dataLevels, specialtyOne, sp }:
-    { data: EdgePreInscription, dataSpecialties: EdgeSpecialty[], params: { domain: string, school_id: string }, dataSchoolInfo: NodeSchoolHigherInfo, dataPrograms: EdgeProgram[], dataLevels: EdgeLevel[], dataMainSpecialties: EdgeMainSpecialty[], specialtyOne?: NodeSpecialty, sp?: any }
+    { data: EdgePreInscription, dataSpecialties: EdgeSpecialty[], params: { domain: string, locale: string, school_id: string }, dataSchoolInfo: NodeSchoolHigherInfo, dataPrograms: EdgeProgram[], dataLevels: EdgeLevel[], dataMainSpecialties: EdgeMainSpecialty[], specialtyOne?: NodeSpecialty, sp?: any }
 ) => {
+
   const { t } = useTranslation();
+    const token = localStorage.getItem("token");
+    const user: JwtPayload | null = token ? jwtDecode(token) : null
+  
   const steps = [
     `${t("Personal Info")}`,
     `${t("Role / Dept")}`,
@@ -79,6 +84,7 @@ const AdmissionForm = (
 
   const [formData, setFormData] = useState({
     personalInfo: {
+      role: "student",
       firstName: data?.node?.firstName,
       lastName: data?.node?.lastName,
       sex: capitalizeFirstLetter(data?.node?.sex),
@@ -95,6 +101,7 @@ const AdmissionForm = (
       password: '',
       prefix: dataSchoolInfo?.prefix,
       method: dataSchoolInfo?.method,
+      infoData: "{}",
     },
     medicalHistory: {
       role: 'student',
@@ -111,6 +118,7 @@ const AdmissionForm = (
     classAssignment: {
       specialtyId: decodeUrlID(specialtyOne?.id || ""),
       programId: data?.node?.program.id,
+      infoData: JSON.stringify({}),
       session: data?.node?.session,
     },
   });
@@ -251,107 +259,56 @@ const AdmissionForm = (
   };
 
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const user: JwtPayload = jwtDecode(token || "");
 
-      // Validate all steps before proceeding
-      const finalValidation = steps.slice(0, 3).map((_, index) => validateStep(index));
-      if (!finalValidation.every(Boolean)) {
-        alert("Please complete all steps before submitting.");
-        setStepValidation(finalValidation);
-        return;
-      }
-
-      const preinscription = data?.node;
-
-      const newFormData = {
-        ...formData.personalInfo,
-        ...formData.medicalHistory,
-        highestCertificate: formData.medicalHistory.highestCertificate === "Other" ? formData.medicalHistory.highestCertificateOther : formData.medicalHistory.highestCertificate,
-        regionOfOrigin: formData.medicalHistory.regionOfOriginOther === "Other" ? formData.medicalHistory.regionOfOriginOther : formData.medicalHistory.regionOfOrigin,
-        role: formData.medicalHistory.role,
-        email: formData.personalInfo.email.toLowerCase(),
-        dept: [2],
-        schoolIds: [parseInt(params.school_id)],
-        prefix: (formData.personalInfo.method + formData.personalInfo.prefix) || "",
-        method: formData.personalInfo.method,
-        infoData: JSON.stringify([]),
-        delete: false,
-      };
-
-
-      const userSuccessFieldData = await ApiFactory({
-        newData: newFormData,
-        editData: {},
-        mutationName: "createUpdateDeleteCustomUser",
-        modelName: "customuser",
-        successField: "id",
-        query,
-        router,
-        params,
-        redirect: false,
-        reload: false,
-        returnResponseField: true,
-        redirectPath: ``,
-        actionLabel: "creating",
-      });
-
-      if (!userSuccessFieldData) {
-        errorLog("Failed to create user")
-        return;
-      }
-
-      console.log(305, userSuccessFieldData);
-
-      const customuserId = parseInt(decodeUrlID(userSuccessFieldData));
-
-      const dataUserProfile = {
-        customuserId,
-        specialtyId: parseInt(formData.classAssignment.specialtyId),
-        programId: parseInt(formData.classAssignment.programId),
-        session: capitalizeFirstLetter(formData.classAssignment.session.toLowerCase()),
-        infoData: JSON.stringify({ status: "N/A" }),
-        delete: false,
-        createdById: user.user_id,
-      };
-
-      console.log(319, dataUserProfile);
-
-      const userprofileprofileSuccessFieldData = await ApiFactory({
-        newData: { ...dataUserProfile, customUser: decodeUrlID(userSuccessFieldData) },
-        editData: {},
-        mutationName: "createUpdateDeleteUserProfile",
-        modelName: "userprofile",
-        successField: "id",
-        query: queryUserprofile,
-        router,
-        params,
-        redirect: false,
-        reload: false,
-        returnResponseField: true,
-        // redirectPath: `/${params.locale}/${params.domain}/Section-S/${params.language}/PageAdministration/${params.school_id}/PageStudents/`,
-        redirectPath: ``,
-        actionLabel: "creating",
-      });
-
-      console.log(338, userprofileprofileSuccessFieldData);
-
-
-      if (!userprofileprofileSuccessFieldData) {
-        errorLog("Failed to create profille");
-        return
-      }
-
-      alert(`Success Admitted: ${preinscription?.firstName} ✅`,);
-
-      router.push(
-        `/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${userprofileprofileSuccessFieldData}/?user=${userSuccessFieldData}`
-      );
-    } catch (error: any) {
-      errorLog(error);
-      alert(`Error creating: ${error.message || error}`);
+    if (
+      !formData.classAssignment.specialtyId ||
+      !formData.classAssignment.programId
+    ) {
+      alert(t("Complete Classroom Information"))
+      return;
     }
+
+    const formDataUser = {
+      ...formData.personalInfo,
+      ...formData.medicalHistory,
+      username: formData.personalInfo.firstName?.toString().toUpperCase(),
+      role: "student",
+      schoolIds: [parseInt(params.school_id)],
+      delete: false,
+    }
+
+    try {
+      const resUserId = await mutationCreateUpdateCustomuser({
+        formData: formDataUser,
+        p: params,
+        router: null,
+        routeToLink: "",
+      })
+
+      if (resUserId.length > 5) {
+        const formDataProfile = {
+          ...formData.classAssignment,
+          customuserId: parseInt(decodeUrlID(resUserId)),
+          createdById: user?.user_id,
+          updatedById: user?.user_id,
+          delete: false,
+        }
+        const resProfileId = await mutationCreateUpdateUserProfile({
+          section: "H",
+          formData: formDataProfile,
+          p: params,
+          router: null,
+          routeToLink: "",
+        })
+        if (resProfileId?.length > 5) {
+          router.push(`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${resProfileId}/?user=${resUserId}`)
+          alert(t("Operation Successful") + " " + `✅`)
+        }
+      }
+    } catch (error) {
+      errorLog(error);
+    }
+
   };
 
 
@@ -790,91 +747,3 @@ const AdmissionForm = (
 };
 
 export default AdmissionForm;
-
-
-
-
-const query = gql`
-    mutation CreateCustomUser(
-      $prefix: String!
-      $sex: String!
-      $role: String!
-      $email: String!
-      $address: String!
-      $password: String!
-      $firstName: String!
-      $lastName: String!
-      $dob: String!
-      $pob: String!
-      $telephone: String!
-      $fatherName: String!
-      $motherName: String!
-      $fatherTelephone: String!
-      $motherTelephone: String!
-      $parentAddress: String!
-      $nationality: String!
-      $regionOfOrigin: String!
-      $highestCertificate: String!
-      $yearObtained: String!
-      $deptIds: [ID]
-      $schoolIds: [ID!]!
-      $infoData: JSONString!
-      $delete: Boolean!
-    ) {
-      createUpdateDeleteCustomUser(
-        prefix: $prefix
-        sex: $sex
-        role: $role
-        email: $email
-        address: $address
-        password: $password
-        firstName: $firstName
-        lastName: $lastName
-        dob: $dob
-        pob: $pob
-        telephone: $telephone
-        fatherName: $fatherName
-        motherName: $motherName
-        fatherTelephone: $fatherTelephone
-        motherTelephone: $motherTelephone
-        parentAddress: $parentAddress
-        nationality: $nationality
-        regionOfOrigin: $regionOfOrigin
-        highestCertificate: $highestCertificate
-        yearObtained: $yearObtained
-        deptIds: $deptIds
-        schoolIds: $schoolIds
-        infoData: $infoData
-        delete: $delete
-      ) {
-        customuser {
-          id
-        }
-      }
-    }
-  `;
-
-
-const queryUserprofile = gql`
-  mutation CreateUserProfile(
-    $customuserId: ID!
-    $specialtyId: ID!
-    $programId: ID!
-    $session: String!
-    $infoData: JSONString!
-    $delete: Boolean!
-  ) {
-    createUpdateDeleteUserProfile(
-      customuserId: $customuserId
-      specialtyId: $specialtyId
-      programId: $programId
-      session: $session
-      infoData: $infoData
-      delete: $delete
-    ) {
-      userprofile {
-        id
-      }
-    }
-  }
-`;

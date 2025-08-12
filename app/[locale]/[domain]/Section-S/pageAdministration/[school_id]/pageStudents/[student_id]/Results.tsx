@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import FeesCheck from './Comps/FeesCheck';
 import ResultsEdit from './Comps/ResultsEdit';
-import ResultSlip from '@/[locale]/[domain]/Section-S/pageStudent//[userprofile_id]/ResultSlip';
 import { EdgeResultSecondary, EdgeSchoolFeesSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { useTranslation } from 'react-i18next';
 
@@ -60,19 +59,14 @@ const Results = ({ data, fees, params }: { data: EdgeResultSecondary[], fees: Ed
             {selectedTerm?.label} - {t("Results")}
           </div>
 
-          <FeesCheck
+          {/* <FeesCheck
             fees={fees?.node}
             term={parseInt(selectedTerm?.value)}
             link={`${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/${params.student_id}`}
             emptyComp={true}
           >
-            {data && data.length ? <ResultSlip
-              data={data}
-              schoolFeesSec={fees?.node}
-              resitPublished={true}
-              semester={selectedTerm}
-            /> : null}
-          </FeesCheck>
+            <>Slip</>
+          </FeesCheck> */}
 
 
 

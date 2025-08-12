@@ -1,11 +1,12 @@
-import Select from 'react-select';
+import Select, { MultiValue, SingleValue } from 'react-select';
 
+type OptionType = { value: string | number; label: string };
 
 type SelectFieldProps = {
   id: string;
   name: string;
-  value: string | string[]; // Allow both string and string[] for value
-  onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | any;
+  value: SingleValue<OptionType> | MultiValue<OptionType>; // for react-select
+  onChange: (value: SingleValue<OptionType> | MultiValue<OptionType>, action: any) => void;
   label: string;
   placeholder: string;
   defaultValue?: any;
@@ -33,24 +34,7 @@ const MySelectField: React.FC<SelectFieldProps> = ({
   options = [],
 }) => {
 
-    const renderOptions = () => {
-    if (Array.isArray(options)) {
-      if (typeof options[0] === 'string') {
-        return (options as string[]).map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ));
-      } else if (typeof options[0] === 'object' && options[0] !== null) {
-        return (options as { value: string | number; label: string }[]).map((option, index) => (
-          <option key={option.value + `-${index}`} value={option.value}>
-            {option.label}
-          </option>
-        ));
-      }
-    }
-    return null;
-  };
+  const multi = isMulti === "select-multiple";
 
   return (
     <div className="mt-2 w-full">
@@ -61,7 +45,7 @@ const MySelectField: React.FC<SelectFieldProps> = ({
       <Select
         defaultValue={defaultValue}
         value={value}
-        isMulti={isMulti !== "select-single"}
+        isMulti={multi}
         name={name}
         options={options}
         className="form-group basic-multi-select text-black font-medium"

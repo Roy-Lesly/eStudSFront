@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Assigned Subjects Page",
-  description: "This is Assigned Subjects Page Admin Settings",
+  description: "e-conneq School System. Assigned Subjects Page Admin Settings",
 };
 
 

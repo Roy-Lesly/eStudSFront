@@ -51,7 +51,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Marks Entry ",
-  description: "This is Marks Entry  Page",
+  description: "e-conneq School System. Marks Entry  Page",
 };
 
 
@@ -61,7 +61,7 @@ const GET_DATA = gql`
   $fullName: String,
   $telephone: String,
 ) {
-  allCustomUsers(
+  allCustomusers(
     role: "teacher"
     isActive: true
     schoolId: $schoolId
@@ -92,7 +92,7 @@ const GET_DATA_ADMIN = gql`
   $fullName: String,
   $telephone: String
 ) {
-  allCustomUsers(
+  allCustomusers(
     role: "admin"
     isActive: true
     schoolId: $schoolId

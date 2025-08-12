@@ -27,14 +27,9 @@ const EditPage = async ({
     query: GET_DATA,
     variables: {
       ...removeEmptyFields(paginationParams),
-      schoolId: parseInt(p.school_id),
-    },
-  });
-
-  const dataAdmin = await queryServerGraphQL({
-    domain: p.domain,
-    query: GET_DATA_ADMIN,
-    variables: {
+      roleIn: ["admin", "teacher"],
+      isStaff: false,
+      isActive: true,
       schoolId: parseInt(p.school_id),
     },
   });
@@ -46,7 +41,7 @@ const EditPage = async ({
         params={p}
         data={data}
         searchParams={sp}
-        admins={dataAdmin}
+        users={data?.allCustomusers?.edges}
       />
     </div>
   )
@@ -58,29 +53,8 @@ export default EditPage
 
 export const metadata: Metadata = {
   title: "Courses-Settings",
-  description: "This is Courses-Settings Page",
+  description: "e-conneq School System. Courses-Settings Page",
 };
-
-
-const GET_DATA_ADMIN = gql`
- query GetData(
-   $schoolId: Decimal
-  ) {
-    allCustomUsers(
-      schoolId: $schoolId
-      role: "admin"
-      last: 500,
-      isStaff:false
-    ){
-      edges {
-        node {
-          id 
-          fullName
-        }
-      }
-    }
-  }
-`
 
 
 const GET_DATA = gql`
@@ -90,6 +64,9 @@ const GET_DATA = gql`
    $domainName: String,
    $courseName: String,
    $academicYear: String,
+   $roleIn: [String!]!,
+   $isStaff: Boolean!,
+   $isActive: Boolean!,
    $level: Decimal,
   ) {
     allCourses(
@@ -165,12 +142,12 @@ const GET_DATA = gql`
         }
       }
     }
-    allCustomUsers(
+    allCustomusers(
       schoolId: $schoolId
-      role: "teacher"
+      isStaff: $isStaff
+      isActive: $isActive
+      roleIn: $roleIn
       last: 500,
-      isActive: true,
-      isStaff:false
     ){
       edges {
         node {

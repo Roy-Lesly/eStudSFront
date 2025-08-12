@@ -12,15 +12,15 @@ const EditPage = async ({
 
   const p = await params
 
- const data = await queryServerGraphQL({
+  const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA,
   });
 
   return (
     <div>
-    <SelectDept params={p} data={data} page="Lecturer" />
-  </div>
+      <SelectDept params={p} data={data} page="Lecturer" />
+    </div>
   )
 }
 
@@ -31,7 +31,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Select",
-  description: "This is Select Page",
+  description: "e-conneq School System. Select Page",
 };
 
 

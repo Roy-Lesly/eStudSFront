@@ -3,12 +3,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
+import { decodeUrlID } from '@/utils/functions';
 
-const Info = ({ data, params }: { data: EdgeSpecialty, params: any }) => {
+const Info = ({ data, p }: { data: EdgeSpecialty, p: any }) => {
   const [specialty, setSpecialty] = useState({
     mainSpecialtyId: data.node.mainSpecialty.id || '',
     levelId: data.node.level.id || '',
     academicYear: data.node.academicYear || '',
+    programId: parseInt(decodeUrlID(data.node.program.id)) || 0,
     registration: data.node.registration || '',
     tuition: data.node.tuition || '',
     paymentOne: data.node.paymentOne || '',
@@ -114,42 +116,7 @@ const Info = ({ data, params }: { data: EdgeSpecialty, params: any }) => {
               required
             />
           </div>
-          {/* <div>
-            <label className="text-gray-600 text-sm">Sex</label>
-            <select
-              name="sex"
-              value={specialty.sex}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            >
-              <option value="">Select</option>
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-            </select>
-          </div> */}
-          {/* <div>
-            <label className="text-gray-600 text-sm">Date of Birth</label>
-            <input
-              type="date"
-              name="dob"
-              value={specialty.dob}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            />
-          </div>
-          <div>
-            <label className="text-gray-600 text-sm">Place of Birth</label>
-            <input
-              type="text"
-              name="pob"
-              value={specialty.pob}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            />
-          </div> */}
+      
         </div>
       </motion.div>
 

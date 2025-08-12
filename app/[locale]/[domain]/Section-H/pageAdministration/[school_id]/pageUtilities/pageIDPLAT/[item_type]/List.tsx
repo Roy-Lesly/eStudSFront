@@ -20,7 +20,7 @@ import PaymentIDPLATTransaction from '@/components/componentsTwo/formsAdmin/Paym
 
 export const metadata: Metadata = {
   title: "ID Card Page",
-  description: "This is ID Card Page Admin Settings",
+  description: "e-conneq School System. ID Card Page Admin Settings",
 };
 
 const List = ({ p, data, sp, school }: { p: any; data: EdgeTransactions[], sp: any, school: EdgeSchoolHigherInfo }) => {

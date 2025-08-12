@@ -7,12 +7,15 @@ interface ExcelExporterProps {
     data: Record<string, any>[] | any;
     title: string;
     page: "list_user_profile" | "list_custom_user" | "list_main_specialty" | "list_specialty" | "list_main_course" | 
-    "list_course" | "list_student_specialty" | "list_student_domain" | "list_payment_students";
+    "list_course" | "list_student_specialty" | "list_student_domain" |
+    "extraction_specialty_payment_single";
     type: "UserProfile" | "CustomUser" | "MainSpecialty" | "Specialty" | "MainCourse" | "Course" | "SchoolFees" | "Payment";
     searchParams?: any;
 }
 
-const ExcelExporter: React.FC<ExcelExporterProps> = ({ data, title, page, type, searchParams }) => {
+const ExcelExporter: React.FC<ExcelExporterProps> = (
+    { data, title, page, type, searchParams }
+) => {
 
     let dataToExport: any = []
     let sheetName = "Sheet1"
@@ -25,7 +28,7 @@ const ExcelExporter: React.FC<ExcelExporterProps> = ({ data, title, page, type, 
     if (page === "list_specialty" && searchParams?.academicYear && searchParams?.domainName) { canDownload = true, sheetName = searchParams?.domainName }
     if (page === "list_main_course" && searchParams?.name) { canDownload = true, sheetName = searchParams?.name }
     if (page === "list_course" && searchParams?.academicYear && searchParams?.domainName) { canDownload = true, sheetName = searchParams?.domainName }
-    if (page === "list_payment_students") { canDownload = true, sheetName = "Sheet 1" }
+    if (page === "extraction_specialty_payment_single") { canDownload = true, sheetName = "Sheet 1" }
 
     if (type === "SchoolFees"){ dataToExport = flattenData(data, "SchoolFees") } 
     if (type === "UserProfile"){ dataToExport = flattenData(data, "UserProfile") } 

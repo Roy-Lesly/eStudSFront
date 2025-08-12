@@ -22,7 +22,7 @@ import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 
 export const metadata: Metadata = {
   title: "Fields Page",
-  description: "This is Fields Page Admin Settings",
+  description: "e-conneq School System. Fields Page Admin Settings",
 };
 
 const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNextSpec: any, searchParams: any }) => {
@@ -96,7 +96,7 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
           customuserId: parseInt(decodeUrlID(prof.customuser.id)),
           programId: parseInt(decodeUrlID(prof.program.id)),
           session: capitalizeFirstLetter(prof.session),
-          infoData: JSON.stringify({"status": "N/A"}),
+          infoData: JSON.stringify({ "status": "N/A" }),
           delete: false
         }
         console.log(data)
@@ -117,7 +117,7 @@ const List = ({ params, data, dataNextSpec }: { params: any; data: any, dataNext
             } catch (e) {
               console.error("Error parsing info field", e);
             }
-  
+
             const updatedInfo = {
               ...currentInfo,
               status: 'promoted',

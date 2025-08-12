@@ -6,7 +6,7 @@ import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
 
 export const metadata: Metadata = {
   title: "My Profile",
-  description: "This is the Profile Page",
+  description: "e-conneq School System. the Profile Page",
 };
 
 const page = async ({
@@ -22,7 +22,7 @@ const page = async ({
     domain: p.domain,
     query: GET_DATA,
     variables: {
-        id: parseInt(p.userprofile_id),
+      id: parseInt(p.userprofile_id),
     },
   });
 

@@ -19,10 +19,13 @@ import { useRouter } from 'next/navigation';
 
 export const metadata: Metadata = {
     title: "List-Lecturers Page",
-    description: "This is List-Lecturers Page Admin Settings",
+    description: "e-conneq School System. List-Lecturers Page Admin Settings",
 };
 
-const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+const List = (
+    { params, data, searchParams }: { params: any; data: any, searchParams: any }
+) => {
+    
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
     return (
@@ -64,10 +67,12 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
             <div className="bg-gray-50 flex flex-col items-center justify-center p-2">
 
                 {data ?
-                    data.allCustomUsers?.edges.length ?
+                    data.allCustomusers?.edges.length ?
                         <div className="flex flex-col gap-2 w-full">
-                            {/* <DataTable data={dataAdmin.allCustomUsers.edges} params={params} /> */}
-                            <DataTable data={data.allCustomUsers.edges} params={params} />
+                            <DataTable
+                                data={data.allCustomusers.edges.sort((a: EdgeCustomUser, b: EdgeCustomUser) => a.node.fullName > b.node.fullName ? 1 : a.node.fullName < b.node.fullName ? -1 : 0)}
+                                params={params}
+                            />
                         </div>
                         :
                         <ServerError type="notFound" item="Marks Entry" />

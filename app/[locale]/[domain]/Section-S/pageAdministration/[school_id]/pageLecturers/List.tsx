@@ -20,7 +20,7 @@ import { FaRightLong } from 'react-icons/fa6';
 
 export const metadata: Metadata = {
   title: "Lecturers Page",
-  description: "This is Lecturers Page Admin Settings",
+  description: "e-conneq School System. Lecturers Page Admin Settings",
 };
 
 
@@ -35,48 +35,23 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
   return data;
 };
 
-const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) || 0);
   const [selectedItem, setSelectedItem] = useState<EdgeCustomUser | null>(null);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "admin" | "teacher" }>();
 
   const Columns: TableColumn<EdgeCustomUser>[] = [
-    {
-      header: '#',
-      align: 'left',
+    { header: '#', align: 'left',
       render: (_item: EdgeCustomUser, index: number) => index + 1,
       responsiveHidden: true
     },
-    {
-      header: 'Full Name',
-      accessor: 'node.fullName',
-      align: 'left',
-    },
-    {
-      header: 'Gender',
-      accessor: 'node.sex',
-      align: 'center',
-      responsiveHidden: true
-    },
-    {
-      header: 'Address',
-      accessor: 'node.address',
-      align: 'left',
-      responsiveHidden: true
-    },
-    {
-      header: 'Telephone',
-      accessor: 'node.telephone',
-      align: 'center',
-      responsiveHidden: true
-    },
-    {
-      header: 'Dob / Pob',
-      align: 'left',
-      responsiveHidden: true,
-      hideColumn: activeTab !== 2,
+    { header: 'Full Name', accessor: 'node.fullName', align: 'left', },
+    { header: 'Gender', accessor: 'node.sex', align: 'center', responsiveHidden: true },
+    { header: 'Address', accessor: 'node.address', align: 'left', responsiveHidden: true },
+    { header: 'Telephone', accessor: 'node.telephone', align: 'center', responsiveHidden: true },
+    { header: 'Dob / Pob', align: 'left', responsiveHidden: true, hideColumn: activeTab !== 2,
       render: (item: EdgeCustomUser, index: number) => <div className='flex gap-2'>
         <span>{item.node.dob}</span>
         <span>{item.node.pob}</span>
@@ -106,7 +81,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     </div>
   }
 
-  console.log(data.admins?.allCustomUsers);
+  console.log(data.admins?.allCustomusers);
 
   return (
     <DefaultLayout

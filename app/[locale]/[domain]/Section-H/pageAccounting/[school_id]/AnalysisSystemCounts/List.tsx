@@ -17,12 +17,12 @@ import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
-const List = ({ params, data, dataYears, searchParams }: { params: any; data: any, searchParams: any, dataYears: any }) => {
+const List = ({ p, data, dataYears, sp }: { p: any; data: any, sp: any, dataYears: any }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) || 0);
 
   const ColumnsDomain: TableColumn<CountByDomain>[] = [
     { header: "#", align: "center", render: (_item: CountByDomain, index: number) => index + 1, },
@@ -43,11 +43,11 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       searchComponent={
         <SearchMultiple
-          names={["academicYear" ]}
-          link={`/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemCounts`}
+          names={["academicYear"]}
+          link={`/${p.domain}/Section-H/pageAccounting/${p.school_id}/AnalysisSystemCounts`}
           select={[
             // { type: 'select', name: 'academicYear', dataSelect: dataYears?.allAcademicYears },
           ]}
@@ -55,7 +55,7 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
       }
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAccounting()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -75,7 +75,7 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
         department="Counts"
         subRoute="List"
         pageName="System Counts"
-        mainLink={`${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemCounts`}
+        mainLink={`${p.domain}/Section-H/pageAccounting/${p.school_id}/AnalysisSystemCounts`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
@@ -84,8 +84,8 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
 
           <div className='flex items-center justify-center'>
-            {searchParams && searchParams?.academicYear ?
-              <span className='font-semibold my-2 rounded text-xl'>{searchParams?.academicYear}</span>
+            {sp && sp?.academicYear ?
+              <span className='font-semibold my-2 rounded text-xl'>{sp?.academicYear}</span>
               :
               <span className='font-medium my-24 p-4 rounded text-lg'>Please Select Academic Year</span>}
           </div>
@@ -127,7 +127,7 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
-              source={"setActiveTab"}
+              source={`Section-H/pageAccounting/${p.school_id}/AnalysisSystemCounts/?academicYear=${sp.academicYear}`}
             />
           )
             :

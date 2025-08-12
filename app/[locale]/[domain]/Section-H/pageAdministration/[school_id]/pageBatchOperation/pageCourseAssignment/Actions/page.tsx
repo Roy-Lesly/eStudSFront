@@ -57,8 +57,8 @@ const page = async ({
       searchParams={sp}
       apiMainCourses={dataMainCourses?.allMainCourses?.edges}
       apiSpecialty={dataSpecialty?.allSpecialties?.edges[0]}
-      apiAdmins={dataAdmins?.allCustomUsers?.edges}
-      apiLects={dataLects?.allCustomUsers?.edges}
+      apiAdmins={dataAdmins?.allCustomusers?.edges}
+      apiLects={dataLects?.allCustomusers?.edges}
     />
 
   )
@@ -112,7 +112,7 @@ const GET_DATA_CUSTOMUSER = gql`
   $schoolId: Decimal!,
   $role: String!,
 ) {
-  allCustomUsers(
+  allCustomusers(
     schoolId: $schoolId
     role: $role,
     isActive: true,

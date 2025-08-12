@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import ServerError from '@/ServerError';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import ModalDecision from './ModalDecision';
+import ComingSoon from '@/components/ComingSoon';
 
 
 const List = (
@@ -71,6 +72,7 @@ const List = (
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            source={"setActiveTab"}
           />
         </div>
       </div>
@@ -111,7 +113,9 @@ const Applied = ({ data, activeTab }: { data: any, activeTab: number }) => {
   ];
 
   return <div className="bg-gray-50 flex flex-col gap-2 items-center justify-center w-full">
-    {data ? (
+
+    <ComingSoon />
+    {/* {data ? (
       data.allMoratoires?.edges.length ? (
         <MyTableComp
           data={
@@ -133,7 +137,7 @@ const Applied = ({ data, activeTab }: { data: any, activeTab: number }) => {
       )
     ) : (
       <ServerError type="network" item="Students" />
-    )}
+    )} */}
 
 
     {showModal.state && showModal.selectedItem ?

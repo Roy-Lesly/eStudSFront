@@ -56,7 +56,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Promotion",
-  description: "This is Promotion Page",
+  description: "e-conneq School System. Promotion Page",
 };
 
 

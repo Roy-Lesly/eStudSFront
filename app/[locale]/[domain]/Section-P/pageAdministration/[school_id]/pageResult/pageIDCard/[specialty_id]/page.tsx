@@ -17,19 +17,19 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
- const data = await queryServerGraphQL({
+  const data = await queryServerGraphQL({
     domain: p?.domain,
     query: GET_DATA,
-      variables: {
-        schoolId: parseInt(p.school_id),
-        specialtyId: parseInt(decodeUrlID(p.specialty_id))
-      },
+    variables: {
+      schoolId: parseInt(p.school_id),
+      specialtyId: parseInt(decodeUrlID(p.specialty_id))
+    },
   });
 
   return (
     <div>
       <List params={p} data={data?.allSchoolFees?.edges} searchParams={sp} />
-      </div>
+    </div>
   )
 }
 
@@ -37,7 +37,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "ID Card",
-  description: "This is ID Card Page",
+  description: "e-conneq School System. ID Card Page",
 };
 
 

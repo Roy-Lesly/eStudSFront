@@ -17,45 +17,46 @@ const page = async ({
   const p = await params;
   const { domain, section } = await params;
   const sp = await searchParams;
+  console.log(section);
 
-  const dataHigher = await queryServerGraphQL({
+  const data = await queryServerGraphQL({
     domain,
-    query: GET_DATA_HIGHER,
+    query: section === "higher" ? GET_DATA_HIGHER : section === "secondary" ? GET_DATA_SECONDARY : section === "primary" ? GET_DATA_PRIMARY : GET_DATA_VOCATIONAL,
     variables: {
       telephone: sp?.telephone,
     },
   });
 
-  const dataSecondary = await queryServerGraphQL({
-    domain,
-    query: GET_DATA_SECONDARY,
-    variables: {
-      telephone: sp?.telephone,
-    },
-  });
+  // const dataSecondary = await queryServerGraphQL({
+  //   domain,
+  //   query: GET_DATA_SECONDARY,
+  //   variables: {
+  //     telephone: sp?.telephone,
+  //   },
+  // });
 
-  const dataPrimary = await queryServerGraphQL({
-    domain,
-    query: GET_DATA_PRIMARY,
-    variables: {
-      telephone: sp?.telephone,
-    },
-  });
+  // const dataPrimary = await queryServerGraphQL({
+  //   domain,
+  //   query: GET_DATA_PRIMARY,
+  //   variables: {
+  //     telephone: sp?.telephone,
+  //   },
+  // });
 
-  const dataVocational = await queryServerGraphQL({
-    domain,
-    query: GET_DATA_VOCATIONAL,
-    variables: {
-      telephone: sp?.telephone,
-    },
-  });
+  // const dataVocational = await queryServerGraphQL({
+  //   domain,
+  //   query: GET_DATA_VOCATIONAL,
+  //   variables: {
+  //     telephone: sp?.telephone,
+  //   },
+  // });
 
   return (
     <>
-      {section === "higher" ? <AdmissionFormHigher p={p} data={dataHigher?.allUserProfiles?.edges[0]} /> : null}
-      {section === "secondary" ? <AdmissionFormSecondary p={p} data={dataSecondary?.allUserProfilesSec?.edges[0]} /> : null}
-      {section === "primary" ? <AdmissionFormPrimary p={p} data={dataPrimary?.allUserProfiles?.edges[0]} /> : null}
-      {section === "vocational" ? <AdmissionFormHigher p={p} data={dataVocational?.allUserProfiles?.edges[0]} /> : null}
+      {section === "higher" ? <AdmissionFormHigher p={p} data={data?.allUserProfiles?.edges[0]} /> : null}
+      {section === "secondary" ? <AdmissionFormSecondary p={p} data={data?.allUserProfilesSec?.edges[0]} /> : null}
+      {section === "primary" ? <AdmissionFormPrimary p={p} data={data?.allUserProfiles?.edges[0]} /> : null}
+      {section === "vocational" ? <AdmissionFormHigher p={p} data={data?.allUserProfiles?.edges[0]} /> : null}
     </>
   )
 }

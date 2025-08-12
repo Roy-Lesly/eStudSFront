@@ -93,16 +93,17 @@ const Display = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], params:
         const redirectNextPage = () => {
             if (token && token?.school && token.school?.length == 1) {
                 if (token.role?.toLowerCase() == "student") {
-                    router.push(`/${params.domain}/Section-H/pageStudent/?user=${token.user_id}`);
+                    if (formData.parent) router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectChildProfile/?tel=${formData.matricle}&role=parent`);
+                    else router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectProfile/?user=${token.user_id}&role=student`);
                     return
                 }
             }
 
             if (token?.school && token.school.length > 0) {
                 if (token.role?.toLowerCase() == "admin" || token.role?.toLowerCase() == "teacher") {
-                    if (token.role == "admin") {
+                    if (token.role?.toLowerCase() == "teacher" || token.role?.toLowerCase() == "admin") {
                         if (token.dept || token.dept.length > 0) {
-                            router.push(`${token?.language ? "/" + token?.language[0] : ""}/${params.domain}/pageAuthentication/pageSelectSchool?role=${token.role}`);
+                            router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectSchool?role=${token.role}`);
                             return;
                         } else {
                             Swal.fire({
@@ -115,15 +116,9 @@ const Display = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], params:
                             return;
                         }
                     }
-                    if (token.role?.toLowerCase() == "teacher") {
-                        if (token.dept || token.dept.length > 0) {
-                            router.push(`/${params.domain}/pageAuthentication/pageSelectSchool?role=${token.role}`);
-                            return;
-                        }
-                    }
                 }
                 if (token.role?.toLowerCase() == "student") {
-                    router.push(`/Section-H/pageStudent/`);
+                    router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectProfile?role=${formData.parent ? "parent" : "student"}`);
                 }
             }
             setCount(6);
@@ -149,7 +144,7 @@ const Display = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], params:
 
         const loginData = await ApiFactory({
             newData: formData,
-            editData: {},
+            editData: formData,
             mutationName: "login",
             modelName: "login",
             successField: "id",

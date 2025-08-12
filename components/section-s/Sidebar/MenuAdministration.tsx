@@ -5,31 +5,21 @@ import { jwtDecode } from "jwt-decode";
 import { useParams } from "next/navigation";
 import React from "react";
 import {
-  Home,
   Users,
   UserPlus,
   ClipboardList,
   BookOpenCheck,
   FileBarChart,
   LayoutDashboard,
-  GraduationCap,
   FileText,
   CalendarDays,
-  AlarmClock,
-  FileSignature,
   Settings,
-  Bell,
-  MessageCircle,
   FileWarning,
   ClipboardCheck,
   BookOpen,
-  FileCheck,
   School2,
   NotebookPen,
   BadgeCheck,
-  MessageSquareCode,
-  Cog,
-  Image,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -58,57 +48,60 @@ export const GetMenuAdministration = (): MenuSection[] => {
       menuItems: [
         {
           icon: <LayoutDashboard />, label: t("Dashboard"), route: "#", children: [
-            { label: t("Overview"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/dashboard/overview`, icon: <LayoutDashboard /> },
-            { label: t("Statistics"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/dashboard/statistics`, icon: <FileBarChart /> },
-            { label: t("Notices & Events"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/dashboard/notices-events`, icon: <CalendarDays /> },
+            { label: t("Dashboard"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageDashboard`, icon: <LayoutDashboard /> },
+          ]
+        },
+        {
+          icon: <LayoutDashboard />, label: t("Result"), route: "#", children: [
+            { label: t("Portal"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageResult/pagePortals`, icon: <LayoutDashboard /> },
+            { label: t("Publish"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageResult/pagePublish`, icon: <LayoutDashboard /> },
+            { label: t("Report Card"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageResult/pageReportCard`, icon: <LayoutDashboard /> },
           ]
         },
         {
           icon: <Users />, label: t("Students"), route: "#", children: [
-            { label: t("Student List"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents`, icon: <Users /> },
-            { label: t("New Admission"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/pageAdmission`, icon: <UserPlus /> },
+            { label: t("View"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents`, icon: <Users /> },
             { label: t("Pre-Enrolment"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/PreInscription`, icon: <UserPlus /> },
-            { label: t("Class Promotion"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/promotion`, icon: <BadgeCheck /> },
-            { label: t("Attendance"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/attendance`, icon: <ClipboardList /> },
+            { label: t("Promotion"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/promotion`, icon: <BadgeCheck /> },
+            // { label: t("Attendance"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/attendance`, icon: <ClipboardList /> },
             { label: t("Moratorium"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/Moratoire`, icon: <FileWarning /> },
-            { label: t("Disciplinary Records"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/discipline`, icon: <FileWarning /> },
           ]
         },
         {
           icon: <UserPlus />, label: t("Teachers"), route: "#", children: [
-            { label: t("Teacher List"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers`, icon: <Users /> },
-            { label: t("Add Teacher"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/add`, icon: <UserPlus /> },
-            { label: t("Subject Allocation"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/allocation`, icon: <NotebookPen /> },
-            { label: t("Timetable Assignment"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/timetable`, icon: <CalendarDays /> },
-            { label: t("Teacher Attendance"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/attendance`, icon: <ClipboardCheck /> },
+            { label: t("View"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers`, icon: <Users /> },
+            // { label: t("Add Teacher"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/add`, icon: <UserPlus /> },
+            // { label: t("Timetable Assignment"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/timetable`, icon: <CalendarDays /> },
+            { label: t("Attendance"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/pageAattendance`, icon: <ClipboardCheck /> },
           ]
         },
         {
           icon: <Users />, label: t("User Management"), route: "#", children: [
-            { label: t("Parent List"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/parents`, icon: <Users /> },
-            { label: t("Users & Roles"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/roles`, icon: <UserPlus /> },
-            { label: t("Permissions"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/permissions`, icon: <Settings /> },
-            { label: t("Login History"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/history`, icon: <ClipboardList /> },
+            { label: t("Parents"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/pageParents`, icon: <Users /> },
+            { label: t("Teachers"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/pageTeachers`, icon: <Users /> },
+            // { label: t("Users & Roles"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/roles`, icon: <UserPlus /> },
+            // { label: t("Permissions"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/permissions`, icon: <Settings /> },
+            // { label: t("Login History"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/history`, icon: <ClipboardList /> },
           ]
         },
         {
           icon: <School2 />, label: t("Academics"), route: "#", children: [
-            { label: t("Manage Classes"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/pageClassrooms`, icon: <School2 /> },
-            { label: t("Manage Subjects"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/pageSubjects`, icon: <Users /> },
-            { label: t("Manage Series"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/series`, icon: <Users /> },
+            { label: t("Classes"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/pageClassrooms`, icon: <School2 /> },
+            { label: t("Series"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/pageSeries`, icon: <Users /> },
+            { label: t("Assigned Subjects"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/pageSubjects`, icon: <Users /> },
+            { label: t("Subject List"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/pageMainSubjects`, icon: <BookOpen /> },
+            { label: t("Halls"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/pageHalls`, icon: <School2 /> },
             // { label: t("Manage Sections"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/sections`, icon: <Users /> },
             // { label: t("Seating Arrangement"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/seating`, icon: <LayoutDashboard /> },
             // { label: t("Subjects by Grade"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/subjects-grade`, icon: <BookOpen /> },
-            { label: t("Syllabus Upload"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/syllabus`, icon: <FileText /> },
-            { label: t("Lesson Plans"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/lesson-plans`, icon: <NotebookPen /> },
-            { label: t("Weekly Topics"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/topics`, icon: <BookOpenCheck /> },
+            // { label: t("Syllabus Upload"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/syllabus`, icon: <FileText /> },
+            // { label: t("Lesson Plans"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/lesson-plans`, icon: <NotebookPen /> },
+            // { label: t("Weekly Topics"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageAcademics/topics`, icon: <BookOpenCheck /> },
           ]
         },
         {
           icon: <ClipboardCheck />, label: t("Batch Operations"), route: "#", children: [
-            { label: t("Assign Class Teachers"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageBatchOperation/teachers`, icon: <UserPlus /> },
-            { label: t("Assign Subjects"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageBatchOperation/subjects`, icon: <NotebookPen /> },
-            { label: t("Import Subjects"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageBatchOperation/subjects`, icon: <NotebookPen /> },
+            { label: t("Import Subjects"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageBatchOperation/pageImportSubjects`, icon: <NotebookPen /> },
           ]
         },
         // {
@@ -164,10 +157,7 @@ export const GetMenuAdministration = (): MenuSection[] => {
             { label: t("School Profile"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/pageSchoolInfo`, icon: <School2 /> },
             // { label: t("Academic Year Settings"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/academic-year`, icon: <CalendarDays /> },
             // { label: t("Term/Session Management"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/terms`, icon: <CalendarDays /> },
-            { label: t("Subject List"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/pageMainSubjects`, icon: <BookOpen /> },
-            // { label: t("Class/Grade Levels"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/pageLevels`, icon: <School2 /> },
-            { label: t("Halls"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/pageHalls`, icon: <School2 /> },
-            // { label: t("Theme Preferences"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/theme`, icon: <Cog /> },
+          // { label: t("Theme Preferences"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/theme`, icon: <Cog /> },
             // { label: t("SMS/Email Settings"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/notifications`, icon: <MessageCircle /> },
             // { label: t("Backup & Restore"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageSettings/backup`, icon: <FileCheck /> },
           ]

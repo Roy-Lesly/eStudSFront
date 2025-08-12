@@ -63,7 +63,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Transcript",
-  description: "This is Transcript Page",
+  description: "e-conneq School System. Transcript Page",
 };
 
 

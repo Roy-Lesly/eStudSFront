@@ -51,6 +51,6 @@ export default page
 
 export const metadata: Metadata = {
   title: "Halls-Settings",
-  description: "This is Halls-Settings Page",
+  description: "e-conneq School System. Halls-Settings Page",
 };
 

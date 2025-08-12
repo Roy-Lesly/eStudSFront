@@ -6,7 +6,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Admission Page",
-  description: "This is Admission Page Admin Settings",
+  description: "e-conneq School System. Admission Page Admin Settings",
 };
 
 const page = async ({
@@ -17,7 +17,7 @@ const page = async ({
 }) => {
 
   const p = await params;
-  
+
   const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA,

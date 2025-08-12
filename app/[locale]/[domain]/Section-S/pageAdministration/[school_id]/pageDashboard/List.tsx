@@ -16,7 +16,7 @@ const List = ({
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
-  
+
 
   return (
     <DefaultLayout

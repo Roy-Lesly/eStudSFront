@@ -8,13 +8,17 @@ import { gql, useQuery } from '@apollo/client';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { useTranslation } from 'react-i18next';
 import { EdgeAccount } from '@/utils/Domain/schemas/interfaceGraphql';
-import { NodeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import { EdgeTransactionsPrim, NodeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import { JwtPayload } from '@/utils/serverActions/interfaces';
+import { jwtDecode } from 'jwt-decode';
 
 
 const ModalTransaction = (
-  { setModalOpen, data, p, schoolFeesPrim }:
-    { setModalOpen: any; data: any, p: any, schoolFeesPrim: NodeSchoolFeesPrim }
+  { setModalOpen, data, p, schoolFeesPrim, action, selectedItem }:
+    { setModalOpen: any; data: any, p: any, schoolFeesPrim: NodeSchoolFeesPrim, action: "create" | "update" | "delete", selectedItem?: EdgeTransactionsPrim }
 ) => {
+  const token = localStorage.getItem("token")
+  const user: JwtPayload | null = token ? jwtDecode(token) : null
   const [clicked, setClicked] = useState<boolean>(false)
   const [reasons, setReasons] = useState<EdgeAccount[]>([])
   const { t } = useTranslation("common");
@@ -33,6 +37,7 @@ const ModalTransaction = (
     account: '',
     operator: '',
     status: 'Completed',
+    updatedById: user?.user_id,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -47,8 +52,6 @@ const ModalTransaction = (
       }
     }
   );
-
-  console.log(reasonsApi);
 
   useEffect(() => {
     if (formData.reason === "PLATFORM CHARGES" && parseInt(formData.amount) != platformCharges) {
@@ -83,7 +86,7 @@ const ModalTransaction = (
     }
 
     setClicked(true)
-    const newData = {
+    let newData = {
       ...formData,
       schoolfeesprimId: decodeUrlID(data.id),
       amount: parseInt(formData.amount),
@@ -91,11 +94,13 @@ const ModalTransaction = (
       operationType: "income",
       status: (formData.reason === "PLATFORM CHARGES" || formData.reason === "IDCARD") ? "Pending" : "Completed",
       ref: formData.ref ? formData.ref : new Date().toISOString(),
-      delete: false
+      delete: action === "delete"
     }
+    
 
     await ApiFactory({
-      newData: { id: parseInt(decodeUrlID(data?.node?.userprofile.customuser.id)), ...newData, delete: false },
+      newData: { ...newData, createdById: user?.user_id },
+      editData: { ...newData, id: parseInt(decodeUrlID(selectedItem?.node?.id || ""))},
       mutationName: "createUpdateDeleteTransactionPrim",
       modelName: "transactionprim",
       successField: "id",
@@ -259,6 +264,8 @@ const query = gql`
       $origin: String!
       $account: String!
       $status: String!
+      $createdById: ID
+      $updatedById: ID!
       $delete: Boolean!
     ) {
       createUpdateDeleteTransactionPrim(
@@ -273,6 +280,8 @@ const query = gql`
         origin: $origin
         account: $account
         status: $status
+        createdById: $createdById
+        updatedById: $updatedById
         delete: $delete
       ) {
         transactionprim {

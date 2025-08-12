@@ -16,11 +16,11 @@ const EditPage = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = { };
+  const paginationParams: Record<string, any> = {};
 
-  
+
   paginationParams.domainName = sp?.domainName
-  
+
   const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA,
@@ -28,11 +28,11 @@ const EditPage = async ({
       ...removeEmptyFields(paginationParams),
     },
   });
-  
+
   return (
     <div>
-    <List params={p} data={data} searchParams={sp} />
-  </div>
+      <List params={p} data={data} searchParams={sp} />
+    </div>
   )
 }
 
@@ -43,7 +43,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Domain-Settings",
-  description: "This is Domain-Settings Page",
+  description: "e-conneq School System. Domain-Settings Page",
 };
 
 

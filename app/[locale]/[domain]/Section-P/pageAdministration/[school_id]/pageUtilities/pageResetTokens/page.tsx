@@ -22,26 +22,26 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const apiData: ProgramInter[] | any = await getData(protocol  + "api" + p.domain + ResetPasswordTokensUrl, {}, p.domain);
-  
+  const apiData: ProgramInter[] | any = await getData(protocol + "api" + p.domain + ResetPasswordTokensUrl, {}, p.domain);
+
   return (
-    
-      <>
-        <Breadcrumb
-          pageName="Password Tokens" 
-          pageName1="Dashboard" 
-          pageName2="Settings" 
-          link1={`/Section-H/pageAdministration/${p.school_id}`}
-          link2={`/Section-H/pageAdministration/${p.school_id}/pageUtilities`}
-        />
 
-        {searchParams && <NotificationError errorMessage={searchParams} />}
-        {apiData == "ECONNREFUSED" && <ServerError type='network' />}
-        {apiData && apiData.unauthorized && redirect(`/pageAuthentication/pageSessionExpired`)}
-        {apiData != "ECONNREFUSED" && <List apiData={apiData} params={params} />}
+    <>
+      <Breadcrumb
+        pageName="Password Tokens"
+        pageName1="Dashboard"
+        pageName2="Settings"
+        link1={`/Section-H/pageAdministration/${p.school_id}`}
+        link2={`/Section-H/pageAdministration/${p.school_id}/pageUtilities`}
+      />
 
-      </>
-    
+      {searchParams && <NotificationError errorMessage={searchParams} />}
+      {apiData == "ECONNREFUSED" && <ServerError type='network' />}
+      {apiData && apiData.unauthorized && redirect(`/pageAuthentication/pageSessionExpired`)}
+      {apiData != "ECONNREFUSED" && <List apiData={apiData} params={params} />}
+
+    </>
+
   )
 }
 
@@ -49,11 +49,11 @@ export default page
 
 export const metadata: Metadata = {
   title: "Password",
-  description: "This is Password Page",
+  description: "e-conneq School System. Password Page",
 };
 
 
-const List = ( {apiData, params}: any ) => {
+const List = ({ apiData, params }: any) => {
 
   return (
     <div className="bg-white border border-stroke dark:bg-boxdark dark:border-strokedark rounded-sm shadow-default">
@@ -63,7 +63,7 @@ const List = ( {apiData, params}: any ) => {
         </h4>
         <MyButtonCustom
           title="Add Program"
-          href={`/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms/create`} 
+          href={`/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms/create`}
         />
       </div>
 
@@ -119,7 +119,7 @@ const List = ( {apiData, params}: any ) => {
         count={apiData.count}
         thisUrl={"/Section-H/pageAdministration/pageSettings/pagePrograms"}
       />
-    
+
     </div>
   )
 }

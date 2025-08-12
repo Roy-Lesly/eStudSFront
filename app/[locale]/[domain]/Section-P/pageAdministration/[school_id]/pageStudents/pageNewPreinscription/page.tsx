@@ -9,7 +9,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Registration Page",
-  description: "This is Registration Page Admin Settings",
+  description: "e-conneq School System. Registration Page Admin Settings",
 };
 
 

@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, getData, removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 const page = async ({
   params,
@@ -14,7 +14,7 @@ const page = async ({
 
   const p = await params;
   const sp = await searchParams;
-  
+
   const client = getApolloClient(p.domain);
   let dataAllTimeTables;
 
@@ -23,9 +23,9 @@ const page = async ({
       schoolId: parseInt(p.school_id),
       timestamp: new Date().getTime()
     }
-    if (sp?.specialtyName) { q = { ...q, specialtyName: sp.specialtyName}}
-    if (sp?.year) { q = { ...q, year: parseInt(sp?.year || "")}}
-    if (sp?.month) { q = { ...q, month: parseInt(sp?.month || "")}}
+    if (sp?.specialtyName) { q = { ...q, specialtyName: sp.specialtyName } }
+    if (sp?.year) { q = { ...q, year: parseInt(sp?.year || "") } }
+    if (sp?.month) { q = { ...q, month: parseInt(sp?.month || "") } }
     const result = await client.query<any>({
       query: GET_TIMETABLES,
       variables: q,
@@ -34,7 +34,7 @@ const page = async ({
     dataAllTimeTables = result.data;
   } catch (error: any) {
     errorLog(error);
-    
+
     dataAllTimeTables = null;
   }
 
@@ -49,7 +49,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "TimeTable",
-  description: "This is TimeTable Page",
+  description: "e-conneq School System. TimeTable Page",
 };
 
 

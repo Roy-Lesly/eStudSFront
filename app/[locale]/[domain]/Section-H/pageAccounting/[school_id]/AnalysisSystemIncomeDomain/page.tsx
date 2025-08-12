@@ -7,7 +7,7 @@ import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Income-Domain",
-  description: "This is Income-Domain Accounting Page",
+  description: "e-conneq School System. Income-Domain Accounting Page",
 };
 
 const page = async ({
@@ -18,8 +18,8 @@ const page = async ({
   searchParams?: any
 }) => {
 
-   const p = await params;
-          const sp = await searchParams;
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = {};
 
@@ -67,7 +67,12 @@ const page = async ({
 
   return (
     <div>
-      <List params={p} data={data} dataYears={dataYears} searchParams={sp} />
+      <List
+        p={p}
+        data={data}
+        dataYears={dataYears}
+        sp={sp}
+      />
     </div>
   )
 }

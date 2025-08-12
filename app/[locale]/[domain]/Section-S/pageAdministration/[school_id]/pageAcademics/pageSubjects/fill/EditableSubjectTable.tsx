@@ -1,12 +1,15 @@
 'use client';
-import { NodeSubject } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { NodeSubjectSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { decodeUrlID } from '@/utils/functions';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { JwtPayload } from '@/utils/serverActions/interfaces';
 import { gql } from '@apollo/client';
-import { setSourceMapsEnabled } from 'process';
+import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaArrowLeftLong } from 'react-icons/fa6';
 
 const subjectTypeChoices = [
   { label: 'Theory', value: 'THEORY' },
@@ -14,7 +17,7 @@ const subjectTypeChoices = [
 ];
 
 type SubjectField = keyof Pick<
-  NodeSubject,
+  NodeSubjectSec,
   'subjectCode' | 'subjectType' | 'subjectCoefficient' | 'compulsory'
 >;
 
@@ -22,7 +25,10 @@ type SubjectField = keyof Pick<
 const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any }) => {
 
   const { t } = useTranslation("common");
-  const [count, setCount] = useState(0)
+  const router = useRouter();
+  const token = localStorage.getItem("token");
+  const user: JwtPayload | null = token ? jwtDecode(token) : null
+
   const [subjects, setSubjects] = useState(() =>
     data.map(item => ({
       mainSubjectId: item.node.id,
@@ -42,6 +48,13 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
     });
   };
 
+  const removeSubject = (msid: string) => {
+    const ids = JSON.parse(sp?.ids)
+    const submittedId = decodeUrlID(msid)
+    setSubjects(prev => prev.filter(s => s.mainSubjectId !== msid));
+    router.push(`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageSubjects/fill/?classId=${sp?.classId}&ids=${JSON.stringify(ids.filter((i: string) => i != submittedId))}`)
+  };
+
   const handleSubmit = async () => {
 
     const isValid = subjects.every(sub =>
@@ -55,6 +68,8 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
       return;
     }
 
+    let count = 0
+
     for (const sub of subjects) {
       const payload = {
         ...sub,
@@ -62,6 +77,8 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
         classroomsecId: parseInt(decodeUrlID(sp?.classId)),
         subjectCoefficient: Number(sub.subjectCoefficient),
         compulsory: Boolean(sub.compulsory),
+        createdById: user?.user_id,
+        updatedById: user?.user_id,
         delete: false,
       };
 
@@ -77,22 +94,26 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
           params: p,
           redirect: false,
           reload: false,
-          returnResponseField: false,
+          returnResponseField: true,
           redirectPath: ``,
           actionLabel: "processing",
         });
 
-        if (res?.id.length > 5) {
-          setCount(count + 1);
+        console.log(res);
+
+        if (res?.length > 5) {
+          count += 1;
+          removeSubject(payload.mainSubjectId)
         }
       } catch (error) {
         errorLog(error);
       }
-
-      if (count) {
-        alert(t("Subject submissions completed"));
-      }
+      console.log(count);
     }
+    if (count) {
+      alert(t("Subject submissions completed"));
+    }
+
 
   };
 
@@ -156,19 +177,20 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
         </tbody>
       </table>
 
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-between gap-3">
+        <button
+          onClick={() => router.push(`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageSubjects/assign/?classId=${sp?.classId})}`)}
+          className="flex gap-2 bg-red hover:bg-slate-500 text-white px-4 py-2 rounded"
+        >
+          <FaArrowLeftLong size={25} color='white' /> {t("Reset")}
+        </button>
         <button
           onClick={() => handleSubmit()}
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded"
         >
-          Submit Subjects
+          {t("Submit Subjects")}
         </button>
-        <button
-          onClick={() => setSubjects([])}
-          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
-        >
-          Reset
-        </button>
+        
       </div>
     </div>
   );
@@ -187,9 +209,11 @@ export const query = gql`
         $subjectType: String!,
         $subjectCoefficient: Int!,
         $compulsory: Boolean!,
+        $createdById: ID,
+        $updatedById: ID!,
         $delete: Boolean!
     ) {
-        createUpdateDeleteSubjectSec(
+        createUpdateDeleteSubjectSec (
             id: $id,
             mainsubjectId: $mainsubjectId,
             classroomsecId: $classroomsecId,
@@ -197,10 +221,12 @@ export const query = gql`
             subjectType: $subjectType,
             subjectCoefficient: $subjectCoefficient,
             compulsory: $compulsory,
+            createdById: $createdById,
+            updatedById: $updatedById,
             delete: $delete
         ) {
             subjectsec {
-                id
+              id
             }
         }
     }

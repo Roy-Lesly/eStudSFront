@@ -20,7 +20,7 @@ export interface NodeUserProfilePrim {
   customuser: NodeCustomUser;
   series: NodeSeries[];
   classroomprim: NodeClassRoomPrim;
-  programprim: NodeProgramPrim;
+  programprim: string;
   infoData: string | any;
   session: string;
   active: false;
@@ -34,11 +34,11 @@ export interface NodeSeries {
   subjects: { edges: EdgeMainSubject[] };
 }
 
-export interface NodeProgramPrim {
-  id: string;
-  name: string;
-  description: string;
-}
+// export interface NodeProgramPrim {
+//   id: string;
+//   name: string;
+//   description: string;
+// }
 
 
 export interface NodeClassRoomPrim {
@@ -165,6 +165,31 @@ export interface NodePreInscriptionPrim {
   session: string;
 }
 
+export interface NodeNotificationPrim {
+  id: string;
+  target: string;
+  classroomsPrim: {
+    edges: EdgeClassRoomPrim[];
+  };  
+  subject: string;
+  message: string;
+  recipients: string;
+  academicYear: string;
+  notificationType: string;
+  scheduledFor: string;
+  sent: boolean;
+  campus: NodeSchoolHigherInfo;
+}
+
+export interface NodeComplainPrim {
+  id: string;
+  userprofileprim: NodeUserProfilePrim;
+  message: string;
+  complainType: string;
+  status: string;
+  endingAt: string;
+}
+
 
 
 
@@ -220,6 +245,14 @@ export interface EdgeSchoolFeesPrim {
 
 export interface EdgeTransactionsPrim {
   node: NodeTransactionsPrim;
+}
+
+export interface EdgeNotificationPrim {
+  node: NodeNotificationPrim;
+}
+
+export interface EdgeComplainPrim {
+  node: NodeComplainPrim;
 }
 
 

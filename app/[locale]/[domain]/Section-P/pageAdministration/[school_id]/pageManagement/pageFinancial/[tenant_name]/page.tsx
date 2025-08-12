@@ -2,6 +2,8 @@ import React from 'react'
 import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
+
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const page = async ({
@@ -15,31 +17,34 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
+  const client = getApolloClient(`${p.tenant_name}`, true);
+
   const dataPlatformPaid = await queryServerGraphQL({
-    domain: p?.domain,
-    query: GET_DATA_PLATFORM_PAID,
+    domain: p.domain,
+    query: GET_DATA_PLATFORM,
     variables: {
-      // schoolId: (params.school_id),
       specialtyName: sp?.specialty,
       fullName: sp?.fullName,
       level: sp?.level,
       academicYear: sp?.academicYear,
+      platformPaid: true,
     },
   });
 
   const dataPlatformPending = await queryServerGraphQL({
-    domain: p?.domain,
-    query: GET_DATA_PLATFORM_PENDING,
+    domain: p.domain,
+    query: GET_DATA_PLATFORM,
     variables: {
       specialtyName: sp?.specialty,
       fullName: sp?.fullName,
       level: sp?.level,
       academicYear: sp?.academicYear,
+      platformPaid: false,
     },
   });
 
   const dataTransactions = await queryServerGraphQL({
-    domain: p?.domain,
+    domain: p.doamin,
     query: GET_LAST_PLATFORM_TRANSACTIONS,
     variables: {
       specialtyName: sp?.specialty,
@@ -49,9 +54,11 @@ const page = async ({
     },
   });
 
+
   return (
     <List
       params={params}
+      section={"P"}
       dataPlatformPaid={dataPlatformPaid?.allSchoolFees?.edges}
       dataPlatformPending={dataPlatformPending?.allSchoolFees?.edges}
       dataTransactions={dataTransactions?.allTransactions?.edges}
@@ -65,17 +72,18 @@ export default page
 
 export const metadata: Metadata = {
   title: "Management",
-  description: "This is Manangement Page Settings",
+  description: "e-conneq School System. Manangement Page Settings",
 };
 
 
-const GET_DATA_PLATFORM_PAID = gql`
+const GET_DATA_PLATFORM = gql`
   query GetAllData  (
     $schoolId: Decimal,
     $specialtyName: String,
     $fullName: String,
     $level: Decimal,
     $academicYear: String
+    $platformPaid: Boolean!
   ) {
     allSchoolFees (
       schoolId: $schoolId,
@@ -83,52 +91,20 @@ const GET_DATA_PLATFORM_PAID = gql`
       fullName: $fullName,
       level: $level,
       academicYear: $academicYear,
-      platformPaid: true,
+      platformPaid: $platformPaid,
       last: 200
     ) {
       edges {
         node {
           id userprofile { 
             specialty { academicYear level { level} mainSpecialty { specialtyName}} 
-            user { fullName sex matricle sex}
+            customuser { fullName sex matricle sex}
           }
         }
       }
     }
   }
 `;
-
-
-const GET_DATA_PLATFORM_PENDING = gql`
-  query GetAllData (
-    $schoolId: Decimal,
-    $specialtyName: String,
-    $fullName: String,
-    $level: Decimal,
-    $academicYear: String
-  ) {
-    allSchoolFees (
-      schoolId: $schoolId,
-      specialtyName: $specialtyName,
-      fullName: $fullName,
-      level: $level,
-      academicYear: $academicYear,
-      platformPaid: false,
-      last: 200
-    ) {
-      edges {
-        node {
-          id 
-          userprofile { 
-            specialty { academicYear level { level} mainSpecialty { specialtyName}} 
-            user { fullName sex matricle sex}
-          }
-        }
-      }
-    }
-  }
-`;
-
 
 const GET_LAST_PLATFORM_TRANSACTIONS = gql`
   query GetAllData (
@@ -154,7 +130,7 @@ const GET_LAST_PLATFORM_TRANSACTIONS = gql`
           schoolfees {
             userprofile { 
               specialty { academicYear level { level} mainSpecialty { specialtyName}} 
-              user { fullName sex matricle sex}
+              customuser { fullName sex matricle sex}
             }
           }
         }

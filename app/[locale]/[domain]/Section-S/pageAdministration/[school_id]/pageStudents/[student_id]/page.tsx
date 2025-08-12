@@ -8,7 +8,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Info Page",
-  description: "This is Info Page Admin Settings",
+  description: "e-conneq School System. Info Page Admin Settings",
 };
 
 const page = async ({
@@ -26,10 +26,10 @@ const page = async ({
     domain: p.domain,
     query: GET_DATA,
     variables: {
-        id: params.profile_id,
-        userprofilesecId: parseInt(decodeUrlID(p.student_id)),
-        customuserId: parseInt(decodeUrlID(sp.user)),
-        schoolId: p.school_id,
+      id: params.profile_id,
+      userprofilesecId: parseInt(decodeUrlID(p.student_id)),
+      customuserId: parseInt(decodeUrlID(sp.user)),
+      schoolId: p.school_id,
     },
   });
 

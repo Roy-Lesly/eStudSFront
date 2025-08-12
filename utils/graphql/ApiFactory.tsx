@@ -1,3 +1,4 @@
+import { removeEmptyFields } from "../functions";
 import { uploadGraphQLMutation } from "./UploadGraphql";
 
 type SubmitOptions = {
@@ -42,21 +43,18 @@ export const ApiFactory = async ({
 
   for (let index = 0; index < items.length; index++) {
     let res: any = items[index];
-    if (editData?.id) {
-      // res = { ...res, id: parseInt(decodeUrlID(editData.id)) };
-    }
 
     try {
       const response = await uploadGraphQLMutation({
         query: query.loc?.source.body || "",
-        variables: res,
+        variables: removeEmptyFields(res),
         fileMap: getFileMap ? getFileMap(res) : {},
         params: params,
         token: localStorage.getItem("token") || "",
       });
 
       const result = response?.data?.[mutationName]?.[modelName];
-
+      
       if (response?.data?.[mutationName]) {
 
         if (returnResponseObject) {

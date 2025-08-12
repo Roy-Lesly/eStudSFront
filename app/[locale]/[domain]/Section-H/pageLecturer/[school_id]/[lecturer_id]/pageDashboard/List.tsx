@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Dashboard Page",
-  description: "This is Dashboard Page Lecturer Settings",
+  description: "e-conneq School System. Dashboard Page Lecturer Settings",
 };
 
 

@@ -2,11 +2,10 @@ import { Metadata } from 'next';
 import React, { Suspense } from 'react'
 import NotificationError from '@/section-h/common/NotificationError';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
-import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import List from './List';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 
 export const metadata: Metadata = {
@@ -56,7 +55,7 @@ const page = async ({
 
                 <Suspense fallback={<div>Loading ...</div>}>
 
-                    <List params={p} data={data} searchParams={sp} />
+                    <List p={p} data={data} searchParams={sp} />
 
                 </Suspense>
 

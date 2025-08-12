@@ -5,7 +5,7 @@ import { EdgeCourse } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 
-const Courses = ({ data }: { data: EdgeCourse[], params: any }) => {
+const Courses = ({ data }: { data: EdgeCourse[], p: any }) => {
 
   const Columns: TableColumn<EdgeCourse>[] = [
     { header: "#", align: "center", render: (_item: EdgeCourse, index: number) => index + 1, },

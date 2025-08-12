@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Domains Page",
-  description: "This is Domains Page Admin Settings",
+  description: "e-conneq School System. Domains Page Admin Settings",
 };
 
 const List = ({ params, data }: { params: any; data: any, searchParams: any }) => {
@@ -34,9 +34,9 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
 
     {
       header: `${t("View")}`, align: "center", render: (item) => <div className='flex flex-row gap-2 justify-center'>
-      <ButtonAction data={item} type='edit' action={() => {setShowModal({ show: true, type: "update"}); setSelectedItem(item) }} />
-      <ButtonAction data={item} type='delete' action={() => {setShowModal({ show: true, type: "delete"}); setSelectedItem(item) }} />
-    </div>,
+        <ButtonAction data={item} type='edit' action={() => { setShowModal({ show: true, type: "update" }); setSelectedItem(item) }} />
+        <ButtonAction data={item} type='delete' action={() => { setShowModal({ show: true, type: "delete" }); setSelectedItem(item) }} />
+      </div>,
     },
   ];
   return (
@@ -67,19 +67,19 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-              <MyTableComp
-                data={
-                  data.allDomains.edges.sort((a: EdgeDomain, b: EdgeDomain) => {
-                    const domainNameA = a.node.domainName.toLowerCase();
-                    const domainNameB = b.node.domainName.toLowerCase();
-                    return domainNameA.localeCompare(domainNameB);
-                  })}
-                columns={Columns}
-                table_title={`${t("Domain")}s`}
-                button_type={"add"}
-                button_action={() => { setShowModal({ type: "create", show: true })}}
-              />
-              :
+            <MyTableComp
+              data={
+                data.allDomains.edges.sort((a: EdgeDomain, b: EdgeDomain) => {
+                  const domainNameA = a.node.domainName.toLowerCase();
+                  const domainNameB = b.node.domainName.toLowerCase();
+                  return domainNameA.localeCompare(domainNameB);
+                })}
+              columns={Columns}
+              table_title={`${t("Domain")}s`}
+              button_type={"add"}
+              button_action={() => { setShowModal({ type: "create", show: true }) }}
+            />
+            :
             <ServerError type='network' item='' />}
         </div>
 
@@ -91,7 +91,7 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
             selectedItem={selectedItem}
           />}
           openState={showModal?.show || false}
-          onClose={() => setShowModal({ show: false, type: "create"})}
+          onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}
           classname=''
         />

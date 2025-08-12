@@ -1,4 +1,4 @@
-import { EdgeCustomUser, EdgeLevel, EdgeMainSpecialty, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeCustomUser, EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import MyInputField from '@/MyInputField';
 import { JwtPayload } from '@/serverActions/interfaces';
@@ -18,6 +18,7 @@ interface FormData {
   levelId: number
   academicYear: string
   resultType: string
+  programId: number
   registration: number
   tuition: number
   paymentOne: number
@@ -31,7 +32,7 @@ const ModalCUDSpecialty = (
     :
     {
       params: { school_id: string, locale: string, domain: string }, setOpenModal: any, selectedItem: EdgeSpecialty, actionType: "create" | "update" | "delete" | string,
-      extraData: { levels?: EdgeLevel[], mainSpecialties?: EdgeMainSpecialty[], teachers?: EdgeCustomUser[] }
+      extraData: { levels?: EdgeLevel[], mainSpecialties?: EdgeMainSpecialty[], teachers?: EdgeCustomUser[], programs: EdgeProgram[] }
     }
 ) => {
 
@@ -47,6 +48,7 @@ const ModalCUDSpecialty = (
     levelId: selectedItem ? parseInt(decodeUrlID(selectedItem.node.level.id)) : 0,
     academicYear: selectedItem ? selectedItem.node.academicYear : "",
     resultType: selectedItem ? selectedItem.node.resultType : "GPA_4",
+    programId: selectedItem ? parseInt(decodeUrlID(selectedItem.node.program.id)) : 0,
     registration: selectedItem ? selectedItem.node.registration : 0,
     tuition: selectedItem ? selectedItem.node.tuition : 0,
     paymentOne: selectedItem ? selectedItem.node.paymentOne : 0,
@@ -243,6 +245,16 @@ const ModalCUDSpecialty = (
               onChange={(e) => handleChange('resultType', (e.target.value))}
               options={[{ id: "GPA_4", name: "GPA 4" }, { id: "GPA_5", name: "GPA 5" }]}
             />
+            <MyInputField
+              id="programId"
+              name="programId"
+              label="Program"
+              type="select"
+              placeholder="Select a Program"
+              value={formData.programId?.toString()}
+              options={extraData?.programs?.map((item: EdgeProgram) => { return { id: decodeUrlID(item.node.id.toString()), name: item.node.name } })}
+              onChange={(e) => handleChange('programId', parseInt(e.target.value))}
+            />
           </div>
 
           <motion.button
@@ -273,6 +285,7 @@ const query = gql`
     $levelId: ID!,
     $academicYear: String!,
     $resultType: String,
+    $programId: ID!,
     $registration: Int!,
     $tuition: Int!,
     $paymentOne: Int!,
@@ -289,6 +302,7 @@ const query = gql`
       levelId: $levelId,
       academicYear: $academicYear,
       resultType: $resultType,
+      programId: $programId,
       registration: $registration,
       tuition: $tuition,
       paymentOne: $paymentOne,

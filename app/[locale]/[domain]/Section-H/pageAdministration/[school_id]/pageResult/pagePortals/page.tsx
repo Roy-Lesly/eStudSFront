@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog } from '@/functions'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+
 import { gql } from '@apollo/client'
 import List from './List'
 
@@ -64,7 +65,7 @@ export default page
 export const metadata: Metadata = {
   title:
     "Portal-Results",
-  description: "This is Portal Page",
+  description: "e-conneq School System. Portal Page",
 };
 
 const GET_ACADEMIC_YEARS = gql`

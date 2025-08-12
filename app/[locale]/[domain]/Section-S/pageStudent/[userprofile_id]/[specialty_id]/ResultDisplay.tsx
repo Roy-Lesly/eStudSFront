@@ -340,12 +340,12 @@ const Result = async (
           </tbody>
         </table> : <div className='font-semibold text-red italic'>{trans("Not Available Yet")} !!!</div>}
 
-        {data && data.length && resitPublished ? <ResultSlip
+        {/* {data && data.length && resitPublished ? <ResultSlip
           data={data}
           schoolFees={schoolFees}
           semester={semester}
           resitPublished={resitPublished}
-        /> : null}
+        /> : null} */}
 
 
       </div>

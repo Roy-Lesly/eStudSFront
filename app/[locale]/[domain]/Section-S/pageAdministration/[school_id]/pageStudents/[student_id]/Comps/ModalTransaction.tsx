@@ -9,12 +9,17 @@ import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { useTranslation } from 'react-i18next';
 import { EdgeAccount } from '@/utils/Domain/schemas/interfaceGraphql';
 import { NodeSchoolFeesSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { JwtPayload } from '@/utils/serverActions/interfaces';
+import { jwtDecode } from 'jwt-decode';
 
 
 const ModalTransaction = (
   { setModalOpen, data, p, schoolFeesSec }:
     { setModalOpen: any; data: any, p: any, schoolFeesSec: NodeSchoolFeesSec }
 ) => {
+
+  const token = localStorage.getItem("token");
+  const user: JwtPayload | null = token ? jwtDecode(token) : null
   const [clicked, setClicked] = useState<boolean>(false)
   const [reasons, setReasons] = useState<EdgeAccount[]>([])
   const { t } = useTranslation("common");
@@ -33,6 +38,7 @@ const ModalTransaction = (
     account: '',
     operator: '',
     status: 'Completed',
+    updatedById: user?.user_id,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -91,8 +97,13 @@ const ModalTransaction = (
       operationType: "income",
       status: (formData.reason === "PLATFORM CHARGES" || formData.reason === "IDCARD") ? "Pending" : "Completed",
       ref: formData.ref ? formData.ref : new Date().toISOString(),
+      createdById: user?.user_id,
       delete: false
     }
+
+    // if (newData?.id) {
+    //   createdById: user?.user_id,
+    // }
 
     await ApiFactory({
       newData: { id: parseInt(decodeUrlID(data?.node?.userprofile.customuser.id)), ...newData, delete: false },
@@ -259,6 +270,8 @@ const query = gql`
       $origin: String!
       $account: String!
       $status: String!
+      $updatedById: ID!
+      $createdById: ID!
       $delete: Boolean!
     ) {
       createUpdateDeleteTransactionSec(
@@ -273,6 +286,8 @@ const query = gql`
         origin: $origin
         account: $account
         status: $status
+        updatedById: $updatedById
+        createdById: $createdById
         delete: $delete
       ) {
         transactionsec {

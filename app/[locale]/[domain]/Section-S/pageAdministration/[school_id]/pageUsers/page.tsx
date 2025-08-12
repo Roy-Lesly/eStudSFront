@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, getData, removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 const page = async ({
   params,
@@ -44,7 +45,7 @@ const page = async ({
     });
     dataAdmins = result.data;
   } catch (error: any) {
-    
+
     dataAdmins = null;
   }
 
@@ -80,13 +81,13 @@ const page = async ({
     dataLects = result.data;
   } catch (error: any) {
     errorLog(error)
-    
+
     dataLects = null;
   }
 
   return (
     <div>
-      <List params={p} data={ {"admins": dataAdmins, studs: dataStuds, lects: dataLects} } searchParams={sp} />
+      <List params={p} data={{ "admins": dataAdmins, studs: dataStuds, lects: dataLects }} searchParams={sp} />
     </div>
   )
 }
@@ -95,7 +96,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Users",
-  description: "This is Users Page",
+  description: "e-conneq School System. Users Page",
 };
 
 
@@ -107,7 +108,7 @@ const GET_DATA_STUDENTS = gql`
   $sex: String,
   $isActive: Boolean,
 ) {
-  allCustomUsers(
+  allCustomusers(
     isActive: $isActive
     schoolId: $schoolId
     last: 150
@@ -133,7 +134,7 @@ const GET_DATA_LECTURERS = gql`
   $sex: String,
   $isActive: Boolean,
 ) {
-  allCustomUsers(
+  allCustomusers(
     schoolId: $schoolId
     last: 300
     fullName: $fullName
@@ -159,7 +160,7 @@ const GET_DATA_ADMIN = gql`
   $sex: String,
   $isActive: Boolean,
 ) {
-  allCustomUsers(
+  allCustomusers(
     isActive: $isActive
     schoolId: $schoolId
     last: 100

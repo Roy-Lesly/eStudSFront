@@ -1,13 +1,13 @@
 import React from 'react'
 // import List from './List'
 import { gql } from '@apollo/client'
-import getApolloClient from '@/functions'
 import { Metadata } from 'next';
 import List from './List';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "My-Courses Page",
-  description: "This is My-Courses Page Admin Settings",
+  description: "e-conneq School System. My-Courses Page Admin Settings",
 };
 const page = async ({
   params,
@@ -38,8 +38,8 @@ const page = async ({
     });
     data = result.data;
   } catch (error: any) {
-    console.log(error,32)
-    
+    console.log(error, 32)
+
     data = null;
   }
 

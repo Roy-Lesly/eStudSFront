@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { decodeUrlID, errorLog } from '@/functions'
+import { decodeUrlID } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 
 const page = async ({
@@ -36,7 +37,7 @@ const page = async ({
   return (
     <div>
       <List params={p} data={data?.allSchoolFees?.edges} searchParams={sp} />
-      </div>
+    </div>
   )
 }
 
@@ -44,7 +45,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "ID Card",
-  description: "This is ID Card Page",
+  description: "e-conneq School System. ID Card Page",
 };
 
 

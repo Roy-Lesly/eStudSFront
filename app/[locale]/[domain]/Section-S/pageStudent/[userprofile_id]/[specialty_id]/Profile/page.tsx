@@ -1,12 +1,12 @@
 import React from "react";
-import getApolloClient, { errorLog } from "@/functions";
+import getApolloClient, { errorLog } from "@/graphql/GetAppolloClient";
 import { Metadata } from "next";
 import { gql } from "@apollo/client";
 import List from "./List";
 
 export const metadata: Metadata = {
   title: "My Profile",
-  description: "This is the Profile Page",
+  description: "e-conneq School System. the Profile Page",
 };
 
 const page = async ({

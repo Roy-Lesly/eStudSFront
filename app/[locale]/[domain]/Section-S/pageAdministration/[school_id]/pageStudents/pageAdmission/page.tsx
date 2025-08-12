@@ -10,7 +10,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Admission Page",
-  description: "This is Admission Page Admin Settings",
+  description: "e-conneq School System. Admission Page Admin Settings",
 };
 
 
@@ -55,7 +55,7 @@ const EditPage = async ({
       <List
         params={p}
         dataPreinscription={dataPreinscription}
-        searchParams={sp}
+        sp={sp}
         dataClassroomsSec={dataClassroomsec?.allClassroomsSec?.edges}
       />
     </div>
@@ -97,10 +97,12 @@ const GET_DATA = gql`
   $id: ID!
   $schoolId: ID!
  ) {
-  allSchoolInfos(id: $schoolId){
+  allSchoolInfos(
+    id: $schoolId
+  ){
     edges {
       node {
-        prefix method
+        id schoolName campus
       }
     }
   }
@@ -123,8 +125,14 @@ const GET_DATA = gql`
     allDepartments {
       edges {
         node {
-          id 
-          name
+          id name
+        }
+      }
+    }
+    allSeries {
+      edges {
+        node {
+          id name
         }
       }
     }

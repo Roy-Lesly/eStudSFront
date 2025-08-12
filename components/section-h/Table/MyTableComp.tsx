@@ -40,11 +40,11 @@ const MyTableComp = <T extends Record<string, any>>({
   button_action,
   button_type = null,
   custom_button = null,
-  setActionType
+  setActionType = () => String
 }: ReusableTableProps<T>) => {
   return (
     <div className="overflow-x-auto w-full">
-      <div className="flex items-center justify-between m-2">
+      <div className="flex items-center justify-between mx-2 mb-2">
         <h2 className="font-bold text-lg uppercase">{table_title}</h2>
         {custom_button}
         {button_type ? <>

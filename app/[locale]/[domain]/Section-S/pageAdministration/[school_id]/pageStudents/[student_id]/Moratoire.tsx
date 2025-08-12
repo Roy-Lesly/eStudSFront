@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 const Moratoire = ({ data, results, params }: { data: EdgeSchoolFeesSec, results: EdgeResultSecondary[], params: any }) => {
     const { t } = useTranslation("common");
-    const [selectedSemester, setSelectedSemester] = useState<string>('I');
+    const [selectedTerm, setSelectedSemester] = useState<string>('I');
     const [viewMoratoire, setViewMoratoire] = useState<boolean>(false);
     const balance = data?.node?.balance
     const statusPlatform = data?.node?.platformPaid
@@ -85,7 +85,7 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFeesSec, results
                 <div className='flex flex-col items-center justify-between md:flex-row'>
                     <div
                         className="flex font-semibold items-center justify-between mb-2 text-slate-800 text-xl">
-                        Semester {selectedSemester} - Results
+                        Term {selectedTerm} - Results
                     </div>
 
                     <button 
@@ -97,7 +97,7 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFeesSec, results
 
                     <div className="mb-6">
                         <select
-                            value={selectedSemester}
+                            value={selectedTerm}
                             onChange={handleSemesterChange}
                             className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-2 rounded-md shadow-sm text-gray-700 transition"
                         >
@@ -112,7 +112,12 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFeesSec, results
                     statusMoratoire={statusMoratoire}
                     respectPayment={respectPayment}
                 >
-                    {selectedSemester === 'I' ? <ResultsEdit params={params} canEdit={false} data={results} /> : null}
+                    {selectedTerm === 'I' ? <ResultsEdit
+                    selectedTerm={selectedTerm}
+                    params={params}
+                    canEdit={false}
+                    data={results} /> : null
+                    }
                     {/* {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "II")} /> : null} */}
                     {/* {selectedSemester === 'II' ? <ResultsEdit params={params} canEdit={false} data={results.filter((item) => item.node.course.semester === "III")} /> : null} */}
                 </MoratoireCheck>

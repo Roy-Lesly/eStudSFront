@@ -16,8 +16,8 @@ const ParentInfo = ({ formData, setFormData, onNext, onPrevious }: any) => {
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-900">{t("Medical Information")}</h2>
+    <div className="bg-white p-2 md:p-4 rounded-lg shadow-2xl space-y-4 md:space-y-6">
+      <h2 className="text-2xl font-bold mb-4 text-blue-900 bg-slate-300 rounded-lg py-1 text-center">{t("Medical Information")}</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[

@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Users Page",
-  description: "This is Users Page Admin Settings",
+  description: "e-conneq School System. Users Page Admin Settings",
 };
 
 
@@ -36,7 +36,7 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
   return data;
 };
 
-const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
 
   const { t } = useTranslation("common")
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -123,6 +123,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       {/* <PasswordResetModal */}
 
       {actionType == "activate" ? <ActivateUserModal
+        p={p}
         action={actionType}
         onClose={() => setActionType(null)}
         id={parseInt(decodeUrlID(selectedItem?.id || ""))}
@@ -135,17 +136,17 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       searchComponent={<SearchMultiple
         names={['fullName', 'telephone']}
-        link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUsers`}
+        link={`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUsers`}
         select={[
           { type: 'select', name: 'sex', dataSelect: ['MALE', 'FEMALE'] },
         ]}
       />}
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -165,8 +166,8 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         department="Users"
         subRoute="List"
         pageName="Users"
-        mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUsers`}
-        subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUsers`}
+        mainLink={`${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUsers`}
+        subLink={`${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUsers`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
@@ -174,9 +175,9 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         {data ? (
           <MyTabs
             tabs={[
-              { label: `${t('Admins')}`, content: data.admins?.allCustomUsers?.edges.length ? <DataComp data={data.admins.allCustomUsers.edges} title="Admins" /> : <ServerError type="notFound" item={t("Admin Users")} /> },
-              { label: `${t('Lecturers')}`, content: data.lects?.allCustomUsers?.edges.length ? <DataComp data={data.lects.allCustomUsers.edges} title="Lecturers" /> : <ServerError type="notFound" item={t("Lecturer Users")} /> },
-              { label: `${t('Students')}`, content: data.studs?.allCustomUsers?.edges.length ? <DataComp data={data.studs.allCustomUsers.edges} title="Students" /> : <ServerError type="notFound" item={t("Student Users")} /> },
+              { label: `${t('Admins')}`, content: data.admins?.allCustomusers?.edges.length ? <DataComp data={data.admins.allCustomusers.edges} title="Admins" /> : <ServerError type="notFound" item={t("Admin Users")} /> },
+              { label: `${t('Lecturers')}`, content: data.lects?.allCustomusers?.edges.length ? <DataComp data={data.lects.allCustomusers.edges} title="Lecturers" /> : <ServerError type="notFound" item={t("Lecturer Users")} /> },
+              { label: `${t('Students')}`, content: data.studs?.allCustomusers?.edges.length ? <DataComp data={data.studs.allCustomusers.edges} title="Students" /> : <ServerError type="notFound" item={t("Student Users")} /> },
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}

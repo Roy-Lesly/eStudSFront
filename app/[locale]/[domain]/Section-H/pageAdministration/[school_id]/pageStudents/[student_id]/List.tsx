@@ -24,7 +24,7 @@ import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
 const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
@@ -40,7 +40,7 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
     <DefaultLayout
       pageType='admin'
       domain={params.domain}
-      searchComponent={<></>}
+      searchComponent={null}
       sidebar={
         <Sidebar
           params={params}

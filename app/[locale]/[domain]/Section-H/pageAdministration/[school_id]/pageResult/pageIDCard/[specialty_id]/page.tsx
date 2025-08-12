@@ -37,7 +37,7 @@ const page = async ({
   return (
     <div>
       <List params={p} data={data?.allSchoolFees?.edges} searchParams={sp} />
-      </div>
+    </div>
   )
 }
 
@@ -45,7 +45,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "ID Card",
-  description: "This is ID Card Page",
+  description: "e-conneq School System. ID Card Page",
 };
 
 

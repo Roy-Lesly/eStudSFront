@@ -6,6 +6,7 @@ import { decodeUrlID } from '@/utils/functions';
 import { gql, useLazyQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const ClassAssignmentForm = (
     { formData, setFormData, onNext, onPrevious, dataClassroomsSec, myClassroom, programsData }:
@@ -20,8 +21,6 @@ const ClassAssignmentForm = (
     const [optionPrograms, setOptionsPrograms] = useState<{ value: string, label: string }[]>([]);
 
     const [getSeries, { data: seriesData }] = useLazyQuery(GET_SERIES);
-
-    console.log(optionPrograms);
 
     useEffect(() => {
 
@@ -93,87 +92,85 @@ const ClassAssignmentForm = (
     const filteredSeries = optionSeries?.find(item => item.value == series);
 
     return (
-        <div className="space-y-5">
+        <div className="flex flex-col gap-4 rounded shadow-2xl bg-white p-2 md:p-4">
             <h2 className="text-2xl font-bold mb-4 text-gray-900">{t("Class Assignment")}</h2>
-            {[
-                { label: 'Active (true/false)', name: 'active', defaultValue: true },
-            ].map(({ label, name, defaultValue }) => (
-                <div key={name} className="flex flex-col gap-1">
-                    <label htmlFor={name} className="text-gray-800 font-semibold text-sm">{label}</label>
-                    <input
-                        id={name}
-                        name={name}
-                        placeholder={label}
-                        value={classAssignment[name] ?? defaultValue ?? ''}
+            <div className="space-y-3">
+                <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 font-semibold text-sm">{t("Classroom")}</label>
+                    <select
+                        name="classroomsecId"
+                        value={classAssignment?.classroomsecId || filteredClassroom?.value || ''}
                         onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        className="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-black font-semibold"
-                    />
+                        className="w-full border border-gray-300 p-2 rounded-md font-semibold"
+                    >
+                        <option value="">{t("Select Classroom   ")}</option>
+                        {optionClassrooms?.map(({ value, label }) => (
+                            <option key={value} value={value}>{label}</option>
+                        ))}
+                    </select>
                 </div>
-            ))}
 
-            <div className="flex flex-col gap-1">
-                <label className="text-gray-800 font-semibold text-sm">{t("Classroom")}</label>
-                <select
-                    name="classroomsecId"
-                    value={classAssignment?.classroomsecId || filteredClassroom?.value || ''}
-                    onChange={(e) => handleChange(e.target.name, e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded-md font-semibold"
-                >
-                    <option value="">{t("Select Classroom   ")}</option>
-                    {optionClassrooms?.map(({ value, label }) => (
-                        <option key={value} value={value}>{label}</option>
-                    ))}
-                </select>
+                <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 font-semibold text-sm">{t("Series")}</label>
+                    <select
+                        name="seriesId"
+                        value={classAssignment.seriesId || filteredSeries?.value || ''}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
+                        className="w-full border border-gray-300 p-2 rounded-md font-semibold"
+                    >
+                        <option value="">{t("Select Series")}</option>
+                        {optionSeries?.map(({ value, label }) => (
+                            <option key={value} value={value}>{label}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 font-semibold text-sm">{t("Session")}</label>
+                    <select
+                        name="session"
+                        value={classAssignment.session || 'Morning'}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
+                        className="w-full border border-gray-300 p-2 rounded-md font-semibold"
+                    >
+                        <option value="Morning">{t("Morning")}</option>
+                        <option value="Evening">{t("Evening")}</option>
+                    </select>
+                </div>
+
+                {/* Program */}
+
+                <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 font-semibold text-sm">{t("Program")}</label>
+                    <select
+                        name="programsec"
+                        value={classAssignment.programsec || ''}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
+                        className="w-full border border-gray-300 p-2 rounded-md font-semibold"
+                    >
+                        <option value="">{t("Select Program")}</option>
+                        {optionPrograms?.map(({ value, label }) => (
+                            <option key={value} value={value}>{label}</option>
+                        ))}
+                    </select>
+                </div>
+
+
             </div>
 
-            <div className="flex flex-col gap-1">
-                <label className="text-gray-800 font-semibold text-sm">{t("Series")}</label>
-                <select
-                    name="seriesId"
-                    value={classAssignment.seriesId || filteredSeries?.value || ''}
-                    onChange={(e) => handleChange(e.target.name, e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded-md font-semibold"
+            <div className='flex justify-between  mt-6'>
+                <button
+                    className="flex items-center justify-center w-32 gap-2 bg-red hover:bg-orange-700 text-white font-bold px-4 py-2 rounded-lg transition"
+                    onClick={onPrevious}
                 >
-                    <option value="">{t("Select Series")}</option>
-                    {optionSeries?.map(({ value, label }) => (
-                        <option key={value} value={value}>{label}</option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="flex flex-col gap-1">
-                <label className="text-gray-800 font-semibold text-sm">{t("Session")}</label>
-                <select
-                    name="session"
-                    value={classAssignment.session || 'Morning'}
-                    onChange={(e) => handleChange(e.target.name, e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded-md font-semibold"
+                    <FaArrowLeft /> {t("Previous")}
+                </button>
+                <button
+                    className="flex items-center justify-center w-30 gap-4 bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg transition"
+                    onClick={onNext}
                 >
-                    <option value="Morning">{t("Morning")}</option>
-                    <option value="Evening">{t("Evening")}</option>
-                </select>
-            </div>
-
-            {/* Program */}
-
-            <div className="flex flex-col gap-1">
-                <label className="text-gray-800 font-semibold text-sm">{t("Program")}</label>
-                <select
-                    name="programsec"
-                    value={classAssignment.programsec || ''}
-                    onChange={(e) => handleChange(e.target.name, e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded-md font-semibold"
-                >
-                    <option value="">{t("Select Program")}</option>
-                    {optionPrograms?.map(({ value, label }) => (
-                        <option key={value} value={value}>{label}</option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="flex gap-4 pt-4 justify-between w-full">
-                <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" onClick={onPrevious}>{t("Back")}</button>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" onClick={onNext}>{t("Next")}</button>
+                    {t("Next")} <FaArrowRight />
+                </button>
             </div>
         </div>
     );

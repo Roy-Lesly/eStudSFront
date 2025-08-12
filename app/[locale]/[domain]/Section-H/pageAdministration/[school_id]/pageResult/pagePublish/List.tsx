@@ -19,12 +19,12 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
     title: "Publish Page",
-    description: "This is Publish Page Admin Settings",
+    description: "e-conneq School System. Publish Page Admin Settings",
 };
 
 const List = (
     { p, apiDataPublish }:
-    { p: any, sp: any; apiDataPublish: EdgePublish[], apiYears: string[] }
+        { p: any, sp: any; apiDataPublish: EdgePublish[], apiYears: string[] }
 ) => {
 
     console.log(apiDataPublish);
@@ -115,32 +115,32 @@ const List = (
 
             {apiDataPublish ?
                 apiDataPublish?.length ?
-                        <div className='flex flex-col gap-10'>
-                            <div className='my-2'>
-                                <h2 className='text-2xl italic text-white py-1 rounded-t-xl text-center font-semibold bg-blue-700'>{t("Publish").toUpperCase()} - {t("Semester").toUpperCase()} I</h2>
-                                <MyTableComp
-                                    data={
-                                        apiDataPublish.filter((item: EdgePublish) => item.node.semester === "I").sort((a: EdgePublish, b: EdgePublish) => {
-                                            const levelA = a.node.specialty.level.level;
-                                            const levelB = b.node.specialty.level.level;
-                                            return levelA > levelB ? 1 : -1;
-                                        })}
-                                    columns={Columns}
-                                />
-                            </div>
-                            <div className='my-2'>
-                                <h2 className='text-2xl italic text-white py-1 rounded-t-xl text-center font-semibold bg-blue-700'>{t("Publish").toUpperCase()} - {t("Semester").toUpperCase()} II</h2>
-                                <MyTableComp
-                                    data={
-                                        apiDataPublish?.filter((item: EdgePublish) => item.node.semester === "II").sort((a: EdgePublish, b: EdgePublish) => {
-                                            const levelA = a.node.specialty.level.level;
-                                            const levelB = b.node.specialty.level.level;
-                                            return levelA > levelB ? 1 : -1;
-                                        })}
-                                    columns={Columns}
-                                />
-                            </div>
+                    <div className='flex flex-col gap-10'>
+                        <div className='my-2'>
+                            <h2 className='text-2xl italic text-white py-1 rounded-t-xl text-center font-semibold bg-blue-700'>{t("Publish").toUpperCase()} - {t("Semester").toUpperCase()} I</h2>
+                            <MyTableComp
+                                data={
+                                    apiDataPublish.filter((item: EdgePublish) => item.node.semester === "I").sort((a: EdgePublish, b: EdgePublish) => {
+                                        const levelA = a.node.specialty.level.level;
+                                        const levelB = b.node.specialty.level.level;
+                                        return levelA > levelB ? 1 : -1;
+                                    })}
+                                columns={Columns}
+                            />
                         </div>
+                        <div className='my-2'>
+                            <h2 className='text-2xl italic text-white py-1 rounded-t-xl text-center font-semibold bg-blue-700'>{t("Publish").toUpperCase()} - {t("Semester").toUpperCase()} II</h2>
+                            <MyTableComp
+                                data={
+                                    apiDataPublish?.filter((item: EdgePublish) => item.node.semester === "II").sort((a: EdgePublish, b: EdgePublish) => {
+                                        const levelA = a.node.specialty.level.level;
+                                        const levelB = b.node.specialty.level.level;
+                                        return levelA > levelB ? 1 : -1;
+                                    })}
+                                columns={Columns}
+                            />
+                        </div>
+                    </div>
                     :
                     <ServerError type="notFound" item={t("Publish")} />
 

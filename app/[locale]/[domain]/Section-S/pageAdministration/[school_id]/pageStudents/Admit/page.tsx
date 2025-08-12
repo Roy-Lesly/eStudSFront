@@ -1,12 +1,12 @@
 import React from 'react'
 import Form from './Form'
 import { gql } from '@apollo/client'
-import getApolloClient, { errorLog } from '@/functions'
 import { Metadata } from 'next';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Admission Page",
-  description: "This is Admission Page Admin Settings",
+  description: "e-conneq School System. Admission Page Admin Settings",
 };
 
 const page = async ({
@@ -18,7 +18,7 @@ const page = async ({
 
   const p = await params;
   // const sp = await searchParams;
-  
+
   const client = getApolloClient(p.domain);
   let data;
 

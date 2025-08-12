@@ -47,7 +47,7 @@ const EditPage = async ({
         params={p}
         dataPending={dataPending?.allPreinscriptions?.edges}
         dataYears={data?.allAcademicYears}
-        searchParams={sp}
+        sp={sp}
       />
     </div>
   )

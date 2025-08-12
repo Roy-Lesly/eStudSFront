@@ -19,9 +19,9 @@ interface FormData {
   courseType: string
   semester: string
   hours: number
-  hoursLeft: number
+  hoursLeft: string
   assigned: boolean
-  assignedToId: string
+  assignedToId: string | any
   delete: boolean
 }
 
@@ -46,9 +46,9 @@ const ModalCUDCourse = (
     courseType: selectedItem ? selectedItem.node.courseType : "",
     semester: selectedItem ? selectedItem.node.semester : "",
     hours: selectedItem ? selectedItem.node.hours : 0,
-    hoursLeft: selectedItem ? selectedItem.node.hoursLeft : 0,
+    hoursLeft: selectedItem?.node?.hoursLeft.toString(),
     assigned: selectedItem ? selectedItem.node.assigned : false,
-    assignedToId: selectedItem ? decodeUrlID(selectedItem.node?.assignedTo?.id) : "0",
+    assignedToId: selectedItem ? decodeUrlID(selectedItem.node?.assignedTo?.id) : undefined,
     delete: selectedItem && actionType === "delete" ? true : false,
   });
 
@@ -81,6 +81,7 @@ const ModalCUDCourse = (
     if (actionType === "create" && selectedItem) {
       dataToSubmit = {
         ...formData,
+        hoursLeft: formData?.hoursLeft || formData.hours.toString(),
         createdById: user.user_id,
       }
     }
@@ -93,10 +94,10 @@ const ModalCUDCourse = (
     }
 
     const res = await ApiFactory({
-      newData: { ...dataToSubmit, hoursLeft: parseInt(dataToSubmit.hoursLeft), delete: actionType === "delete" },
-      editData: { ...dataToSubmit, hoursLeft: parseInt(dataToSubmit.hoursLeft), delete: actionType === "delete" },
-      mutationName: "createUpdateDeleteLevel",
-      modelName: "level",
+      newData: { ...dataToSubmit, hoursLeft: formData?.hoursLeft || formData.hours.toString(), delete: actionType === "delete" },
+      editData: { ...dataToSubmit, hoursLeft: formData?.hoursLeft || formData.hours.toString(), delete: actionType === "delete" },
+      mutationName: "createUpdateDeleteCourse",
+      modelName: "course",
       successField: "id",
       query,
       router: null,
@@ -245,7 +246,7 @@ const ModalCUDCourse = (
     $courseType: String!,
     $semester: String!,
     $hours: Int!,
-    $hoursLeft: Int!,
+    $hoursLeft: String,
     $assigned: Boolean,
     $assignedToId: ID,
     $delete: Boolean!,

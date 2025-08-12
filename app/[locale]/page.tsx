@@ -51,6 +51,7 @@ const Home = async ({ params }: { params: any }) => {
 
 export default Home;
 
+
 // ✅ Generate Static Params for Pre-Rendering Locales
 export const generateStaticParams = () =>
   ["en", "fr", "de", "es"].map((locale) => ({ locale }));

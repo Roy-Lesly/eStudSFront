@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 import React from 'react'
 import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
-import List from './List'
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
+import List from './List'
 
 
 const page = async ({
@@ -84,7 +84,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Moratorium",
-  description: "This is Moratorium Page",
+  description: "e-conneq School System. Moratorium Page",
 };
 
 

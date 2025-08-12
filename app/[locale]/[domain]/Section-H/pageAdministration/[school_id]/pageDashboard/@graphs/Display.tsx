@@ -21,7 +21,7 @@ const Display = (
   })
   // }).reverse()
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="flex w-full gap-4">

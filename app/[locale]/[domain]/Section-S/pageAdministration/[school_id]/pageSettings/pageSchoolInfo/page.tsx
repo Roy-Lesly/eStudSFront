@@ -6,7 +6,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "School Profile Page",
-  description: "This is School Profile Page Admin Settings",
+  description: "e-conneq School System. School Profile Page Admin Settings",
 };
 
 const page = async ({
@@ -55,8 +55,7 @@ const GET_DATA = gql`
       edges {
         node {
           id
-          campus prefix method
-          schoolName schoolType shortName mainSchool
+          campus schoolName schoolType shortName mainSchool
           country address region town
           email telephone seqLimit examLimit
           emailNotification

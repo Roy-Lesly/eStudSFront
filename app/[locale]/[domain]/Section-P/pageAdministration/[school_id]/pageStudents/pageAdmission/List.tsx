@@ -16,8 +16,6 @@ import AdmissionForm from './AdmissionForm';
 const List = ({ params, dataPreinscription, dataExtra, searchParams }: { params: any; dataPreinscription: any, dataExtra: any, searchParams: any }) => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
-    console.log(dataPreinscription);
-    console.log(dataExtra);
     return (
         <DefaultLayout
             pageType='admin'

@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 import { platform } from 'os'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 
 const page = async ({
@@ -69,7 +70,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Pending Account Settings",
-  description: "This is Pending Account Settings Page",
+  description: "e-conneq School System. Pending Account Settings Page",
 };
 
 

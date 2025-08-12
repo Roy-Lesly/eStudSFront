@@ -13,7 +13,7 @@ const ComingSoon = () => {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="mt-10 mx-10 bg-white flex flex-col gap-2 items-center justify-center p-8 rounded-lg shadow-lg text-center"
+            className="my-10 bg-white flex flex-col gap-2 items-center justify-center p-8 rounded-lg shadow-xl border border-slate-200 text-center"
         >
             <FaHourglassHalf className="animate-spin mb-4 text-6xl text-blue-600" />
             <h1 className="font-bold gray-800 mb-2 text-2xl">{t("Page Coming Soon")}!</h1>

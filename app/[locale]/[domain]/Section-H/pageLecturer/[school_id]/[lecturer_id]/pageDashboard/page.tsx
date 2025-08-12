@@ -8,7 +8,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Dashboard Page",
-  description: "This is Dashboard Page Lecturer",
+  description: "e-conneq School System. Dashboard Page Lecturer",
 };
 const page = async ({
   params,
@@ -34,8 +34,8 @@ const page = async ({
     query: GET_DATA,
     variables: {
       ...removeEmptyFields(paginationParams),
-        assignedToId: p.lecturer_id,
-        schoolId: p.school_id,
+      assignedToId: p.lecturer_id,
+      schoolId: p.school_id,
     },
   });
 

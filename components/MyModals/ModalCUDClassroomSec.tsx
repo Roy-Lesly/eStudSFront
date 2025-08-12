@@ -49,7 +49,7 @@ const ModalCUDClassroomSec = (
   const [formData, setFormData] = useState<FormData>({
     schoolId: selectedItem ? parseInt(decodeUrlID(selectedItem.node.school.id)) : parseInt(params.school_id),
     stream: selectedItem?.node.stream || '',
-    system: 'ENGLISH',
+    system: params.locale === "fr" ? "FRENCH" : 'ENGLISH',
     cycle: selectedItem?.node.cycle || 'FIRST',
     select: selectedItem ? selectedItem.node.select.toString().toUpperCase() : 'FALSE',
     level: selectedItem ? selectedItem.node.level.replace(" ", "") : '',
@@ -62,16 +62,29 @@ const ModalCUDClassroomSec = (
     delete: selectedItem != null && actionType === 'delete'
   });
 
-  // useEffect(() => {
-  //   if (!formData.cycle) return;
-  //   const source = system === 'ENGLISH' ? apiLevel : apiLevel;
-  //   let filtered = source.filter(item => item.cycle === formData.cycle);
-  //   if (formData.select) {
-  //     const sel = formData.select.toString().toUpperCase();
-  //     filtered = filtered.filter(item => item.select.toString().toUpperCase() === sel);
-  //   }
-  //   setLevelOptions(filtered?.map((item: any) => item.level));
-  // }, [formData.cycle, formData.select, system]);
+  useEffect(() => {
+    if (formData.system === "ENGLISH") {
+      if (formData.cycle === "FIRST") {
+        setLevelOptions(apiLevel.slice(0, 5));
+        setFormData({ ...formData, select: "FALSE" });
+      }
+      else if (formData.cycle === "SECOND") {
+        setLevelOptions(apiLevel.slice(5, 7));
+        setFormData({ ...formData, select: "TRUE" });
+      }
+    }
+    else if (formData.system === "FRENCH") {
+      if (formData.cycle === "FIRST") {
+        setLevelOptions(apiLevel.slice(7, 12));
+        setFormData({ ...formData, select: "FALSE" });
+      }
+      else if (formData.cycle === "SECOND") {
+        setLevelOptions(apiLevel.slice(12, 14));
+        setFormData({ ...formData, select: "TRUE" });
+      }
+    }
+  }, [formData.system, formData.cycle])
+
 
   const handleChange = <K extends keyof FormData>(field: K, value: FormData[K]) => {
     setFormData(prev => ({

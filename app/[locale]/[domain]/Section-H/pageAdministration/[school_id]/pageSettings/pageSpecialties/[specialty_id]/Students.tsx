@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 
-const Students = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => {
+const Students = ({ data, p }: { data: EdgeSchoolFees[], p: any }) => {
 
   const token = localStorage.getItem("token");
   const user: JwtPayload | null = token ? jwtDecode(token) : null;
@@ -20,7 +20,7 @@ const Students = ({ data, params }: { data: EdgeSchoolFees[], params: any }) => 
     { header: "Full Name", accessor: "node.userprofile.customuser.fullName", align: "left" },
     {
       header: "Print", hideColumn: user?.is_superuser ? false : !user?.page.map((p: string) => p.toUpperCase()).includes("DOCUMENT"), align: "center", render: (item: EdgeSchoolFees, index: number) => <button
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageResult/pageTranscript/${item.node.id}/1`)}
+        onClick={() => router.push(`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageResult/pageTranscript/${item.node.id}/1`)}
         className="bg-green-200 p-1 rounded-full"
       >
         <FaRightLong color="green" size={21} />

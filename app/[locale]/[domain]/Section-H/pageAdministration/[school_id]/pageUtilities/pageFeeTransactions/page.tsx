@@ -7,7 +7,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
     title: "Transactions",
-    description: "This is Transactions Admin Settings",
+    description: "e-conneq School System. Transactions Admin Settings",
 };
 
 const page = async ({
@@ -23,10 +23,10 @@ const page = async ({
 
     const paginationParams: Record<string, any> = {};
 
-    paginationParams.fullName = sp?.fullName ? sp.fullName : ""
-    paginationParams.academicYear = sp?.academicYear ? sp.academicYear : ""
-    paginationParams.level = sp?.level ? sp.level : ""
-    paginationParams.specialtyName = sp?.specialtyName ? sp.level : ""
+    paginationParams.fullName = sp?.fullName
+    paginationParams.academicYear = sp?.academicYear
+    paginationParams.level = sp?.level
+    paginationParams.specialtyName = sp?.specialtyName
 
     const data = await queryServerGraphQL({
         domain: p.domain,

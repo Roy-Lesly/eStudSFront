@@ -6,7 +6,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Marks - Course",
-  description: "This is Marks - Course Admin Settings",
+  description: "e-conneq School System. Marks - Course Admin Settings",
 };
 
 const page = async ({

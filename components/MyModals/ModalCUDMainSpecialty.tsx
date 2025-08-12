@@ -1,4 +1,4 @@
-import { EdgeField, EdgeMainSpecialty } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeField, EdgeMainSpecialty, EdgeProgram } from '@/Domain/schemas/interfaceGraphql';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import MyInputField from '@/MyInputField';
 import { JwtPayload } from '@/serverActions/interfaces';

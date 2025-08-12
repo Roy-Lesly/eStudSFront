@@ -31,7 +31,8 @@ export interface NodeSeries {
   id: string;
   name: string;
   classroom: string;
-  subjects: { edges: EdgeMainSubject[] };
+  mainsubjects: { edges: EdgeMainSubject[] };
+  subjectList: string[];
 }
 
 
@@ -129,6 +130,31 @@ export interface NodeTransactionsSec {
 }
 
 
+export interface NodeNotificationSec {
+  id: string;
+  target: string;
+  classroomsSec: {
+    edges: EdgeClassRoomSec[];
+  };
+  subject: string;
+  message: string;
+  recipients: string;
+  academicYear: string;
+  notificationType: string;
+  scheduledFor: string;
+  sent: boolean;
+  campus: NodeSchoolHigherInfo;
+}
+
+export interface NodeComplainSec {
+  id: string;
+  userprofilesec: NodeUserProfileSec;
+  message: string;
+  complainType: string;
+  status: string;
+  endingAt: string;
+}
+
 
 
 
@@ -180,6 +206,15 @@ export interface EdgeSchoolFeesSec {
 
 export interface EdgeTransactionsSec {
   node: NodeTransactionsSec;
+}
+
+
+export interface EdgeNotificationSec {
+  node: NodeNotificationSec;
+}
+
+export interface EdgeComplainSec {
+  node: NodeComplainSec;
 }
 
 

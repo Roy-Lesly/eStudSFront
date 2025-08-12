@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 const page = async ({
   params,
@@ -64,7 +64,7 @@ export default page
 export const metadata: Metadata = {
   title:
     "Portal-Results",
-  description: "This is Portal Page",
+  description: "e-conneq School System. Portal Page",
 };
 
 const GET_ACADEMIC_YEARS = gql`

@@ -18,17 +18,17 @@ const page = async ({
   const sp = await searchParams;
 
   const apiData: any = await getData(protocol + "api" + p.domain + GetDepartmentUrl, { ...sp }, p.domain)
-  
+
   return (
-    
-      <>
 
-        {sp && <NotificationError errorMessage={sp} />}
+    <>
 
-        {apiData && apiData.results && <ListDepartmentPage params={p} data={apiData.results} />}
+      {sp && <NotificationError errorMessage={sp} />}
 
-      </>
-    
+      {apiData && apiData.results && <ListDepartmentPage params={p} data={apiData.results} />}
+
+    </>
+
   )
 }
 
@@ -36,5 +36,5 @@ export default page
 
 export const metadata: Metadata = {
   title: "Admin-Departments",
-  description: "This is Admin-Depts Page",
+  description: "e-conneq School System. Admin-Depts Page",
 };

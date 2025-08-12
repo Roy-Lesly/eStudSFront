@@ -17,11 +17,16 @@ import { useTranslation } from 'react-i18next';
 import ModalSelectProperties from './ModalSelectProperties';
 
 
-const List = ({ params, data, sp, apiYears }: { params: any; data: any, sp: any, apiYears: any }) => {
+const List = (
+  { params, data, sp, apiYears, apiLevels }:
+  { params: any; data: any, sp: any, apiYears: any, apiLevels: string[] }
+) => {
+
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
   const router = useRouter();
+  const [selectedItem, setSelectedItem] = useState<EdgeSubjectSec | null>(null);
 
   console.log(data);
 
@@ -109,7 +114,7 @@ const List = ({ params, data, sp, apiYears }: { params: any; data: any, sp: any,
                   })}
                 table_title={t("Assigned Subjects")}
                 button_type={"add"}
-                button_action={() => { setShowModal({ show: true, type: "create" }) }}
+                button_action={() => { setShowModal({ show: true, type: "create" }); setSelectedItem(null) }}
               />
               :
               null
@@ -122,7 +127,7 @@ const List = ({ params, data, sp, apiYears }: { params: any; data: any, sp: any,
             <ModalSelectProperties
               params={params}
               apiYears={apiYears}
-              apiLevels={data?.getLevelsSec}
+              apiLevels={apiLevels}
               setOpenModal={setShowModal}
             />
           }

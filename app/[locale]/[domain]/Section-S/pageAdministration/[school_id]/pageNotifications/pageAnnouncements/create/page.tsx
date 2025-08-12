@@ -11,16 +11,16 @@ const page = async ({
     params,
     searchParams,
 }: {
-  params: any;
-  searchParams: any;
+    params: any;
+    searchParams: any;
 }) => {
 
-  const p = await params;
-  const sp = await searchParams;
+    const p = await params;
+    const sp = await searchParams;
 
     const apiAcademicYear: any = await getData(protocol + "api" + p.domain + AcademicYearUrl, { ...sp, nopage: true }, p.domain);
     const Filter = () => {
-        if (apiAcademicYear.count){
+        if (apiAcademicYear.count) {
             var filA = apiAcademicYear.results.filter((item: string) => item.includes(new Date().getFullYear().toString()))
             return filA
         }
@@ -28,18 +28,18 @@ const page = async ({
     const year = Filter()
 
     return (
-        
-            <>
-                <Breadcrumb
-                    pageName="Select Target For Announcements"
-                    pageName1="Back To Announcements"
-                    link1={`/Section-H/pageAdministration/${p.school_id}/pageNotifications/pageAnnouncements`}
-                />
 
-                {apiAcademicYear && apiAcademicYear.count && year && <SelectTarget params={p} years={year} />}
+        <>
+            <Breadcrumb
+                pageName="Select Target For Announcements"
+                pageName1="Back To Announcements"
+                link1={`/Section-H/pageAdministration/${p.school_id}/pageNotifications/pageAnnouncements`}
+            />
 
-            </>
-        
+            {apiAcademicYear && apiAcademicYear.count && year && <SelectTarget params={p} years={year} />}
+
+        </>
+
     )
 }
 
@@ -47,13 +47,13 @@ export default page
 
 export const metadata: Metadata = {
     title: "Select Target",
-    description: "This is Announcements Page",
+    description: "e-conneq School System. Announcements Page",
 };
 
 
-const SelectTarget = async({ params, years }: any) => {
+const SelectTarget = async ({ params, years }: any) => {
 
-    const apiLevel: any = await getData(protocol + "api" + params.domain + GetLevelUrl, {  }, params.domain);
+    const apiLevel: any = await getData(protocol + "api" + params.domain + GetLevelUrl, {}, params.domain);
 
     const onSubmitServerAction = async (formData: FormData) => {
         'use server'
@@ -68,10 +68,10 @@ const SelectTarget = async({ params, years }: any) => {
         if (target == "domains") {
             redirect(`/Section-H/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements/create/action?target=${target}`)
         }
-        if (target == "specialty" && year && level){
+        if (target == "specialty" && year && level) {
             redirect(`/Section-H/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements/create/action?target=${target}&year=${year}&level=${level}`)
         }
-      }
+    }
 
     return <div className='bg-white flex flex-col gap-10 md:p-20 p-10 rounded'>
 

@@ -13,16 +13,18 @@ import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TransactionTotalsByDomain } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { GetMenuAccounting } from '@/components/section-h/Sidebar/MenuAccounting';
+import { useTranslation } from 'react-i18next';
 
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
-const List = ({ params, data, dataYears, searchParams }: { params: any; data: any, searchParams: any, dataYears: any }) => {
+const List = ({ p, data, dataYears, sp }: { p: any; data: any, sp: any, dataYears: any }) => {
+  const { t } = useTranslation("common");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) || 0);
 
   const ColumnsRegistration: TableColumn<TransactionTotalsByDomain>[] = [
     { header: "#", responsiveHidden: true, align: "center", render: (_item: TransactionTotalsByDomain, index: number) => index + 1, },
@@ -55,19 +57,19 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       searchComponent={
         <SearchMultiple
-              names={["academicYear"]}
-              link={`/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeDomain`}
-              select={[
-                // { type: 'select', name: 'academicYear', dataSelect: dataYears?.allAcademicYears },
-              ]}    
-            />
+          names={["academicYear"]}
+          link={`/${p.domain}/Section-H/pageAccounting/${p.school_id}/AnalysisSystemIncomeDomain`}
+          select={[
+            // { type: 'select', name: 'academicYear', dataSelect: dataYears?.allAcademicYears },
+          ]}
+        />
       }
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAccounting()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -86,8 +88,8 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
       <Breadcrumb
         department="Income"
         subRoute="List"
-        pageName="Campus Income"
-        mainLink={`${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeDomain`}
+        pageName={t("Summary Income per Domain")}
+        mainLink={`${p.domain}/Section-H/pageAccounting/${p.school_id}/AnalysisSystemIncomeDomain`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
@@ -95,44 +97,44 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
 
-      <div className='flex items-center justify-center'>
-        {searchParams && searchParams?.academicYear ? 
-        <span className='font-semibold my-2 rounded text-xl'>{searchParams?.academicYear}</span>
-        : 
-        <span className='font-medium my-24 p-4 rounded text-lg'>Please Select Academic Year</span>}
-      </div>
+          <div className='flex items-center justify-center'>
+            {sp && sp?.academicYear ?
+              <span className='font-semibold my-2 rounded text-xl'>{sp?.academicYear}</span>
+              :
+              <span className='font-medium my-24 p-4 rounded text-lg'>Please Select Academic Year</span>}
+          </div>
 
-        {data && !data?.error ? (
+          {data && !data?.error ? (
             <MyTabs
               tabs={[
                 {
                   label: 'Registration', content: data?.transactionTotalsByDomain?.length ?
-                        <MyTableComp
-                        data={
-                          data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
-                            return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
-                          })}
-                        columns={ColumnsRegistration}
-                      />
+                    <MyTableComp
+                      data={
+                        data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
+                          return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
+                        })}
+                      columns={ColumnsRegistration}
+                    />
                     :
                     <ServerError type="notFound" item="Income" />
                 },
                 {
                   label: 'Tuition', content: data?.transactionTotalsByDomain?.length ?
-                        <MyTableComp
-                        data={
-                          data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
-                            return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
-                          })}
-                        columns={ColumnsTuition}
-                      />
+                    <MyTableComp
+                      data={
+                        data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
+                          return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
+                        })}
+                      columns={ColumnsTuition}
+                    />
                     :
                     <ServerError type="notFound" item="Income" />
                 },
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
-              source={"setActiveTab"}
+              source={`Section-H/pageAccounting/${p.school_id}/AnalysisSystemIncomeDomain/?academicYear=${sp.academicYear}`}
             />
           )
             :

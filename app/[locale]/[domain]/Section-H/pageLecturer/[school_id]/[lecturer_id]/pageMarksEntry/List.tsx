@@ -17,15 +17,15 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Marks Entry Page",
-  description: "This is Marks Entry Page Lect Settings",
+  description: "e-conneq School System. Marks Entry Page Lect Settings",
 };
 
 
 const List = (
   { params, data }:
-  { params: any; data: any }
+    { params: any; data: any }
 ) => {
-  
+
   const { t } = useTranslation()
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -75,8 +75,8 @@ export default List;
 
 
 const DataTable = (
-  { data, params }: 
-  { data: EdgeCourse[], params: any }
+  { data, params }:
+    { data: EdgeCourse[], params: any }
 ) => {
   const { t } = useTranslation()
   const router = useRouter();

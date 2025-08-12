@@ -103,16 +103,16 @@ const page = async ({
     data = result.data;
   } catch (error: any) {
 
-    
+
     data = null;
   }
 
 
   return (
     <div className="w-full">
-      {data && <Navbar profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />}
+      {/* {data && <Navbar profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />}
       {children}
-      {data && <Footer params={p} profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />}
+      {data && <Footer params={p} profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />} */}
     </div>
   );
 }

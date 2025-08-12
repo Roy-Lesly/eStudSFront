@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react'
-import { removeEmptyFields } from '@/functions';
+import { getAcademicYear, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
@@ -22,12 +22,18 @@ const EditPage = async ({
 
   paginationParams.specialtyName = sp?.specialtyName
   paginationParams.domainName = sp?.domainName
-  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : `${new Date().getFullYear()}`
+  paginationParams.academicYear = sp?.academicYear ? sp?.academicYear : getAcademicYear()
+
+console.log({
+      ...removeEmptyFields(paginationParams),
+      schoolId: parseInt(p.school_id),
+    });
 
   const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA,
     variables: {
+      ...removeEmptyFields(paginationParams),
       schoolId: parseInt(p.school_id),
     },
   });
@@ -46,7 +52,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Specialty-Settings",
-  description: "This is Specialty-Settings Page",
+  description: "e-conneq School System. Specialty-Settings Page",
 };
 
 
@@ -73,6 +79,7 @@ const GET_DATA = gql`
           id 
           academicYear
           resultType
+          program { id name }
           school { id }
           level {
             id
@@ -107,6 +114,15 @@ const GET_DATA = gql`
       edges {
         node {
           id level
+        }
+      }
+    }
+    allPrograms(
+      last: 100,
+    ){
+      edges {
+        node {
+          id name
         }
       }
     }

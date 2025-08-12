@@ -16,6 +16,8 @@ import { FaArrowRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { decodeUrlID } from '@/utils/functions';
+import Link from 'next/link';
+import { FaPlus } from 'react-icons/fa';
 
 
 const List = (
@@ -59,6 +61,8 @@ const List = (
     },
   ];
 
+  console.log(decodeUrlID(dataPending[0].node.campus.id));
+
   return (
     <DefaultLayout
       pageType='admin'
@@ -91,7 +95,19 @@ const List = (
       }
     >
 
-      <div className="bg-gray-50 mt-10 flex flex-col items-center justify-center">
+      <div className="bg-gray-50 flex flex-col items-center justify-center gap-2">
+
+        <div className='flex justify-end items-center w-full'>
+         
+          <Link
+            className='w-1/2 md:w-1/4 rounded-lg shadow-lg bg-teal-100 px-4 py-2 cursor-pointer flex items-center justify-center gap-2 font-bold text-xl'
+            href={`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/pageNewPreinscription`}
+          >
+            <span>{t("New Student")}</span>
+            <button className='bg-green-500 p-1 rounded-full'><FaPlus size={25} color="white" /></button>
+          </Link>
+        </div>
+
         {dataPending ? <MyTabs
           tabs={[
             {

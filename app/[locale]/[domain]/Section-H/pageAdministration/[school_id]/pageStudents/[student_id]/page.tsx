@@ -5,9 +5,10 @@ import { decodeUrlID } from '@/functions'
 import { Metadata } from 'next';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
+
 export const metadata: Metadata = {
   title: "Info Page",
-  description: "This is Info Page Admin Settings",
+  description: "e-conneq School System. Info Page Admin Settings",
 };
 
 const page = async ({
@@ -32,9 +33,22 @@ const page = async ({
     },
   });
 
+  console.log({
+      id: params.profile_id,
+      userprofileId: parseInt(decodeUrlID(p.student_id)),
+      customuserId: parseInt(decodeUrlID(sp.user)),
+      schoolId: p.school_id,
+    });
+
+  console.log(data);
+
   return (
     <div>
-      <List params={p} data={data} sp={sp} />
+      <List
+        params={p}
+        data={data}
+        sp={sp}
+      />
     </div>
   )
 }
@@ -62,7 +76,6 @@ const GET_DATA = gql`
           userprofile {
             id
             session
-            code
             infoData
             customuser { 
               id role matricle firstName lastName photo sex dob pob email telephone address fullName 

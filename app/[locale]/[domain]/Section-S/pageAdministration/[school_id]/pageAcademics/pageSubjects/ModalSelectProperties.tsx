@@ -17,6 +17,9 @@ const ModalSelectProperties = (
     { setOpenModal, params, apiYears, apiLevels }:
         { setOpenModal: any, params: any, apiYears: any, apiLevels: string[] }
 ) => {
+
+    console.log(apiLevels);
+    
     const { t } = useTranslation();
     const router = useRouter();
     const [count, setCount] = useState<number>(0)

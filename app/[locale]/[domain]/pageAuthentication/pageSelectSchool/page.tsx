@@ -39,6 +39,7 @@ const SECTION_ORDER = ['SECTION-H', 'SECTION-S', 'SECTION-V', 'SECTION-P'];
 const SelectDept = () => {
   const { t } = useTranslation();
   const domain = useParams().domain;
+  const locale = useParams().locale;
   const router = useRouter();
   const paramsRole = useSearchParams();
   const { data, loading, error } = useQuery(GET_DATA);
@@ -49,7 +50,7 @@ const SelectDept = () => {
 
   useEffect(() => {
     const access = localStorage.getItem('token');
-    const role = paramsRole.get('role');
+    const role = paramsRole.get('role')?.toLowerCase();
 
     if (!access || !role) {
       router.push(`/${domain}/pageAuthentication/Login`);
@@ -59,7 +60,7 @@ const SelectDept = () => {
     const department =
       role === 'admin' ? 'pageAdministration' :
         role === 'teacher' ? 'pageLecturer' :
-          role === 'accounting' ? 'pageAccounting' : null;
+          role === 'accounting' ? 'pageAccounting' : "";
 
     const decoded = jwtDecode(access) as JwtPayload;
     const userSchools = data?.allSchoolInfos?.edges?.filter((item: EdgeSchoolHigherInfo) =>
@@ -67,7 +68,7 @@ const SelectDept = () => {
     ) || [];
 
     setUser(decoded);
-    setDept(department || '');
+    setDept(department);
     setSchools(userSchools);
   }, [data, paramsRole, domain, router]);
 
@@ -77,6 +78,8 @@ const SelectDept = () => {
     acc[key] = schools.filter((s) => s.node.schoolType.toUpperCase() === key);
     return acc;
   }, {} as Record<string, EdgeSchoolHigherInfo[]>);
+
+  console.log(dept);
 
   return (
     <section className="min-h-screen px-4 md:px-8 py-10 flex flex-col items-center bg-gray-50">
@@ -110,7 +113,7 @@ const SelectDept = () => {
                 {sectionData?.sort((a: EdgeSchoolHigherInfo, b: EdgeSchoolHigherInfo) => (a.node.campus > b.node.campus) ? 1 : (a.node.campus < b.node.campus) ? -1 : 0).map(({ node }) => (
                   <Link
                     key={node.id}
-                    href={`/${domain}/${node.schoolType.replace('SECTION-', 'Section-')}/${dept}/${decodeUrlID(node.id)}?id=${user?.user_id}`}
+                    href={`/${locale}/${domain}/${node.schoolType.replace('SECTION-', 'Section-')}/${dept}/${decodeUrlID(node.id)}?id=${user?.user_id}`}
                     onClick={() => localStorage.setItem('school', decodeUrlID(node.id))}
                     className={`w-full rounded-xl shadow-md text-white border p-4 transition-all flex items-center justify-center gap-4 ${COLORS[node.schoolType.toUpperCase() as keyof typeof COLORS]}`}
                   >

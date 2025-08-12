@@ -1,12 +1,12 @@
 import React from 'react'
 import List from './List'
 import { gql } from '@apollo/client'
-import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
 import { Metadata } from 'next';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Marks - Course",
-  description: "This is Marks - Course Admin Settings",
+  description: "e-conneq School System. Marks - Course Admin Settings",
 };
 
 const page = async ({

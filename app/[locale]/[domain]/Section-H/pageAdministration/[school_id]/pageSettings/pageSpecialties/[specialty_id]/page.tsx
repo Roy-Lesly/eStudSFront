@@ -38,7 +38,12 @@ const ClassManagementPage = async ({
 
   return (
     <div>
-      <List params={p} data={data} dataTrans={dataTrans} searchParams={sp} />
+      <List
+        p={p}
+        data={data}
+        dataTrans={dataTrans}
+        sp={sp}
+      />
     </div>
   )
 }
@@ -50,7 +55,7 @@ export default ClassManagementPage
 export const metadata: Metadata = {
   title:
     "Class-Management",
-  description: "This is Class-Management Page",
+  description: "e-conneq School System. Class-Management Page",
 };
 
 
@@ -149,6 +154,7 @@ const GET_DATA = gql`
           level { level}
           resitCountPerCourse { totalCount resitCount }
           mainSpecialty { specialtyName}
+          program { id name }
           registration
           tuition
           paymentOne

@@ -1,8 +1,10 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, getData, removeEmptyFields } from '@/functions'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+
 import { gql } from '@apollo/client'
 import List from './List'
+import { removeEmptyFields } from '@/utils/functions';
 
 const page = async ({
   params,
@@ -66,7 +68,7 @@ const page = async ({
       <List
         params={p}
         data={{ "admins": dataAdmins, "lects": dataLects }}
-        searchParams={sp}
+        sp={sp}
       />
     </div>
   )
@@ -76,7 +78,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Lecturer",
-  description: "This is Lecturer Page",
+  description: "e-conneq School System. Lecturer Page",
 };
 
 
@@ -94,7 +96,7 @@ const GET_DATA_LECTURERS = gql`
       }
     }
   }
-  allCustomUsers(
+  allCustomusers(
     isActive: true
     schoolId: $schoolId
     last: 250
@@ -122,7 +124,7 @@ const GET_DATA_ADMIN = gql`
   $telephone: String,
   $sex: String,
 ) {
-  allCustomUsers(
+  allCustomusers(
     isActive: true
     schoolId: $schoolId
     last: 250

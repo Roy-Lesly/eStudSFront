@@ -16,9 +16,6 @@ const Form = ({ params, data }: { params: any; data: any }) => {
   return (
     <DefaultLayout
       domain={params.domain}
-      searchComponent={
-        <></>
-      }
       sidebar={
         <Sidebar
           params={params}
@@ -32,7 +29,7 @@ const Form = ({ params, data }: { params: any; data: any }) => {
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           searchComponent={
-          <></>
+            <></>
           }
         />
       }
@@ -40,22 +37,18 @@ const Form = ({ params, data }: { params: any; data: any }) => {
       <Breadcrumb
         department="Pre-Registration"
         subRoute="List"
-        pageName="Pre-Registration"
+        pageName="Pre-Inscription"
         mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/`}
-        subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/`}
       />
-      
+
       {data ?
-      // <PreFormHigher source='admin'
-      // params={params} data={data}
-      // link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`}
-      // />
-      <PreFormHigher source='admin'
-        // params={params} data={data}
-        // link={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription`}
-      />
-      :
-      <ServerError type="notFound" item="School Info" />
+        <PreFormHigher
+          source='admin'
+          data={data}
+          params={params}
+        />
+        :
+        <ServerError type="notFound" item="School Info" />
 
       }
 

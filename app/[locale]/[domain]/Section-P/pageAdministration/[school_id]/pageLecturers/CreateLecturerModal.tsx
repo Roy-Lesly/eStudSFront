@@ -42,7 +42,7 @@ const CreateLecturer = ({
         infoData: selectedItem && actionType === "update" ? selectedItem.node.infoData || JSON.stringify({}) : JSON.stringify({}),
         prefix: '',
         deptIds: [parseInt(decodeUrlID(dept?.node.id || ""))],
-        schoolIds: [params.school_id],
+        schoolIds: [parseInt(params.school_id)],
         delete: false,
     })
 
@@ -93,10 +93,13 @@ const CreateLecturer = ({
             dataToSubmit = {
                 ...formData,
                 id: parseInt(decodeUrlID(selectedItem.node.id)),
-                sex: capitalizeFirstLetter(formData.sex),
+                // sex: capitalizeFirstLetter(formData.sex),
                 delete: actionType === "update" ? false : true,
             }
         }
+
+        console.log(dataToSubmit);
+        // return
 
         await ApiFactory({
             newData: dataToSubmit,
@@ -169,7 +172,7 @@ const CreateLecturer = ({
                             label="Gender"
                             placeholder="sex"
                             type='select'
-                            options={["Male", "Female"]}
+                            options={["MALE", "FEMALE"]}
                             required
                         />
                         <MyInputField
@@ -307,7 +310,7 @@ export default CreateLecturer
 export const query = gql`
     mutation Data(
         $id: ID,
-        $schoolIds: [ID]!,
+        $schoolIds: [ID!]!,
         $firstName: String!,
         $lastName: String,
         $role: String!,

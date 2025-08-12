@@ -10,10 +10,10 @@ import { decodeUrlID } from '@/utils/functions';
 import { EdgeClassRoomSec, NodeClassRoomSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
 import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutationCreateUpdateCustomuser';
-import { mutationCreateUpdateUserProfileSec } from '@/utils/graphql/mutations/mutationCreateUpdateUserProfileSec';
 import { JwtPayload } from '@/utils/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
+import { mutationCreateUpdateUserProfile } from '@/utils/graphql/mutations/mutationCreateUpdateUserProfile';
 
 
 const AdmissionForm = (
@@ -27,11 +27,9 @@ const AdmissionForm = (
 
   const preinscription = data?.allPreinscriptionsSec?.edges?.[0]?.node;
 
-  const steps = [t('Personal Info'), t('Medical Info'), t('Class Assignment'), t('Confirmation')];
+  const steps = [t('Personal Info'), t('Sponsor Info'), t('Class Assignment'), t('Confirmation')];
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
-
-  console.log(preinscription);
 
   const [formData, setFormData] = useState({
     personalInfo: {
@@ -61,6 +59,10 @@ const AdmissionForm = (
       motherTelephone: preinscription?.motherTelephone || '',
       parentAddress: preinscription?.parentAddress || '',
       password: '',
+      nationality: preinscription?.nationality || 'Cameroon',
+      regionOfOrigin: preinscription?.regionOfOrigin,
+      highestCertificate: preinscription?.highestCertificate,
+      yearObtained: preinscription?.yearObtained,
     },
     classAssignment: {
       customuserId: '',
@@ -85,6 +87,7 @@ const AdmissionForm = (
       username: formData.personalInfo.firstName?.toString().toUpperCase(),
       role: "student",
       schoolIds: [parseInt(params.school_id)],
+      infoData: "{}",
       delete: false,
     }
 
@@ -101,11 +104,13 @@ const AdmissionForm = (
         const formDataProfile = {
           ...formData.classAssignment,
           customuserId: parseInt(decodeUrlID(resUserId)),
+          infoData: "{}",
           createdById: user?.user_id,
           updatedById: user?.user_id,
           delete: false,
         }
-        const resProfileId = await mutationCreateUpdateUserProfileSec({
+        const resProfileId = await mutationCreateUpdateUserProfile({
+          section: "S",
           formData: formDataProfile,
           p: params,
           router: null,
@@ -167,7 +172,6 @@ const AdmissionForm = (
 
       {currentStep === 3 &&
         <ConfirmationPage
-          // data={data}
           formData={formData}
           onNext={handleSubmit}
           onPrevious={handlePrevious}
@@ -175,6 +179,7 @@ const AdmissionForm = (
           setCurrentStep={setCurrentStep}
           dataClassroomsSec={dataClassroomsSec}
           programsData={data?.allProgramsSec?.edges}
+          seriesData={data?.allSeries?.edges}
         />
       }
 

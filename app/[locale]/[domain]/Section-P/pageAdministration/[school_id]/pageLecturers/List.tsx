@@ -5,7 +5,6 @@ import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import ServerError from '@/ServerError';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
@@ -21,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Teachers Page",
-  description: "This is Teachers Page Admin Settings",
+  description: "e-conneq School System. Teachers Page Admin Settings",
 };
 
 
@@ -52,30 +51,35 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       responsiveHidden: true
     },
     {
-      header: 'Full Name',
+      header: `${t("Username")}`,
+      accessor: 'node.matricle',
+      align: 'left',
+    },
+    {
+      header: `${t("Full Name")}`,
       accessor: 'node.fullName',
       align: 'left',
     },
     {
-      header: 'Gender',
+      header: `${t("Gender")}`,
       accessor: 'node.sex',
       align: 'center',
       responsiveHidden: true
     },
     {
-      header: 'Address',
+      header: `${t("Address")}`,
       accessor: 'node.address',
       align: 'left',
       responsiveHidden: true
     },
     {
-      header: 'Telephone',
+      header: `${t("Telephone")}`,
       accessor: 'node.telephone',
       align: 'center',
       responsiveHidden: true
     },
     {
-      header: 'Dob / Pob',
+      header: `${t("Dob / Pob")}`,
       align: 'left',
       responsiveHidden: true,
       hideColumn: activeTab !== 2,
@@ -85,7 +89,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       </div>,
     },
     {
-      header: 'Select',
+      header: `${t("Select")}`,
       align: 'center',
       render: (item: EdgeCustomUser) => (
         <button
@@ -115,9 +119,9 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       domain={params.domain}
       searchComponent={<SearchMultiple
         names={['fullName', 'telephone']}
-        link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageLecturers`}
+        link={`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageLecturers`}
         select={[
-          { type: 'select', name: 'sex', dataSelect: ['Male', 'Female'] },
+          { type: 'select', name: 'sex', dataSelect: ['MALE', 'FEMALE'] },
         ]}
       />}
       sidebar={
@@ -152,7 +156,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               {
                 label: `${t("Teachers")}`,
                 icon: <div className='bg-teal-500 p-2 rounded-full' onClick={() => { setShowModal({ show: true, type: "teacher" }) }}><FaPlus color="white" size={20} /></div>,
-                content: data.lects?.allCustomusers?.edges.length ? <DataComp data={data.lects.allCustomusers.edges} title="Lecturers" /> : <ServerError type="notFound" item="Admin Users" />
+                content: data.lects?.allCustomusers?.edges.length ? <DataComp data={data.lects.allCustomusers.edges} title="Lecturers" /> : <ServerError type="notFound" item="Teachers Users" />
               },
             ]}
             activeTab={activeTab}

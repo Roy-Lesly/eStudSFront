@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { CombinedResultDataSpecialtyTranscript } from '@/Domain/schemas/interfaceGraphqlKPI';
 import { BlobProvider, PDFViewer } from '@react-pdf/renderer';
-import BatchTransOneYear from '../../../pageResult/pageTranscript/[fees_id]/CompsBatch/BatchTransOneYear';
+import BatchTransOneYear from '../../../pageResult/pageReportCard/[fees_id]/CompsBatch/BatchTransOneYear';
 
 const Transcript = ({ data, params, searchParams }: { data: CombinedResultDataSpecialtyTranscript | null, params: any, specialty_id: string, searchParams: any }) => {
 
@@ -29,16 +29,16 @@ const Transcript = ({ data, params, searchParams }: { data: CombinedResultDataSp
           <div>Generating ...</div>
           :
           <PDFViewer
-          style={{
-            width: "100%",
-            height: "calc(100vh - 100px)",
-            maxWidth: "1200px",
-          }}
-        >
+            style={{
+              width: "100%",
+              height: "calc(100vh - 100px)",
+              maxWidth: "1200px",
+            }}
+          >
             <BatchTransOneYear
-              dataResult={data?.resultDataSpecialtyTranscript?.filter((item: any) => item.platform)} 
-              params={params} 
-              dataHeader={data?.specialtyAndSchoolInfo} 
+              dataResult={data?.resultDataSpecialtyTranscript?.filter((item: any) => item.platform)}
+              params={params}
+              dataHeader={data?.specialtyAndSchoolInfo}
             />
           </PDFViewer>
         :

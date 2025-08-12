@@ -26,23 +26,23 @@ const EditPage = async ({
   const apiData: ProgramInter | any = await getData(protocol + "api" + p.domain + ProgramUrl, { id: p.program_id, ...sp }, p.domain);
 
   return (
-    
-      <>
-        <Breadcrumb
-          pageName="Edit Program"
-          pageName1="Settings"
-          pageName2="Programs"
-          link1={`/Section-H/pageAdministration/${p.program_id}`}
-          link2={`/Section-H/pageAdministration/${p.program_id}/pageSettings`}
-        />
 
-        {searchParams && <NotificationError errorMessage={searchParams} />}
+    <>
+      <Breadcrumb
+        pageName="Edit Program"
+        pageName1="Settings"
+        pageName2="Programs"
+        link1={`/Section-H/pageAdministration/${p.program_id}`}
+        link2={`/Section-H/pageAdministration/${p.program_id}/pageSettings`}
+      />
 
-        { apiData && apiData != "ECONNREFUSED" && <EditDelete apiData={apiData} params={p} />}
-        {apiData == "ECONNREFUSED" && <ServerError type="network" />}
+      {searchParams && <NotificationError errorMessage={searchParams} />}
 
-      </>
-    
+      {apiData && apiData != "ECONNREFUSED" && <EditDelete apiData={apiData} params={p} />}
+      {apiData == "ECONNREFUSED" && <ServerError type="network" />}
+
+    </>
+
   )
 }
 
@@ -53,7 +53,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Program-Edit",
-    description: "This is Program Page",
+  description: "e-conneq School System. Program Page",
 };
 
 
@@ -75,7 +75,7 @@ const EditDelete: FC<EditDeleteProps> = async ({ apiData, params }) => {
       name: name ? name.toString().toUpperCase() : name,
       description: description ? description.toString().toUpperCase() : description,
     }
-    const response = await ActionEdit(data, params.program_id, SchemaCreateEditProgram, protocol  + "api" + params.domain + ProgramUrl, `/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms`)
+    const response = await ActionEdit(data, params.program_id, SchemaCreateEditProgram, protocol + "api" + params.domain + ProgramUrl, `/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms`)
 
     if (response.error) {
       redirect(`/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms/details/${params.program_id}?error=${JSON.stringify(response.error).replaceAll(" ", "-")}`)
@@ -115,15 +115,15 @@ const EditDelete: FC<EditDeleteProps> = async ({ apiData, params }) => {
           <div className="flex flex-col gap-9">
             {/* <!-- Input Fields --> */}
             <div className="bg-white border border-stroke dark:bg-boxdark dark:border-strokedark rounded-sm shadow-default">
-            <div className="border-b border-stroke dark:border-strokedark flex gap-2 items-center justify-between md:gap-10 px-4 py-2">
-                  <div className="dark:text-white flex flex-col font-medium gap-2 items-start justify-start md:flex-row md:gap-10 md:items-center md:justify-between text-black w-full">
-                    <span className='hidden md:flex'>Editing ...</span>
-                    <span className='flex'>Program: {apiData.name}</span>
-                  </div>
-                  <form action={onSubmitDeleteAction} className='flex md:mx-10 mx-2'>
-                    <button className='bg-reddark font-medium md:px-6 px-4 py-2 rounded text-white tracking-wide'>Delete</button>
-                  </form>
+              <div className="border-b border-stroke dark:border-strokedark flex gap-2 items-center justify-between md:gap-10 px-4 py-2">
+                <div className="dark:text-white flex flex-col font-medium gap-2 items-start justify-start md:flex-row md:gap-10 md:items-center md:justify-between text-black w-full">
+                  <span className='hidden md:flex'>Editing ...</span>
+                  <span className='flex'>Program: {apiData.name}</span>
                 </div>
+                <form action={onSubmitDeleteAction} className='flex md:mx-10 mx-2'>
+                  <button className='bg-reddark font-medium md:px-6 px-4 py-2 rounded text-white tracking-wide'>Delete</button>
+                </form>
+              </div>
 
               <form className="flex flex-col gap-5.5 p-6.5" action={onSubmitServerAction}>
 

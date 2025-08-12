@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation';
 
 export const metadata: Metadata = {
     title: "List-Lecturers Page",
-    description: "This is List-Lecturers Page Admin Settings",
+    description: "e-conneq School System. List-Lecturers Page Admin Settings",
 };
 
 const List = ({ params, data, dataAdmin, searchParams }: { params: any; data: any, dataAdmin: any, searchParams: any }) => {
@@ -31,9 +31,9 @@ const List = ({ params, data, dataAdmin, searchParams }: { params: any; data: an
             domain={params.domain}
             searchComponent={
                 <SearchMultiple
-                            names={['fullName']}
-                            link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageMarksEntry`}
-                        />
+                    names={['fullName']}
+                    link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageBatchOperation/pageMarksEntry`}
+                />
             }
             sidebar={
                 <Sidebar
@@ -63,11 +63,11 @@ const List = ({ params, data, dataAdmin, searchParams }: { params: any; data: an
 
             <div className="bg-gray-50 flex flex-col items-center justify-center p-2">
 
-                {data && dataAdmin?
-                    data.allCustomUsers?.edges.length ?
+                {data && dataAdmin ?
+                    data.allCustomusers?.edges.length ?
                         <div className="flex flex-col gap-2 w-full">
-                            <DataTable data={dataAdmin.allCustomUsers.edges} params={params} />
-                            <DataTable data={data.allCustomUsers.edges} params={params} />
+                            <DataTable data={dataAdmin.allCustomusers.edges} params={params} />
+                            <DataTable data={data.allCustomusers.edges} params={params} />
                         </div>
                         :
                         <ServerError type="notFound" item="Marks Entry" />
@@ -140,7 +140,7 @@ const DataTable = ({ data, params }: { data: EdgeCustomUser[], params: any }) =>
                 data={data}
                 rowKey={(item, index) => item.node.id || index}
             />
-            </>
+        </>
         ) : (
             <div>No data available</div> // Optional: Show a fallback message when no data is present.
         )}

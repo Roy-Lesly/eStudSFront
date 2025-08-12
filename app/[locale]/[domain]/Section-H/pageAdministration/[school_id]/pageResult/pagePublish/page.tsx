@@ -64,7 +64,7 @@ export default page
 export const metadata: Metadata = {
   title:
     "Publish",
-  description: "This is Publish Page",
+  description: "e-conneq School System. Publish Page",
 };
 
 const GET_ACADEMIC_YEARS = gql`

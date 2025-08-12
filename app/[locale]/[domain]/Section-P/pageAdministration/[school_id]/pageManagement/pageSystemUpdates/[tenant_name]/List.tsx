@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
+import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { useRouter } from 'next/navigation';

@@ -17,7 +17,11 @@ import { useTranslation } from 'react-i18next';
 import ModalCUDClassroomSec from '@/components/MyModals/ModalCUDClassroomSec';
 
 
-const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
+const List = (
+  { params, data, sp, apiLevel }:
+  { params: any; data: any, sp: any, apiLevel: any }
+) => {
+
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
@@ -123,7 +127,7 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
             setOpenModal={setShowModal}
             actionType={showModal?.type || "create"}
             selectedItem={selectedItem}
-            extraData={{ fields: data?.allFields?.edges }}
+            apiLevel={apiLevel}
           />}
           openState={showModal?.show || false}
           onClose={() => setShowModal({ show: false, type: "create" })}

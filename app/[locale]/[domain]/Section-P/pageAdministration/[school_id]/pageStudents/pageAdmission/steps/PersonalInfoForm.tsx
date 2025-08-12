@@ -15,8 +15,8 @@ const PersonalInfoForm = ({ formData, setFormData, onNext }: any) => {
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-900">{t("Personal Information")}</h2>
+    <div className="bg-white p-2 md:p-4 rounded-lg shadow-2xl space-y-4 md:space-y-6">
+      <h2 className="text-2xl font-bold mb-4 text-blue-950 bg-slate-300 py-1 rounded-lg text-center">{t("Personal Information")}</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
@@ -67,12 +67,14 @@ const PersonalInfoForm = ({ formData, setFormData, onNext }: any) => {
       </div>
 
 
-      <button
+      <div className='flex justify-end'>
+        <button
         className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg transition"
         onClick={onNext}
       >
         Next
       </button>
+      </div>
     </div>
   );
 };

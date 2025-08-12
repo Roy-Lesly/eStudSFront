@@ -55,7 +55,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Student Settings",
-  description: "This is Student Settings Page",
+  description: "e-conneq School System. Student Settings Page",
 };
 
 

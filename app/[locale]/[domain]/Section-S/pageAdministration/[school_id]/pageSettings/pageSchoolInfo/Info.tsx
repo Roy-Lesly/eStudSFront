@@ -19,6 +19,7 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
 
   const [school, setSchool] = useState<NodeSchoolHigherInfo>({
     id: decodeUrlID(data?.node?.id) || '',
+    moratoireDeadline: data?.node?.moratoireDeadline || '',
     campus: data?.node?.campus || '',
     prefix: data?.node?.prefix || '',
     method: data?.node?.method || 0,
@@ -93,7 +94,7 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
     const res = await ApiFactory({
       newData,
       editData: newData,
-      mutationName: "createUpdateDeleteSchoolInfoHigher",
+      mutationName: "createUpdateDeleteSchoolInfo",
       modelName: "schoolinfohigher",
       successField: "id",
       query,
@@ -128,15 +129,6 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
           <input
             name="shortName"
             value={school.shortName}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md font-bold text-lg"
-          />
-        </div>
-        <div>
-          <label className="text-slate-700 block mb-1">{t("Prefix")}</label>
-          <input
-            name="prefix"
-            value={school.prefix}
             onChange={handleChange}
             className="w-full border border-gray-300 p-3 rounded-md font-bold text-lg"
           />
@@ -271,9 +263,8 @@ export default SchoolInfoForm;
 
 
 export const query = gql`
-  mutation CreateUpdateDeleteSchoolInfoHigher(
+  mutation CreateUpdateDeleteData(
     $id: ID
-    $prefix: String
     $campus: String
     $schoolName: String!
     $schoolType: String
@@ -309,9 +300,8 @@ export const query = gql`
     $colors: String
     $delete: Boolean!
   ) {
-    createUpdateDeleteSchoolInfoHigher(
+    createUpdateDeleteSchoolInfo(
       id: $id
-      prefix: $prefix
       campus: $campus
       schoolName: $schoolName
       schoolType: $schoolType
@@ -349,7 +339,6 @@ export const query = gql`
     ) {
       schoolinfohigher {
         id
-        schoolName
       }
     }
   }

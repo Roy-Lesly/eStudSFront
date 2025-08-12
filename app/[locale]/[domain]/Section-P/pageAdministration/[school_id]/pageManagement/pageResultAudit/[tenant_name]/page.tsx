@@ -1,8 +1,8 @@
 import React from 'react'
-import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
+import ListResultAudit from '@/app/[locale]/[domain]/SectionAll/ListResultAudit';
 
 const page = async ({
   params,
@@ -14,23 +14,25 @@ const page = async ({
 
   const p = await params;
   const sp = await searchParams;
+  let data;
 
-   const data = await queryServerGraphQL({
-      domain: p?.domain,
-      query: GET_DATA_RESULT,
-      variables: {
-        fullName: sp?.fullName || "",
-        courseName: sp?.courseName || "",
-        semester: sp?.semester || "",
-        academicYear: sp?.academicYear || "",
-      },
-    });
+  data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_PRIMARY,
+    variables: {
+      fullName: sp?.fullName || "",
+      courseName: sp?.courseName || "",
+      semester: sp?.semester || "",
+      academicYear: sp?.academicYear || "",
+    },
+  });
 
 
   return (
-    <List
+    <ListResultAudit
+      section={"P"}
       params={p}
-      dataResults={data?.allResults?.edges}
+      dataResults={data?.allResultsPrim?.edges}
       sp={sp}
     />
   )
@@ -41,39 +43,34 @@ export default page
 
 export const metadata: Metadata = {
   title: "Management",
-  description: "This is Manangement Page Settings",
+  description: "e-conneq School System. Manangement Page Settings",
 };
 
 
-const GET_DATA_RESULT = gql`
+
+const GET_DATA_PRIMARY = gql`
   query GetAllData  (
     $schoolId: Decimal,
     $fullName: String,
-    $courseName: String,
-    $semester: String,
-    $specialty: String,
+    $subjectName: String,
+    $level: String,
     $academicYear: String
   ) {
-    allResults (
+    allResultsPrim (
       fullName: $fullName,
-      courseName: $courseName,
-      semester: $semester,
-      specialtyName: $specialty,
+      subjectName: $subjectName,
+      level: $level,
       academicYear: $academicYear,
       schoolId: $schoolId,
-      ordering: "-updated_at",
       last: 100
     ) {
       edges {
         node {
-          id
-          createdAt
-          updatedAt
-          logs
-          course { mainCourse { courseName}}
+          id createdAt updatedAt logs
+          subjectprim { mainsubjectprim { subjectName}}
           student {
-            user { fullName }
-            specialty { academicYear}
+            customuser { fullName }
+            classroomprim { academicYear level }
           }
         }
       }

@@ -1,24 +1,24 @@
 import React from 'react'
 import { gql } from '@apollo/client'
-import getApolloClient from '@/functions'
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 import { Metadata } from 'next';
 import List from './List';
 
 export const metadata: Metadata = {
   title: "Income-Specialty",
-  description: "This is Income-Specialty Accounting Page",
+  description: "e-conneq School System. Income-Specialty Accounting Page",
 };
 
 const page = async ({
   params,
   searchParams
 }: {
-    params: any,
+  params: any,
   searchParams?: any
 }) => {
 
-   const p = await params;
-    const sp = await searchParams;
+  const p = await params;
+  const sp = await searchParams;
 
   const client = getApolloClient(p.domain);
   let data;
@@ -50,9 +50,9 @@ const page = async ({
 
   return (
     <div>
-      <List 
-        params={p} 
-        data={data?.transactionTotalsByStudent} 
+      <List
+        params={p}
+        data={data?.transactionTotalsByStudent}
       />
     </div>
   )

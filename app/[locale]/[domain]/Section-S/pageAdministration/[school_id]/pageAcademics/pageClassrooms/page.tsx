@@ -38,6 +38,7 @@ const EditPage = async ({
         params={p}
         data={data}
         sp={sp}
+        apiLevel={data?.getLevelsSec}
       />
     </div>
   )
@@ -50,13 +51,13 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Classroom-Settings",
-  description: "This is Classroom-Settings Page",
+  description: "e-conneq School System. Classroom-Settings Page",
 };
 
 
 
 
-export const GET_DATA_CLASSROOM_SEC = gql`
+const GET_DATA_CLASSROOM_SEC = gql`
  query GetData(
    $id: ID,
    $schoolId: Decimal,
@@ -88,5 +89,6 @@ export const GET_DATA_CLASSROOM_SEC = gql`
       }
     }
     allAcademicYearsSec
+    getLevelsSec
   }
 `;

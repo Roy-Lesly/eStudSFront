@@ -17,6 +17,7 @@ const page = async ({
 }) => {
 
   const { domain, section } = await params;
+  const p = await params;
   const sp = await searchParams;
 
   const data = await queryServerGraphQL({
@@ -34,7 +35,7 @@ const page = async ({
       <div className="flex flex-col gap-4 h-screen md:p-4 p-2 text-slate-900">
 
         <div className='flex flex-col gap-2 w-full'>
-          {section === "higher" ? <PreFormHigher source='student' data={data} /> : null }
+          {section === "higher" ? <PreFormHigher source='student' data={data} params={p} /> : null }
           {section === "secondary" ? <PreFormSecondary params={{ domain, section }} source='student' data={data} /> : null }
           {section === "primary" ? <PreFormPrimary params={{ domain, section }} source='student' data={data} /> : null }
           {section === "vocational" ? <PreFormVocational source='student' data={data} /> : null }
@@ -59,7 +60,6 @@ const GET_DATA_HIGHER = gql`
   $schoolType: String!
  ) {
   allAcademicYears
-
   allSchoolInfos (
     schoolType: $schoolType
   ) {

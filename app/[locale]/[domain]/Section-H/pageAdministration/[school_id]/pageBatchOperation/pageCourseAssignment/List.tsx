@@ -13,7 +13,7 @@ import SelectSpecialty from './SelectSpecialty';
 
 export const metadata: Metadata = {
     title: "List-Lecturers Page",
-    description: "This is List-Lecturers Page Admin Settings",
+    description: "e-conneq School System. List-Lecturers Page Admin Settings",
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {

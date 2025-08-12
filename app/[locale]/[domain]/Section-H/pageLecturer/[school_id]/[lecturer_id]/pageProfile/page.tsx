@@ -7,7 +7,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "My-Courses Page",
-  description: "This is My-Courses Page Admin Settings",
+  description: "e-conneq School System. My-Courses Page Admin Settings",
 };
 const page = async ({
   params,
@@ -23,7 +23,7 @@ const page = async ({
     domain: p?.domain,
     query: GET_DATA,
     variables: {
-        id: p.lecturer_id,
+      id: p.lecturer_id,
     },
   });
 
@@ -40,7 +40,7 @@ const GET_DATA = gql`
   query GetAllData(
     $id: Decimal!
   ) {
-  allCustomUsers(
+  allCustomusers(
       id: $id
       last: 1
     ) {
@@ -62,6 +62,7 @@ const GET_DATA = gql`
           regionOfOrigin
           highestCertificate
           yearObtained
+          infoData
         }
       }
     }

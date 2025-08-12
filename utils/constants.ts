@@ -1,3 +1,6 @@
+export const versionPresent = "2.1.0"
+
+
 export const MonthList: { id: number, value: string }[] = [
     { id: 1, value: "January" },
     { id: 2, value: "February" },

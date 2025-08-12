@@ -31,7 +31,7 @@ const MyModal: React.FC<ModalProps> = ({
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className={`bg-white p-6 relative rounded-lg shadow-lg w-full ${classname ? classname : "max-w-md "}`}
+            className={`relative rounded-lg shadow-lg w-full ${classname ? classname : "max-w-md "}`}
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 50, opacity: 0 }}
@@ -43,7 +43,7 @@ const MyModal: React.FC<ModalProps> = ({
             </div>
             {description && <p className="mb-4 text-gray-600">{description}</p>}
 
-            <div className="mb-4">
+            <div className="m-2">
                 {component}
             </div>
             

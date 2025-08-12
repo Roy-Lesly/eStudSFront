@@ -11,7 +11,7 @@ import MyProfile from './MyProfile';
 
 export const metadata: Metadata = {
   title: "Assigned Subjects Page",
-  description: "This is Assigned Subjects Page Admin Settings",
+  description: "e-conneq School System. Assigned Subjects Page Admin Settings",
 };
 
 
@@ -45,7 +45,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
 
 
       <div className="bg-gray-50 flex flex-col items-center justify-center py-2 space-y-4 font-medium text-black">
-      <MyProfile userInfo={data?.allCustomUsers?.edges?.[0]?.node} />
+        <MyProfile userInfo={data?.allCustomusers?.edges?.[0]?.node} />
 
       </div>
     </DefaultLayout>

@@ -39,7 +39,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Activation-Settings",
-  description: "This is Activation-Settings Page",
+  description: "e-conneq School System. Activation-Settings Page",
 };
 
 

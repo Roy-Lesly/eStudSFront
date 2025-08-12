@@ -7,10 +7,10 @@ import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { RegionList } from '@/constants';
-import { gql } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import Confirmation from './Confirmation';
-import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { mutationCreateUpdatePreInscription } from '@/utils/graphql/mutations/mutationCreateUpdatePreInscription';
 
 
 const steps = ['Personal Info', 'Parent Info', 'Classroom', 'Confirmation'];
@@ -36,7 +36,7 @@ type FormData = {
     father_telephone: string;
     mother_telephone: string;
     parent_email: string;
-    campus: string;
+    campusId: string;
   };
   classAssignment: {
     academic_year: string;
@@ -48,15 +48,13 @@ type FormData = {
   };
 };
 
-const PreFormPrimary = ({ data, source, params }: { params: any, source: "admin" | "student", data?: any }) => {
+const PreFormPrimary = ({ data, source, params }: { params: any, source: "admin" | "student", data: any }) => {
 
-  console.log(data);
   const [currentStep, setCurrentStep] = useState(0);
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [count, setCount] = useState<number>(0);
   const [schoolSystem, setschoolSystem] = useState<string>("");
-  // const [optionsClassroom, setOptionsClassroom] = useState<{ id: number, name: string }[]>();
   const [optionsCampuses, setOptionsCampuses] = useState<{ id: number, name: string }[]>();
   const [optionsProgramsPrim, setOptionsProgramsPrim] = useState<{ id: number, name: string }[]>();
   const [optionsLevels, setOptionsLevels] = useState<{ id: number, name: string }[]>();
@@ -81,7 +79,7 @@ const PreFormPrimary = ({ data, source, params }: { params: any, source: "admin"
       father_telephone: '',
       mother_telephone: '',
       parent_email: '',
-      campus: source === "admin" ? parseInt(localStorage.getItem("school") || "") : "",
+      campusId: source === "admin" ? params.school_id : "",
     },
     classAssignment: {
       academic_year: '',
@@ -103,8 +101,8 @@ const PreFormPrimary = ({ data, source, params }: { params: any, source: "admin"
         const { first_name, last_name, sex, address, dob, pob, } = formData.personalInfo;
         return [first_name, last_name, sex, address, dob, pob,].every((field) => String(field).trim() !== '');
       case 1:
-        const { campus, nationality, region_of_origin, mother_name, mother_telephone, father_telephone } = formData.medicalHistory;
-        return [nationality, region_of_origin, mother_name, mother_telephone, campus.toString()].every((field) => String(field.trim()) !== '');
+        const { campusId, nationality, region_of_origin, mother_name, mother_telephone, father_telephone } = formData.medicalHistory;
+        return [nationality, region_of_origin, mother_name, mother_telephone, campusId.toString()].every((field) => String(field.trim()) !== '');
       case 2:
         const { academic_year, program, level } = formData.classAssignment;
         return [academic_year, program, level].every((field) => String(field).trim() !== '' && (Array.isArray(field) ? field.every(item => String(item).trim() !== '') : true));
@@ -199,7 +197,7 @@ const PreFormPrimary = ({ data, source, params }: { params: any, source: "admin"
       fatherTelephone: formData.medicalHistory.father_telephone,
       motherTelephone: formData.medicalHistory.mother_telephone,
       parentEmail: formData.medicalHistory.parent_email,
-      campusId: formData.medicalHistory.campus,
+      campusId: formData.medicalHistory.campusId,
 
       nationality: formData.medicalHistory?.nationality,
       regionOfOrigin: formData.medicalHistory.region_of_origin === "Other" ? capitalizeFirstLetter(formData.medicalHistory.region_of_origin_other.toLowerCase()) : formData.medicalHistory.region_of_origin,
@@ -218,33 +216,28 @@ const PreFormPrimary = ({ data, source, params }: { params: any, source: "admin"
     if ([newData].length > 0) {
       for (let index = 0; index < [newData].length; index++) {
         const dataToSubmit = [newData][index];
-
         console.log(dataToSubmit);
 
-        const res = await ApiFactory({
-          newData: { ...dataToSubmit, delete: false },
-          editData: { ...dataToSubmit, delete: false },
-          mutationName: "createUpdateDeletePreinscriptionPrim",
-          modelName: "preinscriptionprim",
-          successField: "id",
-          query,
-          router: null,
-          params,
-          redirect: false,
-          reload: true,
-          returnResponseField: false,
-          redirectPath: ``,
-          actionLabel: "processing",
-        });
+        try {
+          const resUserId = await mutationCreateUpdatePreInscription({
+            section: "P",
+            formData: dataToSubmit,
+            p: params,
+            router: null,
+            routeToLink: "",
+          })
 
-        console.log(res);
-
-        setCount(9)
+          if (resUserId.length > 5) {
+            alert(t("Operation Successful") + " " + `✅`)
+            window.location.reload();
+          }
+        } catch (error) {
+          errorLog(error);
+        }
       };
     };
   };
 
-  const last_20_years = Array.from({ length: 25 }, (_, i) => (currentYear - i).toString());
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -342,13 +335,13 @@ const PreFormPrimary = ({ data, source, params }: { params: any, source: "admin"
               <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
 
                 {source === "student" ? <MyInputField
-                  id="campus"
-                  name="campus"
+                  id="campusId"
+                  name="campusId"
                   label="Campus"
                   type="select"
                   placeholder={t("Select Campus")}
-                  value={formData.medicalHistory.campus.toString()}
-                  onChange={(e) => handleChange('medicalHistory', 'campus', e.target.value)}
+                  value={formData.medicalHistory.campusId.toString()}
+                  onChange={(e) => handleChange('medicalHistory', 'campusId', e.target.value)}
                   options={optionsCampuses}
                 /> : null}
 
@@ -603,65 +596,3 @@ const PreFormPrimary = ({ data, source, params }: { params: any, source: "admin"
 };
 
 export default PreFormPrimary
-
-
-
-const query = gql`
-  mutation Create(
-    $firstName: String!
-    $lastName: String!
-    $sex: String!
-    $address: String!
-    $pob: String!
-    $dob: String!
-
-    $nationality: String!
-    $regionOfOrigin: String!
-    $fatherName: String!
-    $motherName: String!
-    $parentAddress: String!
-    $fatherTelephone: String!
-    $motherTelephone: String!
-    $parentEmail: String!
-
-    $academicYear: String!
-    $level: String!
-    $program: String!
-    $action: String!
-    $campusId: ID!
-    $status: String!
-    $admissionStatus: Boolean!
-    $delete: Boolean!
-  ) {
-    createUpdateDeletePreinscriptionPrim(
-      firstName: $firstName
-      lastName: $lastName
-      sex: $sex
-      address: $address
-      pob: $pob
-      dob: $dob
-
-      nationality: $nationality
-      regionOfOrigin: $regionOfOrigin
-      fatherName: $fatherName
-      motherName: $motherName
-      parentAddress: $parentAddress
-      fatherTelephone: $fatherTelephone
-      motherTelephone: $motherTelephone
-      parentEmail: $parentEmail
-
-      academicYear: $academicYear
-      level: $level
-      program: $program
-      action: $action
-      campusId: $campusId
-      status: $status
-      admissionStatus: $admissionStatus
-      delete: $delete
-    ) {
-      preinscriptionprim {
-        id firstName
-      }
-    }
-  }
-`;

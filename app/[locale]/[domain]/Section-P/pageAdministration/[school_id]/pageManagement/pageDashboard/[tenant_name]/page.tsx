@@ -19,7 +19,7 @@ const page = async ({
   const tenantId = Array.isArray(sp?.id) ? sp?.id[0] : sp?.id;
 
   const data = await queryServerGraphQL({
-    domain: p?.domain,
+    domain: p.domain,
     query: GET_DATA,
     variables: {
       tenant_id: parseInt(decodeUrlID(tenantId || "")),
@@ -28,7 +28,12 @@ const page = async ({
   });
 
   return (
-    <List params={p} searchParams={sp} tenant={data?.allTenants?.edges[0]} />
+    <List
+      section={"P"}
+      params={p}
+      searchParams={sp}
+      tenant={data?.allTenants?.edges[0]}
+    />
   )
 }
 
@@ -37,7 +42,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Management",
-  description: "This is Manangement Page Settings",
+  description: "e-conneq School System. Manangement Page Settings",
 };
 
 
@@ -51,7 +56,7 @@ const GET_DATA = gql`
         edges {
             node {
                 id 
-                user { matricle} 
+                customuser { matricle} 
                 schemaName 
                 schoolName 
                 schoolType 

@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
+import { GetMenuAdministration as MenuHigher } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration as MenuSecondary } from '@/section-s/Sidebar/MenuAdministration';
+import { GetMenuAdministration as MenuPrimary } from '@/section-p/Sidebar/MenuAdministration';
+import { GetMenuAdministration as MenuVocational } from '@/section-h/Sidebar/MenuAdministration';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { motion } from "framer-motion";
-
-
-
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -21,7 +21,6 @@ import {
 } from "chart.js";
 import UserLogins from './UserLogins';
 import { EdgeTenant } from '@/Domain/schemas/interfaceGraphql';
-// import UserLogins from '../../UserLogins';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -39,13 +38,14 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
     return data;
 };
 
-const List = ({ params, searchParams, tenant }: { params: any, searchParams: any, tenant: EdgeTenant }) => {
+const List = (
+    { params, searchParams, tenant, section }:
+    { params: any, searchParams: any, tenant: EdgeTenant, section: string }
+) => {
 
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
     const [activeTab, setActiveTab] = useState("overview");
-
-
 
 
     return (
@@ -59,7 +59,7 @@ const List = ({ params, searchParams, tenant }: { params: any, searchParams: any
             sidebar={
                 <Sidebar
                     params={params}
-                    menuGroups={GetMenuAdministration()}
+                    menuGroups={ section === "H" ? MenuHigher() : section === "S" ? MenuSecondary() : section === "P" ? MenuPrimary() : MenuVocational()}
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                 />

@@ -13,18 +13,18 @@ const page = async ({
 
   const p = await params;
   const sp = await searchParams;
-  
-  return (
-      <>
-        <Breadcrumb
-          pageName="Specialty" 
-          pageName1="Main Dashboard" 
-          link1="/pageAdministration/pageResult" 
-        />
 
-        <Specialty params={p} />
-      </>
-    
+  return (
+    <>
+      <Breadcrumb
+        pageName="Specialty"
+        pageName1="Main Dashboard"
+        link1="/pageAdministration/pageResult"
+      />
+
+      <Specialty params={p} />
+    </>
+
   )
 }
 
@@ -33,5 +33,5 @@ export default page
 export const metadata: Metadata = {
   title:
     "Specialty",
-  description: "This is Result Page",
+  description: "e-conneq School System. Result Page",
 };

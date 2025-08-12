@@ -39,9 +39,6 @@ const page = async (
     }
   }
 
-  console.log(activeSection);
-  console.log(trueCount);
-
   return (
     <BackGround
       width="w-full md:w-[80%]"
@@ -68,17 +65,16 @@ const page = async (
           </ul>
         </section>
 
-        {/* CTA Buttons */}
+
         <div className="mt-6 flex gap-4">
           <Link
-            // href="/pre-inscription/Check"
-            href={`/pre-inscription/Check/${ trueCount === 1 ? activeSection : sp?.section || "higher"}`}
+            href={`/${params.locale}/${params.domain}/pre-inscription/Check/${ trueCount === 1 ? activeSection : sp?.section || "higher"}`}
             className="bg-blue-500 text-white font-semibold px-2 md:px-5 py-2 md:py-3 rounded-lg shadow-md hover:bg-blue-400 transition-all"
           >
             {t("Check Status")} 📑
           </Link>
           <Link
-            href={`/pre-inscription/New/${ trueCount === 1 ? activeSection : sp?.section || "higher"}`}
+            href={`/${params.locale}/${params.domain}/pre-inscription/New/${ trueCount === 1 ? activeSection : sp?.section || "higher"}`}
             className="bg-white text-blue-700 font-semibold px-2 md:px-5 py-2 md:py-3 rounded-lg shadow-md hover:bg-gray-100 transition-all"
           >
             {t("Begin Enrollment")} 🚀

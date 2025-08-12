@@ -20,7 +20,7 @@ import { decodeUrlID } from '@/functions';
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
 

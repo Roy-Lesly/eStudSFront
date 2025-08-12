@@ -79,7 +79,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Acc-Dash",
-  description: "This is Acc Dash",
+  description: "e-conneq School System. Acc Dash",
 };
 
 

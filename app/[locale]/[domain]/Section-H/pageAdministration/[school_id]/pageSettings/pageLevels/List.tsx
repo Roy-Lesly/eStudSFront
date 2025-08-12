@@ -18,7 +18,7 @@ import ButtonAction from '@/section-h/Buttons/ButtonAction';
 
 export const metadata: Metadata = {
   title: "Levels Page",
-  description: "This is Levels Page Admin Settings",
+  description: "e-conneq School System. Levels Page Admin Settings",
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
@@ -34,9 +34,9 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     {
       header: "View", align: "center",
       render: (item) => <div className='flex flex-row gap-2 justify-center w-full'>
-      <ButtonAction data={item} type='edit' action={() => {setShowModal({ show: true, type: "update"}); setSelectedItem(item) }} />
-      <ButtonAction data={item} type='delete' action={() => {setShowModal({ show: true, type: "delete"}); setSelectedItem(item) }} />
-    </div>,
+        <ButtonAction data={item} type='edit' action={() => { setShowModal({ show: true, type: "update" }); setSelectedItem(item) }} />
+        <ButtonAction data={item} type='delete' action={() => { setShowModal({ show: true, type: "delete" }); setSelectedItem(item) }} />
+      </div>,
     },
   ];
   return (
@@ -67,13 +67,13 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
-              <MyTableComp
-                data={data.allLevels.edges.sort((a: EdgeLevel, b: EdgeLevel) => a.node.level > b.node.level ? 1 : a.node.level < b.node.level ? -1 : 0)}
-                columns={Columns}
-                table_title='Level'
-                button_type={"add"}
-                button_action={() => { setShowModal({ type: "create", show: true })}}
-              />
+            <MyTableComp
+              data={data.allLevels.edges.sort((a: EdgeLevel, b: EdgeLevel) => a.node.level > b.node.level ? 1 : a.node.level < b.node.level ? -1 : 0)}
+              columns={Columns}
+              table_title='Level'
+              button_type={"add"}
+              button_action={() => { setShowModal({ type: "create", show: true }) }}
+            />
             :
             <ServerError type='network' item='Level' />}
         </div>
@@ -87,7 +87,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
             selectedItem={selectedItem}
           />}
           openState={showModal?.show || false}
-          onClose={() => setShowModal({ show: false, type: "create"})}
+          onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}
           classname=''
         />

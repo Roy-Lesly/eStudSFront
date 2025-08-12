@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Specialty Page",
-  description: "This is Specialty Page Admin Settings",
+  description: "e-conneq School System. Specialty Page Admin Settings",
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
@@ -42,6 +42,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     { header: `${t("Specialty Name")}`, accessor: "node.mainSpecialty.specialtyName", align: "left" },
     { header: `${t("Year")}`, accessor: "node.academicYear", align: "center" },
     { header: `${t("Level")}`, accessor: "node.level.level", align: "center" },
+    { header: `${t("Program")}`, accessor: "node.program.name", align: "center" },
     { header: `${t("Students")}`, accessor: "node.studentCount", align: "center" },
     {
       header: `${t("View")}`, align: "center",
@@ -189,7 +190,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
             setOpenModal={setShowModal}
             actionType={showModal?.type || "create"}
             selectedItem={selectedItem}
-            extraData={ {fields: data?.allFields?.edges} }
+            extraData={{ fields: data?.allFields?.edges }}
           />}
           openState={showModal?.show || false}
           onClose={() => setShowModal({ show: false, type: "create" })}
@@ -205,7 +206,11 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               setOpenModal={setShowModal}
               actionType={showModal?.type || "create"}
               selectedItem={selectedItem}
-              extraData={{ mainSpecialties: data?.allMainSpecialties?.edges, levels: data?.allLevels?.edges }}
+              extraData={{ 
+                mainSpecialties: data?.allMainSpecialties?.edges, 
+                levels: data?.allLevels?.edges,
+                programs: data?.allPrograms?.edges
+              }}
             />}
             openState={showModal?.show || false}
             onClose={() => setShowModal({ show: false, type: "create" })}

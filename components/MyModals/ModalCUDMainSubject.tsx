@@ -142,7 +142,7 @@ export const querySec = gql`
             createdById: $createdById,
             updatedById: $updatedById
         ) {
-            mainsubjectprim {
+            mainsubjectsec {
               id
             }  
         } 

@@ -93,7 +93,7 @@ const CreateLecturer = ({
             dataToSubmit = {
                 ...formData,
                 id: parseInt(decodeUrlID(selectedItem.node.id)),
-                sex: capitalizeFirstLetter(formData.sex),
+                sex: formData.sex,
                 delete: actionType === "update" ? false : true,
             }
         }
@@ -327,7 +327,7 @@ export const query = gql`
         $infoData: JSONString!,
         $delete: Boolean!,
     ) {
-        createUpdateDeleteCustomUser(
+        createUpdateDeleteCustomuser(
             id: $id,
             schoolIds: $schoolIds,
             firstName: $firstName,

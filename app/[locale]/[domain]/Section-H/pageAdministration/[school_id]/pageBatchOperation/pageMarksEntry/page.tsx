@@ -27,8 +27,7 @@ const page = async ({
     query: GET_DATA,
     variables: {
       ...removeEmptyFields(paginationParams),
-      // orRole: ["admin", "teacher"],
-      role: "teacher",
+      roleIn: ["teacher", "admin"],
       schoolId: parseInt(p.school_id),
     },
   });
@@ -48,7 +47,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Marks Entry ",
-  description: "This is Marks Entry  Page",
+  description: "e-conneq School System. Marks Entry  Page",
 };
 
 
@@ -57,9 +56,10 @@ const GET_DATA = gql`
   $schoolId: Decimal!,
   $fullName: String,
   $telephone: String,
+  $roleIn: [String!]!
 ) {
-  allCustomUsers(
-    role: "teacher"
+  allCustomusers(
+    roleIn: $roleIn
     isActive: true
     schoolId: $schoolId
     last: 100

@@ -8,8 +8,6 @@ export function withMiddlewareDomains(middleware: NextMiddleware){
         const subdomain = hostname ? hostname.split('.')[0] : "";
         let subdomainData = Subdomains.find(d => d.subdomain === subdomain);
         if (!subdomainData){ subdomainData = { id: 1, subdomain: "test" }}
-        console.log(subdomainData);
-
         var modifiedRequest = request
 
         if (subdomainData && subdomain) {

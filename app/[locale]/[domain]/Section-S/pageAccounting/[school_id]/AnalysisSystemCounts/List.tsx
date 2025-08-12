@@ -17,7 +17,7 @@ import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
 const List = ({ params, data, dataYears, searchParams }: { params: any; data: any, searchParams: any, dataYears: any }) => {
@@ -46,7 +46,7 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
       domain={params.domain}
       searchComponent={
         <SearchMultiple
-          names={["academicYear" ]}
+          names={["academicYear"]}
           link={`/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemCounts`}
           select={[
             // { type: 'select', name: 'academicYear', dataSelect: dataYears?.allAcademicYears },

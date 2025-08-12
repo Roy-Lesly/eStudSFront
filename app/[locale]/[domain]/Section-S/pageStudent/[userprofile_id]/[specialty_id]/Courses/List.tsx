@@ -13,10 +13,10 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
     title: "Courses Page",
-    description: "This is Courses Page Admin Settings",
+    description: "e-conneq School System. Courses Page Admin Settings",
 };
 
-const List = ({ data }: { params: any; data: any, searchParams: any }) => {
+const List = ({ data, p }: { p: any; data: any, searchParams: any }) => {
     const { t } = useTranslation("common");
     const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
     const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -32,44 +32,45 @@ const List = ({ data }: { params: any; data: any, searchParams: any }) => {
         <div className="bg-gray-50 flex flex-col items-center justify-center pb-20">
 
 
-        <div className="bg-white mt-2 mx-auto rounded shadow w-full">
+            <div className="bg-white mt-2 mx-auto rounded shadow w-full">
 
-            {data && !data?.error ?
-                <MyTableComp
-                    data={
-                        data?.allCourses?.edges.sort((a: EdgeCourse, b: EdgeCourse) => {
-                            const courseNameA = a.node.mainCourse.courseName.toLowerCase();
-                            const courseNameB = b.node.mainCourse.courseName.toLowerCase();
-                            const semesterA = a.node.semester;
-                            const semesterB = b.node.semester;
-                            if (semesterA > semesterB) return 1;
-                            if (semesterA < semesterB) return -1;
-                            return courseNameA.localeCompare(courseNameB);
-                        })}
-                    columns={Columns}
-                />
-                :
-                <ServerError type="notFound" item={t("Courses")} />
-            }
+                {data && !data?.error ?
+                    <MyTableComp
+                        data={
+                            data?.allCourses?.edges.sort((a: EdgeCourse, b: EdgeCourse) => {
+                                const courseNameA = a.node.mainCourse.courseName.toLowerCase();
+                                const courseNameB = b.node.mainCourse.courseName.toLowerCase();
+                                const semesterA = a.node.semester;
+                                const semesterB = b.node.semester;
+                                if (semesterA > semesterB) return 1;
+                                if (semesterA < semesterB) return -1;
+                                return courseNameA.localeCompare(courseNameB);
+                            })}
+                        columns={Columns}
+                    />
+                    :
+                    <ServerError type="notFound" item={t("Courses")} />
+                }
+            </div>
+
+
+
+            <MyModal
+                component={<ModalCUDCourse
+                    params={p}
+                    setOpenModal={setShowModal}
+                    actionType={showModal?.type || "create"}
+                    selectedItem={selectedItem}
+                    extraData={{ specialties: data?.allSpecialties?.edges, mainCourses: data?.allMainCourses?.edges, teachers: data?.allCustomusers?.edges }}
+                />}
+                openState={showModal?.show || false}
+                onClose={() => setShowModal({ show: false, type: "create" })}
+                title={showModal?.type || ""}
+                classname=''
+            />
+
+
         </div>
-
-
-
-        <MyModal
-            component={<ModalCUDCourse
-                setOpenModal={setShowModal}
-                actionType={showModal?.type || "create"}
-                selectedItem={selectedItem}
-                extraData={{ specialties: data?.allSpecialties?.edges, mainCourses: data?.allMainCourses?.edges, teachers: data?.allCustomUsers?.edges }}
-            />}
-            openState={showModal?.show || false}
-            onClose={() => setShowModal({ show: false, type: "create" })}
-            title={showModal?.type || ""}
-            classname=''
-        />
-
-
-    </div>
     );
 };
 

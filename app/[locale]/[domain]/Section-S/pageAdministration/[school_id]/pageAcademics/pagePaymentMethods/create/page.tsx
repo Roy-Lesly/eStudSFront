@@ -21,20 +21,20 @@ const CreatePage = async ({
   const sp = await searchParams;
 
   return (
-    
-      <>
-        <Breadcrumb
-          pageName="Create Program" 
-          pageName1="Settings" 
-          pageName2="Programs" 
-          link1={`/Section-H/pageAdministration/${p.school_id}/pageSettings`} 
-          link2={`/Section-H/pageAdministration/${p.school_id}/pageSettings/pagePrograms`} 
-        />
 
-        {sp && <NotificationError errorMessage={sp} />}
-        <Create params={p} />
-      </>
-    
+    <>
+      <Breadcrumb
+        pageName="Create Program"
+        pageName1="Settings"
+        pageName2="Programs"
+        link1={`/Section-H/pageAdministration/${p.school_id}/pageSettings`}
+        link2={`/Section-H/pageAdministration/${p.school_id}/pageSettings/pagePrograms`}
+      />
+
+      {sp && <NotificationError errorMessage={sp} />}
+      <Create params={p} />
+    </>
+
   )
 }
 
@@ -45,10 +45,10 @@ export default CreatePage
 export const metadata: Metadata = {
   title:
     "Program-Create",
-  description: "This is Programs Page",
+  description: "e-conneq School System. Programs Page",
 };
 
-const Create = ({ params }:any) => {
+const Create = ({ params }: any) => {
 
   const onSubmitServerAction = async (formData: FormData) => {
     'use server';
@@ -58,7 +58,7 @@ const Create = ({ params }:any) => {
       name: name ? name?.toString().toUpperCase() : "",
       description: formData.get("description")
     }
-    const response = await ActionCreate(data, SchemaCreateEditProgram, protocol + "api" + params.domain + ProgramUrl, `` )
+    const response = await ActionCreate(data, SchemaCreateEditProgram, protocol + "api" + params.domain + ProgramUrl, ``)
 
     if (response.error) {
       redirect(`/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms/create?error=${JSON.stringify(response.error).replaceAll(" ", "-")}`)
@@ -120,7 +120,7 @@ const Create = ({ params }:any) => {
           </div>
         </div>
       </div>
-    
+
     </div>
   )
 }

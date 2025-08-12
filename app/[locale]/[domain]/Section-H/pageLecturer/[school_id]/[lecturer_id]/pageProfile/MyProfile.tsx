@@ -1,22 +1,25 @@
 'use client';
 
 import MyInputField from '@/components/MyInputField';
-import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { CertificateOptions, RegionList } from '@/utils/constants';
-import { gql, useMutation } from '@apollo/client';
+import { decodeUrlID } from '@/utils/functions';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutationCreateUpdateCustomuser';
+import { gql } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const MyProfile = ({ userInfo }: { userInfo: any }) => {
+const MyProfile = ({ userInfo, p }: { userInfo: any, p: any }) => {
 
-    const { t } = useTranslation("common");
+  const { t } = useTranslation("common");
   const token = localStorage.getItem("token")
   const user: JwtPayload | null = token ? jwtDecode(token) : null;
 
   const [updated, setUpdated] = useState(false)
   const [formData, setFormData] = useState({
+    id: decodeUrlID(userInfo?.id),
     firstName: userInfo?.firstName || '',
     lastName: userInfo?.lastName || '',
     matricle: userInfo?.matricle || '',
@@ -31,7 +34,9 @@ const MyProfile = ({ userInfo }: { userInfo: any }) => {
     regionOfOrigin: userInfo?.regionOfOrigin || '',
     highestCertificate: userInfo?.highestCertificate || '',
     yearObtained: userInfo?.yearObtained || '',
+    infoData: userInfo?.infoData || "{}"
   });
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -41,10 +46,7 @@ const MyProfile = ({ userInfo }: { userInfo: any }) => {
     setUpdated(true)
   };
 
-  const [createUpdateDeleteCustomUser] = useMutation(UPDATE_DELETE_CUSTOM_USER);
-
   const handleSave = async () => {
-    console.log('Save Profile:', formData);
 
     const submitData = {
       ...userInfo,
@@ -52,49 +54,28 @@ const MyProfile = ({ userInfo }: { userInfo: any }) => {
     }
 
     if ([submitData].length > 0 && submitData && submitData?.id) {
-      const successMessages: string[] = [];
-      const errorMessages: string[] = [];
       for (let index = 0; index < [formData].length; index++) {
         const res = [submitData][index];
         try {
-          const result = await createUpdateDeleteCustomUser({
-            variables: {
-              ...res,
-              id: parseInt(decodeUrlID(userInfo.id)),
-              role: res.role.toLowerCase(),
-              sex: capitalizeFirstLetter(res.sex),
-              email: res.email.toLowerCase(),
-              updatedById: user?.user_id,
-              delete: false
-            }
-          });
+          const resUserId = await mutationCreateUpdateCustomuser({
+            formData: res,
+            p,
+            router: null,
+            routeToLink: "",
+          })
 
-          console.log(result.data, 70)
-
-          if (result.data.createUpdateDeleteCustomUser.customuser.id) {
-            successMessages.push(
-              `${result.data.createUpdateDeleteCustomUser.customuser.fullName}`
-            );
+          if (resUserId.length > 5) {
+            alert(t("Operation Successful") + " " + `✅`)
+            window.location.reload();
           }
-        } catch (error: any) {
-          errorMessages.push(`Error updating ${res?.firstName}: ${error.message}`);
+        } catch (error) {
+          errorLog(error);
         }
       }
-
-      let alertMessage = "";
-      if (successMessages.length > 0) {
-        alertMessage += `✅ Successfully Submitted`;
-        window.location.reload();
-      }
-      if (errorMessages.length > 0) {
-        alertMessage += `❌ Errors occurred:\n${errorMessages.join("\n")}`;
-      }
-      alert(alertMessage);
     }
   };
 
   const last20Years = Array.from({ length: 20 }, (_, i) => (new Date().getFullYear() - (i + 1)).toString());
-
   return (
     <div className="w-full max-w-4xl p-6 bg-white rounded-2xl shadow-lg space-y-6">
       <h2 className="text-xl font-semibold text-gray-700">{t("My Profile")}</h2>

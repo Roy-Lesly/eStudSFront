@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Users Page",
-  description: "This is Users Page Admin Settings",
+  description: "e-conneq School System. Users Page Admin Settings",
 };
 
 
@@ -124,6 +124,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
       {actionType == "activate" ? <ActivateUserModal
         action={actionType}
+        p={params}
         onClose={() => setActionType(null)}
         id={parseInt(decodeUrlID(selectedItem?.id || ""))}
         status={selectedItem?.isActive || false}
@@ -174,12 +175,13 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         {data ? (
           <MyTabs
             tabs={[
-              { label: `${t('Admins')}`, content: data.admins?.allCustomUsers?.edges.length ? <DataComp data={data.admins.allCustomUsers.edges} title="Admins" /> : <ServerError type="notFound" item={t("Admin Users")} /> },
-              { label: `${t('Lecturers')}`, content: data.lects?.allCustomUsers?.edges.length ? <DataComp data={data.lects.allCustomUsers.edges} title="Lecturers" /> : <ServerError type="notFound" item={t("Lecturer Users")} /> },
-              { label: `${t('Students')}`, content: data.studs?.allCustomUsers?.edges.length ? <DataComp data={data.studs.allCustomUsers.edges} title="Students" /> : <ServerError type="notFound" item={t("Student Users")} /> },
+              { label: `${t('Admins')}`, content: data.admins?.allCustomusers?.edges.length ? <DataComp data={data.admins.allCustomusers.edges} title="Admins" /> : <ServerError type="notFound" item={t("Admin Users")} /> },
+              { label: `${t('Lecturers')}`, content: data.lects?.allCustomusers?.edges.length ? <DataComp data={data.lects.allCustomusers.edges} title="Lecturers" /> : <ServerError type="notFound" item={t("Lecturer Users")} /> },
+              { label: `${t('Students')}`, content: data.studs?.allCustomusers?.edges.length ? <DataComp data={data.studs.allCustomusers.edges} title="Students" /> : <ServerError type="notFound" item={t("Student Users")} /> },
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            source={"setActiveTab"}
           />
         ) : (
           <ServerError type="network" item="Users" />

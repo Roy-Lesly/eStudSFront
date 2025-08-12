@@ -23,7 +23,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
   const Columns: TableColumn<EdgeUserProfilePrim>[] = [
     { header: "#", align: "center", render: (_item: EdgeUserProfilePrim, index: number) => index + 1, },
-    { header: `${t("Student")}`, align: "left", render: (item) => <div className="flex flex-col">
+    { header: `${t("Student")}`, align: "left", responsiveHidden: true, render: (item) => <div className="flex flex-col">
         <span>{item.node.customuser?.firstName}</span>
         <span>{item.node.customuser?.lastName}</span>
       </div>,
@@ -38,7 +38,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         <span>{item.node.customuser?.motherTelephone}</span>
       </div>,
     },
-    { header: `${t("Class Info")}`, align: "left", render: (item) => <div className="flex flex-col">
+    { header: `${t("Class Info")}`, responsiveHidden: true, align: "left", render: (item) => <div className="flex flex-col">
         <span>{item.node.classroomprim?.level}</span>
         <span>{item.node.classroomprim?.academicYear}</span>
       </div>,

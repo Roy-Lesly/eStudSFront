@@ -15,10 +15,10 @@ import { GetMenuAccounting } from '@/components/section-h/Sidebar/MenuAccounting
 
 export const metadata: Metadata = {
   title: "Student Acount Details",
-  description: "This is Student Acount Details Page",
+  description: "e-conneq School System. Student Acount Details Page",
 };
 
-const List = ({ params, data }: { params: any; data: any }) => {
+const List = ({ p, data }: { p: any; data: any }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   const Columns: TableColumn<TransactionTotalsByStudent>[] = [
@@ -33,17 +33,17 @@ const List = ({ params, data }: { params: any; data: any }) => {
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       downloadComponent={<ExcelExporter
         data={data}
         title={"Payment-" + data && data?.length ? data[0]?.specialtyName + " " + data[0]?.academicYear + " " + data[0]?.level.toString() : ""}
         type={"Payment"}
-        page={"list_payment_students"}
+        page={"extraction_specialty_payment_single"}
       />}
       searchComponent={<></>}
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAccounting()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -63,7 +63,7 @@ const List = ({ params, data }: { params: any; data: any }) => {
         department="Income"
         subRoute="List"
         pageName={`FINANCE for ${data && data?.length ? data[0]?.specialtyName + " " + data[0]?.academicYear + " " + data[0]?.level.toString() : null}`}
-        mainLink={`${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeSpecialty`}
+        mainLink={`${p.domain}/Section-H/pageAccounting/${p.school_id}/AnalysisSystemIncomeSpecialty`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">

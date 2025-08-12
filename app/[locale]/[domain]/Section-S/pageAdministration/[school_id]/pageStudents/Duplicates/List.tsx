@@ -20,7 +20,7 @@ import MyTabs from '@/MyTabs';
 
 export const metadata: Metadata = {
   title: "Duplicates Page",
-  description: "This is Duplicates Page Admin Settings",
+  description: "e-conneq School System. Duplicates Page Admin Settings",
 };
 
 
@@ -47,13 +47,15 @@ const List = ({ params, data, searchParams }: { params: any; data: EdgeCustomUse
     { header: 'Gender', accessor: 'node.sex', align: 'left', responsiveHidden: true },
     { header: 'Address', accessor: 'node.address', align: 'left', responsiveHidden: true },
     { header: 'Telephone', accessor: 'node.telephone', align: 'left', responsiveHidden: true },
-    { header: 'Dob / Pob', align: 'left', responsiveHidden: true,
+    {
+      header: 'Dob / Pob', align: 'left', responsiveHidden: true,
       render: (item: EdgeCustomUser, index: number) => <div className='flex gap-2'>
         <span>{item.node.dob}</span>
         <span>{item.node.pob}</span>
       </div>,
     },
-    { header: 'Date', align: 'left', responsiveHidden: true,
+    {
+      header: 'Date', align: 'left', responsiveHidden: true,
       render: (item: EdgeCustomUser) => <div className='flex gap-2'>
         <span>{item.node.createdAt?.slice(0, 10)}</span>
       </div>,

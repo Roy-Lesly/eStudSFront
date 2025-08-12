@@ -131,7 +131,9 @@ const PASSWORD_RESET_CHANGE = gql`
       passwordNew: $passwordNew,
       passwordNewConfirm: $passwordNewConfirm
     ) {
-      customuser { id }
+        customuser {
+            id
+        }
     }
   }
 `;

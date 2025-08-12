@@ -2,12 +2,13 @@ import React from 'react'
 import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
+
 
 const page = async ({
-    params,
-    searchParams,
-  }: {
+  params,
+  searchParams,
+}: {
   params: any;
   searchParams: any;
 }) => {
@@ -16,22 +17,22 @@ const page = async ({
   const sp = await searchParams;
 
   const client = getApolloClient(`${p.tenant_name}`, true);
-      let dataLogins;
+  let dataLogins;
 
-    try {
-      const result = await client.query<any>({
-        query: GET_DATA,
-        variables: {
-          // schoolId: parseInt(params.school_id),
-          timestamp: new Date().getTime()
-        },
-        fetchPolicy: 'no-cache'
-      });
-      dataLogins = result.data;
-    } catch (error: any) {
-      console.log(error, 81)
-      dataLogins = null;
-    }
+  try {
+    const result = await client.query<any>({
+      query: GET_DATA,
+      variables: {
+        // schoolId: parseInt(params.school_id),
+        timestamp: new Date().getTime()
+      },
+      fetchPolicy: 'no-cache'
+    });
+    dataLogins = result.data;
+  } catch (error: any) {
+    console.log(error, 81)
+    dataLogins = null;
+  }
 
   return (
     <List params={p} dataLogins={dataLogins} />
@@ -42,8 +43,8 @@ export default page
 
 
 export const metadata: Metadata = {
-    title: "Management",
-    description: "This is Manangement Page Settings",
+  title: "Management",
+  description: "e-conneq School System. Manangement Page Settings",
 };
 
 

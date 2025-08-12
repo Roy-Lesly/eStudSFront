@@ -11,18 +11,21 @@ import ServerError from '@/ServerError';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { EdgePreInscription } from '@/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
-import ButtonAction from '@/section-h/Buttons/ButtonAction';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { decodeUrlID } from '@/utils/functions';
 
 
-const List = ({ params, dataYears, dataPending }: { params: any, dataYears: string[], dataPending: EdgePreInscription[], searchParams: any }) => {
+const List = (
+  { params, dataYears, dataPending, sp }:
+  { params: any, dataYears: string[], dataPending: EdgePreInscription[], sp: any }
+) => {
+
   const { t } = useTranslation();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) || 0);
 
   const Columns: TableColumn<EdgePreInscription>[] = [
     { header: "#", align: "center", responsiveHidden: true, render: (_item: EdgePreInscription, index: number) => index + 1, },
@@ -30,31 +33,17 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
     { header: `${t("Full Name")}`, accessor: "node.fullName", align: "left" },
     { header: `${t("Gender")}`, accessor: "node.sex", align: "center", responsiveHidden: true },
     { header: `${t("Address")}`, accessor: "node.address", align: "center", responsiveHidden: true },
-    { header: "Campus", accessor: "node.campus.campus", align: "center", responsiveHidden: true },
+    { header: "Campus", accessor: "node.campus.campus", align: "center", responsiveHidden: true, hideColumn: activeTab == 0 },
     { header: "Telephone", accessor: "node.telephone", align: "center", responsiveHidden: true },
     {
-      header: `${t("View")}`, align: "center", responsiveHidden: true,
-      render: (item) => <div
-        className="gap-2 items-center justify-center p-1 rounded-full x-row"
-      >
-        {activeTab === 1 ? <div className='flex flex-row gap-2'>
-          <ButtonAction data={item} type='edit' action={() => { }} />
-          <ButtonAction data={item} type='delete' action={() => { }} />
-        </div>
-          :
-          (activeTab === 0) ? <div className='flex flex-row gap-2'>
-            <span>{t("Admitted")}</span>
-          </div> : null}
+      header: "Admit", align: "center", hideColumn: false, render: (item) => <div className='flex gap-2 items-center justify-center w-full'>
+        <button
+          className="flex gap-2 items-center justify-center bg-green-400 p-2 rounded-full"
+          onClick={() => router.push(`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?id=${item.node.id}`)}
+        >
+          <FaArrowRightLong size={22} color='black' className='' />
+        </button>
       </div>,
-    },
-    {
-      // header: "Admit", align: "center", hideColumn: activeTab == 0 || activeTab == 1 ? true : false, render: (item) => <button
-      header: "Admit", align: "center", hideColumn: false, render: (item) => <button
-        className="bg-green-400 gap-2 items-center justify-center p-2 rounded-full"
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/pageAdmission/?id=${item.node.id}`)}
-      >
-        <FaArrowRightLong size={22} color='black' />
-      </button>,
     },
   ];
 
@@ -138,7 +127,7 @@ const List = ({ params, dataYears, dataPending }: { params: any, dataYears: stri
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          source={`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription/?`}
+          source={`Section-H/pageAdministration/${params.school_id}/pageStudents/PreInscription/?`}
 
         />
           :

@@ -3,7 +3,10 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
+import { GetMenuAdministration as MenuHigher } from '@/section-h/Sidebar/MenuAdministration';
+import { GetMenuAdministration as MenuSecondary } from '@/section-s/Sidebar/MenuAdministration';
+import { GetMenuAdministration as MenuPrimary } from '@/section-p/Sidebar/MenuAdministration';
+import { GetMenuAdministration as MenuVocational } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import {
@@ -36,9 +39,9 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
 };
 
 const List = (
-    { params, dataPlatformPaid, dataPlatformPending, dataTransactions, sp }
+    { params, dataPlatformPaid, dataPlatformPending, dataTransactions, sp, section }
     : 
-    { params: any, dataPlatformPaid: EdgeSchoolFees[], dataPlatformPending: EdgeSchoolFees[], dataTransactions: EdgeTransactions[], sp: any }
+    { params: any, dataPlatformPaid: EdgeSchoolFees[], dataPlatformPending: EdgeSchoolFees[], dataTransactions: EdgeTransactions[], sp: any, section: string }
 ) => {
 
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -56,7 +59,7 @@ const List = (
             sidebar={
                 <Sidebar
                     params={params}
-                    menuGroups={GetMenuAdministration()}
+                    menuGroups={ section === "H" ? MenuHigher() : section === "S" ? MenuSecondary() : section === "P" ? MenuPrimary() : MenuVocational()}
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                 />

@@ -17,7 +17,7 @@ import { GetMenuAccounting } from '@/components/section-s/Sidebar/MenuAccounting
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
 const List = ({ params, data, dataYears, searchParams }: { params: any; data: any, searchParams: any, dataYears: any }) => {
@@ -58,12 +58,12 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
       domain={params.domain}
       searchComponent={
         <SearchMultiple
-              names={["academicYear"]}
-              link={`/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeDomain`}
-              select={[
-                // { type: 'select', name: 'academicYear', dataSelect: dataYears?.allAcademicYears },
-              ]}    
-            />
+          names={["academicYear"]}
+          link={`/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeDomain`}
+          select={[
+            // { type: 'select', name: 'academicYear', dataSelect: dataYears?.allAcademicYears },
+          ]}
+        />
       }
       sidebar={
         <Sidebar
@@ -95,37 +95,37 @@ const List = ({ params, data, dataYears, searchParams }: { params: any; data: an
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
 
-      <div className='flex items-center justify-center'>
-        {searchParams && searchParams?.academicYear ? 
-        <span className='font-semibold my-2 rounded text-xl'>{searchParams?.academicYear}</span>
-        : 
-        <span className='font-medium my-24 p-4 rounded text-lg'>Please Select Academic Year</span>}
-      </div>
+          <div className='flex items-center justify-center'>
+            {searchParams && searchParams?.academicYear ?
+              <span className='font-semibold my-2 rounded text-xl'>{searchParams?.academicYear}</span>
+              :
+              <span className='font-medium my-24 p-4 rounded text-lg'>Please Select Academic Year</span>}
+          </div>
 
-        {data && !data?.error ? (
+          {data && !data?.error ? (
             <MyTabs
               tabs={[
                 {
                   label: 'Registration', content: data?.transactionTotalsByDomain?.length ?
-                        <MyTableComp
-                        data={
-                          data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
-                            return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
-                          })}
-                        columns={ColumnsRegistration}
-                      />
+                    <MyTableComp
+                      data={
+                        data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
+                          return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
+                        })}
+                      columns={ColumnsRegistration}
+                    />
                     :
                     <ServerError type="notFound" item="Income" />
                 },
                 {
                   label: 'Tuition', content: data?.transactionTotalsByDomain?.length ?
-                        <MyTableComp
-                        data={
-                          data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
-                            return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
-                          })}
-                        columns={ColumnsTuition}
-                      />
+                    <MyTableComp
+                      data={
+                        data?.transactionTotalsByDomain?.sort((a: TransactionTotalsByDomain, b: TransactionTotalsByDomain) => {
+                          return a.domainName > b.domainName ? 1 : a.domainName < b.domainName ? -1 : 0
+                        })}
+                      columns={ColumnsTuition}
+                    />
                     :
                     <ServerError type="notFound" item="Income" />
                 },

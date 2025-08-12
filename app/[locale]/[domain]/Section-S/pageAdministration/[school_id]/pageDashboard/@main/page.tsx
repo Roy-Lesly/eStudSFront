@@ -55,7 +55,8 @@ const GET_DATA = gql`
 ) {
     getStatsGenderChart (
       schoolId: $schoolId,
-      academicYear: $academicYear
+      academicYear: $academicYear,
+      schoolType: "S"
     ) {
         yearlyStudentCount { 
           academicYear

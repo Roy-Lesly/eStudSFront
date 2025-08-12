@@ -1,12 +1,12 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, getData, removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 const page = async ({
-    params,
-    searchParams,
+  params,
+  searchParams,
 }: {
   params: any;
   searchParams?: any;
@@ -15,47 +15,47 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-    const client = getApolloClient(p.domain);
-    let data;
+  const client = getApolloClient(p.domain);
+  let data;
 
-    try {
-        let q: any = {
-            schoolId: parseInt(p.school_id),
-            timestamp: new Date().getTime()
-        }
-        if (sp?.specialtyName) { q = { ...q, specialtyName: sp.specialtyName } }
-        if (sp?.academicYear) { q = { ...q, academicYear: sp.academicYear } }
-        if (sp?.level) { q = { ...q, level: sp.level } }
-
-        const result = await client.query<any>({
-            query: GET_SPECIALTIES,
-            variables: q,
-            fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-        errorLog(error);
-        if (error.networkError && error.networkError.result) {
-            console.error('GraphQL Error Details:', error.networkError.result.errors);
-        }
-        data = null;
+  try {
+    let q: any = {
+      schoolId: parseInt(p.school_id),
+      timestamp: new Date().getTime()
     }
+    if (sp?.specialtyName) { q = { ...q, specialtyName: sp.specialtyName } }
+    if (sp?.academicYear) { q = { ...q, academicYear: sp.academicYear } }
+    if (sp?.level) { q = { ...q, level: sp.level } }
 
-    return (
-        <div>
-            <List 
-                params={p} 
-                data={data?.allSpecialties?.edges}
-            />
-        </div>
-    )
+    const result = await client.query<any>({
+      query: GET_SPECIALTIES,
+      variables: q,
+      fetchPolicy: 'no-cache'
+    });
+    data = result.data;
+  } catch (error: any) {
+    errorLog(error);
+    if (error.networkError && error.networkError.result) {
+      console.error('GraphQL Error Details:', error.networkError.result.errors);
+    }
+    data = null;
+  }
+
+  return (
+    <div>
+      <List
+        params={p}
+        data={data?.allSpecialties?.edges}
+      />
+    </div>
+  )
 }
 
 export default page
 
 export const metadata: Metadata = {
-    title: "TimeTable",
-    description: "This is TimeTable Page",
+  title: "TimeTable",
+  description: "e-conneq School System. TimeTable Page",
 };
 
 

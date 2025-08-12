@@ -90,7 +90,7 @@ const Confirmation = ({
           data?.allSchoolInfos?.edges.find(
             (item: EdgeSchoolHigherInfo) =>
               parseInt(decodeUrlID(item.node.id)) ===
-              parseInt(formData.medicalHistory.campus.toString())
+              parseInt(formData.medicalHistory.campusId.toString())
           )?.node.campus
         )}
         {renderRow(

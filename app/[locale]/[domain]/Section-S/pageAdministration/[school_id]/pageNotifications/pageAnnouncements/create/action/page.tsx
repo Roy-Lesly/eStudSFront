@@ -16,22 +16,22 @@ const page = async ({
 }: {
     params: any;
     searchParams: any;
-}) => { 
+}) => {
     const p = await params; const sp = await searchParams;
 
     return (
-        
-            <>
-                <Breadcrumb
-                    pageName="New Announcements"
-                    pageName1="Back To Announcements"
-                    link1={`/Section-H/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements`}
-                />
 
-                {searchParams && <CreateAnnouncements params={params} searchParams={searchParams} />}
+        <>
+            <Breadcrumb
+                pageName="New Announcements"
+                pageName1="Back To Announcements"
+                link1={`/Section-H/pageAdministration/${params.school_id}/pageNotifications/pageAnnouncements`}
+            />
 
-            </>
-        
+            {searchParams && <CreateAnnouncements params={params} searchParams={searchParams} />}
+
+        </>
+
     )
 }
 
@@ -39,13 +39,13 @@ export default page
 
 export const metadata: Metadata = {
     title: "Create Announcements",
-    description: "This is Announcements Page",
+    description: "e-conneq School System. Announcements Page",
 };
 
 
 const CreateAnnouncements = async ({ params, searchParams }: any) => {
 
-    const apiSchool: any = await getData(protocol + "api" + params.domain + GetSchoolInfoUrl, { nopage: true, fieldList: [ "id", "school_name", "town", "campus__name" ] }, params.domain);
+    const apiSchool: any = await getData(protocol + "api" + params.domain + GetSchoolInfoUrl, { nopage: true, fieldList: ["id", "school_name", "town", "campus__name"] }, params.domain);
     const apiDomain: any = await getData(protocol + "api" + params.domain + GetDomainUrl, { nopage: true }, params.domain);
     const apiSpecialty: any = await getData(GetSpecialtyUrl, {
         nopage: true, academic_year: searchParams.year, level__level: searchParams.level, fieldList: [

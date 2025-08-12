@@ -25,38 +25,42 @@ const page = async ({
 
   const removed = removeEmptyFields(paginationParams)
 
-    const dataAdmins = await queryServerGraphQL({
-      domain: p.domain,
-      query: GET_DATA_ADMIN,
-      variables: {
-        ...removed,
-        schoolId: parseInt(p.school_id),
-      },
-    });
+  const dataAdmins = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_ADMIN,
+    variables: {
+      ...removed,
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
-    const dataLects = await queryServerGraphQL({
-      domain: p.domain,
-      query: GET_DATA_LECTURERS,
-      variables: {
-        ...removed,
-        schoolId: parseInt(p.school_id),
-      },
-    });
+  const dataLects = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_LECTURERS,
+    variables: {
+      ...removed,
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
-    const dataStuds = await queryServerGraphQL({
-      domain: p.domain,
-      query: GET_DATA_STUDENTS,
-      variables: {
-        ...removed,
-        orRole: ["admin", "teacher"],
-        schoolId: parseInt(p.school_id),
-      },
-    });
+  const dataStuds = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_STUDENTS,
+    variables: {
+      ...removed,
+      orRole: ["admin", "teacher"],
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
 
   return (
     <div>
-      <List params={p} data={ {"admins": dataAdmins, studs: dataStuds, lects: dataLects} } searchParams={sp} />
+      <List
+        p={p}
+        data={{ "admins": dataAdmins, studs: dataStuds, lects: dataLects }}
+        sp={sp}
+      />
     </div>
   )
 }
@@ -65,7 +69,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Users",
-  description: "This is Users Page",
+  description: "e-conneq School System. Users Page",
 };
 
 
@@ -77,7 +81,7 @@ const GET_DATA_STUDENTS = gql`
   $sex: String,
   $isActive: Boolean,
 ) {
-  allCustomUsers(
+  allCustomusers(
     isActive: $isActive
     schoolId: $schoolId
     last: 150
@@ -103,7 +107,7 @@ const GET_DATA_LECTURERS = gql`
   $sex: String,
   $isActive: Boolean,
 ) {
-  allCustomUsers(
+  allCustomusers(
     schoolId: $schoolId
     last: 300
     fullName: $fullName
@@ -129,7 +133,7 @@ const GET_DATA_ADMIN = gql`
   $sex: String,
   $isActive: Boolean,
 ) {
-  allCustomUsers(
+  allCustomusers(
     isActive: $isActive
     schoolId: $schoolId
     last: 100

@@ -33,10 +33,10 @@ const ClassManagementPage = async ({
     data = result.data;
   } catch (error: any) {
     errorLog(error)
-    
+
     data = null;
   }
-  if (sp && sp?.trans == "true"){
+  if (sp && sp?.trans == "true") {
     try {
       const result = await client.query<any>({
         query: GET_DATA_TRANSCRIPT,
@@ -67,7 +67,7 @@ export default ClassManagementPage
 export const metadata: Metadata = {
   title:
     "Class-Management",
-  description: "This is Class-Management Page",
+  description: "e-conneq School System. Class-Management Page",
 };
 
 

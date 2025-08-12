@@ -1,14 +1,14 @@
 import React from 'react'
 // import List from './List'
 import { gql } from '@apollo/client'
-import { getAcademicYear } from '@/functions'
+import { getAcademicYear, removeEmptyFields } from '@/functions'
 import { Metadata } from 'next';
 import List from './List';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "Marks-Entry Page",
-  description: "This is Marks-Entry Page Lecturer Settings",
+  description: "e-conneq School System. Marks-Entry Page Lecturer Settings",
 };
 const page = async ({
   params,
@@ -24,15 +24,16 @@ const page = async ({
   const presentAcademicYear = getAcademicYear()
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.courseName = sp?.courseName ? sp.courseName : ""
-  paginationParams.semester = sp?.semester ? sp.semester : ""
-  paginationParams.level = sp?.level ? sp.level : ""
+  paginationParams.courseName = sp?.courseName
+  paginationParams.semester = sp?.semester
+  paginationParams.level = sp?.level
   paginationParams.academicYear = sp?.academicYear ? sp.academicYear : presentAcademicYear
 
   const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA,
     variables: {
+      ...removeEmptyFields(paginationParams),
       academicYear: sp?.academicYear ? sp.academicYear : presentAcademicYear,
       assignedToId: p.lecturer_id,
       schoolId: p.school_id,

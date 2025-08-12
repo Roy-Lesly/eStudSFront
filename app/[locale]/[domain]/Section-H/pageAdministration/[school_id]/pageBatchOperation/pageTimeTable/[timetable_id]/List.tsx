@@ -15,7 +15,7 @@ import TimeTableCard from './TimeTableCard';
 
 export const metadata: Metadata = {
   title: "Users Page",
-  description: "This is Users Page Admin Settings",
+  description: "e-conneq School System. Users Page Admin Settings",
 };
 
 

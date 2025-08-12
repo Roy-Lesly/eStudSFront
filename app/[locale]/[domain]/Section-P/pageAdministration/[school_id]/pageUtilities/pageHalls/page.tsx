@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient from '@/functions'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 import { gql } from '@apollo/client'
 import List from './List'
 
@@ -60,6 +60,6 @@ export default page
 
 export const metadata: Metadata = {
   title: "Halls-Settings",
-  description: "This is Halls-Settings Page",
+  description: "e-conneq School System. Halls-Settings Page",
 };
 

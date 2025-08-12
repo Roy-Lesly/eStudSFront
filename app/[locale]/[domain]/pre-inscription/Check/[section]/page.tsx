@@ -1,6 +1,5 @@
 import React from 'react'
 import { Metadata } from 'next';
-import NotificationError from '@/section-h/common/NotificationError';
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 import CheckFormHigher from './CheckFormHigher';
@@ -8,17 +7,20 @@ import CheckFormSecondary from './CheckFormSecondary';
 import CheckFormPrimary from './CheckFormPrimary';
 
 const page = async ({
-  params,
-  searchParams,
+    params,
+    searchParams
 }: {
-  params: any;
-  searchParams?: any;
+    params: any;
+    searchParams: any;
 }) => {
 
   const p = await params;
   const { domain, section } = await params;
   const sp = await searchParams;
-
+console.log({
+      telephone: sp?.telephone,
+      schoolType: "-" + section[0],
+    });
   const data = await queryServerGraphQL({
     domain,
     query: section === "higher" ? GET_DATA_HIGHER : section === "secondary" ? GET_DATA_SECONDARY : section === "primary" ? GET_DATA_PRIMARY : GET_DATA_VOCATIONAL,
@@ -28,10 +30,10 @@ const page = async ({
     },
   });
 
+  console.log(data);
+
   return (
     <>
-      {sp && <NotificationError errorMessage={sp} />}
-
       <div className="flex flex-col gap-4 h-screen md:p-4 p-2 text-slate-900">
 
         <div className='flex flex-col gap-2 w-full'>

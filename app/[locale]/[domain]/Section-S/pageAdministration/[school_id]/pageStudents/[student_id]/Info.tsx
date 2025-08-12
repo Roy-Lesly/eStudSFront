@@ -178,12 +178,11 @@ const Info = (
   };
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [passwordState, setPasswordState] = useState<"reset" | "change" | null>(null);
 
   return (
     <>
       {showId ?
-        <div className='flex flex-col justify-center w-full'>
+        <div className='flex flex-col justify-center w-full gap-4'>
           <div className='flex items-center justify-center'>
             <button
               onClick={() => { setShowId(false); }}
@@ -230,11 +229,11 @@ const Info = (
           animate="visible"
           variants={containerVariants}
           onSubmit={handleSubmit}
-          className="bg-white mx-auto pb-6 pt-2 px-6 rounded-lg shadow-lg w-full"
+          className="mx-auto rounded-lg shadow-lg w-full"
         >
           {/* Basic Information */}
-          <motion.div variants={sectionVariants} className="mb-8">
-            <h2 className="border-b font-semibold mb-4 pb-2 text-gray-800 text-xl">
+          <motion.div variants={sectionVariants} className="bg-white mb-8 text-slate-800 rounded-lg shadow-xl p-2 md:p-4">
+            <h2 className="border-b font-semibold mb-4 pb-2 text-slate-800 text-xl">
               {t("Basic Information")}
             </h2>
 
@@ -290,7 +289,7 @@ const Info = (
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="font-semibold text-gray-800 text-lg"
+                    className="font-semibold text-slate-800 text-lg"
                   >
                     Print ID
                   </motion.h1>
@@ -327,7 +326,7 @@ const Info = (
               </div>
 
               <div>
-                <label className="text-gray-600 text-sm">First Name</label>
+                <label className="text-slate-600 text-sm">First Name</label>
                 <input
                   type="text"
                   name="firstName"
@@ -338,7 +337,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Last Name</label>
+                <label className="text-slate-600 text-sm">Last Name</label>
                 <input
                   type="text"
                   name="lastName"
@@ -349,7 +348,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Sex</label>
+                <label className="text-slate-600 text-sm">Sex</label>
                 <select
                   name="sex"
                   value={student.sex}
@@ -363,7 +362,7 @@ const Info = (
                 </select>
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Date of Birth</label>
+                <label className="text-slate-600 text-sm">Date of Birth</label>
                 <input
                   type="date"
                   name="dob"
@@ -374,7 +373,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Place of Birth</label>
+                <label className="text-slate-600 text-sm">Place of Birth</label>
                 <input
                   type="text"
                   name="pob"
@@ -388,13 +387,13 @@ const Info = (
           </motion.div>
 
           {/* Contact Information */}
-          <motion.div variants={sectionVariants} className="mb-8">
-            <h2 className="border-b font-semibold mb-4 pb-2 text-gray-800 text-xl">
+          <motion.div variants={sectionVariants} className="bg-white my-4 rounded-lg shadow-xl p-2 md:p-4">
+            <h2 className="border-b font-semibold mb-4 pb-2 text-slate-800 text-xl">
               Contact and Extra Information
             </h2>
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
               <div>
-                <label className="text-gray-600 text-sm">Address</label>
+                <label className="text-slate-600 text-sm">Address</label>
                 <input
                   type="text"
                   name="address"
@@ -405,7 +404,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Telephone</label>
+                <label className="text-slate-600 text-sm">Telephone</label>
                 <input
                   type="tel"
                   name="telephone"
@@ -416,7 +415,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Email</label>
+                <label className="text-slate-600 text-sm">Email</label>
                 <input
                   type="email"
                   name="email"
@@ -427,7 +426,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Highest Level of Education</label>
+                <label className="text-slate-600 text-sm">Highest Level of Education</label>
                 <select
                   name="highestCertificate"
                   value={student.highestCertificate}
@@ -439,7 +438,7 @@ const Info = (
                 </select>
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Year Obtained</label>
+                <label className="text-slate-600 text-sm">Year Obtained</label>
                 <select
                   name="yearObtained"
                   value={student.yearObtained}
@@ -451,7 +450,7 @@ const Info = (
                 </select>
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Nationality</label>
+                <label className="text-slate-600 text-sm">Nationality</label>
                 <input
                   type="nationality"
                   name="nationality"
@@ -462,7 +461,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">Region of Origin</label>
+                <label className="text-slate-600 text-sm">Region of Origin</label>
                 <input
                   type="regionOfOrigin"
                   name="regionOfOrigin"
@@ -476,13 +475,13 @@ const Info = (
           </motion.div>
 
           {/* Parent/Guardian Information */}
-          <motion.div variants={sectionVariants} className="mb-8">
-            <h2 className="border-b font-semibold mb-4 pb-2 text-gray-800 text-xl">
+          <motion.div variants={sectionVariants} className="bg-white my-4 rounded-lg shadow-xl p-2 md:p-4">
+            <h2 className="border-b font-semibold mb-4 pb-2 text-slate-800 text-xl">
               Parent/Guardian Information
             </h2>
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
               <div>
-                <label className="text-gray-600 text-sm">{t("Father's Name")}</label>
+                <label className="text-slate-600 text-sm">{t("Father's Name")}</label>
                 <input
                   type="text"
                   name="fatherName"
@@ -492,7 +491,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">{t("Mother's Name")}</label>
+                <label className="text-slate-600 text-sm">{t("Mother's Name")}</label>
                 <input
                   type="text"
                   name="motherName"
@@ -504,7 +503,7 @@ const Info = (
             </div>
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
               <div>
-                <label className="text-gray-600 text-sm">{t("Father's Telephone")}</label>
+                <label className="text-slate-600 text-sm">{t("Father's Telephone")}</label>
                 <input
                   type="text"
                   name="fatherTelephone"
@@ -514,7 +513,7 @@ const Info = (
                 />
               </div>
               <div>
-                <label className="text-gray-600 text-sm">{t("Mother's Telephone")}</label>
+                <label className="text-slate-600 text-sm">{t("Mother's Telephone")}</label>
                 <input
                   type="text"
                   name="motherTelephone"
@@ -527,7 +526,7 @@ const Info = (
 
             <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
               <div>
-                <label className="text-gray-600 text-sm">{t("Parent's Address")}</label>
+                <label className="text-slate-600 text-sm">{t("Parent's Address")}</label>
                 <input
                   type="text"
                   name="parentAddress"

@@ -44,7 +44,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Subjects-Management",
-  description: "This is Subjects-Management Page",
+  description: "e-conneq School System. Subjects-Management Page",
 };
 
 

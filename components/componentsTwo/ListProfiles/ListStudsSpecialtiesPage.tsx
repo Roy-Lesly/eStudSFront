@@ -38,7 +38,7 @@ const columns = [
 ];
 
 const GET_ALL_USER_PROFILES = gql`
-  query GetAllUserProfiles($first: Int, $userId: Decimal, $schoolId: Decimal) {
+  query GetallUserProfiles($first: Int, $userId: Decimal, $schoolId: Decimal) {
     allUserProfiles(first: $first, userId: $userId, schoolId: $schoolId) {
       edges {
         node {
@@ -76,7 +76,7 @@ const ListStudsSpecialtiesPage = async ({ params, data }: { params: any, data: E
     apiMyProfiles = result.data;
   } catch (error: any) {
 
-    
+
     apiMyProfiles = null;
   }
 

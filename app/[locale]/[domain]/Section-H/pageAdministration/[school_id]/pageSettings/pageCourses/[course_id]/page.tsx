@@ -40,7 +40,7 @@ export default CourseManagementPage
 
 export const metadata: Metadata = {
   title: "Course-Management",
-  description: "This is Course-Management Page",
+  description: "e-conneq School System. Course-Management Page",
 };
 
 

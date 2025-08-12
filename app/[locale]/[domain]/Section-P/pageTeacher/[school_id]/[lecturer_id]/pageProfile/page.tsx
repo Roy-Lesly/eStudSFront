@@ -7,7 +7,7 @@ import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {
   title: "My-Courses Page",
-  description: "This is My-Courses Page Admin Settings",
+  description: "e-conneq School System. My-Courses Page Admin Settings",
 };
 const page = async ({
   params,
@@ -40,7 +40,7 @@ const GET_DATA = gql`
   query GetAllData(
     $id: Decimal!
   ) {
-  allCustomUsers(
+  allCustomusers(
       id: $id
       last: 1
     ) {

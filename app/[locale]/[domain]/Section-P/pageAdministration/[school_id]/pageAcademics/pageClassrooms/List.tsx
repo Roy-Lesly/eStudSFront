@@ -25,8 +25,6 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
   const [selectedItem, setSelectedItem] = useState<EdgeClassRoomPrim | null>(null);
   const router = useRouter();
 
-  console.log(data);
-
   const Columns: TableColumn<EdgeClassRoomSec>[] = [
     { header: "#", align: "center", render: (_item: EdgeClassRoomSec, index: number) => index + 1, },
     { header: `${t("Class")}`, accessor: "node.level", align: "left" },
@@ -87,9 +85,7 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
         <Header
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
-          searchComponent={
-            <></>
-          }
+          searchComponent={null}
         />
       }
     >

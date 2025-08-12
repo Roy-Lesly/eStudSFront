@@ -54,7 +54,7 @@ const List = (
                     continue;
                 }
                 const res = await ApiFactory({
-                    newData: { ...course, delete: false },
+                    newData: { ...course, hoursLeft: course?.hours.toString(), delete: false },
                     mutationName: "createUpdateDeleteCourse",
                     modelName: "course",
                     successField: "id",
@@ -196,7 +196,7 @@ const query = gql`
     $courseType: String!,
     $semester: String!,
     $hours: Int!,
-    $hoursLeft: Int!,
+    $hoursLeft: String!,
     $assigned: Boolean,
     $assignedToId: ID,
     $delete: Boolean!,

@@ -3,6 +3,7 @@ import { decodeUrlID } from "@/functions";
 import Footer from "@/section-h/compStudent/components/Footer";
 import Navbar from "@/section-h/compStudent/components/Navbar";
 import getApolloClient from "@/utils/graphql/GetAppolloClient";
+import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
 import { gql } from "@apollo/client";
 import type { Metadata } from "next";
 
@@ -13,52 +14,21 @@ export const metadata: Metadata = {
 };
 
 
-interface UserProfileAndSchooFeesAndSchoolInfoResponse {
-  allUserProfiles: {
-    edges: EdgeUserProfile[];
-  };
-  allSchoolFees: {
-    edges: EdgeSchoolFees[]
-  }
-}
-
 const GET_DATA = gql`
  query GetAllData(
-    $first: Int,
-    $userprofileIdA: ID,
-    $userprofileIdB: Decimal,
+    $userprofileId: Decimal!,
   ) {
-    allUserProfiles(first: $first, id: $userprofileIdA) {
-      edges {
-        node {
-          id
-          session
-          user { 
-            id matricle firstName lastName fullName
-          }
-          specialty { 
-            id
-            academicYear
-            mainSpecialty { specialtyName }
-            level { level }
-            tuition
-            school {
-              schoolName region campus
-            }
-          }
-        }
-      }
-    }
-    allSchoolFees(first: $first, userprofileId: $userprofileIdB) {
+    allSchoolFees(
+      userprofileId: $userprofileId
+    ) {
       edges {
         node {
           id
           balance
           platformPaid
           userprofile {
-            id
-            session
-            user { 
+            id session
+            customuser { 
               id matricle firstName lastName fullName
             }
             specialty { 
@@ -67,8 +37,10 @@ const GET_DATA = gql`
               mainSpecialty { specialtyName }
               level { level }
               tuition
+              school {
+                schoolName region campus
+              }
             }
-            program { id name }
           }
         }
       }
@@ -89,30 +61,22 @@ const page = async ({
 
   const p = await params;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<UserProfileAndSchooFeesAndSchoolInfoResponse>({
-      query: GET_DATA,
-      variables: {
-        first: 1,
-        userprofileIdA: decodeUrlID(p.userprofile_id),
-        userprofileIdB: decodeUrlID(p.userprofile_id),
-      },
-    });
-    data = result.data;
-  } catch (error: any) {
+   const data = await queryServerGraphQL({
+     domain: p?.domain,
+     query: GET_DATA,
+     variables: {
+       userprofileId: parseInt(p.userprofile_id),
+     },
+   });
 
-    
-    data = null;
-  }
+  console.log(110, data);
 
 
   return (
     <div className="w-full">
-      {data && <Navbar profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />}
+      {data && <Navbar feeInfo={data?.allSchoolFees.edges[0]} />}
       {children}
-      {data && <Footer params={p} profileInfo={data?.allUserProfiles.edges[0]} feeInfo={data?.allSchoolFees.edges[0]} />}
+      {data && <Footer params={p} feeInfo={data?.allSchoolFees.edges[0]} />}
     </div>
   );
 }

@@ -25,26 +25,30 @@ import PerformanceSpecialty from './PerformanceSpecialty';
 
 export const metadata: Metadata = {
   title: "Specialty Page",
-  description: "This is Specialty Page Admin Settings",
+  description: "e-conneq School System. Specialty Page Admin Settings",
 };
 
-const List = ({ params, data, dataTrans, searchParams }: { params: any; data: any, dataTrans: any, searchParams: any }) => {
+const List = (
+  { p, data, dataTrans, sp }:
+  { p: any; data: any, dataTrans: any, sp: any }
+) => {
+
   const { t } = useTranslation();
   const token = localStorage.getItem("token");
   const user = token ? jwtDecode<JwtPayload>(token) : null;
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(parseInt(searchParams?.tab) || 0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) || 0);
   const router = useRouter();
 
   return (
     <DefaultLayout
-      domain={params.domain}
+      domain={p.domain}
       searchComponent={
         <></>
       }
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -64,8 +68,8 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
         department="Class Management"
         subRoute="List"
         pageName="Class Management"
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
-        subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/${params.profile_id}`}
+        mainLink={`${p.domain}/Section-S/pageAdministration/${p.school_id}/Settings/Students/${p.profile_id}`}
+        subLink={`${p.domain}/Section-S/pageAdministration/${p.school_id}/Settings/Students/${p.profile_id}`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
@@ -77,7 +81,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
               tabs={[
                 {
                   label: `${t('Info')}`, content: data?.allSpecialties?.edges?.length ?
-                    <Info data={data.allSpecialties.edges[0]} params={params} />
+                    <Info data={data.allSpecialties.edges[0]} p={p} />
                     :
                     <ServerError type="notFound" item="Classes" />
                 },
@@ -89,7 +93,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
                         const fullNameB = b.node.userprofile.customuser.fullName.toLowerCase();
                         return fullNameA.localeCompare(fullNameB);
                       })}
-                      params={params}
+                      p={p}
                     />
                     :
                     <ServerError type="notFound" item="Class" />,
@@ -98,7 +102,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
                     title={activeTab === 1 ? `Class-${data?.allSpecialties?.edges[0].node?.academicYear.slice(2, 4)}-${data?.allSpecialties?.edges[0].node?.level?.level}-${data?.allSpecialties?.edges[0].node.mainSpecialty.specialtyName.slice(0, 19)}` : "Specialties"}
                     type={activeTab === 1 ? "SchoolFees" : "Specialty"}
                     page={activeTab === 1 ? "list_user_profile" : "list_specialty"}
-                    searchParams={activeTab === 1 ? { "name": data?.allSpecialties?.edges[0].node.mainSpecialty.specialtyName } : searchParams}
+                    searchParams={activeTab === 1 ? { "name": data?.allSpecialties?.edges[0].node.mainSpecialty.specialtyName } : sp}
                   />
                 },
                 {
@@ -111,7 +115,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
                         if (a.node.semester < b.node.semester) return -1;
                         return courseNameA.localeCompare(courseNameB);
                       })}
-                      params={params}
+                      p={p}
                     />
                     :
                     <ServerError type="notFound" item="Class" />
@@ -130,16 +134,16 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
                       label: `${t('Transcript')}`, content: dataTrans?.resultDataSpecialtyTranscript ?
                         <Transcript
                           data={dataTrans?.resultDataSpecialtyTranscript}
-                          params={params}
-                          specialty_id={params.specialty_id}
-                          searchParams={searchParams}
+                          params={p}
+                          specialty_id={p.specialty_id}
+                          searchParams={sp}
                         />
                         :
-                        !searchParams?.trans ?
+                        !sp?.trans ?
                           <div className='flex items-center justify-center my-24'>
                             <button
                               className='bg-blue-800 font-medium px-4 py-2 rounded text-lg text-white'
-                              onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties/${params.specialty_id}/?trans=${true}`)}>
+                              onClick={() => router.push(`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageSettings/pageSpecialties/${p.specialty_id}/?trans=${true}`)}>
                               {t("Generate Transcripts For this Specialty")}
                             </button>
                           </div>
@@ -150,7 +154,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
-              source={`Section-H/pageAdministration/${params.school_id}/pageSettings/pageSpecialties/${params.specialty_id}?`}
+              source={`Section-H/pageAdministration/${p.school_id}/pageSettings/pageSpecialties/${p.specialty_id}?`}
             />
           ) : (
             <ServerError type="network" item="Class" />

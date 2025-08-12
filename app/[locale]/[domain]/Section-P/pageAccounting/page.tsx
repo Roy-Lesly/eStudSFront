@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import React from 'react'
-import getApolloClient from '@/functions';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+
 import { gql } from '@apollo/client';
 import SelectDept from '../SelectDept';
 
@@ -13,28 +14,28 @@ const EditPage = async ({
 
   const p = await params;
   // const sp = await searchParams;
-  
 
-const client = getApolloClient(p.domain);
-    let data;
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA,
-          variables: {
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-      data = null; errorLog(error);
-      
-    }
+
+  const client = getApolloClient(p.domain);
+  let data;
+  try {
+    const result = await client.query<any>({
+      query: GET_DATA,
+      variables: {
+        timestamp: new Date().getTime()
+      },
+      fetchPolicy: 'no-cache'
+    });
+    data = result.data;
+  } catch (error: any) {
+    data = null; errorLog(error);
+
+  }
 
   return (
     <div>
-    <SelectDept params={p} data={data} page="Accounting" />
-  </div>
+      <SelectDept params={p} data={data} page="Accounting" />
+    </div>
   )
 }
 
@@ -45,7 +46,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Select",
-  description: "This is Select Page",
+  description: "e-conneq School System. Select Page",
 };
 
 

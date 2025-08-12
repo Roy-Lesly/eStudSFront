@@ -21,26 +21,26 @@ const page = async ({
 
   const p = await params;
   const sp = await searchParams;
-  const apiData: GetPaymentMethodInter[] | any = await getData(protocol  + "api" + p.domain + PaymentMethodUrl, {...sp}, p.domain);
-  
+  const apiData: GetPaymentMethodInter[] | any = await getData(protocol + "api" + p.domain + PaymentMethodUrl, { ...sp }, p.domain);
+
   return (
-    
-      <>
-        <Breadcrumb
-          pageName="Payment Methods" 
-          pageName1="Dashboard" 
-          pageName2="Settings" 
-          link1={`/Section-H/pageAdministration/${p.school_id}`}
-          link2={`/Section-H/pageAdministration/${p.school_id}/pageSettings`}
-        />
 
-        {sp && <NotificationError errorMessage={sp} />}
-        {apiData == "ECONNREFUSED" && <ServerError type='network' />}
-        {apiData && apiData.unauthorized && redirect(`/pageAuthentication/pageSessionExpired`)}
-        {apiData != "ECONNREFUSED" && <List apiData={apiData} params={p} />}
+    <>
+      <Breadcrumb
+        pageName="Payment Methods"
+        pageName1="Dashboard"
+        pageName2="Settings"
+        link1={`/Section-H/pageAdministration/${p.school_id}`}
+        link2={`/Section-H/pageAdministration/${p.school_id}/pageSettings`}
+      />
 
-      </>
-    
+      {sp && <NotificationError errorMessage={sp} />}
+      {apiData == "ECONNREFUSED" && <ServerError type='network' />}
+      {apiData && apiData.unauthorized && redirect(`/pageAuthentication/pageSessionExpired`)}
+      {apiData != "ECONNREFUSED" && <List apiData={apiData} params={p} />}
+
+    </>
+
   )
 }
 
@@ -48,11 +48,11 @@ export default page
 
 export const metadata: Metadata = {
   title: "Programs",
-  description: "This is Programs Page",
+  description: "e-conneq School System. Programs Page",
 };
 
 
-const List = ( {apiData, params}: any ) => {
+const List = ({ apiData, params }: any) => {
 
   return (
     <div className="bg-white border border-stroke dark:bg-boxdark dark:border-strokedark rounded-sm shadow-default">
@@ -62,7 +62,7 @@ const List = ( {apiData, params}: any ) => {
         </h4>
         <MyButtonCustom
           title="Add Program"
-          href={`/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms/create`} 
+          href={`/Section-H/pageAdministration/${params.school_id}/pageSettings/pagePrograms/create`}
         />
       </div>
 
@@ -118,7 +118,7 @@ const List = ( {apiData, params}: any ) => {
         count={apiData.count}
         thisUrl={"/Section-H/pageAdministration/pageSettings/pagePrograms"}
       />
-    
+
     </div>
   )
 }

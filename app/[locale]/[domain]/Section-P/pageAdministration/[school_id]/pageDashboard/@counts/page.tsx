@@ -35,7 +35,8 @@ const GET_DATA = gql`
 ) {
     getStatsUserCount(
       schoolId: $schoolId,
-      academicYear: $academicYear
+      academicYear: $academicYear,
+      schoolType: "P"
     ) {
         staffs { active inactive }
         teachers { active inactive }

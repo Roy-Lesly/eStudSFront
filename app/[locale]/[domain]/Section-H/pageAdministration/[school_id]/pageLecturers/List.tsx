@@ -20,7 +20,7 @@ import { FaRightLong } from 'react-icons/fa6';
 
 export const metadata: Metadata = {
   title: "Lecturers Page",
-  description: "This is Lecturers Page Admin Settings",
+  description: "e-conneq School System. Lecturers Page Admin Settings",
 };
 
 
@@ -35,10 +35,10 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
   return data;
 };
 
-const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) ||  0);
   const [selectedItem, setSelectedItem] = useState<EdgeCustomUser | null>(null);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "admin" | "teacher" }>();
 
@@ -106,8 +106,6 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     </div>
   }
 
-  console.log(data.admins?.allCustomUsers);
-
   return (
     <DefaultLayout
       pageType='admin'
@@ -152,12 +150,12 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
               {
                 label: 'Admins',
                 icon: <div className='bg-teal-500 p-2 rounded-full' onClick={() => { setShowModal({ show: true, type: "admin" }) }}><FaPlus color="white" size={20} /></div>,
-                content: data.admins?.allCustomUsers?.edges.length ? <DataComp data={data.admins.allCustomUsers.edges} title="Admins" /> : <ServerError type="notFound" item="Admin Users" />
+                content: data.admins?.allCustomusers?.edges.length ? <DataComp data={data.admins.allCustomusers.edges} title="Admins" /> : <ServerError type="notFound" item="Admin Users" />
               },
               {
                 label: 'Lecturers',
                 icon: <div className='bg-teal-500 p-2 rounded-full' onClick={() => { setShowModal({ show: true, type: "teacher" }) }}><FaPlus color="white" size={20} /></div>,
-                content: data.lects?.allCustomUsers?.edges.length ? <DataComp data={data.lects.allCustomUsers.edges} title="Lecturers" /> : <ServerError type="notFound" item="Admin Users" />
+                content: data.lects?.allCustomusers?.edges.length ? <DataComp data={data.lects.allCustomusers.edges} title="Lecturers" /> : <ServerError type="notFound" item="Admin Users" />
               },
             ]}
             activeTab={activeTab}

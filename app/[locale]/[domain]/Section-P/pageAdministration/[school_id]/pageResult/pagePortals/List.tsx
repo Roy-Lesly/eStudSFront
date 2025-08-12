@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
     title: "Publish Page",
-    description: "This is Publish Page Admin Settings",
+    description: "e-conneq School System. Publish Page Admin Settings",
 };
 
 const List = (

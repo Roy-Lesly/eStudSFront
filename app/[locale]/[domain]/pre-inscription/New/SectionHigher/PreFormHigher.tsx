@@ -7,11 +7,12 @@ import { EdgeLevel, EdgeMainSpecialty, EdgeProgram, EdgeSchoolHigherInfo } from 
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { CertificateOptions, RegionList } from '@/constants';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import Confirmation from './Confirmation';
-import { errorLog } from '@/utils/graphql/GetAppolloClient';
 import { useRouter } from 'next/navigation';
+import { mutationCreateUpdatePreInscription } from '@/utils/graphql/mutations/mutationCreateUpdatePreInscription';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 const steps = ['Personal Info', 'Role / Dept', 'Specialty', 'Confirmation'];
@@ -42,7 +43,7 @@ type FormData = {
     parent_address: string;
     father_telephone: string;
     mother_telephone: string;
-    campus: string;
+    campusId: string;
   };
   classAssignment: {
     academic_year: string;
@@ -56,7 +57,7 @@ type FormData = {
   };
 };
 
-const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: any }) => {
+const PreFormHigher = ({ data, source, params }: { source: "admin" | "student", data: any, params: any }) => {
 
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
@@ -93,7 +94,7 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
       parent_address: '',
       father_telephone: '',
       mother_telephone: '',
-      campus: source === "admin" ? parseInt(localStorage.getItem("school") || "") : "",
+      campusId: source === "admin" ? parseInt(params?.school_id) : "",
     },
     classAssignment: {
       academic_year: '',
@@ -117,8 +118,8 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
         const { first_name, last_name, sex, address, dob, pob, telephone, email, } = formData.personalInfo;
         return [first_name, last_name, sex, address, dob, pob, telephone, email,].every((field) => String(field).trim() !== '');
       case 1:
-        const { campus, nationality, highest_certificate, grade, year_obtained, region_of_origin, mother_name, father_telephone } = formData.medicalHistory;
-        return [nationality, highest_certificate, grade, year_obtained, region_of_origin, campus.toString()].every((field) => String(field.trim()) !== '');
+        const { campusId, nationality, highest_certificate, grade, year_obtained, region_of_origin, mother_name, father_telephone } = formData.medicalHistory;
+        return [nationality, highest_certificate, grade, year_obtained, region_of_origin, campusId.toString()].every((field) => String(field.trim()) !== '');
       case 2:
         const { academic_year, programId, level, session, specialty_one } = formData.classAssignment;
         return [academic_year, programId, level, session, specialty_one].every((field) => String(field).trim() !== '' && (Array.isArray(field) ? field.every(item => String(item).trim() !== '') : true));
@@ -201,7 +202,7 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
     }));
   };
 
-  const [createUpdateDeletePreInsription] = useMutation(CREATE_PREINSCRIPTION);
+  // const [createUpdateDeletePreInsription] = useMutation(CREATE_PREINSCRIPTION);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -222,7 +223,7 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
       parentAddress: formData.medicalHistory.parent_address ? formData.medicalHistory.parent_address?.toString().toUpperCase() : "None",
       fatherTelephone: formData.medicalHistory.father_telephone,
       motherTelephone: formData.medicalHistory.mother_telephone,
-      campusId: formData.medicalHistory.campus,
+      campusId: formData.medicalHistory.campusId,
 
       nationality: formData.medicalHistory?.nationality,
       regionOfOrigin: formData.medicalHistory.region_of_origin === "Other" ? capitalizeFirstLetter(formData.medicalHistory.region_of_origin_other.toLowerCase()) : formData.medicalHistory.region_of_origin,
@@ -244,44 +245,27 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
     setCount(10)
 
     if ([newData].length > 0) {
-      const successMessages: string[] = [];
-      const errorMessages: string[] = [];
       for (let index = 0; index < [newData].length; index++) {
-        const res = [newData][index];
+        const dataToSubmit = [newData][index];
+        
         try {
-          const result = await createUpdateDeletePreInsription({
-            variables: {
-              ...res,
-              // id: parseInt(decodeUrlID(data.node.userprofile.customuser.id)),
-              sex: capitalizeFirstLetter(newData.sex),
-              email: newData.email.toLowerCase(),
-              campus: source === "admin" ? data.allSchoolInfos?.edges.filter((item: EdgeSchoolHigherInfo) => parseInt(decodeUrlID(item.node?.id)) === parseInt(formData.medicalHistory.campus.toString()))[0].node?.campus : formData.medicalHistory.campus.toString(),
-            }
-          });
+          const resUserId = await mutationCreateUpdatePreInscription({
+            section: "H",
+            formData: dataToSubmit,
+            p: params,
+            router: null,
+            routeToLink: "",
+          })
 
-          console.log(result);
-
-          if (result.data.createUpdateDeletePreinscription.preinscription.id) {
-            successMessages.push(
-              `${result.data.createUpdateDeletePreinscription.preinscription.firstName}`
-            );
+          if (resUserId.length > 5) {
+            alert(t("Operation Successful") + " " + `✅`)
+            window.location.reload();
           }
-        } catch (error: any) {
-          errorLog(error);;
-          errorMessages.push(`Error Creating ${newData.firstName}: ${error.message}`);
+        } catch (error) {
+          errorLog(error);
         }
-      }
 
-      let alertMessage = "";
-      if (successMessages.length > 0) {
-        alertMessage += `✅ Successfully Submitted`;
-        router.push("/")
-        window.location.reload();
       }
-      if (errorMessages.length > 0) {
-        alertMessage += `❌ Errors occurred:\n${errorMessages.join("\n")}`;
-      }
-      alert(alertMessage);
       setCount(9)
     }
   };
@@ -405,13 +389,13 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
               <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
 
                 {source === "student" ? <MyInputField
-                  id="campus"
-                  name="campus"
+                  id="campusId"
+                  name="campusId"
                   label="Campus"
                   type="select"
                   placeholder={t("Select Campus")}
-                  value={formData.medicalHistory.campus.toString()}
-                  onChange={(e) => handleChange('medicalHistory', 'campus', e.target.value)}
+                  value={formData.medicalHistory.campusId.toString()}
+                  onChange={(e) => handleChange('medicalHistory', 'campusId', e.target.value)}
                   options={optionsCampuses}
                 /> : null}
 
@@ -722,78 +706,3 @@ const PreFormHigher = ({ data, source }: { source: "admin" | "student", data?: a
 
 export default PreFormHigher
 
-
-
-const CREATE_PREINSCRIPTION = gql`
-  mutation Create(
-    $firstName: String!
-    $lastName: String!
-    $sex: String!
-    $email: String!
-    $telephone: String!
-    $address: String!
-    $pob: String!
-    $dob: String!
-
-    $nationality: String!
-    $highestCertificate: String!
-    $yearObtained: String!
-    $grade: String!
-    $regionOfOrigin: String!
-    $fatherName: String!
-    $motherName: String!
-    $parentAddress: String!
-    $fatherTelephone: String!
-    $motherTelephone: String!
-
-    $academicYear: String!
-    $session: String!
-    $level: String!
-    $programId: ID!
-    $specialtyOne: ID!
-    $specialtyTwo: ID
-    $action: String!
-    $campusId: ID!
-    $status: String!
-    $admissionStatus: Boolean!
-    $delete: Boolean!
-  ) {
-    createUpdateDeletePreinscription(
-      firstName: $firstName
-      lastName: $lastName
-      sex: $sex
-      address: $address
-      email: $email
-      telephone: $telephone
-      pob: $pob
-      dob: $dob
-
-      nationality: $nationality
-      highestCertificate: $highestCertificate
-      yearObtained: $yearObtained
-      grade: $grade
-      regionOfOrigin: $regionOfOrigin
-      fatherName: $fatherName
-      motherName: $motherName
-      parentAddress: $parentAddress
-      fatherTelephone: $fatherTelephone
-      motherTelephone: $motherTelephone
-
-      academicYear: $academicYear
-      session: $session
-      level: $level
-      programId: $programId
-      specialtyOneId: $specialtyOne
-      specialtyTwoId: $specialtyTwo
-      action: $action
-      campusId: $campusId
-      status: $status
-      admissionStatus: $admissionStatus
-      delete: $delete
-    ) {
-      preinscription {
-        id firstName
-      }
-    }
-  }
-`;

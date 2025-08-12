@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import I18nProvider from "@/i18nProvider";
+import 'react-datepicker/dist/react-datepicker.css';
 import ApolloProviderWrapper from "@/utils/graphql/ApolloProviderWrapper";
 
 

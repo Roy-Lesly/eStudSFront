@@ -24,28 +24,22 @@ const itemVariants = {
 
 
 
-const FillMarksAll = ({ values, data, params, schoolInfo }: { values: any, data: EdgeResult[], params: any, schoolInfo: EdgeSchoolHigherInfo }) => {
+const FillMarksAll = (
+    { values, data, params, schoolInfo }:
+        { values: { title: string, pageType: "ca" | "exam" | "resit" }, data: EdgeResult[], params: any, schoolInfo: EdgeSchoolHigherInfo }
+) => {
 
     const defaultFormData = data.map((item: EdgeResult) => {
-        // const infoData = typeof item.node.infoData === "string" ? JSON.parse(item.node.infoData) : {};
         const rawInfoData = typeof item.node.infoData === "string" ? JSON.parse(item.node.infoData) : {};
-        const infoData = {
-            ca: rawInfoData.ca ?? 0,
-            exam: rawInfoData.exam ?? 0,
-            resit: rawInfoData.resit ?? 0,
-            average: rawInfoData.average ?? 0,
-            ...rawInfoData,
-        };
+
+        let infoData = { ...rawInfoData };
+
         return {
             ...item,
             node: {
                 id: item.node.id,
-                infoData: infoData,
+                infoData,
                 logs: item.node.logs,
-                ca: infoData.ca,
-                exam: infoData.exam,
-                resit: infoData.resit,
-                average: infoData.average,
                 course: item.node.course,
                 student: item.node.student,
             },
@@ -54,22 +48,11 @@ const FillMarksAll = ({ values, data, params, schoolInfo }: { values: any, data:
 
     const [formData, setFormData] = useState(defaultFormData);
 
-
     const handleUpdate = async () => {
         const confirmUpdate = window.confirm(`Are you sure you want to update`);
         if (!confirmUpdate) {
             return;
         }
-        // try {
-        //     await createUpdateDeResults({
-        //         variables: {
-        //             courseId: parseInt(params.course_id)
-        //         }
-        //     });
-        //     window.location.reload();
-        // } catch (error) {
-        //     alert(`Error Updating: ${error}`);
-        // }
     };
 
 

@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Users Page",
-  description: "This is Users Page Admin Settings",
+  description: "e-conneq School System. Users Page Admin Settings",
 };
 
 
@@ -36,51 +36,23 @@ export const parseJson = (data: string | Record<string, boolean>): Record<string
   return data;
 };
 
-const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
 
   const { t } = useTranslation("common")
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [actionType, setActionType] = useState<"reset" | "change" | "activate" | null>(null);
   const [selectedItem, setSelectedItem] = useState<NodeCustomUser>();
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(parseInt(sp?.tab) || 0);
 
 
   const Columns: TableColumn<EdgeCustomUser>[] = [
-    {
-      header: '#',
-      align: 'left',
-      render: (_item: EdgeCustomUser, index: number) => index + 1,
-      responsiveHidden: true
-    },
-    {
-      header: `${t('Username')}`,
-      accessor: 'node.matricle',
-      align: 'left',
-    },
-    {
-      header: `${t('Full Name')}`,
-      accessor: 'node.fullName',
-      align: 'left',
-    },
-    {
-      header: `${t('Gender')}`,
-      accessor: 'node.sex',
-      align: 'left',
-      responsiveHidden: true
-    },
-    {
-      header: `${t('Address')}`,
-      accessor: 'node.address',
-      align: 'left',
-      responsiveHidden: true
-    },
-    {
-      header: `${t('Telephone')}`,
-      accessor: 'node.telephone',
-      align: 'left',
-      responsiveHidden: true
-    },
+    { header: '#', align: 'left', render: (_item: EdgeCustomUser, index: number) => index + 1, responsiveHidden: true },
+    { header: `${t('Username')}`, accessor: 'node.matricle', align: 'left', },
+    { header: `${t('Full Name')}`, accessor: 'node.fullName', align: 'left', },
+    { header: `${t('Gender')}`, accessor: 'node.sex', align: 'left', responsiveHidden: true },
+    { header: `${t('Address')}`, accessor: 'node.address', align: 'left', responsiveHidden: true },
+    { header: `${t('Telephone')}`, accessor: 'node.telephone', align: 'left', responsiveHidden: true },
     {
       header: `${t('Dob / Pob')}`,
       align: 'left',
@@ -124,6 +96,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
 
       {actionType == "activate" ? <ActivateUserModal
         action={actionType}
+        p={p}
         onClose={() => setActionType(null)}
         id={parseInt(decodeUrlID(selectedItem?.id || ""))}
         status={selectedItem?.isActive || false}
@@ -135,17 +108,17 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       searchComponent={<SearchMultiple
         names={['fullName', 'telephone']}
-        link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUsers`}
+        link={`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUsers`}
         select={[
           { type: 'select', name: 'sex', dataSelect: ['MALE', 'FEMALE'] },
         ]}
       />}
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -165,22 +138,23 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         department="Users"
         subRoute="List"
         pageName="Users"
-        mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUsers`}
-        subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/pageUsers`}
+        mainLink={`${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUsers`}
+        subLink={`${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUsers`}
       />
 
       <div className="bg-gray-50 flex flex-col items-center justify-center">
 
         {data ? (
+
           <MyTabs
             tabs={[
-              { label: `${t('Admins')}`, content: data.admins?.allCustomUsers?.edges.length ? <DataComp data={data.admins.allCustomUsers.edges} title="Admins" /> : <ServerError type="notFound" item={t("Admin Users")} /> },
-              { label: `${t('Lecturers')}`, content: data.lects?.allCustomUsers?.edges.length ? <DataComp data={data.lects.allCustomUsers.edges} title="Lecturers" /> : <ServerError type="notFound" item={t("Lecturer Users")} /> },
-              { label: `${t('Students')}`, content: data.studs?.allCustomUsers?.edges.length ? <DataComp data={data.studs.allCustomUsers.edges} title="Students" /> : <ServerError type="notFound" item={t("Student Users")} /> },
+              { label: `${t('Admins')}`, content: data.admins?.allCustomusers?.edges.length ? <DataComp data={data.admins.allCustomusers.edges} title="Admins" /> : <ServerError type="notFound" item={t("Admin Users")} /> },
+              { label: `${t('Lecturers')}`, content: data.lects?.allCustomusers?.edges.length ? <DataComp data={data.lects.allCustomusers.edges} title="Lecturers" /> : <ServerError type="notFound" item={t("Lecturer Users")} /> },
+              { label: `${t('Students')}`, content: data.studs?.allCustomusers?.edges.length ? <DataComp data={data.studs.allCustomusers.edges} title="Students" /> : <ServerError type="notFound" item={t("Student Users")} /> },
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-            source={`Section-H/pageAdministration/${params.school_id}/pageUsers/?`}
+            source={`Section-H/pageAdministration/${p.school_id}/pageUsers/?`}
           />
         ) : (
           <ServerError type="network" item="Users" />

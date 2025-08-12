@@ -1,10 +1,10 @@
 import NotificationError from '@/section-h/common/NotificationError';
-import getApolloClient, { errorLog } from '@/functions';
 import React, { FC } from 'react';
 import DisplayFees from './DisplayFees';
 import { gql } from '@apollo/client';
 import { EdgeSchoolFees, EdgeTransactions } from '@/Domain/schemas/interfaceGraphql';
 import initTranslations from '@/initTranslations';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 const page = async ({

@@ -30,7 +30,7 @@ export const GetMenuAdministration = () => {
       name: "MENU",
       menuItems: [
 
-          ...(user?.page.map((item: string) => item.toUpperCase()).includes("MANAGEMENT")
+        ...(user?.page.map((item: string) => item.toUpperCase()).includes("MANAGEMENT")
           ? [
             {
               icon: <FaCog />,
@@ -42,6 +42,7 @@ export const GetMenuAdministration = () => {
                 { label: `${t("Audit Finance")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageFinancial`, icon: <FaCog /> },
                 { label: `${t("Audit Results")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageResultAudit`, icon: <FaCog /> },
                 { label: `${t("System Updates")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageSystemUpdates`, icon: <FaCog /> },
+                { label: `${t("School Profile")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageManagement/pageSchoolInfo`, icon: <FaCog /> },
               ],
             },
           ]
@@ -102,14 +103,14 @@ export const GetMenuAdministration = () => {
           ],
         },
 
-        // {
-        //   icon: <FaCog />,
-        //   label: "Notifications",
-        //   route: "#",
-        //   children: [
-        //     { label: "Announcements", route: `/${domain}/Section-H/pageAdministration/${school_id}/BatchOperations/pageNotifications/pageAnnouncements`, icon: <FaCog /> },
-        //   ],
-        // },
+        {
+          icon: <FaCog />,
+          label: "Notifications",
+          route: "#",
+          children: [
+            { label: "Announcements", route: `/${domain}/Section-H/pageAdministration/${school_id}/pageNotification/pageAnnouncements`, icon: <FaCog /> },
+          ],
+        },
       ],
     },
     {
@@ -121,6 +122,7 @@ export const GetMenuAdministration = () => {
           route: "#",
           children: [
             { label: `${t("View")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageLecturers`, icon: <FaCog /> },
+            { label: "Complains", route: `/${domain}/Section-H/pageAdministration/${school_id}/pageLecturers/pageComplains`, icon: <FaCog /> },
           ],
         },
         {
@@ -137,6 +139,7 @@ export const GetMenuAdministration = () => {
               ]
               :
               []),
+            { label: "Complains", route: `/${domain}/Section-H/pageAdministration/${school_id}/pageStudents/pageComplains`, icon: <FaCog /> },
             { label: `${t("Duplicates")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageStudents/Duplicates`, icon: <FaCog /> },
           ],
         },
@@ -178,7 +181,6 @@ export const GetMenuAdministration = () => {
             { label: `${t("Activation")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pagePlatformActivation`, icon: <FaCog /> },
             { label: `${t("ID Cards")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pageIDPLAT/ID`, icon: <FaCog /> },
             { label: `${t("Platform")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pageIDPLAT/PLATFORM`, icon: <FaCog /> },
-            { label: `${t("Password Tokens")}`, route: `/${domain}/Section-H/pageAdministration/${school_id}/pageUtilities/pageResetTokens`, icon: <FaCog /> },
           ],
         },
       ],

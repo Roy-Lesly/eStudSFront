@@ -14,26 +14,26 @@ const EditPage = async ({
   const p = await params;
   // const sp = await searchParams;
 
-const client = getApolloClient(p.domain);
-    let data;
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA,
-          variables: {
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-      data = null; errorLog(error);
-      
-    }
+  const client = getApolloClient(p.domain);
+  let data;
+  try {
+    const result = await client.query<any>({
+      query: GET_DATA,
+      variables: {
+        timestamp: new Date().getTime()
+      },
+      fetchPolicy: 'no-cache'
+    });
+    data = result.data;
+  } catch (error: any) {
+    data = null; errorLog(error);
+
+  }
 
   return (
     <div>
-    <SelectDept params={p} data={data} page="Administration" />
-  </div>
+      <SelectDept params={p} data={data} page="Administration" />
+    </div>
   )
 }
 
@@ -43,7 +43,7 @@ export default EditPage
 
 export const metadata: Metadata = {
   title: "Select",
-  description: "This is Select Page",
+  description: "e-conneq School System. Select Page",
 };
 
 

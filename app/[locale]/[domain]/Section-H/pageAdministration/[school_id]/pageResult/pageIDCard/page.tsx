@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { errorLog, removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 
 const page = async ({
@@ -16,8 +17,8 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = { };
-  
+  const paginationParams: Record<string, any> = {};
+
   paginationParams.specialtyName = sp?.specialtyName
   paginationParams.academicYear = sp?.academicYear
   paginationParams.level = parseInt(sp?.level || "")
@@ -26,7 +27,7 @@ const page = async ({
   const client = getApolloClient(p.domain);
   let data;
   let dataExtra;
-  if (sp?.academicYear && sp?.level ) {
+  if (sp?.academicYear && sp?.level) {
     try {
       const result = await client.query<any>({
         query: GET_DATA,
@@ -64,7 +65,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "ID Card",
-  description: "This is ID Card Page",
+  description: "e-conneq School System. ID Card Page",
 };
 
 

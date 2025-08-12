@@ -64,7 +64,7 @@ const DefaultLayout = ({
     }
   }, [access])
 
-
+  
   return (
     <>
       <div className="flex">

@@ -56,7 +56,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "ID Card",
-  description: "This is ID Card Page",
+  description: "e-conneq School System. ID Card Page",
 };
 
 

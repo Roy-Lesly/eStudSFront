@@ -20,7 +20,7 @@ import { GetMenuAccounting } from '@/components/section-h/Sidebar/MenuAccounting
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
 const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: any; data: any, searchParams: any, dataYears: any, dataLevels: EdgeLevel[] }) => {
@@ -37,7 +37,8 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
     { header: "Total Reg", align: "right", render: (item: TransactionTotalsBySpecialty) => <span>{item.expectedRegistration.toLocaleString()}</span> },
     { header: "Paid Reg", align: "right", render: (item: TransactionTotalsBySpecialty) => <span>{item.registration.toLocaleString()}</span> },
     { header: "balance Reg", align: "right", render: (item: TransactionTotalsBySpecialty) => <span>{item.balanceRegistration.toLocaleString()}</span> },
-    { header: "View", align: "center",
+    {
+      header: "View", align: "center",
       render: (item) => <div
         className="flex flex-row gap-2 items-center justify-center p-1 rounded-full"
       >
@@ -52,7 +53,7 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
       </div>
     },
   ];
-  
+
   const ColumnsTuition: TableColumn<TransactionTotalsBySpecialty>[] = [
     { header: "#", responsiveHidden: true, align: "center", render: (_item: TransactionTotalsBySpecialty, index: number) => index + 1, },
     { header: "Specialty Name", accessor: "specialtyName", align: "left" },
@@ -62,7 +63,8 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
     { header: "Total Fees", align: "right", render: (item: TransactionTotalsBySpecialty) => <span>{item.expectedTuition.toLocaleString()}</span> },
     { header: "Paid Fees", align: "right", render: (item: TransactionTotalsBySpecialty) => <span>{item.tuition.toLocaleString()}</span> },
     { header: "Balance Fees", align: "right", render: (item: TransactionTotalsBySpecialty) => <span>{item.balanceTuition.toLocaleString()}</span> },
-    { header: "View", align: "center",
+    {
+      header: "View", align: "center",
       render: (item) => <div
         className="flex flex-row gap-2 items-center justify-center p-1 rounded-full"
       >
@@ -84,7 +86,8 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
     { header: "Level", accessor: "level", align: "left" },
     { header: "Students", accessor: "count", align: "center" },
     { header: "Total. Platform", align: "right", render: (item: TransactionTotalsBySpecialty) => <span>{item.expectedPlatformCharges.toLocaleString()}</span> },
-    { header: "View", align: "center",
+    {
+      header: "View", align: "center",
       render: (item) => <div
         className="flex flex-row gap-2 items-center justify-center p-1 rounded-full"
       >
@@ -107,13 +110,13 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
       domain={params.domain}
       searchComponent={
         <SearchMultiple
-              names={["academicYear", "level", "specialtyName" ]}
-              link={`/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeSpecialty`}
-              select={[
-                { type: 'select', name: 'academicYear', dataSelect: dataYears },
-                // { type: 'select', name: 'level', dataSelect: dataLevels.map((item: EdgeLevel) => item.node.level) },
-              ]}    
-            />
+          names={["academicYear", "level", "specialtyName"]}
+          link={`/${params.domain}/Section-H/pageAccounting/${params.school_id}/AnalysisSystemIncomeSpecialty`}
+          select={[
+            { type: 'select', name: 'academicYear', dataSelect: dataYears },
+            // { type: 'select', name: 'level', dataSelect: dataLevels.map((item: EdgeLevel) => item.node.level) },
+          ]}
+        />
       }
       sidebar={
         <Sidebar
@@ -145,37 +148,37 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
 
-        <div className='flex items-center justify-center'>
-        {searchParams && searchParams?.academicYear ? 
-        <span className='font-semibold my-2 rounded text-xl'>{searchParams?.academicYear}</span>
-        : 
-        <span className='font-medium my-24 p-4 rounded text-lg'>Please Select Academic Year</span>}
-      </div>
+          <div className='flex items-center justify-center'>
+            {searchParams && searchParams?.academicYear ?
+              <span className='font-semibold my-2 rounded text-xl'>{searchParams?.academicYear}</span>
+              :
+              <span className='font-medium my-24 p-4 rounded text-lg'>Please Select Academic Year</span>}
+          </div>
 
-        {data && !data?.error ? (
+          {data && !data?.error ? (
             <MyTabs
               tabs={[
                 {
                   label: 'Registration', content: data?.transactionTotalsBySpecialty?.length ?
-                        <MyTableComp
-                        data={
-                          data?.transactionTotalsBySpecialty?.sort((a: TransactionTotalsBySpecialty, b: TransactionTotalsBySpecialty) => {
-                            return a.specialtyName > b.specialtyName ? 1 : a.specialtyName < b.specialtyName ? -1 : 0
-                          })}
-                        columns={ColumnsRegistration}
-                      />
+                    <MyTableComp
+                      data={
+                        data?.transactionTotalsBySpecialty?.sort((a: TransactionTotalsBySpecialty, b: TransactionTotalsBySpecialty) => {
+                          return a.specialtyName > b.specialtyName ? 1 : a.specialtyName < b.specialtyName ? -1 : 0
+                        })}
+                      columns={ColumnsRegistration}
+                    />
                     :
                     <ServerError type="notFound" item="Income" />
                 },
                 {
                   label: 'Tuition', content: data?.transactionTotalsBySpecialty?.length ?
-                        <MyTableComp
-                        data={
-                          data?.transactionTotalsBySpecialty?.sort((a: TransactionTotalsBySpecialty, b: TransactionTotalsBySpecialty) => {
-                            return a.specialtyName > b.specialtyName ? 1 : a.specialtyName < b.specialtyName ? -1 : 0
-                          })}
-                        columns={ColumnsTuition}
-                      />
+                    <MyTableComp
+                      data={
+                        data?.transactionTotalsBySpecialty?.sort((a: TransactionTotalsBySpecialty, b: TransactionTotalsBySpecialty) => {
+                          return a.specialtyName > b.specialtyName ? 1 : a.specialtyName < b.specialtyName ? -1 : 0
+                        })}
+                      columns={ColumnsTuition}
+                    />
                     :
                     <ServerError type="notFound" item="Income" />
                 },
@@ -194,6 +197,7 @@ const List = ({ params, data, dataYears, dataLevels, searchParams }: { params: a
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={"setActiveTab"}
             />
           )
             :

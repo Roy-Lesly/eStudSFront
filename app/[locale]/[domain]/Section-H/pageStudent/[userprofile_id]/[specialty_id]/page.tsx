@@ -38,7 +38,8 @@ const page = async (
     { id: 6, link: "Courses", label: `${t("Courses")}`, icon: "/images/news.svg", notification: false },
     // { id: 6, link: "", label: t.TimeTable, icon: "/images/news.svg", notification: false },
     { id: 7, link: "Transcript", label: `${t("Transcript")}`, icon: "/images/course.svg", notification: true },
-    { id: 8, link: "News", label: `${t("News")}`, icon: "/images/news.svg", notification: true },
+    // { id: 8, link: "News", label: `${t("News")}`, icon: "/images/news.svg", notification: true },
+    { id: 8, link: "More", label: `${t("More")}`, icon: "/images/news.svg", notification: true },
   ]
 
   return (

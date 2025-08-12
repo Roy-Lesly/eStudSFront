@@ -2,7 +2,8 @@ import { Metadata } from 'next';
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import getApolloClient from '@/functions';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+
 import { protocol, RootApi } from '@/config';
 import { gql } from '@apollo/client';
 import initTranslations from '@/initTranslations';

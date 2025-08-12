@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import  { removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
@@ -24,13 +24,13 @@ const page = async ({
 
   const t = removeEmptyFields(paginationParams);
 
- 
+
   const dataAdmins = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA_ADMIN,
     variables: {
       ...t,
-        schoolId: parseInt(p.school_id),
+      schoolId: parseInt(p.school_id),
     },
   });
 
@@ -39,7 +39,7 @@ const page = async ({
     query: GET_DATA_LECTURERS,
     variables: {
       ...t,
-        schoolId: parseInt(p.school_id),
+      schoolId: parseInt(p.school_id),
     },
   });
 
@@ -48,7 +48,7 @@ const page = async ({
       <List
         params={p}
         data={{ "admins": dataAdmins, "lects": dataLects }}
-        searchParams={sp}
+        sp={sp}
       />
     </div>
   )
@@ -58,7 +58,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Lecturer",
-  description: "This is Lecturer Page",
+  description: "e-conneq School System. Lecturer Page",
 };
 
 

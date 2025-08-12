@@ -3,12 +3,10 @@ import { role } from "@/componentsTwo/lib/data";
 import Table from "@/componentsTwo/Table";
 import { TableRowClassName } from "@/constants";
 import MyPageTitle from "@/section-h/common/MyPageTitle";
-import { FaPlus } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import TableSearch from "../TableSearch";
 import { GetCustomUserInter } from "@/Domain/Utils-H/userControl/userInter";
-import TabsUsers from "@/[locale]/[domain]/Section-H/pageAdministration/[school_id]/pageUsers/TabsUsers";
 
 
 const columns = [
@@ -122,7 +120,7 @@ const ListUsersPage = async ({ params, data, user_type, page, extra_data, }: { u
   return (
     <div className="bg-white flex-1 m-2 mt-1 p-2 rounded-md">
 
-      <TabsUsers params={params} page={page} />
+      {/* <TabsUsers params={params} page={page} /> */}
 
       {/* TOP */}
       <div className="flex flex-col gap-4 items-center justify-between mb-2 md:flex-row md:gap-2 md:mb-4">

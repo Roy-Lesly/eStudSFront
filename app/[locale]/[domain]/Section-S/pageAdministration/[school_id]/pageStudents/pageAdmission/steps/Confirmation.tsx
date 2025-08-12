@@ -3,11 +3,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { EdgeClassRoomSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeClassRoomSec, EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { decodeUrlID } from '@/utils/functions';
 
 const Confirmation = (
-  { formData, onNext, onPrevious, setCurrentStep, dataClassroomsSec }: any
+  { formData, onNext, onPrevious, setCurrentStep, dataClassroomsSec, seriesData }: any
 ) => {
   const { t } = useTranslation('common');
 
@@ -20,6 +20,7 @@ const Confirmation = (
 
 
   console.log(formData);
+  console.log(seriesData);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -46,12 +47,12 @@ const Confirmation = (
         {renderRow(t('Date of Birth'), formData.personalInfo.dob)}
         {renderRow(t('Place of Birth'), formData.personalInfo.pob)}
         {renderRow(t('Telephone'), formData.personalInfo.telephone)}
-        {renderRow(t('Email'), formData.personalInfo.email)}
-        {renderRow(t('Fathers Name'), formData.personalInfo.fatherName)}
-        {renderRow(t('Mothers Name'), formData.personalInfo.motherName)}
-        {renderRow(t('Fathers Telephone'), formData.personalInfo?.fatherTelephone)}
-        {renderRow(t('Mothers Telephone'), formData.personalInfo?.motherTelephone)}
-        {renderRow(t('Parents Address'), formData.personalInfo?.parentAddress)}
+        {renderRow(t('Email'), formData.parentInfo.email)}
+        {renderRow(t('Fathers Name'), formData.parentInfo.fatherName)}
+        {renderRow(t('Mothers Name'), formData.parentInfo.motherName)}
+        {renderRow(t('Fathers Telephone'), formData.parentInfo?.fatherTelephone)}
+        {renderRow(t('Mothers Telephone'), formData.parentInfo?.motherTelephone)}
+        {renderRow(t('Parents Address'), formData.parentInfo?.parentAddress)}
       </section>
 
       {/* Medical Information */}
@@ -62,12 +63,12 @@ const Confirmation = (
             {t('Edit')}
           </button>
         </div>
-        {renderRow(t('Nationality'), formData.medicalHistory.nationality)}
-        {renderRow(t('Highest Certificate'), formData.medicalHistory.highestCertificate)}
-        {renderRow(t('Year Obtained'), formData.medicalHistory.yearObtained)}
-        {renderRow(t('Region of Origin'), formData.medicalHistory.regionOfOrigin)}
-        {renderRow(t('Allergies'), formData.medicalHistory.allergies)}
-        {renderRow(t('Medical History'), formData.medicalHistory.medicalHistory)}
+        {renderRow(t('Nationality'), formData.parentInfo.nationality)}
+        {renderRow(t('Highest Certificate'), formData.parentInfo.highestCertificate)}
+        {renderRow(t('Year Obtained'), formData.parentInfo.yearObtained)}
+        {renderRow(t('Region of Origin'), formData.parentInfo.regionOfOrigin)}
+        {renderRow(t('Allergies'), formData.parentInfo.allergies)}
+        {renderRow(t('Medical History'), formData.parentInfo.medicalHistory)}
       </section>
 
       {/* Class Assignment */}
@@ -79,11 +80,11 @@ const Confirmation = (
           </button>
         </div>
         {renderRow(t('Classroom'), dataClassroomsSec.find((item: EdgeClassRoomSec) => decodeUrlID(item.node.id) === formData.classAssignment.classroomsecId).node.level)}
-        {renderRow(t('Series ID'), formData.classAssignment.seriesId)}
+        {renderRow(t('Series'), seriesData?.filter((item: EdgeSeries) => decodeUrlID(item.node.id) == formData.classAssignment.seriesId)[0].node?.name )}
         {renderRow(t('Program'), formData.classAssignment.programsec)}
         {renderRow(t('Additional Subjects'), formData.classAssignment.additionalsubjectsIds || 'None')}
         {renderRow(t('Session'), formData.classAssignment.session)}
-        {renderRow(t('Active'), formData.classAssignment.active ? 'Yes' : 'No')}
+        {/* {renderRow(t('Active'), formData.classAssignment.active ? 'Yes' : 'No')} */}
       </section>
 
       {/* Final Buttons */}

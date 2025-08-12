@@ -76,13 +76,15 @@ const EditPage = async ({
     data = null;
   }
 
+  console.log(dataPending?.allPreinscriptionsSec?.edges);
+
   return (
     <div>
       <List 
-      params={p} 
-      dataPending={dataPending?.allPreinscriptionsSec?.edges}
-      dataYears={data?.allAcademicYears} 
-      searchParams={sp} 
+        params={p} 
+        dataPending={dataPending?.allPreinscriptionsSec?.edges}
+        dataYears={data?.allAcademicYears} 
+        sp={sp} 
       />
     </div>
   )
@@ -105,7 +107,7 @@ const GET_DATA = gql`
  query Get(
   $schoolId: ID!
 ) {
-  allAcademicYears
+  allAcademicYearsSec
   allSchoolInfos(
     id: $schoolId
   ) {

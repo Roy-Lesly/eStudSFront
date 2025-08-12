@@ -1,13 +1,13 @@
 import React from 'react'
-import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
+import CampusList from '@/app/[locale]/[domain]/SectionAll/CampusList';
 
 const page = async ({
-    params,
-    searchParams,
-  }: {
+  params,
+  searchParams,
+}: {
   params: any;
   searchParams: any;
 }) => {
@@ -15,26 +15,19 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(`${p.tenant_name}`, true);
-      let dataLogins;
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+  });
 
-    try {
-      const result = await client.query<any>({
-        query: GET_DATA_LOGIN,
-        variables: {
-          // schoolId: parseInt(params.school_id),
-          timestamp: new Date().getTime()
-        },
-        fetchPolicy: 'no-cache'
-      });
-      dataLogins = result.data;
-    } catch (error: any) {
-      console.log(error, 81)
-      dataLogins = null;
-    }
 
   return (
-    <List params={p} searchParams={sp} />
+    <CampusList
+      section={"S"}
+      params={p}
+      searchParams={sp}
+      data={data}
+    />
   )
 }
 
@@ -42,12 +35,12 @@ export default page
 
 
 export const metadata: Metadata = {
-    title: "Management",
-    description: "This is Manangement Page Settings",
+  title: "Management - Users",
+  description: "e-conneq School System. User Manangement Page Settings",
 };
 
 
-const GET_DATA_LOGIN = gql`
+const GET_DATA = gql`
  query GetAllData {
   allLoginGenerals {
     edges {
@@ -56,14 +49,19 @@ const GET_DATA_LOGIN = gql`
       }
     }
   }
-  allLoginUsers {
+  allLoginUsers (
+    last: 200
+  ) {
     edges {
       node {
-        user { id fullName}
+        customuser { id fullName}
         countHour totalLogins
         loginGeneral { id date countHour totalLogins}
       }
     }
   }
+    allDepartments { edges { node { id name}}}
+    allPages { edges { node { id name}}}
+    allSchoolInfos { edges { node { id schoolName}}}
 }
 `;

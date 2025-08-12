@@ -1,9 +1,8 @@
 import { Metadata } from 'next'
 import React from 'react'
-import  { removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
 
 const page = async ({
@@ -18,29 +17,29 @@ const page = async ({
   const sp = await searchParams;
   const paginationParams: Record<string, any> = {};
 
-  paginationParams.fullName = sp?.fullName ? sp.fullName : ""
-  paginationParams.telephone = sp?.telephone ? sp.telephone : ""
-  paginationParams.sex = sp?.sex ? sp.sex : ""
+  paginationParams.fullName = sp?.fullName
+  paginationParams.telephone = sp?.telephone
+  paginationParams.sex = sp?.sex
 
   const t = removeEmptyFields(paginationParams)
-  const client = getApolloClient(p.domain);
 
- 
   const dataAdmins = await queryServerGraphQL({
     domain: p.domain,
-    query: GET_DATA_ADMIN,
+    query: GET_DATA,
     variables: {
       ...t,
-        schoolId: parseInt(p.school_id),
+      role: "admin",
+      schoolId: parseInt(p.school_id),
     },
   });
 
   const dataLects = await queryServerGraphQL({
     domain: p.domain,
-    query: GET_DATA_LECTURERS,
+    query: GET_DATA,
     variables: {
       ...t,
-        schoolId: parseInt(p.school_id),
+      role: "teacher",
+      schoolId: parseInt(p.school_id),
     },
   });
 
@@ -58,17 +57,18 @@ const page = async ({
 export default page
 
 export const metadata: Metadata = {
-  title: "Lecturer",
-  description: "This is Lecturer Page",
+  title: "Teacher Management",
+  description: "e-conneq School System. Assign Teacher Page",
 };
 
 
-const GET_DATA_LECTURERS = gql`
+const GET_DATA = gql`
  query GetAllData(
-  $schoolId: Decimal!,
   $fullName: String,
   $telephone: String,
   $sex: String,
+  $role: String!,
+  $schoolId: Decimal!,
 ) {
   allDepartments {
     edges {
@@ -79,48 +79,20 @@ const GET_DATA_LECTURERS = gql`
   }
   allCustomusers(
     isActive: true
-    schoolId: $schoolId
     last: 250
     fullName: $fullName
     telephone: $telephone
     sex: $sex
-    role: "teacher",
+    role: $role,
     isSuperuser: false
+    schoolId: $schoolId
   ) {
     edges {
       node {
-        id firstName lastName fullName 
+        id matricle firstName lastName fullName 
         username sex dob pob address telephone
         email lastLogin title nationality
         highestCertificate regionOfOrigin yearObtained 
-      }
-    }
-  }
-}
-`;
-const GET_DATA_ADMIN = gql`
- query GetAllData(
-  $schoolId: Decimal!,
-  $fullName: String,
-  $telephone: String,
-  $sex: String,
-) {
-  allCustomusers(
-    isActive: true
-    schoolId: $schoolId
-    last: 250
-    fullName: $fullName
-    telephone: $telephone
-    sex: $sex
-    role: "admin",
-    isSuperuser: false
-  ) {
-    edges {
-      node {
-        id firstName lastName fullName 
-        username sex dob pob address telephone
-        email lastLogin title 
-        nationality highestCertificate regionOfOrigin yearObtained 
       }
     }
   }

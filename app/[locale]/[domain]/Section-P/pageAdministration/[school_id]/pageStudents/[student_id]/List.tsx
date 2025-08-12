@@ -35,7 +35,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
     <DefaultLayout
       pageType='admin'
       domain={p.domain}
-      searchComponent={<></>}
+      searchComponent={null}
       sidebar={
         <Sidebar
           params={p}
@@ -48,7 +48,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
         <Header
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
-          searchComponent={<></>}
+          searchComponent={null}
         />
       }
     >

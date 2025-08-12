@@ -15,7 +15,7 @@ import { GetMenuAccounting } from '@/components/section-s/Sidebar/MenuAccounting
 
 export const metadata: Metadata = {
   title: "Student Acount Details",
-  description: "This is Student Acount Details Page",
+  description: "e-conneq School System. Student Acount Details Page",
 };
 
 const List = ({ params, data }: { params: any; data: any }) => {
@@ -34,12 +34,12 @@ const List = ({ params, data }: { params: any; data: any }) => {
     <DefaultLayout
       pageType='admin'
       domain={params.domain}
-      downloadComponent={<ExcelExporter
-        data={data}
-        title={"Payment-" + data && data?.length ? data[0]?.specialtyName + " " + data[0]?.academicYear + " " + data[0]?.level.toString() : ""}
-        type={"Payment"}
-        page={"list_payment_students"}
-      />}
+      // downloadComponent={<ExcelExporter
+      //   data={data}
+      //   title={"Payment-" + data && data?.length ? data[0]?.specialtyName + " " + data[0]?.academicYear + " " + data[0]?.level.toString() : ""}
+      //   type={"Payment"}
+      //   page={"list_payment_students"}
+      // />}
       searchComponent={<></>}
       sidebar={
         <Sidebar

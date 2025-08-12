@@ -4,10 +4,13 @@ import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import { useTranslation } from 'react-i18next';
-import { EdgeMainSubject, EdgeSubject } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeMainSubject, EdgeSubjectSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { decodeUrlID } from '@/utils/functions';
 import { useRouter } from 'next/navigation';
 import { ArrowRightIcon } from 'lucide-react';
+import { gql } from '@apollo/client';
+import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 type SubjectSec = {
@@ -17,7 +20,7 @@ type SubjectSec = {
 
 const List = (
     { params, data, sp, allMainSubjects, dataAssignedSubjects }:
-        { params: any, dataAssignedSubjects: EdgeSubject[], allMainSubjects: EdgeMainSubject[], data: { assignedSubjects: SubjectSec[] }, sp: any }
+        { params: any, dataAssignedSubjects: EdgeSubjectSec[], allMainSubjects: EdgeMainSubject[], data: { assignedSubjects: SubjectSec[] }, sp: any }
 ) => {
 
     const router = useRouter();
@@ -48,9 +51,38 @@ const List = (
         setSelectedSubjects(prev => prev.filter(sid => sid !== id));
     };
 
-    const removeAssignedSubject = (id: number) => {
-        // Call your API to unassign here (optional)
-        alert(`Unassign subject ID ${id}`);
+    const removeAssignedSubject = async (id: number) => {
+        alert(`Are you sure to delete this - ${id}`);
+        const payload = {
+            id,
+            delete: true,
+        };
+
+        try {
+            const res = await ApiFactory({
+                newData: payload,
+                editData: payload,
+                mutationName: "createUpdateDeleteSubjectSec",
+                modelName: "subjectsec",
+                successField: "id",
+                query,
+                router: null,
+                params: params,
+                redirect: false,
+                reload: true,
+                returnResponseField: true,
+                redirectPath: ``,
+                actionLabel: "processing",
+            });
+
+            console.log(res);
+
+            if (res === null) {
+                window.location.reload()
+            }
+        } catch (error) {
+            errorLog(error);
+        }
     };
 
     return (
@@ -63,7 +95,7 @@ const List = (
             <div className="flex flex-col md:flex-row gap-6 p-4 bg-gray-100 rounded-md">
 
                 {/* LEFT SIDE */}
-                <div className="w-full md:w-1/2 p-4 bg-white rounded shadow flex flex-col gap-3">
+                <div className="w-full md:w-1/2 p-4 bg-white rounded shadow-xl border-slate-200 border flex flex-col gap-3">
                     <h2 className="font-bold text-lg text-center">Available Subjects</h2>
                     {filteredSubjects.map(subject => (
                         <div key={subject?.node.id} className="flex justify-between items-center border p-2 rounded hover:bg-gray-50">
@@ -83,7 +115,7 @@ const List = (
                 <div className="w-full md:w-1/2 flex flex-col gap-6">
 
                     {/* Top Section */}
-                    <div className="p-4 bg-white rounded shadow flex flex-col gap-3">
+                    <div className="p-4 bg-white rounded shadow-xl border-slate-200 border flex flex-col gap-3">
                         <h2 className="font-bold text-lg text-center">Selected Subjects</h2>
                         {selectedSubjects.length ? (
                             selectedSubjects.map(id => {
@@ -122,14 +154,14 @@ const List = (
                     </div>
 
                     {/* Bottom Section */}
-                    <div className="p-4 bg-white rounded shadow flex flex-col gap-3">
+                    <div className="p-4 bg-white rounded shadow-2xl border-slate-200 border flex flex-col gap-3">
                         <h2 className="font-bold text-lg text-center">{t("Already Assigned Subjects")}</h2>
                         {dataAssignedSubjects?.length ? (
-                            dataAssignedSubjects?.map((subject: EdgeSubject) => (
+                            dataAssignedSubjects?.map((subject: EdgeSubjectSec) => (
                                 <div key={subject.node.id} className="flex justify-between items-center border p-2 rounded hover:bg-gray-50">
                                     <span>{subject.node.mainsubject.subjectName}</span>
                                     <button
-                                        onClick={() => removeAssignedSubject(parseInt(decodeUrlID(subject.node.mainsubject.id)))}
+                                        onClick={() => removeAssignedSubject(parseInt(decodeUrlID(subject.node.id)))}
                                         className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-sm"
                                     >
                                         ❌ {t("Unassign")}
@@ -147,3 +179,22 @@ const List = (
 };
 
 export default List;
+
+
+
+
+const query = gql`
+    mutation CreateUpdateDeleteSubjectSec(
+        $id: ID,
+        $delete: Boolean!
+    ) {
+        createUpdateDeleteSubjectSec (
+            id: $id,
+            delete: $delete
+        ) {
+            subjectsec {
+              id
+            }
+        }
+    }
+`;

@@ -6,7 +6,7 @@ import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import { Metadata } from 'next';
 import DefaultLayout from '@/DefaultLayout';
-import { EdgeDomain, EdgeMainCourse, EdgeCourse, EdgeLevel, EdgeSpecialty } from '@/Domain/schemas/interfaceGraphql';
+import { EdgeDomain, EdgeMainCourse, EdgeCourse, EdgeLevel, EdgeSpecialty, EdgeCustomUser } from '@/Domain/schemas/interfaceGraphql';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
@@ -26,11 +26,14 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
   title: "Courses Page",
-  description: "This is Courses Page Admin Settings",
+  description: "e-conneq School System. Courses Page Admin Settings",
 };
 
-const List = ({ params, data, searchParams, admins }: { params: any; data: any, searchParams: any, admins: any }) => {
-  
+const List = (
+  { params, data, searchParams, users }:
+  { params: any; data: any, searchParams: any, users: EdgeCustomUser[] }
+) => {
+
   const router = useRouter();
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -220,7 +223,7 @@ const List = ({ params, data, searchParams, admins }: { params: any; data: any, 
               extraData={{
                 specialties: data?.allSpecialties?.edges,
                 mainCourses: data?.allMainCourses?.edges,
-                teachers: [...data?.allCustomUsers?.edges, ...admins?.allCustomUsers?.edges]
+                teachers: users
               }}
             />}
             openState={showModal?.show || false}

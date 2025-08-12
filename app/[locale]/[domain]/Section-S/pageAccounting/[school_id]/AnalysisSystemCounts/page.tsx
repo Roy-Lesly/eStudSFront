@@ -7,7 +7,7 @@ import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Counts",
-  description: "This is Counts Accounting Page",
+  description: "e-conneq School System. Counts Accounting Page",
 };
 
 const page = async ({

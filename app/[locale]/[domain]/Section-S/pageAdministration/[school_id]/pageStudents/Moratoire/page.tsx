@@ -84,7 +84,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Moratorium",
-  description: "This is Moratorium Page",
+  description: "e-conneq School System. Moratorium Page",
 };
 
 

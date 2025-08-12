@@ -38,7 +38,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Field-Settings",
-  description: "This is Field-Settings Page",
+  description: "e-conneq School System. Field-Settings Page",
 };
 
 

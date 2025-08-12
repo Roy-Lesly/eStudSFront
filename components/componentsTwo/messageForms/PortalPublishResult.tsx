@@ -7,7 +7,7 @@ import { decodeUrlID } from "@/utils/functions";
 import { gql, useMutation } from "@apollo/client";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "@/utils/serverActions/interfaces";
-import { ApiFactory } from "@/utils/ApiFactory";
+import { ApiFactory } from "@/utils/graphql/ApiFactory";
 
 
 const PortalPublishResult = ({

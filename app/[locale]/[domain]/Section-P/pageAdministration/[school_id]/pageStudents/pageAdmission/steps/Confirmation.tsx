@@ -27,15 +27,15 @@ const Confirmation = (
       transition={{ duration: 0.5 }}
       className="text-black p-4 space-y-6"
     >
-      <h2 className="font-bold text-2xl text-blue-600 text-center rounded-lg shadow py-3">
+      <h2 className="font-bold text-2xl text-blue-600 text-center bg-slate-300 rounded-lg shadow-xl py-1">
         {t('Confirm Your Information')}
       </h2>
 
       {/* Personal Information */}
-      <section className="bg-white rounded-lg shadow p-4">
+      <section className="bg-white rounded-lg shadow-2xl p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold text-gray-700">{t('Personal Information')}</h3>
-          <button onClick={() => setCurrentStep(0)} className="text-sm text-blue-600 hover:underline">
+          <button onClick={() => setCurrentStep(0)} className="text-sm text-blue-800 hover:underline">
             {t('Edit')}
           </button>
         </div>
@@ -52,7 +52,7 @@ const Confirmation = (
       </section>
 
       {/* Medical Information */}
-      <section className="bg-white rounded-lg shadow p-4">
+      <section className="bg-white rounded-lg shadow-2xl p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold text-gray-700">{t('Medical & Background Information')}</h3>
           <button onClick={() => setCurrentStep(1)} className="text-sm text-blue-600 hover:underline">
@@ -69,7 +69,7 @@ const Confirmation = (
       </section>
 
       {/* Class Assignment */}
-      <section className="bg-white rounded-lg shadow p-4">
+      <section className="bg-white rounded-lg shadow-2xl p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold text-gray-700">{t('Class Assignment')}</h3>
           <button onClick={() => setCurrentStep(2)} className="text-sm text-blue-600 hover:underline">
@@ -84,8 +84,8 @@ const Confirmation = (
 
       {/* Final Buttons */}
       <div className="flex justify-between pt-4">
-        <button onClick={onPrevious} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">{t('Back')}</button>
-        <button onClick={onNext} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">{t('Submit')}</button>
+        <button onClick={onPrevious} className="shadow-xl bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">{t('Back')}</button>
+        <button onClick={onNext} className="shadow-xl bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">{t('Submit')}</button>
       </div>
     </motion.div>
   );

@@ -5,7 +5,6 @@ import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-h/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
-import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { EdgeUserProfile } from '@/Domain/schemas/interfaceGraphql';
@@ -17,14 +16,15 @@ import { FaRightLong } from 'react-icons/fa6';
 import ExcelExporter from '@/ExcelExporter';
 import ServerError from '@/ServerError';
 import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
 
 
 export const metadata: Metadata = {
   title: "Student Page",
-  description: "This is Student Page Admin Settings",
+  description: "e-conneq School System. Student Page Admin Settings",
 };
 
-const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const router = useRouter();
@@ -45,7 +45,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     {
       header: `${t("View")}`, align: "center",
       render: (item) => <button
-        onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
+        onClick={() => router.push(`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
         className="bg-green-200 p-2 rounded-full"
       >
         <FaRightLong color="green" size={21} />
@@ -56,18 +56,18 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       // downloadComponent={<ExcelExporter
       //   data={data?.allUserProfiles?.edges}
       //   title="ClassList"
       //   type="UserProfile"
       //   page="list_student_specialty"
-      //   searchParams={searchParams}
+      //   sp={sp}
       // />}
       searchComponent={
         <SearchMultiple
           names={['fullName', 'specialtyName', 'level', 'sex', 'academicYear']}
-          link={`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents`}
+          link={`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageStudents`}
           select={[
             // { type: 'select', name: 'sex', dataSelect: ['MALE', 'FEMALE'] },
             // { type: 'select', name: 'academicYear', dataSelect: data?.allAcademicYears },
@@ -76,7 +76,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       }
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -92,46 +92,36 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         />
       }
     >
-      <Breadcrumb
-        department={t("Students")}
-        subRoute="List"
-        pageName={t("Students")}
-        mainLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Settings/Students/`}
-        subLink={`${params.domain}/Section-H/pageAdministration/${params.school_id}/Settings/Students/`}
-      />
 
       <div className="bg-gray-50 flex flex-col gap-2 items-center justify-center w-full">
-
-        <button
-          onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Admit`)}
-          className="bg-blue-600 flex focus:outline-none gap-2 hover:bg-blue-700 items-center mb-2 px-4 py-2 rounded text-white"
+        <Link
+          className='rounded-lg shadow-lg bg-teal-50 px-4 py-2 cursor-pointer flex items-center justify-end gap-2 font-bold text-xl'
+          href={`/${p.locale}/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageStudents/Admit`}
         >
-          <FaPlus />{t("Register")}
-        </button>
+          <span>{t("New Student")}</span>
+          <button className='bg-green-500 p-1 rounded-full'><FaPlus size={25} color="white" /></button>
+        </Link>
 
         {data ? (
-          data.allUserProfiles.edges.length ? (
-            <MyTableComp
-              data={
-                data.allUserProfiles.edges.sort((a: EdgeUserProfile, b: EdgeUserProfile) => {
-                  const academicYearA = a.node.specialty.academicYear;
-                  const academicYearB = b.node.specialty.academicYear;
-                  const fullNameA = a.node.customuser.fullName.toLowerCase();
-                  const fullNameB = b.node.customuser.fullName.toLowerCase();
+          <MyTableComp
+            data={
+              data.allUserProfiles.edges.sort((a: EdgeUserProfile, b: EdgeUserProfile) => {
+                const academicYearA = a.node.specialty.academicYear;
+                const academicYearB = b.node.specialty.academicYear;
+                const fullNameA = a.node.customuser.fullName.toLowerCase();
+                const fullNameB = b.node.customuser.fullName.toLowerCase();
 
-                  if (academicYearA > academicYearB) return -1;
-                  if (academicYearA < academicYearB) return 1;
+                if (academicYearA > academicYearB) return -1;
+                if (academicYearA < academicYearB) return 1;
 
-                  return fullNameA.localeCompare(fullNameB);
-                })}
-              columns={Columns}
-            />
-          ) : (
-            <ServerError type="notFound" item="Students" />
-          )
+                return fullNameA.localeCompare(fullNameB);
+              })}
+            columns={Columns}
+          />
         ) : (
-          <ServerError type="network" item="Students" />
-        )}
+          <ServerError type="notFound" item="Students" />
+        )
+        }
 
 
       </div>

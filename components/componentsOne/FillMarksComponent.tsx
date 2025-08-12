@@ -11,6 +11,7 @@ import { gql } from '@apollo/client';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import MyTableComp from '../section-h/Table/MyTableComp';
 
+
 const FillMarksComponent = (
     { values, formData, setFormData, schoolInfo, params }:
         { values: any, formData: EdgeResult[], setFormData: any, schoolInfo: EdgeSchoolHigherInfo, params: any }
@@ -19,17 +20,8 @@ const FillMarksComponent = (
     const [dataToSubmit, setDataToSubmit] = useState<any[]>([]); // Initialized as an empty array
 
     const Columns: TableColumn<EdgeResult>[] = [
-        {
-            header: '#',
-            align: 'left',
-            responsiveHidden: true,
-            render: (item, index: number) => { return <span>{index + 1}</span> }
-        },
-        {
-            header: 'Student Name',
-            accessor: 'node.student.customuser.fullName',
-            align: 'left', // Corrected to one of "left", "center", "right"
-        },
+        { header: '#', align: 'left', responsiveHidden: true, render: (item, index: number) => { return <span>{index + 1}</span> } },
+        { header: 'Student Name', accessor: 'node.student.customuser.fullName', align: 'left' },
         {
             header: 'Results',
             align: 'center', // Corrected to one of "left", "center", "right"
@@ -120,13 +112,12 @@ const FillMarksComponent = (
         });
     };
 
-
-
     const handleSubmit = async () => {
         const token = localStorage.getItem("token")
         const user: JwtPayload | any = jwtDecode(token ? token : "")
 
         if (dataToSubmit.length > 0 && user.user_id) {
+
             let count = 1;
             for (let index = 0; index < dataToSubmit.length; index++) {
                 const newData = {

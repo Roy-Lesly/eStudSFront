@@ -20,7 +20,7 @@ import PerformanceCourse from './PerformanceCourse';
 
 export const metadata: Metadata = {
   title: "Specialty Page",
-  description: "This is Specialty Page Admin Settings",
+  description: "e-conneq School System. Specialty Page Admin Settings",
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
@@ -67,7 +67,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 },
                 {
                   label: 'Performance', content: data?.allCourses?.edges?.length ?
-                    <PerformanceCourse 
+                    <PerformanceCourse
                       data={data.allCourses.edges[0].node}
                     />
                     :
@@ -84,14 +84,14 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                       params={params}
                     />
                     :
-                    <ServerError type="notFound" item="Course" />, 
-                    icon: <ExcelExporter
-                      data={activeTab === 1 ? data?.allSchoolFees?.edges : data?.allSpecialties?.edges}
-                      title={activeTab === 1 ? `Class-${data?.allSpecialties?.edges[0].node?.academicYear.slice(2, 4)}-${data?.allSpecialties?.edges[0].node?.level?.level}-${data?.allSpecialties?.edges[0].node.mainSpecialty.specialtyName.slice(0, 19)}` : "Specialties"}
-                      type={activeTab === 1 ? "SchoolFees" : "Specialty"}
-                      page={activeTab === 1 ? "list_user_profile" : "list_specialty"}
-                      searchParams={activeTab === 1 ? { "name": data?.allSpecialties?.edges[0].node.mainSpecialty.specialtyName } : searchParams}
-                    />
+                    <ServerError type="notFound" item="Course" />,
+                  icon: <ExcelExporter
+                    data={activeTab === 1 ? data?.allSchoolFees?.edges : data?.allSpecialties?.edges}
+                    title={activeTab === 1 ? `Class-${data?.allSpecialties?.edges[0].node?.academicYear.slice(2, 4)}-${data?.allSpecialties?.edges[0].node?.level?.level}-${data?.allSpecialties?.edges[0].node.mainSpecialty.specialtyName.slice(0, 19)}` : "Specialties"}
+                    type={activeTab === 1 ? "SchoolFees" : "Specialty"}
+                    page={activeTab === 1 ? "list_user_profile" : "list_specialty"}
+                    searchParams={activeTab === 1 ? { "name": data?.allSpecialties?.edges[0].node.mainSpecialty.specialtyName } : searchParams}
+                  />
                 },
               ]}
               activeTab={activeTab}

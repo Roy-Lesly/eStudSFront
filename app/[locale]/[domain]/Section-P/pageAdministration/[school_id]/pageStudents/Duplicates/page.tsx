@@ -16,7 +16,7 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
- const data = await queryServerGraphQL({
+  const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA
   });
@@ -32,7 +32,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Users",
-  description: "This is Users Page",
+  description: "e-conneq School System. Users Page",
 };
 
 

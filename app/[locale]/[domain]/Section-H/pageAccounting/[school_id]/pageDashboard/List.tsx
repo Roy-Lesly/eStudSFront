@@ -1,48 +1,50 @@
-import React from 'react';
-import SearchComp from './SearchComp';
-import AdminPage from './AdminPage';
+'use client';
+import DefaultLayout from "@/DefaultLayout";
+import Sidebar from "@/section-h/Sidebar/Sidebar";
+import Header from "@/section-h/Header/Header";
+import { useState } from "react";
+import { GetMenuAccounting } from "@/components/section-h/Sidebar/MenuAccounting";
 
-const List = (
-  {
-    userCardData,
-    financeChartData,
-    specialtyLevelCountChartData,
-    sortedAcadYears,
-    apiLevels,
-    p,
-    sp,
-  }: {
-    userCardData: any,
-    financeChartData: any,
-    specialtyLevelCountChartData: any,
-    sortedAcadYears: string[],
-    apiLevels: any,
-    p: any,
-    sp: any,
-  }
-) => {
+
+const List = ({
+  children,
+  params,
+}: {
+  children: any,
+  params: any;
+  searchParams: any;
+}) => {
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+
+  
 
   return (
-    <>
-      {specialtyLevelCountChartData && specialtyLevelCountChartData.length > 0 && financeChartData ?
-        <AdminPage
-          p={p} sp={sp}
-          sortedAcadYears={sortedAcadYears} apiLevels={apiLevels}
-          userCardData={userCardData} financeChartData={financeChartData}
-          specialtyLevelCountChartData={specialtyLevelCountChartData}
+    <DefaultLayout
+      pageType='admin'
+      domain={params?.domain}
+      sidebar={
+        <Sidebar
+          params={params}
+          menuGroups={GetMenuAccounting()}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
         />
-        :
-        <div>
-          <SearchComp p={p} sp={sp} sortedAcadYears={sortedAcadYears} />
-          <div className="flex flex-col items-center justify-center mt-40 rounded">
-            <div className="bg-white flex font-medium p-10 text-xl tracking-widest">No Campus Data Generated Yet !</div>
-          </div>
-
-        </div>
       }
-
-    </>
-  );
+      headerbar={
+        <Header
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          searchComponent={
+            <></>
+          }
+        />
+      }
+    >
+      {children}
+    </DefaultLayout>
+  )
 }
 
-export default List;
+export default List
+
+

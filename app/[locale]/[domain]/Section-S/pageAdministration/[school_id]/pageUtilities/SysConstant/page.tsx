@@ -17,18 +17,18 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const apiData: any = await getData(protocol + "api" + p.domain + GetSysConstantUrl, { ...sp, fieldList: [ "id", "name", "sys_category__id", "sys_category__name"] }, p.domain)
+  const apiData: any = await getData(protocol + "api" + p.domain + GetSysConstantUrl, { ...sp, fieldList: ["id", "name", "sys_category__id", "sys_category__name"] }, p.domain)
   console.log(apiData, 19)
   return (
-    
-      <>
 
-        {sp && <NotificationError errorMessage={sp} />}
+    <>
 
-        {apiData && apiData.results && <ListConstantPage params={p} data={apiData.results} />}
+      {sp && <NotificationError errorMessage={sp} />}
 
-      </>
-    
+      {apiData && apiData.results && <ListConstantPage params={p} data={apiData.results} />}
+
+    </>
+
   )
 }
 
@@ -36,5 +36,5 @@ export default page
 
 export const metadata: Metadata = {
   title: "Admin Constants",
-  description: "This is Admin Constants Page",
+  description: "e-conneq School System. Admin Constants Page",
 };

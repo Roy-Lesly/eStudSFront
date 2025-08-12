@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
-import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { FaPlus } from 'react-icons/fa';
@@ -12,17 +11,17 @@ import { useRouter } from 'next/navigation';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { EdgeUserProfileSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { FaRightLong } from 'react-icons/fa6';
-// import ExcelExporter from '@/ExcelExporter';
 import ServerError from '@/ServerError';
 import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
 
 
 export const metadata: Metadata = {
   title: "Student Page",
-  description: "This is Student Page Admin Settings",
+  description: "e-conneq School System. Student Page Admin Settings",
 };
 
-const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
+const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const router = useRouter();
@@ -45,7 +44,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
     {
       header: `${t("View")}`, align: "center",
       render: (item) => <button
-        onClick={() => router.push(`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
+        onClick={() => router.push(`/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageStudents/${item.node.id}/?user=${item.node.customuser.id}`)}
         className="bg-green-200 p-2 rounded-full"
       >
         <FaRightLong color="green" size={21} />
@@ -56,7 +55,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       // downloadComponent={<ExcelExporter
       //   data={data?.allUserProfiles?.edges}
       //   title="ClassList"
@@ -67,7 +66,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       searchComponent={
         <SearchMultiple
           names={['fullName', 'level', 'sex', 'academicYear']}
-          link={`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents`}
+          link={`/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageStudents`}
           select={[
             // { type: 'select', name: 'sex', dataSelect: ['MALE', 'FEMALE'] },
             // { type: 'select', name: 'academicYear', dataSelect: data?.allAcademicYears },
@@ -76,7 +75,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       }
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -92,22 +91,19 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         />
       }
     >
-      <Breadcrumb
-        department={t("Students")}
-        subRoute="List"
-        pageName={t("Students")}
-        mainLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/`}
-        subLink={`${params.domain}/Section-S/pageAdministration/${params.school_id}/Settings/Students/`}
-      />
-
       <div className="bg-gray-50 flex flex-col gap-2 items-center justify-center w-full">
-        {/* 
-        <button
-          onClick={() => router.push(`/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/Admit`)}
-          className="bg-blue-600 flex focus:outline-none gap-2 hover:bg-blue-700 items-center mb-2 px-4 py-2 rounded text-white"
-        >
-          <FaPlus />{t("Register")}
-        </button> */}
+        <div className='flex justify-end items-center w-full'>
+          {/* <span className='w-1/2 md:w-1/4 text-2xl font-semibold tracking-widest text-center text-blue-800 shadow-lg rounded-lg px-4 py-2 bg-slate-50'>
+            {t("Students List")}
+          </span> */}
+          <Link
+            className='w-1/2 md:w-1/4 rounded-lg shadow-lg bg-teal-200 px-4 py-1 cursor-pointer flex items-center justify-center gap-2 font-bold text-xl'
+            href={`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageStudents/pageNewPreinscription`}
+          >
+            <span>{t("New Student")}</span>
+            <button className='bg-green-500 p-1 rounded-full'><FaPlus size={25} color="white" /></button>
+          </Link>
+        </div>
 
         {data ? (
           data.allUserprofilesSec?.edges.length ? (

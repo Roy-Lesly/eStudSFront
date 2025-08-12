@@ -1,9 +1,9 @@
-import { EdgeSchoolFees, EdgeUserProfile } from '@/Domain/schemas/interfaceGraphql'
+import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-const Footer = async ({ params, profileInfo, feeInfo }: {params: any, profileInfo: EdgeUserProfile, feeInfo: EdgeSchoolFees }) => {
+const Footer = async ({ params, feeInfo }: {params: any, feeInfo: EdgeSchoolFees }) => {
 
   const footerIcons = [
     { id: 1, link: "student", alt: "Home", url: "/images/home.png", },

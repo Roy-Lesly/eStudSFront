@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient from '@/functions'
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 import NotificationError from '@/section-h/common/NotificationError'
 import { gql } from '@apollo/client'
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql'
@@ -70,21 +70,21 @@ const page = async ({
 
     data = result.data;
   } catch (error: any) {
-    
+
     data = null;
   }
 
-    return (
-        <div>
-            <List params={p} data={data} searchParams={sp} />
-        </div>
-    )
+  return (
+    <div>
+      <List params={p} data={data} searchParams={sp} />
+    </div>
+  )
 }
 
 export default page
 
 export const metadata: Metadata = {
   title: "Activation-Settings",
-  description: "This is Activation-Settings Page",
+  description: "e-conneq School System. Activation-Settings Page",
 };
 

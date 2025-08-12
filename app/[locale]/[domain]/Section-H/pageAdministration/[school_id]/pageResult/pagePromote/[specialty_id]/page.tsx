@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
-import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, errorLog, getData, removeEmptyFields } from '@/functions';
+import React from 'react'
+import { decodeUrlID, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const EditPage = async ({
   params,
@@ -15,53 +16,43 @@ const EditPage = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = { };
-  
+  const paginationParams: Record<string, any> = {};
+
   paginationParams.specialtyName = sp?.spec
   paginationParams.academicYear = sp?.nextYear
   paginationParams.domainId = parseInt(decodeUrlID(sp?.dom))
-  paginationParams.level = sp?.next
-    const client = getApolloClient(p.domain);
-    let data;
-    let dataNextSpec;
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA,
-          variables: {
-            schoolId: p.school_id,
-            specialtyId: parseInt(decodeUrlID( p.specialty_id)),
-            specialtyId2: parseInt(decodeUrlID( p.specialty_id)),
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-      errorLog(error);
-      data = null;
-    }
+  paginationParams.level = parseInt(sp?.next)
+  paginationParams.level2 = sp?.next
 
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA_NEXT,
-          variables: {
-            ...removeEmptyFields(paginationParams),
-            schoolId: p.school_id,
-            timestamp: new Date().getTime()
-          },
-          fetchPolicy: 'no-cache'
-        });
-        dataNextSpec = result.data;
-    } catch (error: any) {
-      errorLog(error);
-      dataNextSpec = null;
-    }
 
-      
+  const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      schoolId: p.school_id,
+      specialtyId: parseInt(decodeUrlID(p.specialty_id)),
+      specialtyId2: parseInt(decodeUrlID(p.specialty_id)),
+    },
+  });
+
+  const dataNextSpec = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA_NEXT,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      schoolId: p.school_id,
+    },
+  });
+
   return (
     <div>
-    <List params={p} data={data} dataNextSpec={dataNextSpec} searchParams={sp} />
-  </div>
+      <List
+        params={p}
+        data={data}
+        dataNextSpec={dataNextSpec}
+        searchParams={sp}
+      />
+    </div>
   )
 }
 
@@ -72,7 +63,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Promotion",
-  description: "This is Promotion Page",
+  description: "e-conneq School System. Promotion Page",
 };
 
 
@@ -144,6 +135,7 @@ const GET_DATA_NEXT = gql`
       last: 100,
       schoolId: $schoolId
       specialtyName: $specialtyName
+      academicYear: $academicYear
       level: $level
     ){
       edges {

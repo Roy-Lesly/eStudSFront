@@ -54,7 +54,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Pending Account Settings",
-  description: "This is Pending Account Settings Page",
+  description: "e-conneq School System. Pending Account Settings Page",
 };
 
 

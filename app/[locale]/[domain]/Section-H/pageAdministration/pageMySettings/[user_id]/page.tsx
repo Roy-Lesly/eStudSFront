@@ -23,23 +23,23 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const apiData: any = await getData(protocol + "api" + p.domain + GetAppearanceUrl, { user__id: p.user_id, nopage: true, fieldList: [ "id", "user__id", "user__full_name", "lang", "dark_mode" ] }, p.domain);
+  const apiData: any = await getData(protocol + "api" + p.domain + GetAppearanceUrl, { user__id: p.user_id, nopage: true, fieldList: ["id", "user__id", "user__full_name", "lang", "dark_mode"] }, p.domain);
 
   return (
-    
-      <>
-        <Breadcrumb
-          pageName="Profile Settings"
-          pageName1="Dashboard"
-          link1={`/Section-H/pageAdministration/pageMySettings/${p.user_id}`}
-        />
 
-        {sp && <NotificationError errorMessage={sp} />}
+    <>
+      <Breadcrumb
+        pageName="Profile Settings"
+        pageName1="Dashboard"
+        link1={`/Section-H/pageAdministration/pageMySettings/${p.user_id}`}
+      />
 
-        {apiData?.count && apiData.results.length == 1 ? <List params={p} apiData={apiData.results[0]} searchParams={searchParams} /> : <div className='flex font-medium h-full italic items-center justify-center md:my-72 text-2xl'>No User Profile Settings Found</div>}
+      {sp && <NotificationError errorMessage={sp} />}
 
-      </>
-    
+      {apiData?.count && apiData.results.length == 1 ? <List params={p} apiData={apiData.results[0]} searchParams={searchParams} /> : <div className='flex font-medium h-full italic items-center justify-center md:my-72 text-2xl'>No User Profile Settings Found</div>}
+
+    </>
+
   )
 
 }
@@ -48,7 +48,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Settings",
-  description: "This is Settings Page",
+  description: "e-conneq School System. Settings Page",
 };
 
 
@@ -56,5 +56,5 @@ export const metadata: Metadata = {
 const List = async ({ apiData, params }: any) => {
 
   // const { t } = await initTranslations(params.locale, ['home', 'common'])
-return <></>
+  return <></>
 }

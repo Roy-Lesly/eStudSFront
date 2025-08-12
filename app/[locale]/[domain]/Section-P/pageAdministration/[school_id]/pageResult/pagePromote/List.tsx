@@ -19,7 +19,7 @@ import { addOneYear } from '@/functions';
 
 export const metadata: Metadata = {
   title: "Fields Page",
-  description: "This is Fields Page Admin Settings",
+  description: "e-conneq School System. Fields Page Admin Settings",
 };
 
 const List = ({ params, data }: { params: any; data: any, searchParams: any }) => {
@@ -43,7 +43,7 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
   ];
 
   return (
-    <DefaultLayout      
+    <DefaultLayout
       pageType='admin'
       domain={params.domain}
       searchComponent={
@@ -91,7 +91,7 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
 
 
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
-          {data ? ( 
+          {data ? (
             data?.allSpecialties?.edges.length ?
               <MyTableComp
                 data={

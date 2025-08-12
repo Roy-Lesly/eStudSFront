@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
-import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import Sidebar from '@/section-s/Sidebar/Sidebar';
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 export const metadata: Metadata = {
     title: "Publish Page",
-    description: "This is Publish Page Admin Settings",
+    description: "e-conneq School System. Publish Page Admin Settings",
 };
 
 const List = (

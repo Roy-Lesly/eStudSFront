@@ -1,8 +1,8 @@
-import getApolloClient from '@/functions';
 import { Metadata } from 'next';
 import React from 'react'
 import { gql } from '@apollo/client';
 import DisplayPage from './DisplayPage';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 
 

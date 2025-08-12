@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
-import { jwtDecode } from 'jwt-decode';
-import { gql } from '@apollo/client';
 import { EdgeCustomUser, EdgeDepartment } from '@/Domain/schemas/interfaceGraphql';
-import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { CertificateOptions, RegionList } from '@/constants';
 import { FaTimes } from 'react-icons/fa';
-import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutationCreateUpdateCustomuser';
+import { useTranslation } from 'react-i18next';
+import { gql } from '@apollo/client';
 
 
 const CreateLecturer = ({
@@ -18,10 +17,9 @@ const CreateLecturer = ({
     params: any, role: "teacher" | "admin", actionType: "update" | "create", selectedItem: EdgeCustomUser | null, openModal: boolean, setOpenModal: any, depts: EdgeDepartment[]
 }) => {
 
+    const { t } = useTranslation("common");
     const last20Years = Array.from({ length: 25 }, (_, i) => (new Date().getFullYear() - (i + 1)).toString());
     const [count, setCount] = useState<number>(0)
-    const token = localStorage.getItem('token');
-    const user: JwtPayload = jwtDecode(token ? token : "");
     const dept: EdgeDepartment | null = depts ? depts?.filter((d: EdgeDepartment) => d.node.name.toLowerCase().includes(role === "admin" ? "admin" : "lecturer"))[0] : null;
 
     const [formData, setFormData] = useState({
@@ -69,8 +67,6 @@ const CreateLecturer = ({
         }
         if (count === 1 && selectedItem && selectedItem.node) {
             let parsedData;
-
-
         }
     }, [setCount, count, selectedItem, actionType, client])
 
@@ -98,20 +94,31 @@ const CreateLecturer = ({
             }
         }
 
-        await ApiFactory({
-            newData: dataToSubmit,
-            editData: dataToSubmit,
-            mutationName: "createUpdateDeleteCustomuser",
-            modelName: "customuser",
-            successField: "id",
-            query,
+        const resUserId = await mutationCreateUpdateCustomuser({
+            formData: dataToSubmit,
+            p: params,
             router: null,
-            params,
-            redirect: false,
-            reload: true,
-            redirectPath: ``,
-            actionLabel: "processing",
-        });
+            routeToLink: "",
+        })
+        if (resUserId?.length > 5) {
+            alert(t("Operation Successful") + " " + `✅`)
+            window.location.reload();
+        }
+
+        // await ApiFactory({
+        //     newData: dataToSubmit,
+        //     editData: dataToSubmit,
+        //     mutationName: "createUpdateDeleteCustomuser",
+        //     modelName: "customuser",
+        //     successField: "id",
+        //     query,
+        //     router: null,
+        //     params,
+        //     redirect: false,
+        //     reload: true,
+        //     redirectPath: ``,
+        //     actionLabel: "processing",
+        // });
 
 
     };
@@ -303,58 +310,6 @@ const CreateLecturer = ({
 export default CreateLecturer
 
 
-
-export const query = gql`
-    mutation Data(
-        $id: ID,
-        $schoolIds: [ID]!,
-        $firstName: String!,
-        $lastName: String,
-        $role: String!,
-        $sex: String!,
-        $dob: String,
-        $pob: String,
-        $address: String!,
-        $telephone: String!,
-        $email: String!,
-        $title: String,
-        $deptIds: [ID!]!,
-        $highestCertificate: String!,
-        $yearObtained: String,
-        $nationality: String!,
-        $regionOfOrigin: String!,
-        $prefix: String!,
-        $infoData: String!,
-        $delete: Boolean!,
-    ) {
-        createUpdateDeleteCustomuser(
-            id: $id,
-            schoolIds: $schoolIds,
-            firstName: $firstName,
-            lastName: $lastName,
-            role: $role,
-            sex: $sex,
-            dob: $dob,
-            pob: $pob,
-            address: $address,
-            telephone: $telephone,
-            email: $email,
-            title: $title,
-            deptIds: $deptIds,
-            highestCertificate: $highestCertificate,
-            yearObtained: $yearObtained,
-            nationality: $nationality,
-            regionOfOrigin: $regionOfOrigin,
-            prefix: $prefix,
-            infoData: $infoData,
-            delete: $delete,
-        ) {
-            customuser {
-              id
-            }  
-        } 
-    }
-`
 const GET_DATA = gql`
 query GetData {
   allDepartments{

@@ -1,12 +1,13 @@
 import React from 'react'
 import { gql } from '@apollo/client'
-import getApolloClient, { removeEmptyFields } from '@/functions'
+import { removeEmptyFields } from '@/functions'
 import { Metadata } from 'next';
 import List from './List';
+import getApolloClient from '@/utils/graphql/GetAppolloClient';
 
 export const metadata: Metadata = {
   title: "Income-Specialty",
-  description: "This is Income-Specialty Accounting Page",
+  description: "e-conneq School System. Income-Specialty Accounting Page",
 };
 
 const page = async ({
@@ -17,8 +18,8 @@ const page = async ({
   searchParams?: any
 }) => {
 
-   const p = await params;
-          const sp = await searchParams;
+  const p = await params;
+  const sp = await searchParams;
 
   const paginationParams: Record<string, any> = {};
 
@@ -67,12 +68,12 @@ const page = async ({
 
   return (
     <div>
-      <List 
-        params={p} 
-        data={data} 
-        dataYears={dataYears?.allAcademicYears} 
-        dataLevels={dataYears?.allLevels?.edges} 
-        searchParams={sp} 
+      <List
+        params={p}
+        data={data}
+        dataYears={dataYears?.allAcademicYears}
+        dataLevels={dataYears?.allLevels?.edges}
+        searchParams={sp}
       />
     </div>
   )

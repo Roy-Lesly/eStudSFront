@@ -4,12 +4,13 @@ import { decodeUrlID, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 
 export const metadata: Metadata = {
   title: "Admission Page",
-  description: "This is Admission Page Admin Settings",
+  description: "e-conneq School System. Admission Page Admin Settings",
 };
 
 
@@ -29,46 +30,31 @@ const EditPage = async ({
   paginationParams.level = sp?.level
   paginationParams.academicYear = sp?.academicYear
   paginationParams.domainName = sp?.domainName
-  const client = getApolloClient(p.domain);
-  let dataPreinscription;
-  let dataSpecialties;
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        id: parseInt(decodeUrlID(sp?.id)),
-        schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataPreinscription = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    dataPreinscription = null;
-  }
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_SPECIALTIES,
-      variables: {
-        ...removeEmptyFields(paginationParams),
-        schoolId: parseInt(p.school_id),
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataSpecialties = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    dataSpecialties = null;
-  }
+  const dataPreinscription = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      id: parseInt(decodeUrlID(sp?.id)),
+      schoolId: parseInt(p.school_id),
+    },
+  });
+
+  const dataSpecialties = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_SPECIALTIES,
+    variables: {
+      ...removeEmptyFields(paginationParams),
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
   return (
     <div>
       <List
         params={p}
-        dataPreinscription={dataPreinscription.allPreinscriptions?.edges[0]}
+        dataPreinscription={dataPreinscription?.allPreinscriptions?.edges[0]}
         dataExtra={dataPreinscription}
         searchParams={sp}
         dataSpecialties={dataSpecialties?.allSpecialties?.edges}
@@ -122,7 +108,7 @@ const GET_DATA = gql`
   allSchoolInfos(id: $schoolId){
     edges {
       node {
-        prefix method
+        id
       }
     }
   }

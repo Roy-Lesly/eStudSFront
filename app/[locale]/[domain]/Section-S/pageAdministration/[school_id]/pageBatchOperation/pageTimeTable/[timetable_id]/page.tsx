@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import React from 'react'
-import getApolloClient, { decodeUrlID, errorLog } from '@/functions'
+import { decodeUrlID } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 
 const page = async ({
   params,
@@ -34,18 +35,18 @@ const page = async ({
     dataAllTimeTables = result.data;
   } catch (error: any) {
     errorLog(error);
-    
+
     dataAllTimeTables = null;
   }
 
   return (
     <div>
-      <List 
-        params={p} 
+      <List
+        params={p}
         dataAllTimeTables={dataAllTimeTables?.allTimeTables?.edges}
-        apiCourses={dataAllTimeTables?.allCourses?.edges} 
-        apiHalls={dataAllTimeTables?.allHalls?.edges} 
-        searchParams={sp} 
+        apiCourses={dataAllTimeTables?.allCourses?.edges}
+        apiHalls={dataAllTimeTables?.allHalls?.edges}
+        searchParams={sp}
       />
     </div>
   )
@@ -55,7 +56,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "TimeTable",
-  description: "This is TimeTable Page",
+  description: "e-conneq School System. TimeTable Page",
 };
 
 

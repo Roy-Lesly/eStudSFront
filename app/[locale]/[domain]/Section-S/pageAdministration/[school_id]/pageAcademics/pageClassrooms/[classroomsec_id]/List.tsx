@@ -25,7 +25,7 @@ import PerformanceSpecialty from './PerformanceSpecialty';
 
 export const metadata: Metadata = {
   title: "Specialty Page",
-  description: "This is Specialty Page Admin Settings",
+  description: "e-conneq School System. Specialty Page Admin Settings",
 };
 
 const List = ({ params, data, dataTrans, searchParams }: { params: any; data: any, dataTrans: any, searchParams: any }) => {
@@ -150,6 +150,7 @@ const List = ({ params, data, dataTrans, searchParams }: { params: any; data: an
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              source={`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageAcademics/pageClassrooms/`}
             />
           ) : (
             <ServerError type="network" item="Class" />

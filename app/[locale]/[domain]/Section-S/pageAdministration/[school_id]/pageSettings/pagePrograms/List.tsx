@@ -18,7 +18,7 @@ import ButtonAction from '@/section-h/Buttons/ButtonAction';
 
 export const metadata: Metadata = {
   title: "Levels Page",
-  description: "This is Levels Page Admin Settings",
+  description: "e-conneq School System. Levels Page Admin Settings",
 };
 
 const List = ({ params, data }: { params: any; data: any, searchParams: any }) => {
@@ -35,9 +35,9 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
     {
       header: "View", align: "center",
       render: (item) => <div className='flex flex-row gap-2 justify-center'>
-      <ButtonAction data={item} type='edit' action={() => {setShowModal({ show: true, type: "update"}); setSelectedItem(item) }} />
-      <ButtonAction data={item} type='delete' action={() => {setShowModal({ show: true, type: "delete"}); setSelectedItem(item) }} />
-    </div>,
+        <ButtonAction data={item} type='edit' action={() => { setShowModal({ show: true, type: "update" }); setSelectedItem(item) }} />
+        <ButtonAction data={item} type='delete' action={() => { setShowModal({ show: true, type: "delete" }); setSelectedItem(item) }} />
+      </div>,
     },
   ];
   return (
@@ -80,7 +80,7 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
                 columns={Columns}
                 table_title='Program'
                 button_type={"add"}
-                button_action={() => { setShowModal({ type: "create", show: true })}}
+                button_action={() => { setShowModal({ type: "create", show: true }) }}
               />
               :
               <ServerError type='notFound' item='SchoolInfo' />
@@ -91,14 +91,14 @@ const List = ({ params, data }: { params: any; data: any, searchParams: any }) =
 
 
         <MyModal
-          component={<ModalCUDProgram 
+          component={<ModalCUDProgram
             params={params}
             setOpenModal={setShowModal}
             actionType={showModal?.type || "create"}
             selectedItem={selectedItem}
           />}
           openState={showModal?.show || false}
-          onClose={() => setShowModal({ show: false, type: "create"})}
+          onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}
           classname=''
         />

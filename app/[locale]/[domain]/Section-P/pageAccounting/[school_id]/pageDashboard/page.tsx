@@ -1,12 +1,12 @@
 import { protocol } from "@/config";
 import { GetLevelUrl } from "@/Domain/Utils-H/appControl/appConfig";
 import { GetDashFinanceChartUrl, GetDashSpecialtyLevelIncomeChartUrl, GetDashUserCardUrl } from "@/Domain/Utils-H/dashControl/dashConfig";
-import getApolloClient, { getData } from "@/functions";
+import { getData } from "@/functions";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
 import List from "./List";
 import { gql } from "@apollo/client";
 import Wrapper from "./Wrapper";
+import getApolloClient, { errorLog } from "@/utils/graphql/GetAppolloClient";
 
 
 const page = async ({
@@ -78,7 +78,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Acc-Dash",
-  description: "This is Acc Dash",
+  description: "e-conneq School System. Acc Dash",
 };
 
 

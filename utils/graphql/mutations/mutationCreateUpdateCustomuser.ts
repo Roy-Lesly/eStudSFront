@@ -9,25 +9,23 @@ export const mutationCreateUpdateCustomuser = async (
   { formData: any, p: any, routeToLink: string, router: any }
 ) => {
 
-  console.log(formData);
-
     let dataCustomuser: any = {
-      password: formData?.password?.toString().toUpperCase() || "12345",
+      password: formData?.password,
       username: formData?.username?.toString().toUpperCase(),
-      role: formData?.role,
-      passwordSet: formData?.passwordSet || false,
-      language: formData?.language || "En",
+      sex: formData?.sex.toString().toUpperCase(),
+      role: formData?.role.toLowerCase(),
+      passwordSet: formData?.passwordSet,
+      language: formData?.language,
       schoolIds: formData?.schoolIds,
-      deptIds: formData?.schoolIds || [],
-      email: formData?.email?.toLowerCase() || formData?.parentEmail.toLowerCase(),
-      emailConfirmed: formData?.emailConfirmed || false,
+      deptIds: formData?.deptIds,
+      email: formData?.email ? formData?.email?.toLowerCase() : formData?.parentEmail ? formData?.parentEmail.toLowerCase() : undefined,
+      emailConfirmed: formData?.emailConfirmed,
 
       firstName: formData?.firstName?.toString().toUpperCase(),
       lastName: formData?.lastName?.toString().toUpperCase(),
       about: capitalizeFirstLetter(formData?.about),
-      fullName: formData?.firstName?.toString().toUpperCase() + " " + formData?.lastName?.toString().toUpperCase(),
+      fullName: (formData?.firstName || formData?.lastName) ? (formData?.firstName?.toString().toUpperCase() + " " + formData?.lastName?.toString().toUpperCase()) : undefined,
       address: formData?.address?.toString().toUpperCase(),
-      sex: formData?.sex?.toUpperCase(),
       telephone: formData?.telephone,
       title: formData?.title?.toString().toUpperCase(),
       pob: formData?.pob?.toString().toUpperCase(),
@@ -44,7 +42,11 @@ export const mutationCreateUpdateCustomuser = async (
       regionOfOrigin: formData?.regionOfOrigin,
       highestCertificate: formData?.highestCertificate,
       yearObtained: formData?.yearObtained,
+      infoData: formData?.infoData,
       isHod: formData?.isHod,
+      isActive: formData?.isActive,
+      isStaff: formData?.isStaff,
+      isSuperuser: formData?.isSuperuser,
 
       delete: false,
     };
@@ -57,8 +59,8 @@ export const mutationCreateUpdateCustomuser = async (
     }
 
     const userSuccessFieldData = await ApiFactory({
-      newData: dataCustomuser,
-      editData: dataCustomuser,
+      newData: removeEmptyFields(dataCustomuser),
+      editData: removeEmptyFields(dataCustomuser),
       mutationName: "createUpdateDeleteCustomuser",
       modelName: "customuser",
       successField: "id",
@@ -93,7 +95,7 @@ const queryCustomUser = gql`
     $passwordSet: Boolean
     $language: String
     $deptIds: [ID]
-    $schoolIds: [ID!]!
+    $schoolIds: [ID]
     $email: String
     $emailConfirmed: Boolean
 
@@ -119,7 +121,11 @@ const queryCustomUser = gql`
     $highestCertificate: String
     $yearObtained: String
     $isHod: Boolean
+    $infoData: JSONString!
     $prefix: String
+    $isActive: Boolean
+    $isStaff: Boolean
+    $isSuperuser: Boolean
 
     $delete: Boolean!
   ) {
@@ -157,7 +163,11 @@ const queryCustomUser = gql`
       highestCertificate: $highestCertificate
       yearObtained: $yearObtained
       isHod: $isHod
+      infoData: $infoData
       prefix: $prefix
+      isActive: $isActive
+      isStaff: $isStaff
+      isSuperuser: $isSuperuser
 
       delete: $delete
     ) {

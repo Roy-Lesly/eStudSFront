@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import React, { FC } from 'react'
-import getApolloClient, { decodeUrlID, errorLog, getData, removeEmptyFields } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const EditPage = async ({
   params,
@@ -14,26 +14,26 @@ const EditPage = async ({
 
   const p = await params;
   const sp = await searchParams;
- 
-    const client = getApolloClient(p.domain);
-    let data;
-    try {
-        const result = await client.query<any>({
-          query: GET_DATA,
-          fetchPolicy: 'no-cache'
-        });
-        data = result.data;
-    } catch (error: any) {
-      errorLog(error);
-      
-      data = null;
-    }
-  
+
+  const client = getApolloClient(p.domain);
+  let data;
+  try {
+    const result = await client.query<any>({
+      query: GET_DATA,
+      fetchPolicy: 'no-cache'
+    });
+    data = result.data;
+  } catch (error: any) {
+    errorLog(error);
+
+    data = null;
+  }
+
 
   return (
     <div>
-    <List params={p} data={data} searchParams={sp} />
-  </div>
+      <List params={p} data={data} searchParams={sp} />
+    </div>
   )
 }
 
@@ -43,7 +43,7 @@ export default EditPage
 
 export const metadata: Metadata = {
   title: "Program-Settings",
-  description: "This is Program-Settings Page",
+  description: "e-conneq School System. Program-Settings Page",
 };
 
 

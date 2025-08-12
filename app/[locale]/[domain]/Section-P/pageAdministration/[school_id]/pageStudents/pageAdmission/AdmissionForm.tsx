@@ -12,8 +12,8 @@ import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutati
 import { JwtPayload } from '@/utils/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
-import { mutationCreateUpdateUserProfilePrim } from '@/utils/graphql/mutations/mutationCreateUpdateUserProfilePrim';
 import { EdgeClassRoomPrim, NodePreInscriptionPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import { mutationCreateUpdateUserProfile } from '@/utils/graphql/mutations/mutationCreateUpdateUserProfile';
 
 
 const AdmissionForm = (
@@ -66,7 +66,7 @@ const AdmissionForm = (
     classAssignment: {
       customuserId: '',
       classroomprimId: decodeUrlID(myClassroom?.node?.id || ""),
-      programsprim: preinscription?.program?.name,
+      programsprim: preinscription?.program,
       active: true,
       selectedAcademicYear: preinscription.academicYear || getAcademicYear()
     },
@@ -92,11 +92,10 @@ const AdmissionForm = (
       ...formData.parentInfo,
       username: formData.personalInfo.firstName?.toString().toUpperCase(),
       role: "student",
+      infoData: "{}",
       schoolIds: [parseInt(params.school_id)],
       delete: false,
     }
-
-    console.log(formDataUser);
 
     try {
       const resUserId = await mutationCreateUpdateCustomuser({
@@ -105,17 +104,18 @@ const AdmissionForm = (
         router: null,
         routeToLink: "",
       })
-      console.log(resUserId);
 
       if (resUserId.length > 5) {
         const formDataProfile = {
           ...formData.classAssignment,
           customuserId: parseInt(decodeUrlID(resUserId)),
+          infoData: "{}",
           createdById: user?.user_id,
           updatedById: user?.user_id,
           delete: false,
         }
-        const resProfileId = await mutationCreateUpdateUserProfilePrim({
+        const resProfileId = await mutationCreateUpdateUserProfile({
+          section: "P",
           formData: formDataProfile,
           p: params,
           router: null,
@@ -132,13 +132,13 @@ const AdmissionForm = (
   };
 
   return (
-    <div className="p-6 shadow-xl rounded-lg bg-slate-50">
+    <div className="md:p-6 p-2 shadow-xl rounded-lg bg-slate-100">
       <div className="flex justify-between mb-6 rounded-lg bg-white p-2 shadow-lg">
         {steps.map((step, idx) => (
           <div
             key={idx}
             onClick={() => setCurrentStep(idx)}
-            className={`text-center w-full ${currentStep === idx ? 'font-bold rounded-2xl bg-blue-50 text-blue-700 uppercase' : 'text-gray-400'} p-2 cursor-pointer`}>
+            className={`text-center w-full ${currentStep === idx ? 'font-bold rounded-2xl bg-teal-200 text-blue-700 uppercase' : 'text-gray-400'} p-2 cursor-pointer`}>
             {step}
           </div>
         ))}

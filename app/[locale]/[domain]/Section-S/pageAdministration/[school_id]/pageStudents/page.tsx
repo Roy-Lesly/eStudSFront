@@ -41,12 +41,14 @@ const page = async ({
     },
   });
 
-  console.log(data);
-
 
   return (
     <div>
-      <List params={p} data={data} searchParams={sp} />
+      <List
+        p={p}
+        data={data}
+        sp={sp}
+      />
     </div>
   )
 }
@@ -57,7 +59,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Student Settings",
-  description: "This is Student Settings Page",
+  description: "e-conneq School System. Student Settings Page",
 };
 
 

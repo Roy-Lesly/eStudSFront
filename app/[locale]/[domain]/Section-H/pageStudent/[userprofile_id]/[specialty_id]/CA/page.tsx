@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import React, { Suspense } from 'react'
-import NotificationError from '@/section-h/common/NotificationError';
 import ResultDisplay from '../ResultDisplay';
 
 
@@ -21,9 +20,7 @@ const page = async ({
   const sp = await searchParams
 
     return (
-        <div>
-            {sp && <NotificationError errorMessage={sp} />}
-            
+        <div>           
             <Suspense fallback={<div>Loading ...</div>}>
 
                 <ResultDisplay

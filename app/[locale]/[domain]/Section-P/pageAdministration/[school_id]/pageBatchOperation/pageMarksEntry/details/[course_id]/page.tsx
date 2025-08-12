@@ -42,7 +42,7 @@ export default EditPage
 export const metadata: Metadata = {
   title:
     "Select-Marks",
-  description: "This is Marks Page",
+  description: "e-conneq School System. Marks Page",
 };
 
 

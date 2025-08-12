@@ -18,13 +18,6 @@ const FeesCheck = ({ children, term, fees, link, emptyComp }: AccessGuardProps) 
   const tuition = fees?.userprofilesec.classroomsec.tuition
   const paidAmount = fees?.userprofilesec?.classroomsec.tuition - fees?.balance
 
-  
-  if ((paidAmount / tuition) > schoolfeesControl[term-1]) {
-    return <>{children}</>;
-  }
-
-  if (emptyComp) { return <div></div>}
-
   if (!fees?.platformPaid) {
     return <ActivationErrorSec
       fees={fees}
@@ -32,12 +25,19 @@ const FeesCheck = ({ children, term, fees, link, emptyComp }: AccessGuardProps) 
       link={link}
     />;
   }
+  else if ((paidAmount / tuition) > schoolfeesControl[term - 1]) {
+    return <>{children}</>;
+  }
 
-  return <ActivationErrorSec
-    fees={fees}
-    type="fees"
-    link={link}
-  />;
+  else if (emptyComp) { return <div></div> }
+
+  else {
+    return <ActivationErrorSec
+      fees={fees}
+      type="fees"
+      link={link}
+    />
+  };
 
 };
 

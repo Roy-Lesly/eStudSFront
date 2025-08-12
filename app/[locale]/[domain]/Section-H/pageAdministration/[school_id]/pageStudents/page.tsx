@@ -31,7 +31,7 @@ const page = async ({
   paginationParams.session = sp?.session
   paginationParams.specialtyName = sp?.specialtyName
   paginationParams.schoolId = parseInt(p.school_id)
-  paginationParams.level = parseInt(sp?.level ? Array.isArray(sp.level) ? searchParams.level[0] : searchParams.level : "")
+  paginationParams.level = sp?.level
   paginationParams.academicYear = sp?.academicYear
 
 
@@ -48,7 +48,11 @@ const page = async ({
 
   return (
     <div>
-      <List params={p} data={data} searchParams={sp} />
+      <List
+        p={p}
+        data={data}
+        sp={sp}
+      />
     </div>
   )
 }
@@ -59,16 +63,14 @@ export default page
 
 export const metadata: Metadata = {
   title: "Student Settings",
-  description: "This is Student Settings Page",
+  description: "e-conneq School System. Student Settings Page",
 };
 
 
 
 
 const GET_DATA = gql`
- query GetUserProfiles(
-  $after: String,
-  $before: String,
+ query GetData(
   $fullName: String,
   $sex: String,
   $matricle: String,
@@ -88,8 +90,6 @@ const GET_DATA = gql`
   }
   allUserProfiles(
     last: 100,
-    after: $after,
-    before: $before,
     fullName: $fullName,
     sex: $sex,
     matricle: $matricle,
@@ -119,11 +119,6 @@ const GET_DATA = gql`
         program { name }
         infoData
       }
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      endCursor
     }
   }
 }

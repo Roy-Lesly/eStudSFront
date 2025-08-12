@@ -17,7 +17,7 @@ const GenderGraph = ({
     value: Number(item.count),
   }));
 
-  if (!data?.length || data.every((d) => d.value === 0)) {
+  if (!data?.length || data?.every((d) => d.value === 0)) {
     return (
       <div className="w-full md:w-1/4 bg-white rounded-2xl shadow-lg p-4">
         <h2 className="text-lg font-semibold text-gray-800 mb-2">{title}</h2>

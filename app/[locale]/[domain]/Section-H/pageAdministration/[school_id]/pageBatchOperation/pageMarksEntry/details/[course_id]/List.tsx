@@ -17,7 +17,7 @@ import FillMarksAll from '@/components/componentsOne/FillMarksAll';
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
@@ -65,7 +65,12 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 :
                 data?.allResults && data?.allResults.edges.length ?
                   data?.allSchoolInfos?.edges.length ?
-                    <FillMarksAll values={selectedType} data={data?.allResults.edges} params={params} schoolInfo={data?.allSchoolInfos.edges[0]} />
+                    <FillMarksAll
+                      values={selectedType}
+                      data={data?.allResults.edges}
+                      params={params}
+                      schoolInfo={data?.allSchoolInfos.edges[0]}
+                    />
                     :
                     <ServerError type='notFound' item='SchoolInfo' />
                   :

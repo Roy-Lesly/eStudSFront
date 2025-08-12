@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 import HomePageContent from './HomeComps/HomePageContent';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
@@ -18,6 +17,7 @@ const Home = async (
 
   return <HomePageContent
     params={p}
+    network={data === null}
     data={data?.allSchoolIdentifications?.edges[0]}
   />;
 };
@@ -25,19 +25,20 @@ const Home = async (
 export default Home;
 
 export const metadata: Metadata = {
-  title: 'Home Page',
-  description: 'This is the Home Page',
+  title: 'School System',
+  description: 'Manage your school smarter with E-conneq — a Multilingual, Multi-campus system covering everything from student admission to results and fee tracking.'
 };
 
 
 const GET_INFO = gql`
   query GetInfo {
     allSchoolIdentifications (
-      last: 2
+      first: 1
     ) {
       edges {
         node {
           id name version messageOne messageTwo logo supportNumberOne
+          hasHigher hasSecondary hasPrimary hasVocational
         }
       }
     }

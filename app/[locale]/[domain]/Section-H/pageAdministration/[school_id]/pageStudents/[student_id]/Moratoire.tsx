@@ -7,8 +7,10 @@ import { GrStatusGood } from 'react-icons/gr';
 import { FaTimes } from 'react-icons/fa';
 import ResultsEdit from './Comps/ResultsEdit';
 import MoratoireCheck from './Comps/MoratoireCheck';
+import { useTranslation } from 'react-i18next';
 
 const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: EdgeResult[], params: any }) => {
+    const { t } = useTranslation("common")
     const [selectedSemester, setSelectedSemester] = useState<string>('I');
     const [viewMoratoire, setViewMoratoire] = useState<boolean>(false);
     const balance = data?.node?.balance
@@ -25,8 +27,8 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
       };
 
 
-    if (!info.moratoire){
-        return <div>No Moratoire</div>
+    if (!info?.moratoire){
+        return <div>{t("No Moratoire")}</div>
     }
 
 
@@ -40,8 +42,8 @@ const Moratoire = ({ data, results, params }: { data: EdgeSchoolFees, results: E
             <div className='flex flex-col gap-2 text-slate-800'>
                 <div className='w-full my-1 justify-between flex'>
                     <div className='flex gap-6 md:gap-10'>
-                        <div>Application: <span className='mx-2 text-lg font-medium'>{statusMoratoire ? "Yes" : "-"}</span></div>
-                        <div>Status: <span className='mx-2 text-lg font-medium'>{statusMoratoire ? statusMoratoire : "-"}</span></div>
+                        <div>{t("Application")}: <span className='mx-2 text-lg font-medium'>{statusMoratoire ? "Yes" : "-"}</span></div>
+                        <div>{t("Status")}: <span className='mx-2 text-lg font-medium'>{statusMoratoire ? statusMoratoire : "-"}</span></div>
                     </div>
                     <div className='flex flex-row items-center gap-4 justify-center'>Upto Date: {respectPayment ? <GrStatusGood color='green' size={28} /> : <FaTimes color='red' size={25} />}</div>
                     <div className='flex flex-row items-center gap-4 justify-center'>Account Status: {statusPlatform ? <GrStatusGood color='green' size={28} /> : <FaTimes color='red' size={25} />}</div>

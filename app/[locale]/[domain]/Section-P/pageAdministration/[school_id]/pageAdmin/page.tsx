@@ -14,15 +14,15 @@ const page = async ({
   const sp = await searchParams;
 
   // const apiData: any = await getData(protocol + "api" + p.domain + GetSysCategoryUrl, { ...sp }, params.domain)
-  
+
   return (
-      <>
+    <>
 
-        {sp && <NotificationError errorMessage={sp} />}
+      {sp && <NotificationError errorMessage={sp} />}
 
-        {/* {apiData && apiData.results && <ListCategoryPage params={p} data={apiData.results} />} */}
+      {/* {apiData && apiData.results && <ListCategoryPage params={p} data={apiData.results} />} */}
 
-      </>
+    </>
   )
 }
 
@@ -30,5 +30,5 @@ export default page
 
 export const metadata: Metadata = {
   title: "Admin Category",
-  description: "This is Admin Category Page",
+  description: "e-conneq School System. Admin Category Page",
 };

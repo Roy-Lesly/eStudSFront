@@ -1,5 +1,3 @@
-// app/[locale]/[domain]/Section-H/pageAdministration/[school_id]/dashboard/layout.tsx
-
 import List from "./List";
 
 export default function DashboardLayout({

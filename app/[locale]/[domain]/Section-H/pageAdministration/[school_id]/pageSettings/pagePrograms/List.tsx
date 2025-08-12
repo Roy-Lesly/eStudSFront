@@ -18,7 +18,7 @@ import ButtonAction from '@/section-h/Buttons/ButtonAction';
 
 export const metadata: Metadata = {
   title: "Levels Page",
-  description: "This is Levels Page Admin Settings",
+  description: "e-conneq School System. Levels Page Admin Settings",
 };
 
 const List = ({ params, data }: { params: any; data: any, searchParams: any }) => {

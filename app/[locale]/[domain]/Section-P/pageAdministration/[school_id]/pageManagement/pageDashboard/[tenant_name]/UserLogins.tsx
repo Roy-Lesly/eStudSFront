@@ -3,8 +3,9 @@ import { Bar } from "react-chartjs-2";
 import { motion } from "framer-motion";
 import { gql, useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
-import { useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { decodeUrlID } from '@/functions';
+
 
 const UserLogins = ({ period, date }: { period: "today" | "week" | "month" | "6 months", date?: string, }) => {
     const sp = useSearchParams();
@@ -153,7 +154,7 @@ const GET_LOGIN_DATA = gql`
         edges {
             node {
                 id 
-                user { matricle} 
+                customuser { matricle} 
                 schemaName 
                 schoolName 
                 schoolType 

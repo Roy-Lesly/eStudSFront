@@ -1,13 +1,13 @@
 import React from 'react'
-import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
+import CampusList from '@/app/[locale]/[domain]/SectionAll/CampusList';
 
 const page = async ({
-    params,
-    searchParams,
-  }: {
+  params,
+  searchParams,
+}: {
   params: any;
   searchParams: any;
 }) => {
@@ -15,13 +15,20 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
- const dataLogins = await queryServerGraphQL({
-    domain: p?.domain,
+  const data = await queryServerGraphQL({
+    domain: p.domain,
     query: GET_DATA,
   });
 
+  console.log(data);
+
   return (
-    <List params={p} searchParams={sp} />
+    <CampusList
+      params={p}
+      section={"P"}
+      searchParams={sp}
+      data={data}
+    />
   )
 }
 
@@ -29,8 +36,8 @@ export default page
 
 
 export const metadata: Metadata = {
-    title: "Management",
-    description: "This is Manangement Page Settings",
+  title: "Management - Users",
+  description: "e-conneq School System. User Manangement Page Settings",
 };
 
 
@@ -43,14 +50,19 @@ const GET_DATA = gql`
       }
     }
   }
-  allLoginUsers {
+  allLoginUsers (
+    last: 200
+  ) {
     edges {
       node {
-        user { id fullName}
+        customuser { id fullName}
         countHour totalLogins
         loginGeneral { id date countHour totalLogins}
       }
     }
   }
+    allDepartments { edges { node { id name}}}
+    allPages { edges { node { id name}}}
+    allSchoolInfos { edges { node { id schoolName}}}
 }
 `;

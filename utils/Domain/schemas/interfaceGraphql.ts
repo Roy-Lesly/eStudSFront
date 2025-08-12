@@ -1,5 +1,13 @@
+import { NodeClassRoomPrim } from "./interfaceGraphqlPrimary";
 
-// PageInfo interface
+export type VersionType = {
+  number: string;
+  date: string;
+  updates: {
+    title: string;
+  }[];
+};
+
 interface PageInfo {
   hasNextPage: boolean;
   hasPreviousPage: boolean;
@@ -100,6 +108,11 @@ export interface NodeCustomUser {
   password: string;
   passwordSet: boolean;
   createdAt: string;
+
+  page: { edges: EdgePage[] };
+  school: { edges: EdgeSchoolHigherInfo[] };
+  dept: { edges: EdgeDepartment[] };
+  classroomprim: NodeClassRoomPrim[];
 }
 
 // UserProfile interface
@@ -134,6 +147,12 @@ export interface NodeProgram {
   description: string;
 }
 
+export interface NodePage {
+  id: string,
+  name: string;
+  description: string;
+}
+
 
 // SchoolIdentification interface
 export interface NodeSchoolIdentification {
@@ -148,7 +167,6 @@ export interface NodeSchoolIdentification {
   status: boolean;
   platformCharges: number;
   idCharges: number;
-  lastName: string;
   messageOne: string;
   messageTwo: string;
   backEnd: string;
@@ -271,6 +289,7 @@ export interface NodeSpecialty {
   mainSpecialty: NodeMainSpecialty,
   academicYear: string;
   resultType: string;
+  program: NodeProgram;
   level: NodeLevel;
   school: NodeSchoolHigherInfo;
   tuition: number;
@@ -335,6 +354,36 @@ export interface NodePublish {
   exam: boolean
   resit: boolean
 }
+
+
+export interface NodeNotification {
+  id: string;
+  target: string;
+  specialties: {
+    edges: EdgeSpecialty[];
+  };
+  levels: {
+    edges: EdgeLevel[];
+  };
+  subject: string;
+  message: string;
+  recipients: string;
+  academicYear: string;
+  notificationType: string;
+  scheduledFor: string;
+  sent: boolean;
+  campus: NodeSchoolHigherInfo;
+}
+
+export interface NodeComplain {
+  id: string;
+  userprofile: NodeUserProfile;
+  message: string;
+  complainType: string;
+  status: string;
+  endingAt: string;
+}
+
 
 
 
@@ -501,6 +550,10 @@ export interface EdgeProgram {
   node: NodeProgram;
 }
 
+export interface EdgePage {
+  node: NodePage;
+}
+
 export interface EdgeSchoolIdentification {
   node: NodeSchoolIdentification;
 }
@@ -575,14 +628,24 @@ export interface EdgeSysConstants {
 }
 
 
+export interface EdgeNotification {
+  node: NodeNotification;
+}
+
+export interface EdgeComplain {
+  node: NodeComplain;
+}
+
+
+
 
 
 
 
 
 // Query response interface
-export interface AllCustomUsersResponse {
-  allCustomUsers: {
+export interface allCustomusersResponse {
+  allCustomusers: {
     edges: EdgeCustomUser[];
     pageinfoData: PageInfo;
   };

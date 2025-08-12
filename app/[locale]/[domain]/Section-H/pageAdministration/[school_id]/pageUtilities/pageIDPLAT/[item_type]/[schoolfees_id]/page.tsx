@@ -22,24 +22,24 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const apiMyProfile: any = await getData(protocol + "api" + p.domain + GetSchoolFeesUrl, { id: p.schoolfees_id, platform_paid: false}, p.domain);
+  const apiMyProfile: any = await getData(protocol + "api" + p.domain + GetSchoolFeesUrl, { id: p.schoolfees_id, platform_paid: false }, p.domain);
 
   return (
-    
-      <>
-        <Breadcrumb
-          pageName="Account Activation " 
-          pageName1="Dashboard" 
-          link1={`/Section-H/${p.domain}/Section-H/pageAdministration/${p.school_id}`}
-        />
 
-        {searchParams && <NotificationError errorMessage={searchParams} />}
-        {apiMyProfile == "ECONNREFUSED" && <ServerError type='network' />}
-        {apiMyProfile && apiMyProfile.unauthorized && redirect(`/pageAuthentication/pageSessionExpired`)}
-        {apiMyProfile.count && apiMyProfile != "ECONNREFUSED" && <List apiData={apiMyProfile.results[0]} p={p} />}
+    <>
+      <Breadcrumb
+        pageName="Account Activation "
+        pageName1="Dashboard"
+        link1={`/Section-H/${p.domain}/Section-H/pageAdministration/${p.school_id}`}
+      />
 
-      </>
-    
+      {searchParams && <NotificationError errorMessage={searchParams} />}
+      {apiMyProfile == "ECONNREFUSED" && <ServerError type='network' />}
+      {apiMyProfile && apiMyProfile.unauthorized && redirect(`/pageAuthentication/pageSessionExpired`)}
+      {apiMyProfile.count && apiMyProfile != "ECONNREFUSED" && <List apiData={apiMyProfile.results[0]} p={p} />}
+
+    </>
+
   )
 }
 
@@ -47,12 +47,12 @@ export default page
 
 export const metadata: Metadata = {
   title: "Account Activation",
-  description: "This is Account Activation Page",
+  description: "e-conneq School System. Account Activation Page",
 };
 
 
 
-const List = ( {apiData, p}: any ) => {
+const List = ({ apiData, p }: any) => {
 
   const onActivate = async (formData: FormData) => {
     "use server"
@@ -70,23 +70,23 @@ const List = ( {apiData, p}: any ) => {
       status: "completed",
     }
 
-    var pay: { operation: boolean, transaction: boolean } | any = await collectMoney({ amount: data.amount, service: data.operator, payer: payer});
+    var pay: { operation: boolean, transaction: boolean } | any = await collectMoney({ amount: data.amount, service: data.operator, payer: payer });
 
     console.log(pay, 83)
-    if (!pay.operation && pay.transaction == "could-not-perform-transaction"){
+    if (!pay.operation && pay.transaction == "could-not-perform-transaction") {
       redirect(`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUtilities/pagePlatformActivation/${p.schoolfees_id}?error=Transaction Cancelled by User`)
     }
-    if (!pay.operation && pay.transaction == "low-balance-payer"){
+    if (!pay.operation && pay.transaction == "low-balance-payer") {
       redirect(`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUtilities/pagePlatformActivation/${p.schoolfees_id}?error=Not Enough Funds`)
     }
-    if (!pay.operation && pay.transaction == "ENOTFOUND"){
+    if (!pay.operation && pay.transaction == "ENOTFOUND") {
       redirect(`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUtilities/pagePlatformActivation/${p.schoolfees_id}?error=Transaction Error`)
     }
 
     if (pay.operation) {
       const response = await ActionCreate(data, SchemaTransactionCreate, protocol + "api" + p.domain + TransactionUrl, `/Section-H/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUtilities/pagePlatformActivation`)
       console.log(response)
-  
+
       if (response.error) {
         redirect(`/${p.domain}/Section-H/pageAdministration/${p.school_id}/pageUtilities/pagePlatformActivation/${p.schoolfees_id}?error=${JSON.stringify(response.error).replaceAll(" ", "-")}`)
       }
@@ -120,24 +120,24 @@ const List = ( {apiData, p}: any ) => {
       </div>
 
       <form action={onActivate} className='flex flex-col gap-10 items-center justi justify-center mb-10 md:flex-row md:text-lg'>
-          <select name="operator" required={true} className='border-2 px-10 py-2 rounded'>
-            <option value={""}>--------------</option>
-            <option value={"MTN"}>MTN</option>
-            <option value={"ORANGE"}>ORANGE</option>
-          </select>
-          <input
-            className='border-2 px-6 py-1 rounded w-60'
-            placeholder='Payer Number'
-            name="payer"
-            type='number'
-            max={699999999}
-            min={600000000}
-            required={true}
-          />
+        <select name="operator" required={true} className='border-2 px-10 py-2 rounded'>
+          <option value={""}>--------------</option>
+          <option value={"MTN"}>MTN</option>
+          <option value={"ORANGE"}>ORANGE</option>
+        </select>
+        <input
+          className='border-2 px-6 py-1 rounded w-60'
+          placeholder='Payer Number'
+          name="payer"
+          type='number'
+          max={699999999}
+          min={600000000}
+          required={true}
+        />
 
-          <button type='submit' className='bg-green-600 font-semibold px-6 py-2 rounded text-lg text-white tracking-wide'>Pay {apiData.platform_charges}F</button>
+        <button type='submit' className='bg-green-600 font-semibold px-6 py-2 rounded text-lg text-white tracking-wide'>Pay {apiData.platform_charges}F</button>
 
-        </form>
+      </form>
 
     </div>
   )

@@ -19,7 +19,8 @@ import IDComp2 from '../../pageResult/pageIDCard/[specialty_id]/IDComp2';
 import IDComp1 from '../../pageResult/pageIDCard/[specialty_id]/IDComp1';
 import { QrCodeBase64 } from '@/components/QrCodeBase64';
 import { protocol, RootApi } from '@/utils/config';
-import { ApiFactory } from '@/utils/graphql/ApiFactory';
+import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutationCreateUpdateCustomuser';
+import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 
 const Info = (
@@ -46,6 +47,7 @@ const Info = (
   }, [user])
 
   const [student, setStudent] = useState<{
+    id: number;
     role: string;
     photo: string | File;  // Accept both a URL or a File object
     firstName: string;
@@ -72,7 +74,8 @@ const Info = (
     delete: boolean;
     prefix: string;
   }>({
-    role: data?.node?.userprofile.customuser.role || '',
+    id: parseInt(decodeUrlID(data?.node?.userprofile.customuser.id)),
+    role: "student",
     photo: data?.node?.userprofile.customuser?.photo || '',
     firstName: data?.node?.userprofile.customuser.firstName || '',
     lastName: data?.node?.userprofile.customuser.lastName || '',
@@ -104,28 +107,27 @@ const Info = (
     setStudent({ ...student, [name]: value.toUpperCase() });
   };
 
-  const handleSubmit = async (e: any) => {
-    console.log(student)
-    e.preventDefault();
+  const handleSubmit = async () => {
 
     if ([student].length > 0 && user && user?.user_id) {
       for (let index = 0; index < [student].length; index++) {
-        const newData = [student][index];
+        const newDataUpdate = [student][index];
 
-        await ApiFactory({
-          newData: { id: parseInt(decodeUrlID(data?.node?.userprofile.customuser.id)), ...newData, delete: false },
-          mutationName: "createUpdateDeleteCustomUser",
-          modelName: "customuser",
-          successField: "id",
-          query,
-          router: null,
-          params: params,
-          redirect: false,
-          reload: true,
-          returnResponseField: false,
-          redirectPath: ``,
-          actionLabel: "processing",
-        });
+        try {
+          const resUserId = await mutationCreateUpdateCustomuser({
+            formData: newDataUpdate,
+            p: params,
+            router: null,
+            routeToLink: "",
+          })
+
+          if (resUserId.length > 5) {
+            alert(t("Operation Successful") + " " + `✅`)
+            window.location.reload();
+          }
+        } catch (error) {
+          errorLog(error);
+        }
 
       }
     }
@@ -340,8 +342,8 @@ const Info = (
                   required
                 >
                   <option value="">Select</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
+                  <option value="MALE">MALE</option>
+                  <option value="FEMALE">FEMALE</option>
                 </select>
               </div>
               <div>
@@ -537,68 +539,3 @@ const Info = (
 };
 
 export default Info;
-
-
-
-const query = gql`
-  mutation UpdateDelete(
-    $id: ID!
-    $prefix: String!
-    $role: String!
-    $photo: String
-    $firstName: String!
-    $lastName: String!
-    $sex: String!
-    $address: String!
-    $telephone: String!
-    $pob: String
-    $dob: String
-    $email: String!
-    $fatherName: String
-    $motherName: String
-    $fatherTelephone: String
-    $motherTelephone: String
-    $parentAddress: String
-    $highestCertificate: String!
-    $yearObtained: String!
-    $nationality: String!
-    $regionOfOrigin: String!
-    $deptIds: [ID!]
-    $schoolIds: [ID]!
-    $delete: Boolean!
-    $infoData: JSONString!
-  ) {
-    createUpdateDeleteCustomUser(
-      id: $id, 
-      prefix: $prefix
-      role: $role
-      photo: $photo
-      firstName: $firstName
-      lastName: $lastName
-      sex: $sex
-      address: $address
-      telephone: $telephone
-      pob: $pob
-      dob: $dob
-      email: $email
-      fatherName: $fatherName
-      motherName: $motherName
-      fatherTelephone: $fatherTelephone
-      motherTelephone: $motherTelephone
-      parentAddress: $parentAddress
-      highestCertificate: $highestCertificate
-      yearObtained: $yearObtained
-      nationality: $nationality
-      regionOfOrigin: $regionOfOrigin
-      deptIds: $deptIds
-      schoolIds: $schoolIds
-      delete: $delete
-      infoData: $infoData
-    ) {
-      customuser {
-        id 
-        fullName
-      }
-    }
-  }
-`;

@@ -1,8 +1,8 @@
 import React from 'react'
-import List from './List'
 import { Metadata } from 'next';
 import { gql } from '@apollo/client';
-import getApolloClient from '@/functions';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
+import ListResultAudit from '@/app/[locale]/[domain]/SectionAll/ListResultAudit';
 
 const page = async ({
   params,
@@ -14,34 +14,25 @@ const page = async ({
 
   const p = await params;
   const sp = await searchParams;
-
-  const client = getApolloClient(`${p.tenant_name}`, true);
   let data;
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_RESULT,
-      variables: {
-        // schoolId: parseInt(params.school_id),
-        fullName: sp?.fullName || "",
-        courseName: sp?.courseName || "",
-        semester: sp?.semester || "",
-        academicYear: sp?.academicYear || "",
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    data = null;
-  }
+  data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_HIGHER,
+    variables: {
+      fullName: sp?.fullName || "",
+      courseName: sp?.courseName || "",
+      semester: sp?.semester || "",
+      academicYear: sp?.academicYear || "",
+    },
+  });
 
 
   return (
-    <List
+    <ListResultAudit
+      section={"P"}
       params={p}
-      dataResults={data?.allResults?.edges}
+      dataResults={data?.allResultsPrim?.edges}
       sp={sp}
     />
   )
@@ -52,11 +43,11 @@ export default page
 
 export const metadata: Metadata = {
   title: "Management",
-  description: "This is Manangement Page Settings",
+  description: "e-conneq School System. Manangement Page Settings",
 };
 
 
-const GET_DATA_RESULT = gql`
+const GET_DATA_HIGHER = gql`
   query GetAllData  (
     $schoolId: Decimal,
     $fullName: String,

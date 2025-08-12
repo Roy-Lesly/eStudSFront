@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import React from 'react'
 import Breadcrumb from '@/section-h/common/Breadcrumbs/Breadcrumb'
-import {  } from '@/appControl/appConfig'
+import { } from '@/appControl/appConfig'
 import { getData } from '@/functions'
 import { GetNotificationInter } from '@/Domain/Utils-H/notiControl/notiInter'
 import { GetNotificationUrl } from '@/Domain/Utils-H/notiControl/notiConfig'
@@ -18,22 +18,22 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const apiNotification: GetNotificationInter[] | any = await getData( protocol + "api" + p.domain + GetNotificationUrl, { id: p.notification_id, nopage: true, }, p.domain
+  const apiNotification: GetNotificationInter[] | any = await getData(protocol + "api" + p.domain + GetNotificationUrl, { id: p.notification_id, nopage: true, }, p.domain
   );
 
   return (
-    
-      <>
-        <Breadcrumb
-          pageName="Announcements Details"
-          pageName1="Back To Announcements"
-          link1={`/pageAdministration/${p.school_id}/pageNotifications/pageAnnouncements`}
-        />
 
-        {apiNotification && <Announcements apiNotification={apiNotification} />}
+    <>
+      <Breadcrumb
+        pageName="Announcements Details"
+        pageName1="Back To Announcements"
+        link1={`/pageAdministration/${p.school_id}/pageNotifications/pageAnnouncements`}
+      />
 
-      </>
-    
+      {apiNotification && <Announcements apiNotification={apiNotification} />}
+
+    </>
+
   )
 }
 
@@ -41,7 +41,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Announcements-Details",
-  description: "This is Announcements Details Page",
+  description: "e-conneq School System. Announcements Details Page",
 };
 
 const Announcements = ({ apiNotification }: any) => {
@@ -74,8 +74,8 @@ const Announcements = ({ apiNotification }: any) => {
         <input className='border px-4 py-1 rounded' type='date' name="target" placeholder='' defaultValue={apiNotification[0].ending_at} />
         <input className='border px-4 py-1 rounded' type='text' name="target" placeholder='' defaultValue={apiNotification[0].created_by__full_name} />
       </form>
-      :
-      <div></div>}
+        :
+        <div></div>}
 
     </div>
 

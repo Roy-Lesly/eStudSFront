@@ -32,14 +32,14 @@ const page = async ({
   }
 
   console.log(searchP);
-   const data = await queryServerGraphQL({
+  const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA,
     variables: {
       ...removeEmptyFields(searchP),
-        schoolId: parseInt(p.school_id),
-        schoolId2: parseInt(p.school_id),
-        status: "Pending"
+      schoolId: parseInt(p.school_id),
+      schoolId2: parseInt(p.school_id),
+      status: "Pending"
     },
   });
 
@@ -57,7 +57,7 @@ export default page
 
 export const metadata: Metadata = {
   title: "Pending Account Settings",
-  description: "This is Pending Account Settings Page",
+  description: "e-conneq School System. Pending Account Settings Page",
 };
 
 

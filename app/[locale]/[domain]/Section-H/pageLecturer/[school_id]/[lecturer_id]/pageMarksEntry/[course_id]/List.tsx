@@ -14,11 +14,11 @@ import FillMarksAll from '@/components/componentsOne/FillMarksAll';
 
 export const metadata: Metadata = {
   title: "Main-Subject Page",
-  description: "This is Main-Subject Page Admin Settings",
+  description: "e-conneq School System. Main-Subject Page Admin Settings",
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
-    const { t } = useTranslation()
+  const { t } = useTranslation()
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<{ id: number, title: string, pageType: "ca" | "exam" | "resit" } | null>(null)
 
@@ -44,7 +44,7 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
         />
       }
     >
-   
+
 
       <div className="bg-gray-50 flex flex-col items-center justify-center mt-10">
 
@@ -58,10 +58,10 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 data.allResults && data.allResults.edges.length ?
                   data.allSchoolInfos.edges.length ?
                     <FillMarksAll
-                      values={selectedType} 
-                      data={data.allResults.edges} 
-                      params={params} 
-                      schoolInfo={data.allSchoolInfos.edges[0]} 
+                      values={selectedType}
+                      data={data.allResults.edges}
+                      params={params}
+                      schoolInfo={data.allSchoolInfos.edges[0]}
                     />
                     :
                     <ServerError type='notFound' item={t("School Info")} />

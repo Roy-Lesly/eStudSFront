@@ -73,7 +73,7 @@ const List = (
       searchComponent={
         <SearchMultiple
           names={['level', 'stream']}
-          link={`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageAcademics/pageClassrooms`}
+          link={`/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageAcademics/pageSubjects`}
           select={[
             { type: 'select', name: 'academicYear', dataSelect: data?.allAcademicYearsSec },
           ]}

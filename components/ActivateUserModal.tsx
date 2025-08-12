@@ -1,43 +1,53 @@
+"use client";
 import { useState } from "react";
-import { useMutation, gql } from "@apollo/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { JwtPayload } from "@/serverActions/interfaces";
 import { jwtDecode } from "jwt-decode";
+import { mutationCreateUpdateCustomuser } from "@/utils/graphql/mutations/mutationCreateUpdateCustomuser";
+import { errorLog } from "@/utils/graphql/GetAppolloClient";
+import { useTranslation } from "react-i18next";
 
 const ActivateUserModal = (
-    { action, onClose, id, status }
-    :
-    { action: string | null, onClose: any, id: number, status: boolean }
+    { action, onClose, id, status, p }
+        :
+        { action: string | null, onClose: any, id: number, status: boolean, p: any }
 ) => {
 
+    const { t } = useTranslation("common")
     const token = localStorage.getItem("token");
     const user: JwtPayload | null = token ? jwtDecode(token) : null;
     const [newStatus, setNewStatus] = useState<boolean | null>(status);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const [activateChange, { loading, error }] = useMutation(ACTIVATION_CHANGE, {
-        onCompleted: () => {
-            alert("Operation Successful!");
-            window.location.reload();
-            onClose();
-        },
-    });
-
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
-        activateChange({
-            variables: {
-                id: id,
-                byId: user?.user_id,
-                isActive: newStatus,
-            },
-        });
+        setLoading(true)
+        try {
+            const resUserId = await mutationCreateUpdateCustomuser({
+                formData: {
+                    id: id,
+                    updatedById: user?.user_id,
+                    isActive: newStatus,
+                    delete: false
+                },
+                p,
+                router: null,
+                routeToLink: "",
+            })
+
+            if (resUserId.length > 5) {
+                alert(t("Operation Successful") + " " + `✅`)
+                window.location.reload();
+            }
+        } catch (error) {
+            errorLog(error);
+            setLoading(false)
+        }
     };
 
     const handleToggle = () => {
         setNewStatus((prev) => !prev); // Toggle the status
     };
-
-    console.log(newStatus)
 
     return (
         <AnimatePresence>
@@ -62,33 +72,31 @@ const ActivateUserModal = (
                         </h2>
                         <form onSubmit={handleSubmit} className="gap-6">
                             {/* Toggle Button */}
-                           <div className="flex items-center justify-between">
-    <label htmlFor="status-toggle" className="text-lg font-medium">
-        Status:
-    </label>
-    <div
-        onClick={handleToggle}
-        className={`relative cursor-pointer shadow-xl w-20 h-8 rounded-full transition-colors duration-300 ${newStatus ? 'bg-green-500' : 'bg-red'}`}
-    >
-        <div
-            className={`w-8 h-8 bg-slate-50 rounded-full shadow-md transition-transform duration-300 transform ${newStatus ? 'translate-x-12' : ''}`}
-        ></div>
-    </div>
-</div>
-
-                            {error && <p className="text-red font-medium italic tracking-wide">{error.message}</p>}
+                            <div className="flex items-center justify-between">
+                                <label htmlFor="status-toggle" className="text-lg font-medium">
+                                    Status:
+                                </label>
+                                <div
+                                    onClick={handleToggle}
+                                    className={`relative cursor-pointer shadow-xl w-20 h-8 rounded-full transition-colors duration-300 ${newStatus ? 'bg-green-500' : 'bg-red'}`}
+                                >
+                                    <div
+                                        className={`w-8 h-8 bg-slate-50 rounded-full shadow-md transition-transform duration-300 transform ${newStatus ? 'translate-x-12' : ''}`}
+                                    ></div>
+                                </div>
+                            </div>
 
                             <div className="flex justify-between items-center mt-10">
                                 <button
                                     type="button"
-                                    className="border rounded px-5 py-2 text-gray-500 hover:text-gray-700 bg-red text-white font-semibold rounded-lg tracking-wider"
+                                    className="border px-5 py-2 text-gray-500 hover:text-gray-700 bg-red text-white font-semibold rounded-lg tracking-wider"
                                     onClick={onClose}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="rounded border px-5 py-2 bg-green-500 text-white font-semibold rounded-lg tracking-wider"
+                                    className="border px-5 py-2 bg-green-500 text-white font-semibold rounded-lg tracking-wider"
                                     disabled={loading}
                                 >
                                     {loading ? "Submitting..." : "Submit"}
@@ -104,20 +112,3 @@ const ActivateUserModal = (
 
 export default ActivateUserModal;
 
-const ACTIVATION_CHANGE = gql`
-  mutation ActivationChange(
-    $id: ID!,
-    $byId: ID!,
-    $isActive: Boolean!,
-  ) {
-    activationChange(
-      id: $id,
-      byId: $byId,
-      isActive: $isActive,
-    ) {
-      customuser { id }
-    }
-  }
-`;
-
-              

@@ -116,12 +116,12 @@ const List = ({ params, data, searchParams }: { params: any; data: EdgeSchoolFee
                       Back <FaLeftLong color='red' size={27} />
                     </button>
                   </div>
-                    <IDComp2
+                    {/* <IDComp2
                       data={dataToPrint} // still an array, but just one item
                       params={params}
                       searchParams={searchParams}
                       qrCodeDataUrl={qrCodeDataUrl} // just that user's QR
-                    />
+                    /> */}
                 </div>
 
 

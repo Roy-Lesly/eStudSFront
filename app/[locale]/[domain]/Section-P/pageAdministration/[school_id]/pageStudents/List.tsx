@@ -14,11 +14,13 @@ import ServerError from '@/ServerError';
 import { useTranslation } from 'react-i18next';
 import { EdgeUserProfilePrim, TableColumn } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 import MyTableComp from '@/components/section-h/Table/MyTableComp';
+import Link from 'next/link';
+import { FaPlus } from 'react-icons/fa';
 
 
 export const metadata: Metadata = {
   title: "Student Page",
-  description: "This is Student Page Admin Settings",
+  description: "e-conneq School System. Student Page Admin Settings",
 };
 
 const List = ({ params, data, searchParams }: { params: any; data: any, searchParams: any }) => {
@@ -92,7 +94,20 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
       }
     >
       <div className="bg-gray-50 flex flex-col gap-2 items-center justify-center w-full">
-        
+
+        <div className='flex justify-between items-center w-full'>
+          <span className='w-1/2 md:w-1/4 text-2xl font-semibold tracking-widest text-center text-blue-800 shadow-lg rounded-lg px-4 py-2 bg-slate-50'>
+            {t("Students List")}
+          </span>
+          <Link
+            className='w-1/2 md:w-1/4 rounded-lg shadow-lg bg-teal-100 px-4 py-2 cursor-pointer flex items-center justify-center gap-2 font-bold text-xl'
+            href={`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/pageNewPreinscription`}
+          >
+            <span>{t("New Student")}</span>
+            <button className='bg-green-500 p-1 rounded-full'><FaPlus size={25} color="white" /></button>
+          </Link>
+        </div>
+
         {data ?
           <MyTableComp
             data={
@@ -108,9 +123,6 @@ const List = ({ params, data, searchParams }: { params: any; data: any, searchPa
                 return fullNameA.localeCompare(fullNameB);
               })}
             columns={Columns}
-            table_title={`${t("Students List")}`}
-            button_action={() => router.push(`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/pageNewPreinscription`)}
-            button_type={"add"}
           />
           :
           <ServerError type="network" item="Students" />
