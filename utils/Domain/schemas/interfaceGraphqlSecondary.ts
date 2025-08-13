@@ -55,13 +55,13 @@ export interface NodeClassRoomSec {
 export interface NodeMainSubject {
   id: string;
   subjectName: string;
+  subjectCode: string;
 }
 
 export interface NodeSubjectSec {
   id: string;
   mainsubject: NodeMainSubject;
   classroomsec: NodeClassRoomSec;
-  subjectCode: string;
   subjectType: string;
   subjectCoefficient: string;
   assigned: boolean;

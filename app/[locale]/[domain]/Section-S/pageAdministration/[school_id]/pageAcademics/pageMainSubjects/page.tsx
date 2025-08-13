@@ -18,6 +18,7 @@ const EditPage = async ({
     const paginationParams: Record<string, any> = {};
 
   paginationParams.subjectName = sp?.subjectName
+  paginationParams.subjectCode = sp?.subjectCode
   
 
   const data = await queryServerGraphQL({
@@ -59,11 +60,13 @@ const GET_DATA = gql`
  ) {
     allMainSubjectSec (
       subjectName: $subjectName
+      subjectCode: $subjectCode
     ) {
       edges {
         node {
           id 
           subjectName
+          subjectCode
         }
       }
     }

@@ -5,7 +5,6 @@ import { gql } from '@apollo/client';
 import { JwtPayload } from '@/serverActions/interfaces';
 import MyInputField from '@/MyInputField';
 import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
-import { EdgeLevel } from '@/Domain/schemas/interfaceGraphql';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
@@ -24,6 +23,7 @@ const ModalCUDMainSubject = ({
 
     const [formData, setFormData] = useState({
         subjectName: selectedItem && actionType !== "create" ? selectedItem.node.subjectName : '',
+        subjectCode: selectedItem && actionType !== "create" ? selectedItem.node.subjectCode : '',
         delete: selectedItem && actionType === "delete" ? true : false,
     })
 
@@ -40,6 +40,7 @@ const ModalCUDMainSubject = ({
         let dataToSubmit: any = {
             ...formData,
             subjectName: formData.subjectName.toUpperCase(),
+            subjectCode: formData.subjectName.toUpperCase(),
             updatedById: user.user_id,
             delete: actionType === "delete"
         }
@@ -107,6 +108,19 @@ const ModalCUDMainSubject = ({
                         />
                     </div>
 
+                    <div className='flex flex-row gap-2 justify-between'>
+                        <MyInputField
+                            id="subjectCode"
+                            name="subjectCode"
+                            value={formData.subjectName}
+                            onChange={handleChange}
+                            label={t("Subject Code")}
+                            placeholder={t("Enter Subject Code")}
+                            type='text'
+                            required
+                        />
+                    </div>
+
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -131,6 +145,7 @@ export const querySec = gql`
     mutation CreateUpdateDelete(
         $id: ID,
         $subjectName: String!,
+        $subjectCode: String!,
         $delete: Boolean!,
         $createdById: ID,
         $updatedById: ID!
@@ -138,6 +153,7 @@ export const querySec = gql`
         createUpdateDeleteMainSubjectSec (
             id: $id,
             subjectName: $subjectName,
+            subjectCode: $subjectCode,
             delete: $delete,
             createdById: $createdById,
             updatedById: $updatedById

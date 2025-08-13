@@ -59,6 +59,7 @@ export interface NodeClassRoomPrim {
 export interface NodeMainSubject {
   id: string;
   subjectName: string;
+  subjectCode: string;
 }
 
 export interface NodeSubjectPrim {

@@ -23,6 +23,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
 
   const Columns: TableColumn<EdgeMainSubject>[] = [
     { header: "#", align: "center", render: (_item: EdgeMainSubject, index: number) => index + 1, },
+    { header: `${t("Subject Code")}`, accessor: "node.subjectCode", align: "left" },
     { header: `${t("Subject Name")}`, accessor: "node.subjectName", align: "left" },
 
     {

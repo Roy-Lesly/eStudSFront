@@ -18,7 +18,7 @@ const subjectTypeChoices = [
 
 type SubjectField = keyof Pick<
   NodeSubjectSec,
-  'subjectCode' | 'subjectType' | 'subjectCoefficient' | 'compulsory'
+  'subjectType' | 'subjectCoefficient' | 'compulsory'
 >;
 
 
@@ -126,7 +126,6 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
         <thead>
           <tr className="bg-gray-100">
             <th className="border p-2">{t("Subject Name")}</th>
-            <th className="border p-2">{t("Subject Code")}</th>
             <th className="border p-2">{t("Type")}</th>
             <th className="border p-2">{t("Coefficient")}</th>
             <th className="border p-2">{t("Compulsory")}</th>
@@ -136,15 +135,6 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
           {subjects.map((subj, idx) => (
             <tr key={subj.mainSubjectId} className="border-b">
               <td className="border p-2">{subj.subjectName}</td>
-              <td className="border p-2">
-                <input
-                  type="text"
-                  value={subj.subjectCode}
-                  onChange={(e) => handleChange(idx, 'subjectCode', e.target.value.toUpperCase())}
-                  className="w-full border p-1 rounded"
-                  placeholder="e.g. MTH101"
-                />
-              </td>
               <td className="border p-2">
                 <select
                   value={subj.subjectType}
@@ -205,7 +195,6 @@ export const query = gql`
         $id: ID,
         $mainsubjectId: ID!,
         $classroomsecId: ID!,
-        $subjectCode: String!,
         $subjectType: String!,
         $subjectCoefficient: Int!,
         $compulsory: Boolean!,
@@ -217,7 +206,6 @@ export const query = gql`
             id: $id,
             mainsubjectId: $mainsubjectId,
             classroomsecId: $classroomsecId,
-            subjectCode: $subjectCode,
             subjectType: $subjectType,
             subjectCoefficient: $subjectCoefficient,
             compulsory: $compulsory,
