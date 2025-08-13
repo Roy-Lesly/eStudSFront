@@ -7,7 +7,6 @@ import { EdgeSchoolHigherInfo } from '@/Domain/schemas/interfaceGraphql';
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { CertificateOptions, RegionList } from '@/constants';
-import { gql } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import Confirmation from './Confirmation';
 import { EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
@@ -84,7 +83,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
       dob: '',
     },
     medicalHistory: {
-      nationality: '',
+      nationality: "Cameroon",
       highest_certificate: '',
       highest_certificate_other: '',
       year_obtained: '',
@@ -111,6 +110,8 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
       admission_status: false,
     },
   });
+
+  console.log(formData);
 
   const [stepValidation, setStepValidation] = useState<boolean[]>(
     new Array(steps.length).fill(false)
@@ -298,8 +299,6 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
 
   const last_20_years = Array.from({ length: 25 }, (_, i) => (currentYear - i).toString());
 
-  console.log(optionsLevels);
-
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -433,6 +432,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
                   options={CountryList}
                   onChange={(e) => handleChange('medicalHistory', 'nationality', e?.label || "")}
                   placeholder={t("Select a country")}
+                  value={{value: formData.medicalHistory.nationality, label: formData.medicalHistory.nationality}}
                   isSearchable
                 />
 

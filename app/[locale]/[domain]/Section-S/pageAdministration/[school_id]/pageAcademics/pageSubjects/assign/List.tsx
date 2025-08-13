@@ -99,6 +99,7 @@ const List = (
                     <h2 className="font-bold text-lg text-center">Available Subjects</h2>
                     {filteredSubjects.map(subject => (
                         <div key={subject?.node.id} className="flex justify-between items-center border p-2 rounded hover:bg-gray-50">
+                            <span>{subject?.node?.subjectCode}</span>
                             <span>{subject?.node?.subjectName}</span>
                             <button
                                 onClick={() => addSubject(parseInt(decodeUrlID(subject?.node.id)))}

@@ -11,12 +11,19 @@ import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { CYCLE_CHOICES } from '@/utils/dataSource';
 import { EdgeClassRoomSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { jwtDecode } from 'jwt-decode';
+import MySelectField from '../MySelectField';
+import { MultiValue, SingleValue } from 'react-select';
+
+
+type OptionType = { value: string | number; label: string };
+
 
 interface FormData {
   schoolId: number;
   stream: string;
   system: string;
   level: string;
+  classType: string | null;
   cycle: string;
   select: string;
   academicYear: string;
@@ -29,14 +36,15 @@ interface FormData {
 }
 
 const ModalCUDClassroomSec = (
-  { params, setOpenModal, selectedItem, actionType, apiLevel }
+  { params, setOpenModal, selectedItem, actionType, apiLevel, apiClassType }
     :
     {
       params: { school_id: string, locale: string },
       setOpenModal: any,
       selectedItem: EdgeClassRoomSec | null,
       actionType: 'create' | 'update' | 'delete' | string,
-      apiLevel: string[]
+      apiLevel: string[],
+      apiClassType: string[]
     }
 ) => {
   const { t } = useTranslation();
@@ -45,6 +53,7 @@ const ModalCUDClassroomSec = (
 
   const [system, setSystem] = useState<string>(params.locale === "fr" ? "FRENCH" : 'ENGLISH');
   const [levelOptions, setLevelOptions] = useState<any[]>([]);
+  const [classType, setClassType] = useState<MultiValue<OptionType>>([]);
 
   const [formData, setFormData] = useState<FormData>({
     schoolId: selectedItem ? parseInt(decodeUrlID(selectedItem.node.school.id)) : parseInt(params.school_id),
@@ -52,7 +61,8 @@ const ModalCUDClassroomSec = (
     system: params.locale === "fr" ? "FRENCH" : 'ENGLISH',
     cycle: selectedItem?.node.cycle || 'FIRST',
     select: selectedItem ? selectedItem.node.select.toString().toUpperCase() : 'FALSE',
-    level: selectedItem ? selectedItem.node.level.replace(" ", "") : '',
+    level: selectedItem ? selectedItem.node.level : '',
+    classType: selectedItem ? selectedItem.node?.classType : null,
     academicYear: selectedItem?.node.academicYear || getAcademicYear(),
     registration: selectedItem?.node.registration || 0,
     tuition: selectedItem?.node.tuition || 0,
@@ -96,6 +106,10 @@ const ModalCUDClassroomSec = (
     }
   };
 
+  const handleClassType = (value: SingleValue<OptionType> | MultiValue<OptionType>) => {
+    setClassType(value as MultiValue<OptionType>); // safe because we know isMulti = true
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!window.confirm(t('Are you sure you want to proceed?'))) return;
@@ -109,20 +123,29 @@ const ModalCUDClassroomSec = (
       select: formData.select === 'TRUE',
       level: formData.level.toUpperCase(),
     };
+
+    console.log(classType);
+
     if (actionType === 'create') {
-      dataToSubmit = {
-        ...dataToSubmit,
-        createdById: user.user_id,
-        updatedById: user.user_id
-      };
+      dataToSubmit = classType.map((c: any) => {
+        return {
+          ...dataToSubmit,
+          classType: c.value,
+          createdById: user.user_id,
+          updatedById: user.user_id
+        }
+      });
     }
+
+
     if ((actionType === 'update' || actionType === 'delete') && selectedItem) {
-      dataToSubmit = {
+      dataToSubmit = [{
         ...dataToSubmit,
         id: parseInt(decodeUrlID(selectedItem.node.id)),
         updatedById: user.user_id
-      };
+      }];
     }
+
 
     await ApiFactory({
       newData: dataToSubmit,
@@ -141,6 +164,12 @@ const ModalCUDClassroomSec = (
     });
   };
 
+  const returnClassType: any = () => {
+    console.log([{ value: formData?.classType, label: formData?.classType }]);
+    return [{ value: formData?.classType, label: formData?.classType }]
+  }
+
+  console.log(formData);
 
   return (
     <motion.div
@@ -221,6 +250,29 @@ const ModalCUDClassroomSec = (
               options={levelOptions}
               onChange={(e) => handleChange('level', e.target.value)}
             />
+
+            {selectedItem ? <MySelectField
+              isMulti='select-single'
+              id="classType"
+              name="classType"
+              label={t("Class Type")}
+              placeholder={t("Select Class Type")}
+              value={returnClassType()}
+              options={apiClassType.map((item: string) => ({ value: item, label: `${t(item)}` }))}
+              onChange={(e: any) => handleChange('classType', e.value)}
+            />
+              :
+              <MySelectField
+                isMulti='select-multiple'
+                id="classType"
+                name="classType"
+                label={t("Class Type")}
+                placeholder={t("Select Class Type")}
+                value={classType}
+                options={apiClassType.map((item: string) => ({ value: item, label: `${t(item)}` }))}
+                onChange={(e) => handleClassType(e)}
+              />
+            }
           </div>
 
           <div className='flex flex-row gap-2 justify-between'>
@@ -311,6 +363,7 @@ const query = gql`
     $stream: String!,
     $cycle: String!,
     $level: String!,
+    $classType: String!,
     $select: Boolean!,
     $academicYear: String!,
     $registration: Int!,
@@ -328,6 +381,7 @@ const query = gql`
       stream: $stream,
       cycle: $cycle,
       level: $level,
+      classType: $classType,
       select: $select,
       academicYear: $academicYear,
       registration: $registration,

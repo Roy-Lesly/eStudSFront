@@ -35,6 +35,7 @@ const MySelectField: React.FC<SelectFieldProps> = ({
 }) => {
 
   const multi = isMulti === "select-multiple";
+  console.log(multi);
 
   return (
     <div className="mt-2 w-full">

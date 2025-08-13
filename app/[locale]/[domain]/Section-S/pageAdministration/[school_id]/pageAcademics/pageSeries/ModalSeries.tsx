@@ -23,7 +23,6 @@ interface Props {
     isOpen: boolean;
     actionType: "create" | "update" | "delete";
     apiLevel: string[];
-    // apiMainSubjects: EdgeMainSubject[];
     onClose: () => void;
     selectedSeries?: NodeSeries | null;
 }
@@ -36,8 +35,6 @@ export const ModalSeries = ({
     actionType,
     apiLevel,
 }: Props) => {
-
-    console.log(actionType);
 
     const { t } = useTranslation("common");
     const router = useRouter();
@@ -78,8 +75,6 @@ export const ModalSeries = ({
     const [listSubjectsInDB, setListSubjectsInDB] = useState<EdgeMainSubject[]>()
     const [getMainSubjects, { loading, data: mainSubjectsData }] = useLazyQuery(GET_MAIN_SUBJECTS);
     const [searchText, setSearchText] = useState<string>();
-
-    console.log(actionType);
 
     useEffect(() => {
         if (selectedSeries?.mainsubjects?.edges) {
@@ -156,7 +151,7 @@ export const ModalSeries = ({
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
-                        className="bg-white rounded-xl shadow-xl w-full md:max-w-3xl p-6 space-y-3 max-h-[90vh] overflow-y-auto"
+                        className="bg-white rounded-xl shadow-xl w-full md:max-w-3xl p-6 space-y-2 overflow-y-auto"
                         initial={{ scale: 0.9 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0.9 }}
@@ -211,14 +206,14 @@ export const ModalSeries = ({
                             <div className="flex gap-2">
 
                                 {/* Right: Available subjects */}
-                                <div className="w-1/2 border p-2 rounded">
+                                <div className="w-1/2 border p-1 rounded">
                                     <div className="flex flex-col justify-between items-center mb-2">
-                                        <h3 className="font-semibold text-sm">{t("Available Subjects")}</h3>
+                                        {/* <h3 className="font-semibold text-sm w-full px-2 pb-2">{t("Available Subjects")}</h3> */}
                                         <input
                                             type="text"
                                             value={searchText}
                                             onChange={e => setSearchText(e.target.value)}
-                                            className="text-xs px-2 py-1 border rounded"
+                                            className="text-xs px-2 py-1 border border-teal-800 bg-teal-50 rounded w-full"
                                             placeholder="Search..."
                                         />
                                     </div>
@@ -302,12 +297,12 @@ export const ModalSeries = ({
                                 <XCircle size={18} /> {t("Delete")}
                             </button>
                                 :
-                                <button
+                                (formData.name?.length && formData.classroom?.length) ? <button
                                     onClick={() => handleSubmit()}
                                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                                 >
                                     <CheckCircle2 size={18} /> {selectedSeries ? 'Update' : 'Submit'}
-                                </button>
+                                </button> : null
                                 }
 
 

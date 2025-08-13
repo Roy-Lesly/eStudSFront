@@ -39,6 +39,7 @@ const EditPage = async ({
         data={data}
         sp={sp}
         apiLevel={data?.getLevelsSec}
+        apiClassType={data?.getClassTypes}
       />
     </div>
   )
@@ -78,10 +79,7 @@ const GET_DATA_CLASSROOM_SEC = gql`
           id 
           academicYear
           school { id }
-          level
-          stream
-          select
-          cycle
+          level stream select cycle classType
           registration tuition paymentOne paymentTwo paymentThree
           school { campus}
           studentCount
@@ -90,5 +88,6 @@ const GET_DATA_CLASSROOM_SEC = gql`
     }
     allAcademicYearsSec
     getLevelsSec
+    getClassTypes
   }
 `;

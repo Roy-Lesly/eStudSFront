@@ -10,7 +10,6 @@ import { EdgeMainSubject, EdgeSeries, TableColumn } from '@/Domain/schemas/inter
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import ExcelExporter from '@/ExcelExporter';
 import ButtonAction from '@/section-h/Buttons/ButtonAction';
-import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import MyModal from '@/MyModals/MyModal';
 import { useTranslation } from 'react-i18next';
@@ -111,7 +110,7 @@ const List = (
 
                 <div className="bg-white mx-auto rounded shadow w-full">
                     {
-                        data?.length ?
+                        data ?
                             <MyTableComp
                                 columns={Columns}
                                 data={

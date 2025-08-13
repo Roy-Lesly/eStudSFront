@@ -59,6 +59,7 @@ const GET_DATA = gql`
       node {
         id
         subjectName
+        subjectCode
       }
     }
   }

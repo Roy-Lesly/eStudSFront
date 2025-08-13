@@ -57,6 +57,7 @@ export const metadata: Metadata = {
 const GET_DATA = gql`
  query GetData (
   $subjectName: String
+  $subjectCode: String
  ) {
     allMainSubjectSec (
       subjectName: $subjectName

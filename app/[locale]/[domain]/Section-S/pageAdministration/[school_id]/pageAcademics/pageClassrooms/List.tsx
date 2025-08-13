@@ -18,8 +18,8 @@ import ModalCUDClassroomSec from '@/components/MyModals/ModalCUDClassroomSec';
 
 
 const List = (
-  { params, data, sp, apiLevel }:
-  { params: any; data: any, sp: any, apiLevel: any }
+  { params, data, sp, apiLevel, apiClassType }:
+  { params: any; data: any, sp: any, apiLevel: any, apiClassType: any }
 ) => {
 
   const { t } = useTranslation();
@@ -32,7 +32,11 @@ const List = (
 
   const Columns: TableColumn<EdgeClassRoomSec>[] = [
     { header: "#", align: "center", render: (_item: EdgeClassRoomSec, index: number) => index + 1, },
-    { header: `${t("Class")}`, accessor: "node.level", align: "left" },
+    { header: `${t("Class")}`, align: "left", render: (item: EdgeClassRoomSec) => <div className='flex justify-between items-center'>
+      <span>{item?.node?.level}</span>
+      <span>{item?.node?.classType}</span>
+      <span></span>
+    </div> },
     { header: `${t("Section")}`, accessor: "node.stream", align: "center" },
     { header: `${t("Year")}`, accessor: "node.academicYear", align: "center" },
     { header: `${t("Fees")}`, accessor: "node.tuition", align: "center" },
@@ -128,6 +132,7 @@ const List = (
             actionType={showModal?.type || "create"}
             selectedItem={selectedItem}
             apiLevel={apiLevel}
+            apiClassType={apiClassType}
           />}
           openState={showModal?.show || false}
           onClose={() => setShowModal({ show: false, type: "create" })}

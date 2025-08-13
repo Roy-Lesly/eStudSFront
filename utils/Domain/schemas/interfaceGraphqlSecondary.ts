@@ -42,6 +42,7 @@ export interface NodeClassRoomSec {
   stream: string;
   cycle: string;
   level: string;
+  classType: string;
   select: boolean;
   option: string;
   academicYear: string;

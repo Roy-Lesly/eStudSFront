@@ -61,8 +61,6 @@ const List = (
     },
   ];
 
-  console.log(decodeUrlID(dataPending[0].node.campus.id));
-
   return (
     <DefaultLayout
       pageType='admin'

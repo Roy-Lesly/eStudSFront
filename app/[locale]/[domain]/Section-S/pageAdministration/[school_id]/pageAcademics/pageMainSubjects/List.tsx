@@ -20,7 +20,6 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
   const [selectedItem, setSelectedItem] = useState<EdgeMainSubject | null>(null);
 
-
   const Columns: TableColumn<EdgeMainSubject>[] = [
     { header: "#", align: "center", render: (_item: EdgeMainSubject, index: number) => index + 1, },
     { header: `${t("Subject Code")}`, accessor: "node.subjectCode", align: "left" },
@@ -48,7 +47,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
       }
       searchComponent={
                 <SearchMultiple
-                    names={['subjectName']}
+                    names={['subjectName', 'subjectCode']}
                     link={`/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageMainSubjects`}
                 />
             }

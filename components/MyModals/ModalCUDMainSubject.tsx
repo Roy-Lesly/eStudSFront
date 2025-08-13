@@ -39,8 +39,8 @@ const ModalCUDMainSubject = ({
         e.preventDefault();
         let dataToSubmit: any = {
             ...formData,
-            subjectName: formData.subjectName.toUpperCase(),
-            subjectCode: formData.subjectName.toUpperCase(),
+            subjectName: formData?.subjectName?.toUpperCase(),
+            subjectCode: formData?.subjectCode?.toUpperCase(),
             updatedById: user.user_id,
             delete: actionType === "delete"
         }
@@ -112,7 +112,7 @@ const ModalCUDMainSubject = ({
                         <MyInputField
                             id="subjectCode"
                             name="subjectCode"
-                            value={formData.subjectName}
+                            value={formData.subjectCode}
                             onChange={handleChange}
                             label={t("Subject Code")}
                             placeholder={t("Enter Subject Code")}

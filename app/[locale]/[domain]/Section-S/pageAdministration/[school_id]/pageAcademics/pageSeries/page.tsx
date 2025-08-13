@@ -29,8 +29,6 @@ const page = async ({
     },
   });
 
-  console.log(data);
-
 
   return (
     <List
