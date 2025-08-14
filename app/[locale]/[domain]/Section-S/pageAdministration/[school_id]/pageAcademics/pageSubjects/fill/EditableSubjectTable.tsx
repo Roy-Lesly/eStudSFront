@@ -30,7 +30,7 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
   const user: JwtPayload | null = token ? jwtDecode(token) : null
 
   const [subjects, setSubjects] = useState(() =>
-    data.map(item => ({
+    data?.map(item => ({
       mainSubjectId: item.node.id,
       subjectName: item.node.subjectName,
       subjectCode: '',
@@ -58,7 +58,6 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
   const handleSubmit = async () => {
 
     const isValid = subjects.every(sub =>
-      sub.subjectCode?.trim() &&
       sub.subjectType &&
       Number(sub.subjectCoefficient) > 0
     );
@@ -132,8 +131,8 @@ const EditableSubjectTable = ({ data, sp, p }: { data: any[], sp: any, p: any })
           </tr>
         </thead>
         <tbody>
-          {subjects.map((subj, idx) => (
-            <tr key={subj.mainSubjectId} className="border-b">
+          {subjects?.map((subj, idx) => (
+            <tr key={subj?.mainSubjectId} className="border-b">
               <td className="border p-2">{subj.subjectName}</td>
               <td className="border p-2">
                 <select

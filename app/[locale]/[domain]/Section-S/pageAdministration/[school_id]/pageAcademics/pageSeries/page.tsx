@@ -57,7 +57,9 @@ const GET_DATA = gql`
       edges {
         node {
           id name classroom subjectList 
-          mainsubjects { edges { node { id subjectName}}}
+          mainsubjects {
+            edges { node { id subjectName subjectCode }}
+          }
         }
       }
     }

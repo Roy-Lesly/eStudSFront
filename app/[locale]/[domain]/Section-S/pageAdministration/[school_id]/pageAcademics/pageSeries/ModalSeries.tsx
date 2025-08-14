@@ -205,7 +205,7 @@ export const ModalSeries = ({
                             <label className="block font-medium text-sm mb-1">{t("Subjects")}</label>
                             <div className="flex gap-2">
 
-                                {/* Right: Available subjects */}
+                                {/* Left: Available subjects */}
                                 <div className="w-1/2 border p-1 rounded">
                                     <div className="flex flex-col justify-between items-center mb-2">
                                         {/* <h3 className="font-semibold text-sm w-full px-2 pb-2">{t("Available Subjects")}</h3> */}
@@ -224,6 +224,7 @@ export const ModalSeries = ({
                                             .map(subj => (
                                                 <li key={subj?.node.id} className="flex justify-between items-center border p-1 rounded">
                                                     <span>{subj?.node.subjectName}</span>
+                                                    <span>{subj?.node?.subjectCode}</span>
                                                     <button
                                                         onClick={() => {
                                                             setSearchText("");
@@ -245,7 +246,7 @@ export const ModalSeries = ({
 
 
 
-                                {/* Left: Series subjects */}
+                                {/* Right: Series subjects */}
                                 <div className="w-1/2 border p-2 rounded">
                                     <h3 className="font-semibold text-sm mb-2">{t("Series Subjects")} - {listSubjectsInSeries?.length}</h3>
                                     <ul className="space-y-1">

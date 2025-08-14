@@ -21,7 +21,7 @@ const YearlyStudentGraph = (
 
   return (
     
-          <div className="w-full md:w-1/2 bg-white rounded-2xl shadow-md p-4 md:col-span-2">
+          <div className="w-full md:w-1/2 bg-white rounded-2xl shadow-xl p-4 md:col-span-2">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <BarChart3 size={20} /> {t("Student's Statistics")}

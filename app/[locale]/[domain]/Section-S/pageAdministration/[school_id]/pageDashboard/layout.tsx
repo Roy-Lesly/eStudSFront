@@ -16,7 +16,7 @@ export default function DashboardLayout({
             params={""}
             searchParams={""}
         >
-            <div className="min-h-screen bg-[#f5f8fb] p-6 space-y-6">
+            <div className="min-h-screen bg-blue-100 p-4 space-y-6">
                 {counts}
                 {main}
                 {graphs}

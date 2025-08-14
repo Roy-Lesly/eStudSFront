@@ -74,10 +74,10 @@ const DefaultLayout = ({
           {headerbar}
 
           <main>
-            <div className="2xl:p-10 md:p-4 w-full">
+            <div className="p-2 md:p-4 w-full">
               {user ?
                 access ?
-                  <div className="flex flex-col space-y-2 p-2">
+                  <div className="flex flex-col space-y-2">
                     {(downloadComponent || searchComponent) ? <div className="flex gap-2 w-full shadow-xl rounded bg-white p-2">
                       {downloadComponent}
                       {searchComponent}
