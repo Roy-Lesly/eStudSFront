@@ -22,7 +22,7 @@ const TransOneYear = (
 
 
     useEffect(() => {
-        const url = `${protocol}${params.domain}${RootApi}/check/${dataInfo?.studentInfo?.userprofileId}/transcript/?n=1`;
+        const url = `${protocol}${params.domain}${RootApi}/check/${dataInfo?.studentInfo?.userprofileId}/H/transcript/?n=1`;
         QrCodeBase64(url).then(setQrCodeDataUrl);
     }, []);
 

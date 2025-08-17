@@ -33,15 +33,6 @@ const page = async ({
     },
   });
 
-  console.log({
-      id: params.profile_id,
-      userprofileId: parseInt(decodeUrlID(p.student_id)),
-      customuserId: parseInt(decodeUrlID(sp.user)),
-      schoolId: p.school_id,
-    });
-
-  console.log(data);
-
   return (
     <div>
       <List

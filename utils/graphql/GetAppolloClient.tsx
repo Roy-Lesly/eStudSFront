@@ -19,7 +19,6 @@ export default function getApolloClient(
   const csrfToken = options?.csrfToken || (!isServer() ? Cookies.get("csrftoken") : "");
 
   const uri = protocol + (external ? domain : ('api' + domain)) + RootApi + '/graphql/'
-console.log(uri);
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',

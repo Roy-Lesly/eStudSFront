@@ -33,6 +33,10 @@ const DisplayPage = ({ data, params }: { data: any, params: { domain: string, us
         return response;
     };
 
+    const checkTuitionBalance = data.allSchoolFees.edges[0].node.balance < 1
+    const checkPlatformPaid = data.allSchoolFees.edges[0].node.platformPaid
+
+
     const handleSubmit = async () => {
 
         setLoading(true);
@@ -66,8 +70,9 @@ const DisplayPage = ({ data, params }: { data: any, params: { domain: string, us
             actionLabel: "processing",
         });
         setLoading(false)
-
     };
+
+    console.log(data.allSchoolFees.edges[0].node.balance);
 
     return (<>
         {client ?
@@ -87,53 +92,62 @@ const DisplayPage = ({ data, params }: { data: any, params: { domain: string, us
                 </motion.div>
                 {data ? (
                     <>
-                        {data.allSchoolFees.edges.length == 1 ? (
-                            <Comp status={data.allSchoolFees.edges[0].node.platformPaid} title={t("Account Status")} />
-                        ) : (
+                        {data.allSchoolFees.edges.length == 1 ?
+                            <Comp status={checkPlatformPaid} title={t("Account Status")} />
+                            :
                             <motion.div>{t("No School Fees Information")}</motion.div>
-                        )}
-                        {data.allSchoolFees.edges.length == 1 ? (
-                            <Comp status={data.allSchoolFees.edges[0].node.balance < 1} title={t("Tuition Status")} />
-                        ) : null}
-                        {data.allPublishes.edges ? (
+                        }
+
+                        {data.allSchoolFees.edges.length == 1 ?
+                            <Comp status={checkTuitionBalance} title={t("Tuition Status")} />
+                            : null}
+                        {/* 
+                        {data.allPublishes.edges ? 
                             <Comp status={data.allPublishes.edges.length == 2} title={t("Results Published")} />
-                        ) : (
+                        :
                             <motion.div>{t("No Publish Information")}</motion.div>
-                        )}
-                        {data.allResults.edges ? (
+                        }
+
+                        {data.allResults.edges ? 
                             <Comp status={checkAllResults(data.allResults.edges)} title={t("Written All Results")} />
-                        ) : (
-                            <motion.div>{t("No Result Information")}</motion.div>
-                        )}
-                        {data.allTranscriptApplications.edges.length > 0 ? (
+                        :
+                            <motion.div>{t("No Result Information")}</motion.div>} */}
+
+                        {/* {data.allTranscriptApplications.edges.length > 0 ? (
                             <TranscriptApplicationTable data={data.allTranscriptApplications.edges} />
                         ) : (
                             <Comp status={data.allTranscriptApplications.edges.length > 0} title={t("Transcript Application")} />
-                        )}
+                        )} */}
                     </>
                 ) : (
                     <motion.div>{t("Error Occurred")}</motion.div>
                 )}
 
                 {/* {data && data.allSchoolFees.edges.length == 1 && checkAllResults(data.allResults.edges) && data.allPublishes.edges.length == 2 && data.allTranscriptApplications.edges.length < 1 ? <div className='flex items-center justify-center my-4 py-4'> */}
-                {data && data.allSchoolFees.edges[0].node.platformPaid ?
-                    data.allSchoolFees.edges.length == 1 && data.allTranscriptApplications.edges.length < 1 ? <div className='flex items-center justify-center my-4 py-4'>
-                        <button
-                            onClick={handleSubmit}
-                            disabled={loading}
-                            className="bg-blue-500 disabled:bg-gray-400 px-4 py-2 rounded text-white"
-                        >
-                            {loading ? 'Applying...' : 'Apply'}
-                        </button>
-                    </div>
+                {data ?
+                    checkPlatformPaid ?
+                        checkTuitionBalance ?
+                            data.allSchoolFees.edges.length == 1 && data.allTranscriptApplications.edges.length < 1 ? <div className='flex items-center justify-center my-4 py-4'>
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={loading}
+                                    className="bg-blue-500 disabled:bg-gray-400 px-4 py-2 rounded text-white"
+                                >
+                                    {loading ? 'Applying...' : 'Apply'}
+                                </button>
+                            </div>
+                                :
+                                null
+                            :
+                            null
                         :
-                        null
+                        <PaymentStatus
+                            apiSchoolFees={data?.allSchoolFees.edges[0].node}
+                            params={params}
+                            school={school}
+                        />
                     :
-                    <PaymentStatus
-                        apiSchoolFees={data?.allSchoolFees.edges[0].node}
-                        params={params}
-                        school={school}
-                    />
+                    null
                 }
 
 
@@ -156,7 +170,7 @@ const Comp = ({ status, title }: { status: boolean, title: string }) => {
                 {status ? (
                     <GrStatusGood className="text-green-600" size={22} />
                 ) : (
-                    <GrClose className="text-red-600" size={20} />
+                    <GrClose className="text-red" size={20} />
                 )}
             </div>
         </motion.div>

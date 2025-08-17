@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import DefaultLayout from '@/DefaultLayout';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; 
+import Header from '@/section-s/Header/Header';
 import { Metadata } from 'next';
 import SearchMultiple from '@/section-h/Search/SearchMultiple';
 import { FaPlus } from 'react-icons/fa';

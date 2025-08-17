@@ -15,29 +15,42 @@ const page = async ({
 
   const p = await params;
   const sp = await searchParams;
+
   const paginationParams: Record<string, any> = {};
 
   paginationParams.fullName = sp?.fullName ? sp.fullName : ""
   paginationParams.telephone = sp?.telephone ? sp.telephone : ""
   paginationParams.sex = sp?.sex ? sp.sex : ""
+  paginationParams.isActive = sp?.fullName ? undefined : true
 
-  const t = removeEmptyFields(paginationParams);
-
+  const removed = removeEmptyFields(paginationParams)
 
   const dataAdmins = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA_ADMIN,
     variables: {
-      ...t,
+      ...removed,
       schoolId: parseInt(p.school_id),
     },
   });
+
 
   const dataLects = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA_LECTURERS,
     variables: {
-      ...t,
+      ...removed,
+      schoolId: parseInt(p.school_id),
+    },
+  });
+
+
+  const dataStuds = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_STUDENTS,
+    variables: {
+      ...removed,
+      orRole: ["admin", "teacher"],
       schoolId: parseInt(p.school_id),
     },
   });
@@ -45,8 +58,8 @@ const page = async ({
   return (
     <div>
       <List
-        params={p}
-        data={{ "admins": dataAdmins, "lects": dataLects }}
+        p={p}
+        data={{ "admins": dataAdmins, studs: dataStuds, lects: dataLects }}
         sp={sp}
       />
     </div>
@@ -56,10 +69,36 @@ const page = async ({
 export default page
 
 export const metadata: Metadata = {
-  title: "Lecturer",
-  description: "e-conneq School System. Lecturer Page",
+  title: "Users",
+  description: "e-conneq School System. Users Page",
 };
 
+
+const GET_DATA_STUDENTS = gql`
+ query GetAllData(
+  $schoolId: Decimal!,
+  $fullName: String,
+  $telephone: String,
+  $sex: String,
+  $isActive: Boolean,
+) {
+  allCustomusers(
+    isActive: $isActive
+    schoolId: $schoolId
+    last: 150
+    fullName: $fullName
+    telephone: $telephone
+    sex: $sex
+    role: "student"
+  ) {
+    edges {
+      node {
+        id fullName matricle sex dob pob address telephone email lastLogin isActive
+      }
+    }
+  }
+}
+`;
 
 const GET_DATA_LECTURERS = gql`
  query GetAllData(
@@ -67,61 +106,49 @@ const GET_DATA_LECTURERS = gql`
   $fullName: String,
   $telephone: String,
   $sex: String,
+  $isActive: Boolean,
 ) {
-  allDepartments {
-    edges {
-      node {
-        id name
-      }
-    }
-  }
   allCustomusers(
-    isActive: true
     schoolId: $schoolId
-    last: 250
+    last: 300
     fullName: $fullName
     telephone: $telephone
     sex: $sex
-    role: "teacher",
-    isSuperuser: false
+    role: "teacher"
+    isActive: $isActive
   ) {
     edges {
       node {
-        id firstName lastName fullName 
-        username sex dob pob address telephone
-        email lastLogin title nationality
-        highestCertificate regionOfOrigin yearObtained 
-      }
-    }
-  }
-}
-`;
-const GET_DATA_ADMIN = gql`
- query GetAllData(
-  $schoolId: Decimal!,
-  $fullName: String,
-  $telephone: String,
-  $sex: String,
-) {
-  allCustomusers(
-    isActive: true
-    schoolId: $schoolId
-    last: 250
-    fullName: $fullName
-    telephone: $telephone
-    sex: $sex
-    role: "admin",
-    isSuperuser: false
-  ) {
-    edges {
-      node {
-        id firstName lastName fullName 
-        username sex dob pob address telephone
-        email lastLogin title 
-        nationality highestCertificate regionOfOrigin yearObtained 
+        id matricle fullName username sex dob pob address telephone email lastLogin isActive
       }
     }
   }
 }
 `;
 
+const GET_DATA_ADMIN = gql`
+ query GetAllData(
+  $schoolId: Decimal!,
+  $fullName: String,
+  $telephone: String,
+  $sex: String,
+  $isActive: Boolean,
+) {
+  allCustomusers(
+    isActive: $isActive
+    schoolId: $schoolId
+    last: 100
+    fullName: $fullName
+    telephone: $telephone
+    sex: $sex
+    role: "admin"
+    isStaff: false
+  ) {
+    edges {
+      node {
+        id matricle fullName username sex dob pob address telephone email lastLogin isActive
+      }
+    }
+  }
+}
+`;

@@ -3,7 +3,7 @@ import React from 'react'
 import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
 
 const page = async ({
   params,
@@ -21,73 +21,47 @@ const page = async ({
   paginationParams.fullName = sp?.fullName ? sp.fullName : ""
   paginationParams.telephone = sp?.telephone ? sp.telephone : ""
   paginationParams.sex = sp?.sex ? sp.sex : ""
-  paginationParams.isActive = sp?.fullName ? "" : true
+  paginationParams.isActive = sp?.fullName ? undefined : true
 
   const removed = removeEmptyFields(paginationParams)
-  console.log(removed);
-  console.log(removed);
-  console.log(removed);
-  console.log(removed);
-  const client = getApolloClient(p.domain);
-  let dataAdmins;
-  let dataLects;
-  let dataStuds;
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_ADMIN,
-      variables: {
-        ...removed,
-        schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataAdmins = result.data;
-  } catch (error: any) {
-
-    dataAdmins = null;
-  }
+  const dataAdmins = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_ADMIN,
+    variables: {
+      ...removed,
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_STUDENTS,
-      variables: {
-        ...removed,
-        orRole: ["admin", "teacher"],
-        schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataStuds = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    dataStuds = null;
-  }
+  const dataLects = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_LECTURERS,
+    variables: {
+      ...removed,
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA_LECTURERS,
-      variables: {
-        ...removed,
-        schoolId: parseInt(p.school_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataLects = result.data;
-  } catch (error: any) {
-    errorLog(error)
-
-    dataLects = null;
-  }
+  const dataStuds = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_STUDENTS,
+    variables: {
+      ...removed,
+      orRole: ["admin", "teacher"],
+      schoolId: parseInt(p.school_id),
+    },
+  });
 
   return (
     <div>
-      <List params={p} data={{ "admins": dataAdmins, studs: dataStuds, lects: dataLects }} searchParams={sp} />
+      <List
+        p={p}
+        data={{ "admins": dataAdmins, studs: dataStuds, lects: dataLects }}
+        sp={sp}
+      />
     </div>
   )
 }

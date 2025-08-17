@@ -74,7 +74,7 @@ const DropdownUser = () => {
             {(user && user.dept?.length) ? user.dept.map((dept: string) =>
               <li key={dept}>
                 <Link
-                  href={`/${params.domain}/Section-H/page${capitalizeFirstLetter(dept)}/${params.school_id}`}
+                  href={`/${params.domain}/Section-S/page${capitalizeFirstLetter(dept)}/${params.school_id}`}
                   className="duration-300 ease-in-out flex font-medium gap-3.5 hover:text-primary items-center lg:text-base text-sm"
                 >
                   <svg

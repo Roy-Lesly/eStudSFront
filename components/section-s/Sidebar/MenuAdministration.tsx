@@ -72,13 +72,14 @@ export const GetMenuAdministration = (): MenuSection[] => {
             { label: t("View"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers`, icon: <Users /> },
             // { label: t("Add Teacher"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/add`, icon: <UserPlus /> },
             // { label: t("Timetable Assignment"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/timetable`, icon: <CalendarDays /> },
-            { label: t("Attendance"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/pageAattendance`, icon: <ClipboardCheck /> },
+            // { label: t("Attendance"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageLecturers/pageAttendance`, icon: <ClipboardCheck /> },
           ]
         },
         {
           icon: <Users />, label: t("User Management"), route: "#", children: [
+            { label: t("Staff"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/pageStaff`, icon: <Users /> },
+            { label: t("Students"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/pageStudents`, icon: <Users /> },
             { label: t("Parents"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/pageParents`, icon: <Users /> },
-            { label: t("Teachers"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/pageTeachers`, icon: <Users /> },
             // { label: t("Users & Roles"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/roles`, icon: <UserPlus /> },
             // { label: t("Permissions"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/permissions`, icon: <Settings /> },
             // { label: t("Login History"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageUsers/history`, icon: <ClipboardList /> },

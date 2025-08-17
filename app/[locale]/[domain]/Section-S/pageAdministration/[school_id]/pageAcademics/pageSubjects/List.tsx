@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
-import Header from '@/section-h/Header/Header';
+import Header from '@/section-s/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/section-h/Table/MyTableComp';
 import { EdgeSubjectSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';

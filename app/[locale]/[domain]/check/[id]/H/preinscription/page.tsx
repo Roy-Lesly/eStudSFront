@@ -15,7 +15,7 @@ const page = async (
     domain: p.domain,
     query: GET_DATA,
     variables: {
-      id: decodeUrlID(p?.id)
+      id: parseInt(p?.id)
     },
   });
 

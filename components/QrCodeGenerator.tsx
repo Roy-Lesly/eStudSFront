@@ -15,8 +15,6 @@ const QrCodeGenerator = (
     }
 ) => {
     const u = `${protocol}${data.domain}${RootApi}/check/${data.id}/${data.section}/${data.type}`
-    console.log(u);
-
     const [url, setUrl] = useState(u);
     const qrRef = useRef<HTMLDivElement | null>(null);
 

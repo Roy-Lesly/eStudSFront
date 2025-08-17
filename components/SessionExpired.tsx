@@ -5,13 +5,11 @@ import { FaHourglassEnd } from 'react-icons/fa';
 import { IoReload } from 'react-icons/io5';
 import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'next/navigation';
 import { gql, useMutation } from '@apollo/client';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
 
 const SessionExpired = () => {
     const { t } = useTranslation();
-    const { domain } = useParams()
     const [showLogin, setShowLogin] = useState<boolean>(false)
 
     const [formData, setFormData] = useState({

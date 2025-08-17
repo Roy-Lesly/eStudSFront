@@ -35,7 +35,7 @@ const List = ({ params, data, searchParams }: { params: any; data: EdgeSchoolFee
 
         for (const item of dataToPrint) {
           const userID = decodeUrlID(item.node.userprofile.id);
-          const url = `${protocol}${params.domain}${RootApi}/check/${userID}/idcard/?n=1`;
+          const url = `${protocol}${params.domain}${RootApi}/check/H/${userID}/idcard/?n=1`;
           const qr = await QrCodeBase64(url);
           newQrCodes[item.node.userprofile.id] = qr;
         }

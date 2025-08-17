@@ -70,7 +70,7 @@ const SectionFooterThree = (
     ]
 
   useEffect(() => {
-    const url = `${protocol}${params.domain}${RootApi}/check/${info?.studentInfo?.userprofileId}/transcript/?n=3`;
+    const url = `${protocol}${params.domain}${RootApi}/check/${info?.studentInfo?.userprofileId}/H/transcript/?n=3`;
     QrCodeBase64(url).then(setQrCodeDataUrl);
   }, []);
 

@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import initTranslations from "@/initTranslations";
 import { gql } from "@apollo/client";
-import getApolloClient, { errorLog } from "@/utils/graphql/GetAppolloClient";
 import { capitalizeFirstLetter, decodeUrlID } from "@/utils/functions";
 import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
 
@@ -70,7 +69,7 @@ const page = async (
               </div>
             </div>
 
-            <Link href={`/${p.domain}/Section-H/pageStudent/?user=${decodeUrlID(data?.allUserProfiles?.edges[0].node.customuser?.id)}`}>
+            <Link href={`/${p.domain}/pageAuthentication/pageSelectProfile/?user=${decodeUrlID(data?.allUserProfiles?.edges[0].node.customuser?.id)}&role="student"`}>
               <Image
                 width={72}
                 height={72}

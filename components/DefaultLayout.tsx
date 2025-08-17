@@ -87,7 +87,7 @@ const DefaultLayout = ({
                     </div>
                   </div>
                   :
-                  <NotAuthorized domain={domain} />
+                  <NotAuthorized />
                 :
                 <SessionExpired />
               }

@@ -11,6 +11,7 @@ import { ArrowRightIcon } from 'lucide-react';
 import { gql } from '@apollo/client';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { FaArrowRight } from 'react-icons/fa';
 
 
 type SubjectSec = {
@@ -95,17 +96,18 @@ const List = (
             <div className="flex flex-col md:flex-row gap-6 p-4 bg-gray-100 rounded-md">
 
                 {/* LEFT SIDE */}
-                <div className="w-full md:w-1/2 p-4 bg-white rounded shadow-xl border-slate-200 border flex flex-col gap-3">
-                    <h2 className="font-bold text-lg text-center">Available Subjects</h2>
+                <div className="w-full text-black md:w-1/2 p-4 bg-white rounded shadow-xl border-slate-200 border flex flex-col gap-3">
+                    {/* <h2 className="font-bold text-lg text-center">{t("Available Subjects")}</h2> */}
+                    <h2 className="font-bold text-lg text-center">{t("Search Here")}</h2>
                     {filteredSubjects.map(subject => (
                         <div key={subject?.node.id} className="flex justify-between items-center border p-2 rounded hover:bg-gray-50">
-                            <span>{subject?.node?.subjectCode}</span>
-                            <span>{subject?.node?.subjectName}</span>
+                            <span className='font-bold'>{subject?.node?.subjectCode}</span>
+                            <span className='text-left'>{subject?.node?.subjectName}</span>
                             <button
                                 onClick={() => addSubject(parseInt(decodeUrlID(subject?.node.id)))}
-                                className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+                                className="flex gap-2 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
                             >
-                                ➡️ {t("Add")}
+                                {t("Add")} <FaArrowRight size={22} color='white' />
                             </button>
                         </div>
                     ))}

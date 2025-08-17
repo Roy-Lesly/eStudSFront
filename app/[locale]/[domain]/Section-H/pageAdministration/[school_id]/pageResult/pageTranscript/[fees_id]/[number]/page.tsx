@@ -4,6 +4,7 @@ import { decodeUrlID } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
 
 
 const page = async ({
@@ -17,40 +18,23 @@ const page = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const client = getApolloClient(p.domain);
-  let dataTrans;
-  let dataInfo;
+  const dataTrans = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      schoolFeesId: parseInt(decodeUrlID(p.fees_id)),
+      number: p.number
+    },
+  });
 
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        schoolFeesId: parseInt(decodeUrlID(p.fees_id)),
-        number: p.number
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataTrans = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    dataTrans = null;
-  }
-
-  try {
-    const result = await client.query<any>({
-      query: GET_INFO,
-      variables: {
-        schoolFeesId: parseInt(decodeUrlID(p.fees_id)),
-      },
-      fetchPolicy: 'no-cache'
-    });
-    dataInfo = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    dataInfo = null;
-  }
-
-  console.log(dataTrans);
+  const dataInfo = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_INFO,
+    variables: {
+      schoolFeesId: parseInt(decodeUrlID(p.fees_id)),
+      number: p.number
+    },
+  });
 
   return (
     <div>

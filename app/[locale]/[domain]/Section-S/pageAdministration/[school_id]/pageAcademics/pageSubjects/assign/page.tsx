@@ -77,7 +77,7 @@ const GET_DATA_MAIN_SUBJECTS = gql`
     ){
       edges {
         node {
-          id subjectName
+          id subjectName subjectCode
         }
       }
     }

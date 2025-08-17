@@ -3,6 +3,7 @@ import React from 'react'
 import { removeEmptyFields } from '@/functions'
 import { gql } from '@apollo/client'
 import List from './List'
+import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient'
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL'
 
 const page = async ({

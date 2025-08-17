@@ -98,7 +98,7 @@ const List = ({ params, dataPending, dataApproved, dataPrinted, searchParams }: 
           <MyTabs
             tabs={[
               { label: 'Pending', content: <Table data={dataPending.allTranscriptApplications.edges} columns={Columns} /> },
-              { label: 'Approved', content: <Table data={dataApproved.allTranscriptApplications.edges} columns={Columns} /> },
+              // { label: 'Approved', content: <Table data={dataApproved.allTranscriptApplications.edges} columns={Columns} /> },
               { label: 'Printed', content: <Table data={dataPrinted.allTranscriptApplications.edges} columns={Columns} /> },
             ]}
             activeTab={activeTab}

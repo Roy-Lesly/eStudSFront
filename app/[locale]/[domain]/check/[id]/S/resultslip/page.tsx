@@ -1,7 +1,6 @@
 import React from 'react';
 import StudentProfile from './StudentProfile';
 import { gql } from '@apollo/client';
-import { decodeUrlID } from '@/utils/functions';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 const page = async (
@@ -10,12 +9,11 @@ const page = async (
 ) => {
 
   const p = await params;
-
   const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA,
     variables: {
-      id: decodeUrlID(p?.id)
+      id: parseInt(p?.id)
     },
   });
 
@@ -50,7 +48,9 @@ const GET_DATA = gql`
         specialty { 
           academicYear, 
           level { level } 
-          school { campus } 
+          school { 
+            id campus schoolName town region email colors address telephone website logoCampus
+          } 
           mainSpecialty { specialtyName } 
         }
         program { name }
