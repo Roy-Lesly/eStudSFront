@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 const Fees = ({ data, p, schoolFeesSec }: { data: EdgeSchoolFeesSec, p: any, schoolFeesSec: NodeSchoolFeesSec }) => {
 
+  console.log(data);
   const { t } = useTranslation("common");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -146,11 +147,11 @@ const Fees = ({ data, p, schoolFeesSec }: { data: EdgeSchoolFeesSec, p: any, sch
                   transition={{ delay: 0.2 * index, duration: 0.5 }}
                   className="border-b"
                 >
-                  <td className="hidden md:block px-2 py-2 text-gray-700">{index + 1}</td>
-                  <td className="px-4 py-2 text-gray-700">{transaction.reason}</td>
-                  <td className="px-4 py-2 text-gray-800">{transaction.amount.toLocaleString()} F</td>
-                  <td className="hidden md:block px-4 py-2 text-gray">{transaction.ref}</td>
-                  <td className="px-4 py-2 text-gray-600">{transaction.createdAt.slice(0, 10)}, {transaction.createdAt.slice(11, 16)}</td>
+                  <td className="hidden md:block px-2 py-2 text-slate-800">{index + 1}</td>
+                  <td className="px-4 py-2 text-slate-800">{transaction.reason}</td>
+                  <td className="px-4 py-2 text-slate-800">{transaction.amount.toLocaleString()} F</td>
+                  <td className="hidden md:block px-2 py-2 text-slate-900">{transaction?.ref}</td>
+                  <td className="px-4 py-2 text-slate-800">{transaction.createdAt.slice(0, 10)}, {transaction.createdAt.slice(11, 16)}</td>
                 </motion.tr>
               ))}
             </tbody>

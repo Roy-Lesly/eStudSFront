@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { decodeUrlID } from '@/functions';
 import { FaRightLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
@@ -56,7 +55,6 @@ const Classes = ({ data, params }: { data: EdgeSchoolFeesSec[], params: any }) =
                         <th className="px-4 py-2 text-left">#</th>
                         <th className="px-4 py-2 text-left">Class</th>
                         <th className="px-4 py-2 text-left">Academic Year</th>
-                        <th className="px-4 py-2 text-left">Level</th>
                         <th className="px-4 py-2 text-left">Campus</th>
                         <th className="px-4 py-2 text-left">Go to</th>
                     </tr>
@@ -68,7 +66,7 @@ const Classes = ({ data, params }: { data: EdgeSchoolFeesSec[], params: any }) =
                             <td className="px-4 py-2">{index + 1}</td>
                             <td className="px-4 py-2">{sch.node.userprofilesec.classroomsec.level}</td>
                             <td className="px-4 py-2">{sch.node.userprofilesec.classroomsec.academicYear}</td>
-                            <td className="px-4 py-2">{sch.node.userprofilesec.classroomsec.school?.campus}</td>
+                            <td className="px-4 py-2">{sch.node.userprofilesec.classroomsec.school?.campus.replace("_", " ")}</td>
                             <td className="px-4 py-2">
                                 <button
                                     onClick={() => router.push(`/${params.locale}/${params.domain}/Section-H/pageAdministration/${params.school_id}/pageStudents/${sch.node.userprofilesec.id}/?user=${sch.node.userprofilesec.customuser.id}`)}

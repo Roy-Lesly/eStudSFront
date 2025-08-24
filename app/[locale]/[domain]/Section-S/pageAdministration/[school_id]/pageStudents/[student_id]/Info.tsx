@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { gql } from '@apollo/client';
-import ButtonUpdate from '@/section-h/Buttons/ButtonUpdate';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 import { decodeUrlID } from '@/functions';
@@ -20,7 +19,7 @@ import { QrCodeBase64 } from '@/components/QrCodeBase64';
 import { protocol, RootApi } from '@/utils/config';
 import { EdgeSchoolFeesSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutationCreateUpdateCustomuser';
-import { boolean } from 'zod';
+import ButtonUpdate from '@/components/Buttons/ButtonUpdate';
 
 
 const Info = (

@@ -61,6 +61,7 @@ const TabSchoolInfo = (
     bgLogoTranscript: data?.node?.bgLogoTranscript || '',
     colors: data?.node?.colors || '',
     schoolIdentification: data?.node?.schoolIdentification || { id: '' },
+    infoData: data?.node?.infoData,
   });
 
 

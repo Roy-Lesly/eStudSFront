@@ -5,11 +5,12 @@ import DashboardCount from '@/app/[locale]/[domain]/SectionAll/Dashboard/Dashboa
 
 
 const page = async (
-  { params }:
-    { params: any }
+  { params, searchParams }:
+    { params: any, searchParams: any }
 ) => {
 
   const p = await params;
+  const sp = await searchParams;
 
   const data = await queryServerGraphQL({
     domain: p.domain,
@@ -20,12 +21,13 @@ const page = async (
     },
   });
 
-  console.log(data);
-
   return (
     <DashboardCount
       p={p}
       data={data?.allStatistics?.edges[0]}
+      apiYears={data?.allAcademicYears}
+      source={"Section-H"}
+      y={sp?.academicYear ? sp?.academicYear : getAcademicYear()}
     />
   );
 };
@@ -38,6 +40,7 @@ const GET_DATA = gql`
   $schoolId: Decimal!,
   $academicYear: String!,
 ) {
+  allAcademicYears
   allStatistics (
     academicYear: $academicYear,
     schoolId: $schoolId

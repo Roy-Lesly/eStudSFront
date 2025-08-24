@@ -38,12 +38,25 @@ const page = async ({
     },
   });
 
+  const dataCustomuser = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA_CUSTOMUSER,
+    variables: {
+        parentTelephone: sp?.tel
+    },
+  });
+
+  const dataYears=[ ...new Set([ ...dataHigher?.allAcademicYears, ...dataSecondary?.allAcademicYearsSec, ...dataPrimary?.allAcademicYearsPrim ]) ]
+
+
   return (
     <Display
       p={p}
+      dataUsers={dataCustomuser?.allCustomusers?.edges}
       dataH={dataHigher?.allSchoolFees?.edges}
-      dataS={dataSecondary?.allSchoolFees?.edges}
-      dataP={dataPrimary?.allSchoolFees?.edges}
+      dataS={dataSecondary?.allSchoolFeesSec?.edges}
+      dataP={dataPrimary?.allSchoolFeesPrim?.edges}
+      dataYears={dataYears?.sort((a: string, b: string) => parseInt(b.split("/")[0], 10) - parseInt(a.split("/")[0], 10))}
     />
   )
 }
@@ -51,10 +64,28 @@ const page = async ({
 export default page
 
 
+const GET_DATA_CUSTOMUSER = gql`
+ query GetAllData (
+  $parentTelephone: String!
+ ) {
+  allCustomusers (
+    parentTelephone: $parentTelephone
+  ) {
+    edges {
+      node {
+        id fullName
+      }
+    }
+  }
+}
+`;
+
+
 const GET_DATA_HIGHER = gql`
  query GetAllData (
   $parentTelephone: String!
  ) {
+  allAcademicYears
   allSchoolFees (
     parentTelephone: $parentTelephone
   ) {
@@ -62,11 +93,13 @@ const GET_DATA_HIGHER = gql`
       node {
         id platformPaid
         userprofile { 
-          id specialty { 
+          id
+          specialty { 
             id academicYear 
             level { level} 
             mainSpecialty { specialtyName}
           }
+          customuser { id fullName }
           program { name }
         }
       }
@@ -79,6 +112,7 @@ const GET_DATA_SECONDARY = gql`
  query GetAllData (
   $parentTelephone: String!
  ) {
+  allAcademicYearsSec
   allSchoolFeesSec (
     parentTelephone: $parentTelephone
   ) {
@@ -92,6 +126,7 @@ const GET_DATA_SECONDARY = gql`
             level
             cycle
           }
+          customuser { id fullName }
           programsec
         }
       }
@@ -104,6 +139,7 @@ const GET_DATA_PRIMARY = gql`
  query GetAllData (
   $parentTelephone: String!
  ) {
+  allAcademicYearsPrim
   allSchoolFeesPrim (
     parentTelephone: $parentTelephone
   ) {
@@ -117,6 +153,7 @@ const GET_DATA_PRIMARY = gql`
             level
             cycle
           }
+          customuser { id fullName }
           programprim
         }
       }

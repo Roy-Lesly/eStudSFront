@@ -18,6 +18,9 @@ const List = (
         { params: any, dataPreinscription: any, dataClassroomsSec: EdgeClassRoomSec[], sp: any }
 ) => {
 
+    console.log(dataPreinscription);
+      console.log(dataClassroomsSec);
+
     const { t } = useTranslation("common");
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [matchingClassroom, setMatchingClassroom] = useState<NodeClassRoomSec | null>(null);
@@ -31,6 +34,7 @@ const List = (
 
     const [getClassrooms, { data: classroomsData, loading, error }] = useLazyQuery(GET_CLASSROOM_SEC_QUERY);
 
+    console.log(academicYear, level, stream);
     useEffect(() => {
         if (!firstPreinscription) return;
 
@@ -58,6 +62,8 @@ const List = (
             setMatchingClassroom(classroomsData.allClassroomsSec.edges[0].node);
         }
     }, [classroomsData, error]);
+
+    console.log(matchingClassroom);
 
     return (
         <DefaultLayout
@@ -107,7 +113,7 @@ const List = (
 
                                 {showFetchButton ? (
                                     <button
-                                        onClick={() => getClassrooms({ variables: { academicYear, level, stream } })}
+                                        onClick={() => { getClassrooms({ variables: { academicYear, level, stream } }); setShowFetchButton(false) }}
                                         className='bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex gap-3 items-center text-xl font-semibold'
                                     >
                                         {t("Fetch Classroom Data")}

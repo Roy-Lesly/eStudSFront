@@ -32,7 +32,7 @@ const YearlyStudentGraph = (
           <BarChart3 size={20} /> {t("Student's Statistics")}
         </h2>
       </div>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={270}>
         <BarChart data={DataYearly}>
           <XAxis dataKey="year" />
           <YAxis />

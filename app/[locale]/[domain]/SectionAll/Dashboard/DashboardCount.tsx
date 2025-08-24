@@ -8,15 +8,20 @@ import {
 import CountCard from './CountCard';
 import { useEffect, useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { getAcademicYear } from '@/utils/functions';
 import { useTranslation } from 'react-i18next';
+import { JwtPayload } from '@/utils/serverActions/interfaces';
+import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/navigation';
 
 const DashboardCount = (
-  { data, p }:
-  { data: any; p: any }
+  { data, p, apiYears, source, y }:
+    { data: any, y: string, p: any, apiYears: string[], source: "Section-H" | "Section-S" | "Section-P" }
 ) => {
 
   const { t } = useTranslation("common");
+  const router = useRouter();
+  const token = localStorage.getItem("token");
+  const user: JwtPayload | null = token ? jwtDecode(token) : null;
   const [refreshed, setRefreshed] = useState<boolean>(false)
   const [count, setCount] = useState(
     data?.node?.countUserCampus ? JSON.parse(data.node.countUserCampus) : null
@@ -26,7 +31,7 @@ const DashboardCount = (
     REFRESH_DATA
   );
 
-  
+
   useEffect(() => {
     if (dataStatistics?.createUpdateDeleteStatistics?.statistics) {
       const newCount = JSON.parse(
@@ -44,20 +49,38 @@ const DashboardCount = (
     };
 
     if (!refreshed && diffInSeconds > sec) {
-      console.log("object", 50);
       refreshStatistics({
         variables: {
-          academicYear: getAcademicYear(),
+          academicYear: y,
           schoolId: p.school_id,
         },
       });
     }
     setRefreshed(true)
 
-  }, [data?.node?.updatedAt, refreshStatistics, p.school_id]);
+  }, [y, data?.node?.updatedAt, refreshStatistics, p.school_id]);
+
+  console.log(apiYears);
+  console.log(y);
 
   return (
     <>
+    
+      {user?.is_superuser ? <div className='flex justify-between items-center'>
+        <span className='font-semibold text-black'>{t("Academic Year")} Summary</span>
+        <span className='font-semibold text-black'>{y}</span>
+        <select
+          className='px-4 py-2 rounded'
+          // onChange={(e: any) => { setSelectedYear(e.target.value); setRefreshed(false);}}
+          onChange={(e: any) => { 
+            setRefreshed(false);
+            router.push(`/${p.locale}/${p.domain}/${source}/pageAdministration/${p.school_id}/pageDashboard/?academicYear=${e.target.value}`)
+          }}
+        >
+          {apiYears?.map((item: string) => <option key={item} value={item}>{item}</option>)}
+        </select>
+      </div> : null}
+
       {count ? <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <CountCard title="Staff" values={count.admin} icon={<Users />} />
         <CountCard title="Lecturers" values={count.lecturer} icon={<UserCheck />} />

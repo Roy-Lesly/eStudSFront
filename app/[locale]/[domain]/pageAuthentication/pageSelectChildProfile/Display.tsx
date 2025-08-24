@@ -1,219 +1,74 @@
 'use client';
 
-import { EdgeSchoolFees } from '@/utils/Domain/schemas/interfaceGraphql';
-import { decodeUrlID } from '@/utils/functions';
-import { useRouter } from 'next/navigation';
-import React from 'react';
+import { EdgeCustomUser, EdgeSchoolFees, NodeCustomUser } from '@/utils/Domain/schemas/interfaceGraphql';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     GraduationCap,
-    Calendar,
-    Layers,
-    BookText,
-    CheckCircle2,
-    XCircle,
 } from 'lucide-react';
 import { EdgeSchoolFeesSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { EdgeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import DisplayChildProfile from './DisplayChildProfile';
 
 const Display = (
-    { dataH, dataS, dataP, p }:
-    { dataH: EdgeSchoolFees[], dataS: EdgeSchoolFeesSec[], dataP: EdgeSchoolFeesPrim[]; p: any }
+    { dataUsers, dataH, dataS, dataP, p, dataYears }:
+        { dataUsers: EdgeCustomUser[], dataH: EdgeSchoolFees[], dataS: EdgeSchoolFeesSec[], dataP: EdgeSchoolFeesPrim[]; p: any, dataYears: string[] | any }
 ) => {
 
-    console.log(dataH);
-    console.log(dataS);
-    console.log(dataP);
-
     const { t } = useTranslation('common');
-    const router = useRouter();
+    const [selectedChild, setSelectedChild] = useState<NodeCustomUser | null>(null)
 
-    if (!dataH?.length && !dataS?.length && !dataP?.length) {
+    if (!dataUsers?.length) {
         return (
             <div className="flex items-center justify-center min-h-[40vh] text-center px-4 sm:px-6 md:px-10 lg:px-20">
                 <p className="text-red-600 font-semibold text-sm sm:text-base md:text-lg">
-                    {t('No profiles found. Please contact administration')}.
+                    {t('No Children Found. Please contact administration')}.
                 </p>
             </div>
         );
     }
 
     return (
-        <div className="w-full mt-6 mb-12 px-4 sm:px-6 md:px-10 lg:px-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {dataH.map(({ node }) => (
-                <div
-                    key={node.id}
-                    onClick={() =>
-                        router.push(
-                            `/${p.domain}/Section-H/pageStudent/${decodeUrlID(node?.userprofile?.id)}/${decodeUrlID(
-                                node?.userprofile.specialty.id
-                            )}`
-                        )
-                    }
-                    className="p-3 bg-white shadow-lg rounded-2xl"
-                >
-                    <div className="bg-gradient-to-tr from-indigo-100 to-sky-300 dark:from-slate-700 dark:to-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer p-5 md:p-6 space-y-3">
-                        <div className="flex items-center gap-3 text-indigo-800 dark:text-indigo-300 font-semibold text-base sm:text-lg">
-                            <GraduationCap className="w-5 h-5" />
-                            {node?.userprofile.specialty?.mainSpecialty.specialtyName || t('No Specialty')}
-                        </div>
+        // <div className={`${selectedChild ? "h-full" : "h-screen"} flex justify-center p-4`}>
+        <div className={`h-full flex justify-center p-4`}>
+            <div className='flex flex-col w-full mt-2 max-w-xl rounded-lg shadow-xl gap-6 p-4 bg-white justify-center'>
 
-                        {/* Academic Year */}
-                        <div className="flex items-center gap-2 text-slate-800 dark:text-gray-300">
-                            <Calendar className="w-4 h-4" />
-                            <span className="font-medium">{t('Academic Year')}:</span>{' '}
-                            {node?.userprofile.specialty?.academicYear}
-                        </div>
+                {!selectedChild?.id ? <>
+                    <span className='bg-white shadow-xl border border-slate-50 rounded flex items-center justify-center py-3 text-2xl font-bold tracking-widest italic'>
+                        {t("Select A Child")}
+                    </span>
 
-                        {/* Level */}
-                        <div className="flex items-center gap-2 text-slate-700 dark:text-gray-300">
-                            <Layers className="w-4 h-4" />
-                            <span className="font-medium">{t('Level')}:</span>{' '}
-                            {node?.userprofile.specialty?.level?.level || t('N/A')}
-                        </div>
-
-                        {/* Program */}
-                        <div className="flex items-center justify-between gap-2 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
-                            <div className='flex gap-2'>
-                                <BookText className="w-4 h-4" />
-                                <span className="font-medium">{t('Program')}:</span>{' '}
-                                {node?.userprofile.program?.name || t('N/A')}
-                            </div>
-                            <div className="flex items-center gap-2">
-                                {node?.platformPaid ? (
-                                    <span className="flex items-center gap-1 text-green-600 font-medium">
-                                        <CheckCircle2 className="w-5 h-5" />
-                                        <span>Active</span>
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center gap-1 text-red-600 font-medium">
-                                        <XCircle className="w-5 h-5" />
-                                        <span>Unpaid</span>
-                                    </span>
-                                )}
+                    {dataUsers?.map(({ node }) => (
+                        <div
+                            key={node.id}
+                            onClick={() => setSelectedChild(node)}
+                            className="bg-gradient-to-tr from-indigo-100 to-sky-300 dark:from-slate-700 dark:to-slate-900 border border-slate-200 dark:border-slate-700 w-full rounded-xl shadow-lg"
+                        >
+                            <div className="hover:shadow-xl transition-all duration-300 cursor-pointer p-6 md:p-8 space-y-3">
+                                <div className="flex items-center gap-4 text-indigo-800 dark:text-indigo-300 font-semibold text-base sm:text-lg">
+                                    <GraduationCap className="w-5 h-5" />
+                                    {node?.fullName || t('No Full Name')}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            ))}
-            
-            {dataS?.map(({ node }) => (
-                <div
-                    key={node.id}
-                    onClick={() =>
-                        router.push(
-                            `/${p.domain}/Section-S/pageStudent/${decodeUrlID(node?.userprofilesec?.id)}/${decodeUrlID(
-                                node?.userprofilesec?.classroomsec.id
-                            )}`
-                        )
-                    }
-                    className="p-3 bg-white shadow-lg rounded-2xl"
-                >
-                    <div className="bg-gradient-to-tr from-indigo-100 to-sky-300 dark:from-slate-700 dark:to-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer p-5 md:p-6 space-y-3">
-                        <div className="flex items-center gap-3 text-indigo-800 dark:text-indigo-300 font-semibold text-base sm:text-lg">
-                            <GraduationCap className="w-5 h-5" />
-                            {node?.userprofilesec?.classroomsec?.cycle || t('No Classroom')}
-                        </div>
+                    ))}</>
+                    
+                    :
+                    
+                    <DisplayChildProfile
+                        selectedChild={selectedChild}
+                        setSelectedChild={setSelectedChild}
+                        dataH={dataH}
+                        dataS={dataS}
+                        dataP={dataP}
+                        dataYears={dataYears}
+                        p={p}
+                    />
+                }
 
-                        {/* Academic Year */}
-                        <div className="flex items-center gap-2 text-slate-800 dark:text-gray-300">
-                            <Calendar className="w-4 h-4" />
-                            <span className="font-medium">{t('Academic Year')}:</span>{' '}
-                            {node?.userprofilesec?.classroomsec?.academicYear}
-                        </div>
-
-                        {/* Level */}
-                        <div className="flex items-center gap-2 text-slate-700 dark:text-gray-300">
-                            <Layers className="w-4 h-4" />
-                            <span className="font-medium">{t('Level')}:</span>{' '}
-                            {node?.userprofilesec?.classroomsec?.level || t('N/A')}
-                        </div>
-
-                        {/* Program */}
-                        <div className="flex items-center justify-between gap-2 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
-                            <div className='flex gap-2'>
-                                <BookText className="w-4 h-4" />
-                                <span className="font-medium">{t('Program')}:</span>{' '}
-                                {node?.userprofilesec?.program?.name || t('N/A')}
-                            </div>
-                            <div className="flex items-center gap-2">
-                                {node?.platformPaid ? (
-                                    <span className="flex items-center gap-1 text-green-600 font-medium">
-                                        <CheckCircle2 className="w-5 h-5" />
-                                        <span>Active</span>
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center gap-1 text-red-600 font-medium">
-                                        <XCircle className="w-5 h-5" />
-                                        <span>Unpaid</span>
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ))}
-            
-            {dataP?.map(({ node }) => (
-                <div
-                    key={node.id}
-                    onClick={() =>
-                        router.push(
-                            `/${p.domain}/Section-P/pageStudent/${decodeUrlID(node?.userprofileprim?.id)}/${decodeUrlID(
-                                node?.userprofileprim?.classroomprim.id
-                            )}`
-                        )
-                    }
-                    className="p-3 bg-white shadow-lg rounded-2xl"
-                >
-                    <div className="bg-gradient-to-tr from-indigo-100 to-sky-300 dark:from-slate-700 dark:to-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer p-5 md:p-6 space-y-3">
-                        <div className="flex items-center gap-3 text-indigo-800 dark:text-indigo-300 font-semibold text-base sm:text-lg">
-                            <GraduationCap className="w-5 h-5" />
-                            {node?.userprofileprim?.classroomprim?.option || t('No Classroom')}
-                        </div>
-
-                        {/* Academic Year */}
-                        <div className="flex items-center gap-2 text-slate-800 dark:text-gray-300">
-                            <Calendar className="w-4 h-4" />
-                            <span className="font-medium">{t('Academic Year')}:</span>{' '}
-                            {node?.userprofileprim?.classroomprim?.academicYear}
-                        </div>
-
-                        {/* Level */}
-                        <div className="flex items-center gap-2 text-slate-700 dark:text-gray-300">
-                            <Layers className="w-4 h-4" />
-                            <span className="font-medium">{t('Level')}:</span>{' '}
-                            {node?.userprofileprim?.classroomprim?.level || t('N/A')}
-                        </div>
-
-                        {/* Program */}
-                        <div className="flex items-center justify-between gap-2 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
-                            <div className='flex gap-2'>
-                                <BookText className="w-4 h-4" />
-                                <span className="font-medium">{t('Program')}:</span>{' '}
-                                {node?.userprofileprim?.programprim || t('N/A')}
-                            </div>
-                            <div className="flex items-center gap-2">
-                                {node?.platformPaid ? (
-                                    <span className="flex items-center gap-1 text-green-600 font-medium">
-                                        <CheckCircle2 className="w-5 h-5" />
-                                        <span>Active</span>
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center gap-1 text-red-600 font-medium">
-                                        <XCircle className="w-5 h-5" />
-                                        <span>Unpaid</span>
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ))}
-
+            </div>
         </div>
-    );
+    )
 };
 
 export default Display;

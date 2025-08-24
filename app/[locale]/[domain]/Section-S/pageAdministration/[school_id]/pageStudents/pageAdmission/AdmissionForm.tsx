@@ -117,7 +117,7 @@ const AdmissionForm = (
           routeToLink: "",
         })
         if (resProfileId?.length > 5) {
-          router.push(`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/${resProfileId}`)
+          router.push(`/${params.locale}/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/${resProfileId}/?user=${resUserId}`)
           alert(t("Operation Successful") + " " + `✅`)
         }
       }

@@ -30,8 +30,8 @@ const GenderGraph = ({
   return (
     <div className="w-full md:w-1/4 bg-white rounded-2xl p-2 md:p-4 shadow-xl border-slate-200">
       <h2 className="text-lg font-semibold text-slate-800">{title}</h2>
-      <div className="flex justify-center items-center" style={{ height: '200px' }}>
-        <PieChart width={200} height={200}>
+      <div className="flex justify-center items-center" style={{ height: '270px' }}>
+        <PieChart width={200} height={270}>
           <Pie
             data={renderGender}
             cx="50%"

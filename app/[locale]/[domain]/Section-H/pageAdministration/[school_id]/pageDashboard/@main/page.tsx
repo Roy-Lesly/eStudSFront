@@ -6,17 +6,18 @@ import YearlyStudentGraph from '@/app/[locale]/[domain]/SectionAll/Dashboard/Yea
 
 
 const page = async (
-  { params }:
-    { params: any }
+  { params, searchParams }:
+    { params: any, searchParams: any }
 ) => {
 
   const p = await params;
+  const sp = await searchParams;
 
   const data = await queryServerGraphQL({
     domain: p.domain,
     query: GET_DATA,
     variables: {
-      academicYear: getAcademicYear(),
+      academicYear: sp?.academicYear ? sp?.academicYear : getAcademicYear(),
       schoolId: parseInt(p.school_id),
       schoolId2: parseInt(p.school_id),
     },

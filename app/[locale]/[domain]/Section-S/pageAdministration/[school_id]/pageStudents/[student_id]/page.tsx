@@ -3,7 +3,6 @@ import List from './List'
 import { gql } from '@apollo/client'
 import { decodeUrlID } from '@/functions'
 import { Metadata } from 'next';
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 export const metadata: Metadata = {

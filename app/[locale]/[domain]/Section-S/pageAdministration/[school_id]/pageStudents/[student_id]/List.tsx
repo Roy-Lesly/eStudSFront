@@ -112,7 +112,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
               ]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
-              source={`Section-S/pageAdministration/${p.school_id}/pageStudents/${p.student_id}?`}
+              source={`Section-S/pageAdministration/${p.school_id}/pageStudents/${p.student_id}/?user=${sp?.user}`}
             />
             :
             <ServerError type="notFound" item={t("Student Info")} />

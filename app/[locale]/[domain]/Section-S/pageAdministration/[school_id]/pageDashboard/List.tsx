@@ -1,7 +1,7 @@
 'use client';
 import DefaultLayout from "@/DefaultLayout";
-import Sidebar from "@/section-h/Sidebar/Sidebar";
-import { GetMenuAdministration } from "@/section-h/Sidebar/MenuAdministration";
+import Sidebar from "@/section-s/Sidebar/Sidebar";
+import { GetMenuAdministration } from "@/section-s/Sidebar/MenuAdministration";
 import Header from "@/section-h/Header/Header";
 import { useState } from "react";
 

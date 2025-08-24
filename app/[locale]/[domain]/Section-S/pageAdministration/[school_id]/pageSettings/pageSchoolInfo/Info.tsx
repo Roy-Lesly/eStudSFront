@@ -57,6 +57,7 @@ const SchoolInfoForm = ({ data, params }: { data: EdgeSchoolHigherInfo, params: 
     bgLogoTranscript: data?.node?.bgLogoTranscript || '',
     colors: data?.node?.colors || '',
     schoolIdentification: data?.node?.schoolIdentification || { id: '' },
+    infoData: data?.node?.infoData,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
