@@ -1,6 +1,6 @@
 import { EdgeResult } from '@/Domain/schemas/interfaceGraphql'
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary'
-import MyTableComp from '@/section-h/Table/MyTableComp'
+import MyTableComp from '@/components/Table/MyTableComp'
 import ServerError from '@/ServerError'
 import React from 'react'
 
@@ -10,8 +10,8 @@ const ResultLogs = ({ data }: { data: EdgeResult[] }) => {
         { header: "#", align: "center", render: (_item: EdgeResult, index: number) => index + 1, },
         { header: "Full Name", accessor: "node.student.customuser.fullName", align: "left" },
         { header: "Course", accessor: "node.course.mainCourse.courseName", align: "left" },
-        { 
-            header: "Logs", 
+        {
+            header: "Logs",
             align: "left",
             render: (item: EdgeResult) => {
                 let logs = item.node.logs; // Ensure logs exist
@@ -59,18 +59,18 @@ const ResultLogs = ({ data }: { data: EdgeResult[] }) => {
                     </div>
                 );
             }
-        }    ]
+        }]
 
     return (
         <div>
-            {data ? <MyTableComp
+            {/* {data ? <MyTableComp
                 data={data}
                 columns={Columns}
                 table_title={`Total: ${data?.length}`}
             />
                 :
                 <ServerError type='network' />
-            }
+            } */}
         </div>
     )
 }

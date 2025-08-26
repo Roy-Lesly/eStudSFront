@@ -61,22 +61,37 @@ const page = async ({
 
   const p = await params;
 
-   const data = await queryServerGraphQL({
-     domain: p?.domain,
-     query: GET_DATA,
-     variables: {
-       userprofileId: parseInt(p.userprofile_id),
-     },
-   });
-
-  console.log(110, data);
-
+  const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      userprofileId: parseInt(p.userprofile_id),
+    },
+  });
 
   return (
     <div className="w-full">
-      {data && <Navbar feeInfo={data?.allSchoolFees.edges[0]} />}
+
+      {data ?
+        <Navbar
+          school={data?.allSchoolFeesSec.edges[0]?.node?.userprofile?.specialty?.school}
+        />
+        :
+        null
+      }
+
       {children}
-      {data && <Footer params={p} feeInfo={data?.allSchoolFees.edges[0]} />}
+
+      {data ?
+        <Footer
+          params={p}
+          feeInfo={data?.allSchoolFees.edges[0]}
+          source="S"
+        />
+        :
+        null
+      }
+
     </div>
   );
 }

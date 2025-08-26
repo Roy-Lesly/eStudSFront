@@ -102,7 +102,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
             className='w-1/2 md:w-1/4 rounded-lg shadow-lg bg-teal-200 px-4 py-1 cursor-pointer flex items-center justify-center gap-2 font-bold text-xl'
             href={`/${p.locale}/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageStudents/pageNewPreinscription`}
           >
-            <span>{t("New Student")}</span>
+            {/* <span>{t("  ")}</span> */}
             <button className='bg-green-500 p-1 rounded-full'><FaPlus size={25} color="white" /></button>
           </Link>
         </div>

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Sidebar from '@/section-h/Sidebar/Sidebar';
-import { GetMenuAdministration } from '@/section-h/Sidebar/MenuAdministration';
+import Sidebar from '@/section-s/Sidebar/Sidebar';
+import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import Breadcrumb from '@/Breadcrumbs/Breadcrumb';
 import { Metadata } from 'next';

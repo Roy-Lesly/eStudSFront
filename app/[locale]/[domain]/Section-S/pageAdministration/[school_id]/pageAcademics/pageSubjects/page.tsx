@@ -76,9 +76,10 @@ const GET_DATA = gql`
     ){
       edges {
         node {
-          id
+          id subjectCoefficient
           mainsubject { id subjectName }
           classroomsec { id academicYear stream level tuition }
+          assignedTo { firstName }
         }
       }
     }

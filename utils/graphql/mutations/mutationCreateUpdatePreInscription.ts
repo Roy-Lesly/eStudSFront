@@ -248,9 +248,6 @@ const queryPreInscriptionSec = gql`
 
     $nationality: String!
     $regionOfOrigin: String!
-    $highestCertificate: String!
-    $yearObtained: String!
-    $grade: String!
     $fatherName: String!
     $motherName: String!
     $parentAddress: String!
@@ -280,9 +277,6 @@ const queryPreInscriptionSec = gql`
 
       nationality: $nationality
       regionOfOrigin: $regionOfOrigin
-      highestCertificate: $highestCertificate
-      yearObtained: $yearObtained
-      grade: $grade
       fatherName: $fatherName
       motherName: $motherName
       parentAddress: $parentAddress

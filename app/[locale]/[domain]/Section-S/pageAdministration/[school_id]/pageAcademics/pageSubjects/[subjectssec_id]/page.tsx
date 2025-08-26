@@ -4,6 +4,7 @@ import { decodeUrlID } from '@/functions';
 import { gql } from '@apollo/client';
 import List from './List';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import ComingSoon from '@/components/ComingSoon';
 
 const ClassManagementPage = async ({
   params,
@@ -55,7 +56,8 @@ const ClassManagementPage = async ({
 
   return (
     <div>
-      <List params={p} data={data} dataTrans={dataTrans} searchParams={sp} />
+      <ComingSoon />
+      {/* <List params={p} data={data} dataTrans={dataTrans} searchParams={sp} /> */}
     </div>
   )
 }

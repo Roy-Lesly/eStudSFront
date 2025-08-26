@@ -63,7 +63,7 @@ export const GetMenuAdministration = (): MenuSection[] => {
             { label: t("View"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents`, icon: <Users /> },
             { label: t("Pre-Enrolment"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/PreInscription`, icon: <UserPlus /> },
             { label: t("Promotion"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/promotion`, icon: <BadgeCheck /> },
-            // { label: t("Attendance"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/attendance`, icon: <ClipboardList /> },
+            { label: t("Attendance"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/Attendance`, icon: <ClipboardList /> },
             { label: t("Moratorium"), route: `/${locale}/${domain}/Section-S/pageAdministration/${school_id}/pageStudents/Moratoire`, icon: <FileWarning /> },
           ]
         },

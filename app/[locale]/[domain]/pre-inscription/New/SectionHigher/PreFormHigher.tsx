@@ -202,7 +202,6 @@ const PreFormHigher = ({ data, source, params }: { source: "admin" | "student", 
     }));
   };
 
-  // const [createUpdateDeletePreInsription] = useMutation(CREATE_PREINSCRIPTION);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

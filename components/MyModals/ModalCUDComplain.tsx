@@ -144,11 +144,7 @@ const ModalCUDComplain = ({
             }
         }
 
-
-        console.log(dataToSubmit);
-        // return
-
-        const res = await ApiFactory({
+        await ApiFactory({
             newData: dataToSubmit,
             editData: dataToSubmit,
             mutationName: section === "Secondary" ? "createUpdateDeleteComplainSec" : section === "Primary" ? "createUpdateDeleteComplainPrim" : "createUpdateDeleteComplain",

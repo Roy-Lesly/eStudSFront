@@ -84,10 +84,10 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
     },
     medicalHistory: {
       nationality: "Cameroon",
-      highest_certificate: '',
-      highest_certificate_other: '',
-      year_obtained: '',
-      grade: '',
+      // highest_certificate: '',
+      // highest_certificate_other: '',
+      // year_obtained: '',
+      // grade: '',
       region_of_origin: '',
       region_of_origin_other: '',
       father_name: '',
@@ -122,8 +122,10 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
         const { first_name, last_name, sex, address, dob, pob, telephone, } = formData.personalInfo;
         return [first_name, last_name, sex, address, dob, pob, telephone,].every((field) => String(field).trim() !== '');
       case 1:
-        const { campusId, nationality, highest_certificate, grade, year_obtained, region_of_origin, mother_name, father_telephone } = formData.medicalHistory;
-        return [nationality, highest_certificate, grade, year_obtained, region_of_origin, campusId.toString()].every((field) => String(field.trim()) !== '');
+        // const { campusId, nationality, highest_certificate, grade, year_obtained, region_of_origin, mother_name, father_telephone } = formData.medicalHistory;
+        const { campusId, nationality, region_of_origin, mother_name, father_telephone } = formData.medicalHistory;
+        // return [nationality, highest_certificate, grade, year_obtained, region_of_origin, campusId.toString()].every((field) => String(field.trim()) !== '');
+        return [nationality, region_of_origin, campusId.toString()].every((field) => String(field.trim()) !== '');
       case 2:
         const { academic_year, program, level, session, stream } = formData.classAssignment;
         return [academic_year, program, level, session, stream].every((field) => String(field).trim() !== '' && (Array.isArray(field) ? field.every(item => String(item).trim() !== '') : true));
@@ -252,9 +254,9 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
 
       nationality: formData.medicalHistory?.nationality,
       regionOfOrigin: formData.medicalHistory.region_of_origin === "Other" ? capitalizeFirstLetter(formData.medicalHistory.region_of_origin_other.toLowerCase()) : formData.medicalHistory.region_of_origin,
-      highestCertificate: formData.medicalHistory.highest_certificate === "Other" ? capitalizeFirstLetter(formData.medicalHistory.highest_certificate_other.toLowerCase()) : formData.medicalHistory.highest_certificate,
-      yearObtained: formData.medicalHistory.year_obtained,
-      grade: formData.medicalHistory.grade,
+      // highestCertificate: formData.medicalHistory.highest_certificate === "Other" ? capitalizeFirstLetter(formData.medicalHistory.highest_certificate_other.toLowerCase()) : formData.medicalHistory.highest_certificate,
+      // yearObtained: formData.medicalHistory.year_obtained,
+      // grade: formData.medicalHistory.grade,
 
       academicYear: formData.classAssignment.academic_year,
       program: formData.classAssignment.program,
@@ -456,7 +458,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
 
               </div>
 
-              <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
+              {/* <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
                 <MyInputField
                   id="highest_certificate"
                   name="highest_certificate"
@@ -488,10 +490,10 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
                   onChange={(e) => handleChange('medicalHistory', 'year_obtained', e.target.value)}
                   options={last_20_years}
                 />
-              </div>
+              </div> */}
 
               <div className='flex flex-col gap-2 md:flex-row md:gap-4 w-full'>
-                <MyInputField
+                {/* <MyInputField
                   id="grade"
                   name="grade"
                   label={t("Subjects Grade")}
@@ -499,7 +501,7 @@ const PreFormSecondary = ({ data, source, params }: { params: any, source: "admi
                   placeholder={"e.g List a"}
                   value={formData.medicalHistory.grade}
                   onChange={(e) => handleChange('medicalHistory', 'grade', e.target.value)}
-                />
+                /> */}
               </div>
 
               <div className='flex flex-col gap-2 md:flex-row'>

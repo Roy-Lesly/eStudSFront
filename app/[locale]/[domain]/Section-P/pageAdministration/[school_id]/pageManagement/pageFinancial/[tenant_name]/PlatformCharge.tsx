@@ -1,6 +1,6 @@
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql'
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary'
-import MyTableComp from '@/section-h/Table/MyTableComp'
+import MyTableComp from '@/components/Table/MyTableComp'
 import ServerError from '@/ServerError'
 import React from 'react'
 

@@ -1,6 +1,6 @@
 import { EdgeSchoolFees, EdgeTransactions } from '@/Domain/schemas/interfaceGraphql'
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary'
-import MyTableComp from '@/section-h/Table/MyTableComp'
+import MyTableComp from '@/components/Table/MyTableComp'
 import ServerError from '@/ServerError'
 import React from 'react'
 
@@ -19,14 +19,14 @@ const Transactions = ({ data }: { data: EdgeTransactions[] }) => {
 
     return (
         <div>
-            {data ? <MyTableComp
+            {/* {data ? <MyTableComp
                 data={data}
                 columns={Columns}
                 table_title={`Total: ${data?.length}`}
             />
                 :
                 <ServerError type='network' />
-            }
+            } */}
         </div>
     )
 }

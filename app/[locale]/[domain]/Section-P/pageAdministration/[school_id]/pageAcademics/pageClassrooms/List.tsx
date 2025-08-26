@@ -55,14 +55,7 @@ const List = ({ params, data, sp }: { params: any; data: any, sp: any }) => {
     <DefaultLayout
       pageType='admin'
       domain={params.domain}
-      downloadComponent={<></>
-        // <ExcelExporter
-        //   data={activeTab ? data?.allMainSpecialties?.edges : data?.allSpecialties?.edges}
-        //   title={activeTab ? "MainSpecialties" : "Specialties"}
-        //   type={activeTab ? "MainSpecialty" : "Specialty"}
-        //   page={activeTab ? "list_main_specialty" : "list_specialty"}
-        //   searchParams={activeTab ? { "name": "List" } : sp}
-        // />
+      downloadComponent={null
       }
       searchComponent={
         <SearchMultiple

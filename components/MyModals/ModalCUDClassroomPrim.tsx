@@ -139,16 +139,6 @@ const ModalCUDClassroomPrim = (
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <div className='flex flex-row gap-2 justify-between'>
             <MyInputField
-              id="language"
-              name="language"
-              label={t("language")}
-              type="select"
-              placeholder={t("Select language")}
-              value={formData.language}
-              onChange={(e) => handleChange('language', (e.target.value))}
-              options={[ "FRENCH", "ENGLISH" ]}
-            />
-            <MyInputField
               id="cycle"
               name="cycle"
               label={t("Section")}

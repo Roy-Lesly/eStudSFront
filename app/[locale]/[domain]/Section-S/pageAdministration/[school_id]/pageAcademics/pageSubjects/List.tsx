@@ -32,10 +32,10 @@ const List = (
     { header: "#", align: "center", render: (_item: EdgeSubjectSec, index: number) => index + 1, },
     { header: `${t("Subject")}`, accessor: "node.mainsubject.subjectName", align: "left" },
     { header: `${t("Class")}`, accessor: "node.classroomsec.level", align: "left" },
+    { header: `${t("Coef")}`, accessor: "node.subjectCoefficient", align: "center" },
     { header: `${t("Section")}`, accessor: "node.classroomsec.stream", align: "center" },
     { header: `${t("Year")}`, accessor: "node.classroomsec.academicYear", align: "center" },
-    { header: `${t("Fees")}`, accessor: "node.classroomsec.tuition", align: "center" },
-    { header: `${t("Students")}`, accessor: "node.studentCount", align: "center" },
+    { header: `${t("Teacher")}`, accessor: "node.assignedTo.firstName", align: "center" },
     {
       header: `${t("View")}`, align: "center",
       render: (item) => <div

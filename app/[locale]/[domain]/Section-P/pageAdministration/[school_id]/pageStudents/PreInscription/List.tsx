@@ -96,7 +96,7 @@ const List = ({ params, dataYears, dataPending, sp }: { params: any, sp: any, da
           className='rounded-lg shadow-lg mb-3 bg-teal-50 px-4 py-2 cursor-pointer flex items-center justify-end gap-2 font-bold text-xl'
           href={`/${params.locale}/${params.domain}/Section-P/pageAdministration/${params.school_id}/pageStudents/pageNewPreinscription`}
         >
-          <span>{t("New Student")}</span>
+          {/* <span>{t("New Student")}</span> */}
           <button className='bg-green-500 p-1 rounded-full'><FaPlus size={25} color="white" /></button>
         </Link>
 

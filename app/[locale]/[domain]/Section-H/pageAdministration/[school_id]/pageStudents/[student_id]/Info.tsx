@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { gql } from '@apollo/client';
-import ButtonUpdate from '@/section-h/Buttons/ButtonUpdate';
+import ButtonUpdate from '@/components/Buttons/ButtonUpdate';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 import { decodeUrlID } from '@/functions';

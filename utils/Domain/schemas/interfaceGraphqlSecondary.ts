@@ -157,6 +157,21 @@ export interface NodeComplainSec {
   endingAt: string;
 }
 
+export interface NodeAttendanceGeneralSecondary {
+  id: string;
+  classroom: NodeClassRoomSec;
+  month: string;
+  infoData: string;
+  statistics: string;
+}
+
+export interface NodeAttendanceStudentSecondary {
+  id: string;
+  student: NodeUserProfileSec;
+  records: string;
+  statistics: string;
+}
+
 
 
 
@@ -217,6 +232,14 @@ export interface EdgeNotificationSec {
 
 export interface EdgeComplainSec {
   node: NodeComplainSec;
+}
+
+export interface EdgeAttendanceGeneralSecondary {
+  node: NodeAttendanceGeneralSecondary;
+}
+
+export interface EdgeAttendanceStudentSecondary {
+  node: NodeAttendanceStudentSecondary;
 }
 
 

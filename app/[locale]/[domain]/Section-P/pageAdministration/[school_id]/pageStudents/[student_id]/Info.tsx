@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { gql } from '@apollo/client';
-import ButtonUpdate from '@/section-h/Buttons/ButtonUpdate';
+import ButtonUpdate from '@/components/Buttons/ButtonUpdate';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 import { decodeUrlID } from '@/functions';
@@ -529,7 +529,7 @@ const Info = (
 
           {/* Submit Button */}
           <motion.div variants={sectionVariants} className="flex justify-end">
-            <ButtonUpdate handleUpdate={handleSubmit} dataToSubmit={[student]} />
+            {/* <ButtonUpdate handleUpdate={handleSubmit} dataToSubmit={[student]} /> */}
           </motion.div>
         </motion.form>}
 

@@ -1,7 +1,7 @@
 import { decodeUrlID } from '@/functions';
 import MyInputField from '@/MyInputField';
-import ButtonUpdate from '@/section-h/Buttons/ButtonUpdate';
-import MyTableComp from '@/section-h/Table/MyTableComp'
+import ButtonUpdate from '@/components/Buttons/ButtonUpdate';
+import MyTableComp from '@/components/Table/MyTableComp'
 import { JwtPayload } from '@/serverActions/interfaces';
 import { EdgeResultPrimary, TableColumn } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
@@ -44,7 +44,7 @@ const ResultsEdit = ({ data, canEdit, params, selectedTerm }: { data: EdgeResult
             align: 'center',
             render: (item, index: number) => {
                 const semFields = getSemesterFields(selectedTerm);
-                
+
                 return (
                     <div className="flex gap-2 justify-center">
                         {semFields.map((field, idx) => (

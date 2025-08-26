@@ -2,8 +2,8 @@ import { EdgeResult } from '@/Domain/schemas/interfaceGraphql'
 import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import { decodeUrlID } from '@/functions';
 import MyInputField from '@/MyInputField';
-import ButtonUpdate from '@/section-h/Buttons/ButtonUpdate';
-import MyTableComp from '@/section-h/Table/MyTableComp'
+import ButtonUpdate from '@/components/Buttons/ButtonUpdate';
+import MyTableComp from '@/components/Table/MyTableComp'
 import { JwtPayload } from '@/serverActions/interfaces';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { gql } from '@apollo/client';

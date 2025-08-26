@@ -93,14 +93,14 @@ const Confirmation = ({
               parseInt(formData.medicalHistory.campusId.toString())
           )?.node.campus
         )}
-        {renderRow(
+        {/* {renderRow(
           t('Highest Certificate'),
           formData.medicalHistory.highest_certificate === 'Other'
             ? capitalizeFirstLetter(formData.medicalHistory.highest_certificate_other.toLowerCase())
             : formData.medicalHistory.highest_certificate
         )}
         {renderRow(t('Year Obtained'), formData.medicalHistory.year_obtained)}
-        {renderRow(t('Grade'), formData.medicalHistory.grade)}
+        {renderRow(t('Grade'), formData.medicalHistory.grade)} */}
         {renderRow(t('Nationality'), formData.medicalHistory.nationality)}
         {renderRow(
           t('Region Of Origin'),

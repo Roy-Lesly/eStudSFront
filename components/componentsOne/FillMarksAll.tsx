@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import ButtonUpdate from "@/section-h/Buttons/ButtonUpdate";
+import ButtonUpdate from '@/components/Buttons/ButtonUpdate';
 import { EdgeResult, EdgeSchoolHigherInfo } from "@/Domain/schemas/interfaceGraphql";
 import FillMarksComponent from "@/components/componentsOne/FillMarksComponent";
 

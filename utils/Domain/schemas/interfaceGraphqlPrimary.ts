@@ -192,6 +192,21 @@ export interface NodeComplainPrim {
 }
 
 
+export interface NodeAttendanceGeneralPrimary {
+  id: string;
+  classroom: NodeClassRoomPrim;
+  month: string;
+  infoData: string;
+  statistics: string;
+}
+
+export interface NodeAttendanceStudentPrimary {
+  id: string;
+  student: NodeUserProfilePrim;
+  records: string;
+  statistics: string;
+}
+
 
 
 

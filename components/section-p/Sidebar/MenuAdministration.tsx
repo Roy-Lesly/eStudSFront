@@ -90,7 +90,7 @@ export const GetMenuAdministration = (): MenuSection[] => {
             // { label: t("New Admission"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/pageNewPreinscription`, icon: <UserPlus /> },
             { label: t("Pre-Enrolment"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/PreInscription`, icon: <UserPlus /> },
             // { label: t("Class Promotion"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/promotion`, icon: <BadgeCheck /> },
-            // { label: t("Attendance"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/attendance`, icon: <ClipboardList /> },
+            { label: t("Attendance"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/Attendance`, icon: <ClipboardList /> },
             // { label: t("Moratorium"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/Moratoire`, icon: <FileWarning /> },
             // { label: t("Disciplinary Records"), route: `/${locale}/${domain}/Section-P/pageAdministration/${school_id}/pageStudents/discipline`, icon: <FileWarning /> },
           ]
