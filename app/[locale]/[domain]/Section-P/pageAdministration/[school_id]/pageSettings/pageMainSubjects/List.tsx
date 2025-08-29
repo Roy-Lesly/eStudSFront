@@ -7,22 +7,23 @@ import Header from '@/section-h/Header/Header';
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/components/Table/MyTableComp';
-import { EdgeMainSubject, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeMainSubjectPrim } from '@/Domain/schemas/interfaceGraphqlPrimary';
 import MyModal from '@/MyModals/MyModal';
 import ButtonAction from '@/Buttons/ButtonAction';
 import ModalCUDMainSubject from '@/components/MyModals/ModalCUDMainSubject';
 import { useTranslation } from 'react-i18next';
+import { TableColumn } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 
 
 const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
   const { t } = useTranslation("common");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
-  const [selectedItem, setSelectedItem] = useState<EdgeMainSubject | null>(null);
+  const [selectedItem, setSelectedItem] = useState<EdgeMainSubjectPrim | null>(null);
 
 
-  const Columns: TableColumn<EdgeMainSubject>[] = [
-    { header: "#", align: "center", render: (_item: EdgeMainSubject, index: number) => index + 1, },
+  const Columns: TableColumn<EdgeMainSubjectPrim>[] = [
+    { header: "#", align: "center", render: (_item: EdgeMainSubjectPrim, index: number) => index + 1, },
     { header: `${t("Subject Name")}`, accessor: "node.subjectName", align: "left" },
 
     {
@@ -61,7 +62,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
         <div className="bg-white mt-2 mx-auto rounded shadow w-full">
           {data ?
             <MyTableComp
-              data={data.sort((a: EdgeMainSubject, b: EdgeMainSubject) => a.node.subjectName > b.node.subjectName ? 1 : a.node.subjectName < b.node.subjectName ? -1 : 0)}
+              data={data.sort((a: EdgeMainSubjectPrim, b: EdgeMainSubjectPrim) => a.node.subjectName > b.node.subjectName ? 1 : a.node.subjectName < b.node.subjectName ? -1 : 0)}
               columns={Columns}
               table_title={t("Subject List")}
               button_type={"add"}

@@ -1,4 +1,4 @@
-import { NodeCustomUser, NodeProgram, NodeSchoolIdentification, NodeSchoolHigherInfo } from "./interfaceGraphql";
+import { NodeCustomUser, NodeProgram, NodeSchoolHigherInfo } from "./interfaceGraphql";
 
 interface PageInfo {
   hasNextPage: boolean;
@@ -31,7 +31,7 @@ export interface NodeSeries {
   id: string;
   name: string;
   level: string;
-  subjects: { edges: EdgeMainSubject[] };
+  subjects: { edges: EdgeMainSubjectPrim[] };
 }
 
 // export interface NodeProgramPrim {
@@ -56,7 +56,7 @@ export interface NodeClassRoomPrim {
   paymentThree: number;
 }
 
-export interface NodeMainSubject {
+export interface NodeMainSubjectPrim {
   id: string;
   subjectName: string;
   subjectCode: string;
@@ -64,7 +64,7 @@ export interface NodeMainSubject {
 
 export interface NodeSubjectPrim {
   id: string;
-  mainsubjectprim: NodeMainSubject;
+  mainsubjectprim: NodeMainSubjectPrim;
   classroomprim: NodeClassRoomPrim;
   subjectCode: string;
   subjectType: string;
@@ -239,8 +239,8 @@ export interface EdgeClassRoomPrim {
   node: NodeClassRoomPrim;
 }
 
-export interface EdgeMainSubject {
-  node: NodeMainSubject;
+export interface EdgeMainSubjectPrim {
+  node: NodeMainSubjectPrim;
 }
 
 export interface EdgeSubjectPrim {

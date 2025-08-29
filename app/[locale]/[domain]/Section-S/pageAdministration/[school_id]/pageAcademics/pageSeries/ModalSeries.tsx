@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { decodeUrlID } from '@/utils/functions';
 import { useRouter } from 'next/navigation';
 import { gql, useLazyQuery } from '@apollo/client';
-import { EdgeMainSubject, NodeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeMainSubjectSec, NodeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import MyInputField from '@/components/MyInputField';
 import MySelectField from '@/components/MySelectField';
@@ -71,9 +71,9 @@ export const ModalSeries = ({
         }
     }
 
-    const [listSubjectsInSeries, setListSubjectsInSeries] = useState<EdgeMainSubject[] | undefined>(selectedSeries?.mainsubjects?.edges)
-    const [listSubjectsInDB, setListSubjectsInDB] = useState<EdgeMainSubject[]>()
-    const [filteredSubjects, setFilteredSubjects] = useState<EdgeMainSubject[]>(); // 👈 new state
+    const [listSubjectsInSeries, setListSubjectsInSeries] = useState<EdgeMainSubjectSec[] | undefined>(selectedSeries?.mainsubjects?.edges)
+    const [listSubjectsInDB, setListSubjectsInDB] = useState<EdgeMainSubjectSec[]>()
+    const [filteredSubjects, setFilteredSubjects] = useState<EdgeMainSubjectSec[]>(); // 👈 new state
     const [getMainSubjects, { loading, data: mainSubjectsData }] = useLazyQuery(GET_MAIN_SUBJECTS);
     const [searchText, setSearchText] = useState<string>();
 
@@ -114,7 +114,7 @@ export const ModalSeries = ({
 
     const handleSubmit = async (deleteFlag = false) => {
 
-        const mainsubjectsIds = listSubjectsInSeries?.map((s: EdgeMainSubject) => parseInt(decodeUrlID(s.node.id)));
+        const mainsubjectsIds = listSubjectsInSeries?.map((s: EdgeMainSubjectSec) => parseInt(decodeUrlID(s.node.id)));
 
         if (!mainsubjectsIds || mainsubjectsIds?.length < 1) {
             alert(t("Please Select atleast 1 Subject"));
@@ -266,7 +266,7 @@ export const ModalSeries = ({
                                 <div className="w-1/2 border p-2 rounded">
                                     <h3 className="font-semibold text-sm mb-2">{t("Series Subjects")} - {listSubjectsInSeries?.length}</h3>
                                     <ul className="space-y-1">
-                                        {!loading && listSubjectsInSeries ? listSubjectsInSeries.map((subj: EdgeMainSubject) => (
+                                        {!loading && listSubjectsInSeries ? listSubjectsInSeries.map((subj: EdgeMainSubjectSec) => (
                                             <li key={subj.node.id} className="flex justify-between items-center border p-1 rounded">
                                                 <div className='flex justify-between'>
                                                     <span className='text-left mr-2'>{subj?.node?.subjectCode}</span>

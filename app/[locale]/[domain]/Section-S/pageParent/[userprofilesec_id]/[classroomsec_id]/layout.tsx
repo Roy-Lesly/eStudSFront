@@ -1,5 +1,5 @@
-import Footer from "@/section-h/compStudent/components/Footer";
-import Navbar from "@/section-h/compStudent/components/Navbar";
+import Footer from "@/app/[locale]/[domain]/SectionAll/Footer";
+import Navbar from "@/app/[locale]/[domain]/SectionAll/Navbar";
 import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
 import { gql } from "@apollo/client";
 import type { Metadata } from "next";
@@ -50,8 +50,8 @@ const page = async ({
       {data ?
         <Footer
           params={p}
-          feeInfo={data?.allSchoolFeesSec.edges[0]}
-          source="S"
+          section="S"
+          role="Parent"
         />
         :
         null

@@ -11,8 +11,8 @@ import { EdgeSchoolFeesPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrima
 import DisplayChildProfile from './DisplayChildProfile';
 
 const Display = (
-    { dataUsers, dataH, dataS, dataP, p, dataYears }:
-        { dataUsers: EdgeCustomUser[], dataH: EdgeSchoolFees[], dataS: EdgeSchoolFeesSec[], dataP: EdgeSchoolFeesPrim[]; p: any, dataYears: string[] | any }
+    { dataUsers, dataH, dataS, dataP, p, sp, dataYears }:
+        { dataUsers: EdgeCustomUser[], dataH: EdgeSchoolFees[], sp: any, dataS: EdgeSchoolFeesSec[], dataP: EdgeSchoolFeesPrim[]; p: any, dataYears: string[] | any }
 ) => {
 
     const { t } = useTranslation('common');
@@ -63,6 +63,7 @@ const Display = (
                         dataP={dataP}
                         dataYears={dataYears}
                         p={p}
+                        sp={sp}
                     />
                 }
 

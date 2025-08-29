@@ -137,7 +137,7 @@ const ModalSelectProperties = (
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
 
-                    <div className='flex flex-row gap-2 justify-between'>
+                    {/* <div className='flex flex-row gap-2 justify-between'>
                         <MyInputField
                             id="system"
                             name="system"
@@ -148,7 +148,7 @@ const ModalSelectProperties = (
                             options={[params.locale === "fr" ? "FRENCH" : "ENGLISH"].map((item: string) => item)}
                             onChange={(e) => handleChange('system', e.target.value)}
                         />
-                    </div>
+                    </div> */}
 
                     <div className='flex flex-row gap-2 justify-between'>
                         <MyInputField

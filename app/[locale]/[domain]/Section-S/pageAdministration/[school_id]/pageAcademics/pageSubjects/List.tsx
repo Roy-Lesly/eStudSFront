@@ -6,7 +6,7 @@ import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-s/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/components/Table/MyTableComp';
-import { EdgeSeries, EdgeSubjectSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeSeries, EdgeSubjectSec, NodeSubSubjectSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import SearchMultiple from '@/Search/SearchMultiple';
 import ExcelExporter from '@/ExcelExporter';
 import ButtonAction from '@/Buttons/ButtonAction';
@@ -15,11 +15,12 @@ import { useRouter } from 'next/navigation';
 import MyModal from '@/MyModals/MyModal';
 import { useTranslation } from 'react-i18next';
 import ModalSelectProperties from './ModalSelectProperties';
+import { capitalizeFirstLetter } from '@/utils/functions';
 
 
 const List = (
-  { params, data, sp, apiYears, apiLevels, apiSeries }:
-    { params: any; data: any, sp: any, apiYears: any, apiLevels: string[], apiSeries: EdgeSeries[] }
+  { p, data, sp, apiYears, apiLevels, apiSeries }:
+    { p: any; data: any, sp: any, apiYears: any, apiLevels: string[], apiSeries: EdgeSeries[] }
 ) => {
 
   const { t } = useTranslation();
@@ -28,24 +29,44 @@ const List = (
   const router = useRouter();
   const [selectedItem, setSelectedItem] = useState<EdgeSubjectSec | null>(null);
 
+  console.log(data);
+
   const Columns: TableColumn<EdgeSubjectSec>[] = [
     { header: "#", align: "center", render: (_item: EdgeSubjectSec, index: number) => index + 1, },
     { header: `${t("Subject")}`, accessor: "node.mainsubject.subjectName", align: "left" },
-    { header: `${t("Class")}`, accessor: "node.classroomsec.level", align: "left" },
+    { header: `${t("Class")} / ${t("Section")}`, align: "left",
+      render: (item: EdgeSubjectSec) => <div className="flex flex-row gap-2 items-center justify-between p-1 rounded-full">
+        <span>{item.node.classroomsec.level}</span>
+        <span>{item.node.classroomsec.stream}</span>
+      </div>
+    },
     { header: `${t("Coef")}`, accessor: "node.subjectCoefficient", align: "center" },
-    { header: `${t("Section")}`, accessor: "node.classroomsec.stream", align: "center" },
     { header: `${t("Year")}`, accessor: "node.classroomsec.academicYear", align: "center" },
-    { header: `${t("Teacher")}`, accessor: "node.assignedTo.firstName", align: "center" },
+    {
+      header: `${t("Teacher")}`, align: "center",
+      render: (item: EdgeSubjectSec) => <div className="flex flex-row gap-2 items-center justify-center p-1 rounded-full">
+        {!item.node.hasSubSubjects ? 
+         <div className='flex flex-col gap-2'>
+          <span className='w-full text-sm'>{item.node.assignedTo?.firstName}</span>
+          <span className='w-full text-sm'>{item.node.assignedToTwo?.firstName}</span>
+        </div>
+        :
+        <div className='flex flex-col w-full gap-2'>
+          {item.node.subsubjectList?.map((ss: NodeSubSubjectSec, idx: number) => 
+          <span className='flex flex-row  w-full justify-between gap-2 text-sm' key={ss.id}>
+            <span className='w-full flex'>{capitalizeFirstLetter(ss.name)},</span>
+            <span className='text-green-600 font-medium'>{ss?.assignedTo?.firstName}</span>
+          </span>
+        )}
+        </div>}
+      </div>
+    },
     {
       header: `${t("View")}`, align: "center",
-      render: (item) => <div
-        className="flex flex-row gap-2 items-center justify-center p-1 rounded-full"
-      >
+      render: (item) => <div className="flex flex-row gap-2 items-center justify-center p-1 rounded-full">
         <div className='flex flex-row gap-2'>
-          {/* <ButtonAction data={item} type='edit' action={() => { setShowModal({ show: true, type: "update" }); setSelectedItem(item) }} /> */}
-          {/* <ButtonAction data={item} type='delete' action={() => { setShowModal({ show: true, type: "delete" }); setSelectedItem(item) }} /> */}
           <button
-            onClick={() => router.push(`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageAcademics/pageSubjects/${item.node.id}`)}
+            onClick={() => router.push(`/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageSubjects/${item.node.id}`)}
             className="bg-green-200 p-1 rounded-full"
           >
             <FaRightLong color="green" size={21} />
@@ -58,7 +79,7 @@ const List = (
   return (
     <DefaultLayout
       pageType='admin'
-      domain={params.domain}
+      domain={p.domain}
       downloadComponent={<></>
         // <ExcelExporter
         //   data={activeTab ? data?.allMainSpecialties?.edges : data?.allSpecialties?.edges}
@@ -70,16 +91,18 @@ const List = (
       }
       searchComponent={
         <SearchMultiple
-          names={['level', 'stream']}
-          link={`/${params.domain}/Section-S/pageAdministration/${params.school_id}/pageAcademics/pageClassrooms`}
+          names={['subjectName']}
+          link={`/${p.domain}/Section-S/pageAdministration/${p.school_id}/pageAcademics/pageSubjects`}
           select={[
-            { type: 'select', name: 'academicYear', dataSelect: data?.allAcademicYearsSec },
+            { type: 'select', name: 'level', dataSelect: apiLevels },
+            { type: 'select', name: 'academicYear', dataSelect: apiYears },
+            { type: 'select', name: 'hasSubSubjects', dataSelect: ["Yes", "No"] },
           ]}
         />
       }
       sidebar={
         <Sidebar
-          params={params}
+          params={p}
           menuGroups={GetMenuAdministration()}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -123,7 +146,7 @@ const List = (
         {<MyModal
           component={
             <ModalSelectProperties
-              params={params}
+              params={p}
               apiYears={apiYears}
               apiLevels={apiLevels}
               apiSeries={apiSeries}

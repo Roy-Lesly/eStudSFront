@@ -24,7 +24,7 @@ const ButtonUpdate = ({ handleUpdate, dataToSubmit }: { handleUpdate: any, dataT
         <motion.button
           onClick={handleClick}
           className={`flex items-center gap-2 px-4 py-2 text-white font-semibold rounded-lg ${
-            isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+            isLoading ? "bg-slate-600" : "bg-blue-500 hover:bg-blue-600"
           } shadow-md transition-colors duration-300`}
           disabled={isLoading}
           whileHover={{ scale: isLoading ? 1 : 1.1 }}

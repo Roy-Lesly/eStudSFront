@@ -6,7 +6,7 @@ import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/components/Table/MyTableComp';
-import { EdgeMainSubject, EdgeSeries, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeMainSubjectSec, EdgeSeries, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import SearchMultiple from '@/Search/SearchMultiple';
 import ExcelExporter from '@/ExcelExporter';
 import ButtonAction from '@/Buttons/ButtonAction';

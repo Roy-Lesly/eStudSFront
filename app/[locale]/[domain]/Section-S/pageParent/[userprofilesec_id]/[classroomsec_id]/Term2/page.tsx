@@ -1,32 +1,32 @@
 import { Metadata } from 'next';
 import React, { Suspense } from 'react'
-import ResultDisplay from '../ResultDisplay';
+import ResultDisplaySecondary from '@/app/[locale]/[domain]/SectionAll/ParentStudent/ResultDisplaySecondary';
 
 
 export const metadata: Metadata = {
-    title: "CA Page",
-    description: "Student CA Page",
+    title: "Term Page",
+    description: "Student Term Page",
 };
 
 const page = async ({
     params,
     searchParams
 }: {
-  params: any;
-  searchParams: any;
+    params: any;
+    searchParams: any;
 }) => {
 
-  const p = await params
-  const sp = await searchParams
+    const p = await params
+    const sp = await searchParams
 
     return (
-        <div>           
+        <div>
             <Suspense fallback={<div>Loading ...</div>}>
 
-                <ResultDisplay
+                <ResultDisplaySecondary
                     params={p}
-                    resultType='ca'
-                    title='ca'
+                    resultType='Second'
+                    title='Second Term'
                 />
 
             </Suspense>

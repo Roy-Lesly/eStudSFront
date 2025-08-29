@@ -6,7 +6,7 @@ import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; 
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/components/Table/MyTableComp';
-import { EdgeMainSubject, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
+import { TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyModal from '@/MyModals/MyModal';
 import ButtonAction from '@/Buttons/ButtonAction';
 import ModalCUDMainSubject from '@/components/MyModals/ModalCUDMainSubject';

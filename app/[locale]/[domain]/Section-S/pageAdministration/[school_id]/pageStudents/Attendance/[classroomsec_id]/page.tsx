@@ -38,6 +38,7 @@ const ClassManagementPage = async ({
       <List
         p={p}
         data={data?.allUserprofilesSec?.edges}
+        // apiYears={data?.allAcademicYearsSec}
         classroom={data?.allClassroomsSec?.edges[0]}
         attendance={data?.allAttendanceGeneralSecondary?.edges[0]}
         sp={sp} />

@@ -31,7 +31,7 @@ export interface NodeSeries {
   id: string;
   name: string;
   level: string;
-  mainsubjects: { edges: EdgeMainSubject[] };
+  mainsubjects: { edges: EdgeMainSubjectSec[] };
   subjectList: string[];
 }
 
@@ -54,21 +54,32 @@ export interface NodeClassRoomSec {
   paymentThree: number;
 }
 
-export interface NodeMainSubject {
+export interface NodeMainSubjectSec {
   id: string;
   subjectName: string;
   subjectCode: string;
 }
 
+
 export interface NodeSubjectSec {
   id: string;
-  mainsubject: NodeMainSubject;
+  mainsubject: NodeMainSubjectSec;
   classroomsec: NodeClassRoomSec;
   subjectType: string;
   subjectCoefficient: string;
   assigned: boolean;
-  compulsory: boolean;
+  hasSubSubjects: boolean;
   dateAssigned: boolean;
+  assignedTo: NodeCustomUser;
+  assignedToTwo: NodeCustomUser;
+  subsubjectList: NodeSubSubjectSec[];
+}
+
+
+export interface NodeSubSubjectSec {
+  id: string;
+  name: string;
+  subjectsec: NodeSubjectSec;
   assignedTo: NodeCustomUser;
 }
 
@@ -201,8 +212,8 @@ export interface EdgeClassRoomSec {
   node: NodeClassRoomSec;
 }
 
-export interface EdgeMainSubject {
-  node: NodeMainSubject;
+export interface EdgeMainSubjectSec {
+  node: NodeMainSubjectSec;
 }
 
 export interface EdgeSubjectSec {

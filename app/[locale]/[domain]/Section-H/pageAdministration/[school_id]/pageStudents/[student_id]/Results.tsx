@@ -4,8 +4,10 @@ import { EdgeResult, EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import FeesCheck from './Comps/FeesCheck';
 import ResultsEdit from './Comps/ResultsEdit';
 import ResultSlip from '@/[locale]/[domain]/Section-H/pageStudent//[userprofile_id]/ResultSlip';
+import { useTranslation } from 'react-i18next';
 
 const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolFees, params: any }) => {
+  const { t } = useTranslation("common");
   const [selectedSemester, setSelectedSemester] = useState<string>('I');
 
   const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -32,18 +34,18 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
           {data?.[0]?.node?.student?.customuser?.fullName || "Student Name"}
         </motion.h1>
         <motion.h2
-          className="text-gray-700 text-lg"
+          className="text-slate-800 text-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7 }}
         >
-          Class: {fees?.node?.userprofile?.specialty?.mainSpecialty?.specialtyName}
+          {t("Class")}: {fees?.node?.userprofile?.specialty?.mainSpecialty?.specialtyName}
         </motion.h2>
         <div className="text-gray-700 text-lg">
-          Level: {fees?.node?.userprofile?.specialty?.level.level || "N/A"}
+          {t("Level")}: {fees?.node?.userprofile?.specialty?.level.level || "N/A"}
         </div>
         <div>
-          Year: {fees?.node?.userprofile.specialty.academicYear || "N/A"}
+          {t("Year")}: {fees?.node?.userprofile.specialty.academicYear || "N/A"}
         </div>
       </div>
 
@@ -56,7 +58,7 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
         <div className='flex flex-col items-center justify-between md:flex-row'>
           <div
             className="flex font-semibold items-center justify-between mb-2 text-slate-800 text-xl">
-            Semester {selectedSemester} - Results
+            {t("Semester")} {selectedSemester} - {t("Results")}
           </div>
 
           <FeesCheck
@@ -81,8 +83,8 @@ const Results = ({ data, fees, params }: { data: EdgeResult[], fees: EdgeSchoolF
               onChange={handleSemesterChange}
               className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-2 rounded-md shadow-sm text-gray-700 transition"
             >
-              <option value="I">1st Semester</option>
-              <option value="II">2nd Semester</option>
+              <option value="I">{t("1st Semester")}</option>
+              <option value="II">{t("2nd Semester")}</option>
             </select>
           </div>
         </div>

@@ -1,8 +1,9 @@
 import React from "react";
-import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
 import { Metadata } from "next";
 import { gql } from "@apollo/client";
-import List from "./List";
+import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
+import DisplayProfile from "@/app/[locale]/[domain]/SectionAll/ParentStudent/DisplayProfile";
+
 
 export const metadata: Metadata = {
   title: "My Profile",
@@ -18,30 +19,22 @@ const page = async ({
 
   const p = await params;
 
-  const client = getApolloClient(p.domain);
-  let data;
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        id: parseInt(p.userprofile_id),
-        timestamp: new Date().getTime()
-      },
-      fetchPolicy: 'no-cache'
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error);
-    if (error.networkError && error.networkError.result) {
-    }
-    data = null;
-  }
+  const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      id: p?.userprofile_id
+    },
+  });
+
 
 
   return (
-    <List
-      data={data}
+    <DisplayProfile
+      data={data?.allUserProfiles?.edges[0]?.node}
       params={p}
+      section="H"
+      role="Student"
     />
   );
 };
@@ -62,7 +55,7 @@ const GET_DATA = gql`
         edges {
         node {
             id 
-            customuser { id fullName matricle photo dob pob telephone address parent parentTelephone nationality highestCertificate yearObtained regionOfOrigin} 
+            customuser { id fullName matricle photo dob pob telephone address fatherName fatherTelephone motherName motherTelephone nationality highestCertificate yearObtained regionOfOrigin} 
             specialty { 
               academicYear level { level} 
               mainSpecialty { specialtyName}

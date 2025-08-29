@@ -19,7 +19,7 @@ const page = async (
 
   return (
     <StudentProfile
-      data={data?.allUserProfiles?.edges[0].node}
+      data={data?.allUserprofilesSec?.edges[0].node}
       p={p}
     />
   );
@@ -34,7 +34,7 @@ const GET_DATA = gql`
  query GetUserProfiles(
   $id: ID!
 ) {
-  allUserProfiles(
+  allUserprofilesSec(
     id: $id
   ) {
     edges {
@@ -45,15 +45,14 @@ const GET_DATA = gql`
           fatherName motherName fatherTelephone motherTelephone parentAddress 
           nationality highestCertificate yearObtained regionOfOrigin
         }
-        specialty { 
+        classroomsec { 
           academicYear, 
-          level { level } 
+          level
           school { 
             id campus schoolName town region email colors address telephone website logoCampus
           } 
-          mainSpecialty { specialtyName } 
         }
-        program { name }
+        programsec
         infoData
       }
     }

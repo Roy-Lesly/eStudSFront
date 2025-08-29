@@ -18,6 +18,7 @@ const ModalTransaction = (
     { setModalOpen: any; data: any, p: any, schoolFeesSec: NodeSchoolFeesSec }
 ) => {
 
+  const separateRegistration = schoolFeesSec?.userprofilesec?.classroomsec?.school?.registrationSeperateTuition
   const token = localStorage.getItem("token");
   const user: JwtPayload | null = token ? jwtDecode(token) : null
   const [clicked, setClicked] = useState<boolean>(false)
@@ -54,7 +55,7 @@ const ModalTransaction = (
     }
   );
 
-  console.log(reasonsApi);
+  console.log(separateRegistration);
 
   useEffect(() => {
     if (formData.reason === "PLATFORM CHARGES" && parseInt(formData.amount) != platformCharges) {
@@ -169,7 +170,22 @@ const ModalTransaction = (
               className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
             >
               <option value="">{t("Select Reason")}</option>
-              {reasons && reasons?.length ? reasons.map((r: EdgeAccount) => <option key={r.node.name} value={r.node.name}>{r.node.name} {r.node?.year}</option>) : null}
+              {reasons && reasons?.length ? reasons?.
+                filter((r: EdgeAccount) => {
+                  if (!user?.is_superuser && r.node.name.toLowerCase().includes("manage")) {
+                    return false;
+                  }
+                  if (!separateRegistration && r.node.name.toLowerCase().includes("regi")) {
+                    return false;
+                  }
+                  return true;
+                })
+                .map((r: EdgeAccount) => (
+                  <option key={r.node.name} value={r.node.name}>
+                    {r.node.name} {r.node?.year}
+                  </option>
+                ))
+                : null}
             </select>
           </div>
 
@@ -217,19 +233,6 @@ const ModalTransaction = (
               className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
             />
           </div>
-
-          {/* Telephone */}
-          {/* <div className="flex gap-4 items-center">
-            <FaPhone size={20} className="text-orange-600" />
-            <input
-              type="tel"
-              name="telephone"
-              value={formData.telephone}
-              onChange={handleChange}
-              placeholder="Enter telephone (optional)"
-              className="border focus:ring-2 focus:ring-blue-500 outline-none px-4 py-2 rounded-lg w-full"
-            />
-          </div> */}
 
           {/* Submit Button */}
           <div

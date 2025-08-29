@@ -59,15 +59,6 @@ const Results = ({ data, fees, params }: { data: EdgeResultSecondary[], fees: Ed
             {selectedTerm?.label} - {t("Results")}
           </div>
 
-          {/* <FeesCheck
-            fees={fees?.node}
-            term={parseInt(selectedTerm?.value)}
-            link={`${params.domain}/Section-S/pageAdministration/${params.school_id}/pageStudents/${params.student_id}`}
-            emptyComp={true}
-          >
-            <>Slip</>
-          </FeesCheck> */}
-
 
 
           <div className="w-32">

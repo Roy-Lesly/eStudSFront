@@ -1,7 +1,7 @@
 import React from 'react';
 import { gql } from '@apollo/client';
 import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
-import List from './List';
+import DisplayFees from '@/app/[locale]/[domain]/SectionAll/DisplayFees';
 
 
 const page = async ({
@@ -24,12 +24,15 @@ const page = async ({
   });
 
   return (
-    <List
-      apiSchoolFees={data.allSchoolFees.edges[0]}
-      apiTransactions={data.allTransactions.edges}
-      apiMoratoires={data.allMoratoires.edges[0]}
-      p={p}
-    />
+    <></>
+    // <DisplayFees
+    //   apiFees={data.allSchoolFees.edges[0]}
+    //   apiTransactions={data.allTransactions.edges}
+    //   apiMoratoires={data.allMoratoires.edges[0]}
+    //   p={p}
+    //   section='S'
+    //   role='Parent'
+    // />
   )
 }
 

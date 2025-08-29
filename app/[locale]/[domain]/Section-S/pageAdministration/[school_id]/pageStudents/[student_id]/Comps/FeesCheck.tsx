@@ -18,6 +18,8 @@ const FeesCheck = ({ children, term, fees, link, emptyComp }: AccessGuardProps) 
   const tuition = fees?.userprofilesec.classroomsec.tuition
   const paidAmount = fees?.userprofilesec?.classroomsec.tuition - fees?.balance
 
+  console.log(fees);
+  
   if (!fees?.platformPaid) {
     return <ActivationErrorSec
       fees={fees}

@@ -9,6 +9,7 @@ import initTranslations from '@/initTranslations';
 import ResultSlip from '../ResultSlip';
 import PaymentStatus from './PaymentStatus';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import { queryServerGraphQL } from '@/utils/graphql/queryServerGraphQL';
 
 
 
@@ -20,23 +21,15 @@ const ResultDisplay = async (
   const p = await params;
   const { t } = await initTranslations(p.locale, ['common'])
 
-  const client = getApolloClient(p.domain);
-  let data;
-
-  try {
-    const result = await client.query<any>({
-      query: GET_DATA,
-      variables: {
-        first: 40,
-        userprofileId: p.userprofile_id,
-        specialtyId: p.specialty_id,
-      },
-    });
-    data = result.data;
-  } catch (error: any) {
-    errorLog(error)
-    data = null;
-  }
+  const data = await queryServerGraphQL({
+    domain: p.domain,
+    query: GET_DATA,
+    variables: {
+      first: 40,
+      userprofileId: p.userprofile_id,
+      specialtyId: p.specialty_id,
+    },
+  });
 
   const schoolFees: NodeSchoolFees = data ? data.allSchoolFees?.edges[0].node : null
   const platform = data ? data.allSchoolFees.edges[0].node.platformPaid : 0
@@ -47,132 +40,132 @@ const ResultDisplay = async (
   const pubI: EdgePublish[] = data && data.allPublishes.edges?.filter((item: EdgePublish) => item?.node.semester === "I")
   const pubII: EdgePublish[] = data && data.allPublishes.edges?.filter((item: EdgePublish) => item?.node.semester === "II")
 
-return (
-  <div className='flex flex-col min-h-screen bg-gray-50'>
-    {/* Header */}
-    <div className='text-center font-semibold text-xl uppercase my-6'>
-      {t(title)} - {t("result")}
-    </div>
+  return (
+    <div className='flex flex-col min-h-screen bg-gray-50'>
+      {/* Header */}
+      <div className='text-center font-semibold text-xl uppercase my-6'>
+        {t(title)} - {t("result")}
+      </div>
 
-    {/* Main Content */}
-    <div className='flex-grow px-2 mb-24'>
-      {data ? (
-        data.allSchoolFees.edges[0].node.platformPaid ? (
-          data.allResults ? (
-            <>
-              {/* Semester I Logic */}
-              {
-                (
-                  (resultType == "ca" && paidAmount > ((feeCheckList[0] - 0.01) * tuition)) ||
-                  (resultType == "exam" && paidAmount > ((feeCheckList[1] - 0.01) * tuition)) ||
-                  (resultType == "resit" && paidAmount > ((feeCheckList[2] - 0.01) * tuition))
-                ) && pubI.length > 0 ? (
-                  <CaExamResit
-                    semester='I'
-                    resultType={resultType}
-                    data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
-                    fees={data.allSchoolFees.edges}
-                    publish={pubI[0]}
-                    platform={platform}
-                    params={p}
-                  />
-                ) : (resultType === "result" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)) ? (
-                  <Result
-                    locale={p.locale}
-                    semester='I'
-                    schoolFees={schoolFees}
-                    examPublished={pubI[0]?.node?.exam}
-                    resitPublished={pubI[0]?.node?.resit}
-                    data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
-                  />
-                ) : (
-                  <Notification
-                    semester='I'
-                    platform={platform}
-                    fees={
-                      resultType === "ca" && paidAmount > ((feeCheckList[0] - 0.01) * tuition) ||
-                      resultType === "exam" && paidAmount > ((feeCheckList[1] - 0.01) * tuition) ||
-                      resultType === "resit" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)
-                    }
-                    publish={
-                      resultType === "ca" && pubI[0]?.node.ca ||
-                      resultType === "exam" && pubI[0]?.node.exam ||
-                      resultType === "resit" && pubI[0]?.node.resit
-                    }
-                    t={t}
-                  />
-                )
-              }
+      {/* Main Content */}
+      <div className='flex-grow px-2 mb-24'>
+        {data ? (
+          data.allSchoolFees.edges[0].node.platformPaid ? (
+            data.allResults ? (
+              <>
+                {/* Semester I Logic */}
+                {
+                  (
+                    (resultType == "ca" && paidAmount > ((feeCheckList[0] - 0.01) * tuition)) ||
+                    (resultType == "exam" && paidAmount > ((feeCheckList[1] - 0.01) * tuition)) ||
+                    (resultType == "resit" && paidAmount > ((feeCheckList[2] - 0.01) * tuition))
+                  ) && pubI.length > 0 ? (
+                    <CaExamResit
+                      semester='I'
+                      resultType={resultType}
+                      data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
+                      fees={data.allSchoolFees.edges}
+                      publish={pubI[0]}
+                      platform={platform}
+                      params={p}
+                    />
+                  ) : (resultType === "result" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)) ? (
+                    <Result
+                      locale={p.locale}
+                      semester='I'
+                      schoolFees={schoolFees}
+                      examPublished={pubI[0]?.node?.exam}
+                      resitPublished={pubI[0]?.node?.resit}
+                      data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'I')}
+                    />
+                  ) : (
+                    <Notification
+                      semester='I'
+                      platform={platform}
+                      fees={
+                        resultType === "ca" && paidAmount > ((feeCheckList[0] - 0.01) * tuition) ||
+                        resultType === "exam" && paidAmount > ((feeCheckList[1] - 0.01) * tuition) ||
+                        resultType === "resit" && paidAmount > ((feeCheckList[2] - 0.01) * tuition)
+                      }
+                      publish={
+                        resultType === "ca" && pubI[0]?.node.ca ||
+                        resultType === "exam" && pubI[0]?.node.exam ||
+                        resultType === "resit" && pubI[0]?.node.resit
+                      }
+                      t={t}
+                    />
+                  )
+                }
 
-              {/* Semester II Logic */}
-              {
-                (
-                  (resultType == "ca" && paidAmount > ((feeCheckList[3] - 0.1) * tuition)) ||
-                  (resultType == "exam" && paidAmount > ((feeCheckList[4] - 0.1) * tuition)) ||
-                  (resultType == "resit" && paidAmount > ((feeCheckList[5] - 0.1) * tuition))
-                ) && pubII.length > 0 ? (
-                  <CaExamResit
-                    semester='II'
-                    resultType={resultType}
-                    data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'II')}
-                    fees={data.allSchoolFees.edges}
-                    publish={pubII[0]}
-                    platform={platform}
-                    params={p}
-                  />
-                ) : (resultType === "result" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)) ? (
-                  <Result
-                    locale={p.locale}
-                    semester='II'
-                    schoolFees={schoolFees}
-                    examPublished={pubII[0]?.node?.exam}
-                    resitPublished={pubII[0]?.node?.resit}
-                    data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'II')}
-                  />
-                ) : (
-                  <Notification
-                    semester='II'
-                    platform={platform}
-                    fees={
-                      resultType === "ca" && paidAmount > ((feeCheckList[3] - 0.01) * tuition) ||
-                      resultType === "exam" && paidAmount > ((feeCheckList[4] - 0.01) * tuition) ||
-                      resultType === "resit" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)
-                    }
-                    publish={
-                      resultType === "ca" && pubII[0]?.node.ca ||
-                      resultType === "exam" && pubII[0]?.node.exam ||
-                      resultType === "resit" && pubII[0]?.node.resit
-                    }
-                    t={t}
-                  />
-                )
-              }
-            </>
+                {/* Semester II Logic */}
+                {
+                  (
+                    (resultType == "ca" && paidAmount > ((feeCheckList[3] - 0.1) * tuition)) ||
+                    (resultType == "exam" && paidAmount > ((feeCheckList[4] - 0.1) * tuition)) ||
+                    (resultType == "resit" && paidAmount > ((feeCheckList[5] - 0.1) * tuition))
+                  ) && pubII.length > 0 ? (
+                    <CaExamResit
+                      semester='II'
+                      resultType={resultType}
+                      data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'II')}
+                      fees={data.allSchoolFees.edges}
+                      publish={pubII[0]}
+                      platform={platform}
+                      params={p}
+                    />
+                  ) : (resultType === "result" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)) ? (
+                    <Result
+                      locale={p.locale}
+                      semester='II'
+                      schoolFees={schoolFees}
+                      examPublished={pubII[0]?.node?.exam}
+                      resitPublished={pubII[0]?.node?.resit}
+                      data={data.allResults.edges.filter((item: EdgeResult) => item.node.course.semester === 'II')}
+                    />
+                  ) : (
+                    <Notification
+                      semester='II'
+                      platform={platform}
+                      fees={
+                        resultType === "ca" && paidAmount > ((feeCheckList[3] - 0.01) * tuition) ||
+                        resultType === "exam" && paidAmount > ((feeCheckList[4] - 0.01) * tuition) ||
+                        resultType === "resit" && paidAmount > ((feeCheckList[5] - 0.01) * tuition)
+                      }
+                      publish={
+                        resultType === "ca" && pubII[0]?.node.ca ||
+                        resultType === "exam" && pubII[0]?.node.exam ||
+                        resultType === "resit" && pubII[0]?.node.resit
+                      }
+                      t={t}
+                    />
+                  )
+                }
+              </>
+            ) : (
+              <div className="text-center text-red-600 text-lg mt-10">{t("No Data")} {t("Results")}</div>
+            )
           ) : (
-            <div className="text-center text-red-600 text-lg mt-10">{t("No Data")} {t("Results")}</div>
+            <PaymentStatus
+              params={params}
+              apiSchoolFees={data.allSchoolFees?.edges[0]}
+              school={schoolFees?.userprofile?.specialty?.school}
+            />
           )
         ) : (
-          <PaymentStatus
-            params={params}
-            apiSchoolFees={data.allSchoolFees?.edges[0]}
-            school={schoolFees?.userprofile?.specialty?.school}
-          />
-        )
-      ) : (
-        <div className="flex flex-col items-center justify-center my-20 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
-          <p className="text-2xl text-center">🚫 {t("No Data Available")}.</p>
+          <div className="flex flex-col items-center justify-center my-20 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
+            <p className="text-2xl text-center">🚫 {t("No Data Available")}.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Sticky Encouragement Message */}
+      {data && (
+        <div className="sticky bottom-10 bg-white shadow-inner pt-2 px-2 z-20 border-t">
+          <EncouragementMessage data={data.allSchoolFees.edges[0].node} />
         </div>
       )}
     </div>
-
-    {/* Sticky Encouragement Message */}
-    {data && (
-      <div className="sticky bottom-10 bg-white shadow-inner pt-2 px-2 z-20 border-t">
-        <EncouragementMessage data={data.allSchoolFees.edges[0].node} />
-      </div>
-    )}
-  </div>
-);
+  );
 
 }
 
@@ -192,7 +185,8 @@ const CaExamResit = async (
     data = data.filter(
       (item) => {
         const info = JSON.parse(item.node.infoData);
-        return (Math.round(+(parseFloat(info.ca) + parseFloat(info.exam)) * 10) / 10) < 50 || info.resit > 0;      }
+        return (Math.round(+(parseFloat(info.ca) + parseFloat(info.exam)) * 10) / 10) < 50 || info.resit > 0;
+      }
     );
   }
 
@@ -249,21 +243,21 @@ const CaExamResit = async (
                         <GrClose size={18} className="text-red" />
                       ))}
 
-                      {resultType === "exam" && (exam == null ? (
+                      {resultType === "exam" && (exam == null ? 
                         <FaMinus size={20} className="text-gray-500" />
-                      ) : exam > examLim - 0.01 ? (
+                       : exam > examLim - 0.01 ? 
                         <GrStatusGood size={20} className="text-green-500" />
-                      ) : (
+                       : 
                         <GrClose size={18} className="text-red" />
-                      ))}
+                      )}
 
-                      {resultType === "resit" && (resit == null ? (
+                      {resultType === "resit" && (resit == null) ?
                         <FaMinus size={20} className="text-gray-500" />
-                      ) : resit > resitLim - 0.01 ? (
+                      : resit > resitLim - 0.01 ?
                         <GrStatusGood size={20} className="text-green-500" />
-                      ) : (
+                      :
                         <GrClose size={18} className="text-red" />
-                      ))}
+                      }
                     </td>
                   </tr>
                 })}
@@ -288,6 +282,7 @@ const Result = async (
   { schoolFees, data, semester, examPublished, resitPublished, locale }:
     { schoolFees: NodeSchoolFees, data: EdgeResult[], examPublished: boolean, resitPublished: boolean, semester: "I" | "II", locale: string }
 ) => {
+
 
   const { t: trans } = await initTranslations(locale, ['common'])
   const t = trans("PageStudent")["Result"];
@@ -315,7 +310,6 @@ const Result = async (
             {data.map((edge, index: number) => {
               const { node } = edge;
               const { infoData } = node;
-
               const parsedInfo = typeof infoData === 'string' ? JSON.parse(infoData) : {};
               const { ca = "-", exam = "-", resit = "-", validated = false, average = "-" } = parsedInfo;
 
@@ -328,9 +322,9 @@ const Result = async (
                   <td className="border border-gray-300 font-medium px-4 py-2 text-sm uppercase">{edge.node.course?.mainCourse?.courseName || "N/A"}</td>
                   <td className="border border-gray-300 px-4 py-2">{ca}</td>
                   <td className="border border-gray-300 px-4 py-2">{exam}</td>
-                  <td className="border border-gray-300 px-4 py-2">{resitPublished ? resit : "/"}</td>
-                  <td className="border border-gray-300 font-semibold gap-2 px-2 py-2">{resitPublished ? resit && resit > -0.01 ? <span className="text-red">*</span> : null : null}<span className={`${resitPublished ? validated ? "text-green-500" : "text-red" : ""}`}>{resitPublished ? calcTotalandGrade(ca, exam, resit).mark : (ca + exam)}</span></td>
-                  <td className="border border-gray-300 font-semibold gap-2 px-2 py-2">{resitPublished ? resit && resit > -0.01 ? <span className="text-red">*</span> : null : null}<span className={`${resitPublished ? validated ? "text-green-500" : "text-red" : ""}`}>{calcTotalandGrade(ca, exam, resitPublished ? resit : null).grade}</span></td>
+                  <td className="border border-gray-300 px-4 py-2">{resitPublished ? resit : "N/A"}</td>
+                  <td className="border border-gray-300 font-semibold gap-2 px-2 py-2">{resitPublished ? resit && resit > -0.01 ? <span className="text-red">*</span> : null : null}<span className={`${resitPublished ? validated ? "text-green-500" : "text-red" : ""}`}>{resitPublished ? calcTotalandGrade(ca, exam, resit).mark : "-"}</span></td>
+                  <td className="border border-gray-300 font-semibold gap-2 px-2 py-2">{resitPublished ? resit && resit > -0.01 ? <span className="text-red">*</span> : null : null}<span className={`${resitPublished ? validated ? "text-green-500" : "text-red" : ""}`}>{resitPublished ? calcTotalandGrade(ca, exam, resit).grade : "-"}</span></td>
                 </tr>
                 // </motion.tr>
               );

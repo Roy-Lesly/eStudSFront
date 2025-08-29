@@ -9,8 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 
 const DisplayChildProfile = (
-    { dataH, dataS, dataP, selectedChild, setSelectedChild, p, dataYears }:
-        { dataH: EdgeSchoolFees[], dataS: EdgeSchoolFeesSec[], dataP: EdgeSchoolFeesPrim[], selectedChild: NodeCustomUser, setSelectedChild: any, p: any, dataYears: string[] }
+    { dataH, dataS, dataP, selectedChild, setSelectedChild, p, sp, dataYears }:
+        { dataH: EdgeSchoolFees[], dataS: EdgeSchoolFeesSec[], dataP: EdgeSchoolFeesPrim[], selectedChild: NodeCustomUser, setSelectedChild: any, p: any, sp: any, dataYears: string[] }
 ) => {
 
     const { t } = useTranslation("common");

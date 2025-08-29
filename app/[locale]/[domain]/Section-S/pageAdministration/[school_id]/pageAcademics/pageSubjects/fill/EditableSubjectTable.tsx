@@ -1,7 +1,7 @@
 'use client';
 import MySelectField from '@/components/MySelectField';
 import { EdgeCustomUser } from '@/utils/Domain/schemas/interfaceGraphql';
-import { EdgeMainSubject, NodeSubjectSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeMainSubjectSec, NodeSubjectSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { decodeUrlID } from '@/utils/functions';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
@@ -11,22 +11,26 @@ import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaPlus } from 'react-icons/fa';
 import { FaArrowLeftLong } from 'react-icons/fa6';
+import { GrClose } from 'react-icons/gr';
+import { IoClose } from 'react-icons/io5';
 
 const subjectTypeChoices = [
   { label: 'Theory', value: 'THEORY' },
   { label: 'Practical', value: 'PRACTICAL' },
+  { label: 'Both', value: 'BOTH' },
 ];
 
 type SubjectField = keyof Pick<
   NodeSubjectSec,
-  'subjectType' | 'subjectCoefficient' | 'compulsory' | 'assignedTo'
->;
+  'subjectType' | 'subjectCoefficient' | 'assignedTo'
+> | "subSubjects";
 
 
 const EditableSubjectTable = (
   { data, sp, p, apiTeachers }:
-    { data: EdgeMainSubject[], sp: any, p: any, apiTeachers: EdgeCustomUser[] }
+    { data: EdgeMainSubjectSec[], sp: any, p: any, apiTeachers: EdgeCustomUser[] }
 ) => {
 
   const { t } = useTranslation("common");
@@ -35,22 +39,23 @@ const EditableSubjectTable = (
   const user: JwtPayload | null = token ? jwtDecode(token) : null
 
   const [subjects, setSubjects] = useState(() =>
-  data?.map(item => {
-    const teacher = apiTeachers?.find((t: EdgeCustomUser) =>
-      t.node.fullName?.toLowerCase().includes("system")
-    );
+    data?.map(item => {
+      const teacher = apiTeachers?.find((t: EdgeCustomUser) =>
+        t.node.fullName?.toLowerCase().includes("system")
+      );
 
-    return {
-      classroomsecId: parseInt(sp?.classId),
-      mainsubjectId: decodeUrlID(item.node.id),
-      assignedTo: teacher ? decodeUrlID(teacher.node.id) : "0",
-      subjectName: item.node.subjectName,
-      subjectType: "THEORY",
-      subjectCoefficient: 1,
-      compulsory: false,
-    };
-  })
-);
+      return {
+        classroomsecId: parseInt(sp?.classId),
+        mainsubjectId: decodeUrlID(item.node.id),
+        assignedTo: teacher ? decodeUrlID(teacher.node.id) : "0",
+        subjectName: item.node.subjectName,
+        subjectType: "THEORY",
+        subjectCoefficient: 1,
+        hasSubSubjects: false,
+        subSubjects: [] as { name: string; assignedTo: string }[]
+      };
+    })
+  );
 
   const handleChange = (index: number, field: SubjectField, value: any) => {
     setSubjects(prev => {
@@ -87,14 +92,13 @@ const EditableSubjectTable = (
         ...sub,
         mainsubjectId: parseInt(sub.mainsubjectId),
         subjectCoefficient: Number(sub.subjectCoefficient),
-        compulsory: Boolean(sub.compulsory),
         createdById: user?.user_id,
         updatedById: user?.user_id,
         delete: false,
       };
 
       try {
-        const res = await ApiFactory({
+        const subjectId = await ApiFactory({
           newData: payload,
           editData: payload,
           mutationName: "createUpdateDeleteSubjectSec",
@@ -110,7 +114,36 @@ const EditableSubjectTable = (
           actionLabel: "processing",
         });
 
-        if (res?.length > 5) {
+        if (subjectId?.length > 5) {
+          console.log(payload);
+          console.log(payload.subSubjects?.length);
+          if (payload.subSubjects?.length) {
+            payload?.subSubjects?.forEach(subsec => {
+              const payloadSub = {
+                ...subsec,
+                subjectsecId: parseInt(decodeUrlID(subjectId)),
+                createdById: user?.user_id,
+                updatedById: user?.user_id,
+                delete: false,
+              };
+              const subsecId = ApiFactory({
+                newData: payloadSub,
+                editData: payloadSub,
+                mutationName: "createUpdateDeleteSubSubjectSec",
+                modelName: "subsubjectsec",
+                successField: "id",
+                query: querySubSubject,
+                router: null,
+                params: p,
+                redirect: false,
+                reload: false,
+                returnResponseField: true,
+                redirectPath: ``,
+                actionLabel: "processing",
+              });
+              console.log(subsecId);
+            });
+          }
           count += 1;
           removeSubject(payload.mainsubjectId.toString())
         }
@@ -153,66 +186,143 @@ const EditableSubjectTable = (
             <th className="border p-2">{t("Type")}</th>
             <th className="border p-2">{t("Coef")}</th>
             <th className="border p-2">{t("Teacher")}</th>
-            <th className="border p-2">{t("Compulsory")}</th>
+            <th className="border p-2">{t("Sub Subjects")}</th>
           </tr>
         </thead>
         <tbody>
-          {subjects?.map((subj, idx) => (
-            <tr key={subj?.mainsubjectId} className="border-b">
-              <td className="border p-2">{subj.subjectName}</td>
-              <td className="border p-2">
-                <select
-                  value={subj.subjectType}
-                  onChange={(e) => handleChange(idx, 'subjectType', e.target.value)}
-                  className="w-full border p-1 rounded"
+          {subjects?.map((subj, idx) => {
+            const hasSubSubjects = subj.subSubjects?.length > 0;
+
+            return (
+              <tr key={subj?.mainsubjectId} className="border-b">
+                {/* Subject Name */}
+                <td className="border p-2">{subj.subjectName}</td>
+
+                {/* Type */}
+                <td className="border p-2 w-32">
+                  <select
+                    value={subj.subjectType}
+                    onChange={(e) => handleChange(idx, 'subjectType', e.target.value)}
+                    className="w-full border p-1 rounded"
+                  >
+                    {subjectTypeChoices.map(choice => (
+                      <option key={choice.value} value={choice.value}>{choice.label}</option>
+                    ))}
+                  </select>
+                </td>
+
+                {/* Coefficient */}
+                <td className="p-2 w-16">
+                  <input
+                    type="number"
+                    min={1}
+                    value={subj.subjectCoefficient}
+                    onChange={(e) => handleChange(idx, 'subjectCoefficient', parseInt(e.target.value))}
+                    className="w-16 border p-1 rounded"
+                  />
+                </td>
+
+                {/* If there are no sub-subjects, render Teacher column */}
+                {!hasSubSubjects && (
+                  <td className="border p-2">
+                    <MySelectField
+                      isMulti='select-single'
+                      id="assignedTo"
+                      name="assignedTo"
+                      label=""
+                      placeholder={t("Select Teacher")}
+                      value={returnTeachers(idx)}
+                      options={apiTeachers?.map((teacher: EdgeCustomUser) => ({
+                        value: decodeUrlID(teacher.node.id),
+                        label: teacher.node.fullName
+                      }))}
+                      onChange={(e: any) => handleChange(idx, 'assignedTo', e.value)}
+                    />
+                  </td>
+                )}
+
+                <td
+                  className="border p-2"
+                  {...(hasSubSubjects ? { colSpan: 2 } : {})} // expand across Teacher + Sub-Subjects
                 >
-                  {subjectTypeChoices.map(choice => (
-                    <option key={choice.value} value={choice.value}>{choice.label}</option>
-                  ))}
-                </select>
-              </td>
-              <td className="p-2 flex justify-center items-center">
-                <input
-                  type="number"
-                  min={1}
-                  value={subj.subjectCoefficient}
-                  onChange={(e) => handleChange(idx, 'subjectCoefficient', parseInt(e.target.value))}
-                  className="w-16 border p-1 rounded"
-                />
-              </td>
-              <td className="border p-2">
-                {/* <select
-                  value={subj.assignedTo}
-                  onChange={(e) => handleChange(idx, 'assignedTo', e.target.value)}
-                  className="w-full border p-1 rounded"
-                >
-                  {apiTeachers.map((teacher: EdgeCustomUser, idx: number) => (
-                    <option key={idx} value={decodeUrlID(teacher.node.id)}>{teacher.node.fullName}</option>
-                  ))}
-                </select> */}
-                <MySelectField
-                  isMulti='select-single'
-                  id="assignedTo"
-                  name="assignedTo"
-                  label=""
-                  placeholder={t("Select Teacher")}
-                  value={returnTeachers(idx)}
-                  options={apiTeachers?.map((teacher: EdgeCustomUser) => {
-                    return { value: decodeUrlID(teacher.node.id), label: teacher.node.fullName }
-                  })}
-                  onChange={(e: any) => handleChange(idx, 'assignedTo', e.value)}
-                />
-              </td>
-              <td className="border p-2 text-center">
-                <input
-                  type="checkbox"
-                  checked={subj.compulsory}
-                  onChange={(e) => handleChange(idx, 'compulsory', e.target.checked)}
-                />
-              </td>
-            </tr>
-          ))}
+                  <div className="space-y-2">
+                    {subj?.subSubjects?.map((c, cIdx) => (
+                      <div key={cIdx} className="flex gap-2 items-center justify-center">
+                        {/* Sub-Subject Name */}
+                        <input
+                          type="text"
+                          value={c.name}
+                          placeholder="Name"
+                          onChange={(e) => {
+                            if (e.target.value.length > 10) { alert(t("max 10 letters"))}
+                            const updated = [...subj.subSubjects];
+                            updated[cIdx].name = e.target.value.slice(0, 11).toUpperCase();
+                            handleChange(idx, 'subSubjects', updated);
+                          }}
+                          className="flex- w-full border p-1 rounded"
+                        />
+
+                        {/* Teacher Select for each Sub-Subject */}
+                        <MySelectField
+                          isMulti="select-single"
+                          id={`subSubjects-${idx}-${cIdx}`}
+                          name={`subSubjects-${idx}-${cIdx}`}
+                          label=""
+                          placeholder={t("Assign Teacher")}
+                          value={
+                            (() => {
+                              const teacher = apiTeachers.find(t => decodeUrlID(t.node.id) === c.assignedTo);
+                              if (!teacher) return null;
+                              return { value: c.assignedTo, label: teacher.node.fullName || c.assignedTo };
+                            })()
+                          }
+                          options={apiTeachers.map((teacher: EdgeCustomUser) => ({
+                            value: decodeUrlID(teacher.node.id),
+                            label: teacher.node.fullName,
+                          }))}
+                          onChange={(e: any) => {
+                            const updated = [...subj.subSubjects];
+                            updated[cIdx].assignedTo = e.value;
+                            handleChange(idx, 'subSubjects', updated);
+                          }}
+                        />
+
+                        {/* Remove Sub-Subject */}
+                        <button
+                          type="button"
+                          className="flex text-red p-1 rounded-full bg-orange-100"
+                          onClick={() => {
+                            const updated = subj.subSubjects.filter((_, j) => j !== cIdx);
+                            handleChange(idx, 'subSubjects', updated);
+                          }}
+                        >
+                          <IoClose color='red' size={28} />
+                        </button>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      className="flex items-center justify-between gap-2 text-blue-800 font-medium px-2 text-sm py-1 rounded-xl shadow-lg bg-green-200"
+                      onClick={() => {
+                        handleChange(idx, 'subSubjects', [
+                          ...subj.subSubjects,
+                          { name: '', assignedTo: '' }
+                        ]);
+                      }}
+                    >
+                      <FaPlus size={22} color='green' />
+                      <span>{t("Add Sub Subject")}</span>
+                    </button>
+                  </div>
+                </td>
+
+              </tr>
+            );
+          })}
         </tbody>
+
+
       </table>
 
       <div className="flex justify-between gap-3">
@@ -246,7 +356,7 @@ export const query = gql`
         $assignedTo: ID!,
         $subjectType: String!,
         $subjectCoefficient: Int!,
-        $compulsory: Boolean!,
+        $hasSubSubjects: Boolean!,
         $createdById: ID,
         $updatedById: ID!,
         $delete: Boolean!
@@ -258,12 +368,39 @@ export const query = gql`
             assignedToId: $assignedTo,
             subjectType: $subjectType,
             subjectCoefficient: $subjectCoefficient,
-            compulsory: $compulsory,
+            hasSubSubjects: $hasSubSubjects,
             createdById: $createdById,
             updatedById: $updatedById,
             delete: $delete
         ) {
             subjectsec {
+              id
+            }
+        }
+    }
+`;
+
+
+export const querySubSubject = gql`
+    mutation CreateUpdateDeleteSubSubjectSec(
+        $id: ID,
+        $name: String!,
+        $subjectsecId: ID!,
+        $assignedTo: ID!,
+        $createdById: ID,
+        $updatedById: ID!,
+        $delete: Boolean!
+    ) {
+        createUpdateDeleteSubSubjectSec (
+            id: $id,
+            name: $name,
+            subjectsecId: $subjectsecId,
+            assignedToId: $assignedTo,
+            createdById: $createdById,
+            updatedById: $updatedById,
+            delete: $delete
+        ) {
+            subsubjectsec {
               id
             }
         }

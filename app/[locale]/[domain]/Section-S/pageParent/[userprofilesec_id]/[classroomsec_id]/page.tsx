@@ -1,7 +1,7 @@
 import initTranslations from "@/initTranslations";
 import { gql } from "@apollo/client";
 import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
-import DisplayParentStudent from "@/app/[locale]/[domain]/SectionAll/DisplayParentStudent";
+import DisplayParentStudent from "@/app/[locale]/[domain]/SectionAll/ParentStudent/DisplayParentStudent";
 
 
 const page = async (
@@ -26,14 +26,9 @@ const page = async (
 
   return (
     <main className="mb-20 mt-[70px]">
-
-      {/* <pre className="bg-gray-100 p-4 rounded">
-        {JSON.stringify(data?.allUserprofilesSec?.edges[0]?.node, null, 2)}
-      </pre> */}
-
       <DisplayParentStudent
         profile={data?.allUserprofilesSec?.edges[0]?.node}
-        source="S"
+        section="S"
         role="parent"
         p={p}
       />

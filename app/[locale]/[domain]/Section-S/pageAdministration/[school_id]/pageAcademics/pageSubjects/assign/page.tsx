@@ -17,7 +17,6 @@ const EditPage = async ({
   const p = await params;
   const sp = await searchParams;
 
-  const paginationParams: Record<string, any> = {};
 
   const dataAssignedSubjects = await queryServerGraphQL({
     domain: p.domain,
@@ -46,17 +45,12 @@ const EditPage = async ({
     },
   });
 
+  console.log(dataAssignedSubjects);
+
   return (
     <div>
-      {/* <pre> */}
-      {/* {JSON.stringify(data?.allClassroomsSec?.edges?.[0], null, 2)} */}
-      {/* {JSON.stringify(dataSeriesMainSubjects?.allSeries?.edges?.[0], null, 2)} */}
-      {/* {JSON.stringify(dataSeriesMainSubjects?.allSeries?.edges?.[0].mainsubjects, null, 2)} */}
-      {/* {JSON.stringify(dataSeriesMainSubjects?.allSeries?.edges?.[0]?.node.mainsubjects?.edges, null, 2)} */}
-      {/* </pre> */}
       <List
         params={p}
-        // data={data?.allSubjectsSec?.edges}
         apiLevel={data?.getLevelsSec}
         selectedSeries={dataSeriesMainSubjects?.allSeries?.edges?.[0]?.node}
         dataAssignedSubjects={dataAssignedSubjects?.allSubjectsSec?.edges}
@@ -106,13 +100,13 @@ const GET_DATA_SUBJECTS = gql`
     allSubjectsSec (
       classroomsecId: $classroomsecId
       seriesId: $seriesId
-      last: 200
+      last: 30
     ){
       edges {
         node {
             id 
             mainsubject {
-                id subjectName
+              id subjectName
             }
         }
       }

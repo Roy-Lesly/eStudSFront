@@ -10,9 +10,11 @@ import MyTableComp from '@/components/Table/MyTableComp';
 import MyModal from '@/MyModals/MyModal';
 import ButtonAction from '@/Buttons/ButtonAction';
 import { useTranslation } from 'react-i18next';
-// import ModalCUDNotification from '@/components/MyModals/ModalCUDNotification';
 import { EdgeLevel, EdgeNotification } from '@/utils/Domain/schemas/interfaceGraphql';
 import { TableColumn } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import ModalCUDNotification from '@/components/MyModals/ModalCUDNotification';
+import { FaCheck } from 'react-icons/fa';
+import { X } from 'lucide-react';
 
 
 const List = (
@@ -20,7 +22,7 @@ const List = (
     { p: any; data: EdgeNotification[], sp: any, apiYears: string[], apiTarget: string[], apiLevels: EdgeLevel[] }
 ) => {
 
-  console.log(apiTarget);
+  console.log(data);
   const { t } = useTranslation("common");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
@@ -45,14 +47,16 @@ const List = (
     { header: `${t("Subject")}`, accessor: "node.shortSubject", align: "left" },
     { header: `${t("Message")}`, accessor: "node.shortMessage", align: "left", },
     { header: `${t("Recipients")}`, accessor: "node.recipients", align: "left" },
-    { header: `${t("Year")}`, accessor: "node.academicYear", align: "left" },
+    { header: `${t("Year")} / ${t("Status")}`, align: "left", render: ((item: EdgeNotification) => <div className='flex justify-between'>
+        <span>{item.node.academicYear}</span>
+        <span className=''>{item.node.sent ? <FaCheck color='green' size={23} /> : <X color='red' size={26} />}</span>
+      </div>) },
     {
       header: `${t("Date")}`, align: "left", render: ((item: EdgeNotification) => <div className='flex flex-col'>
         <span>{item.node.scheduledFor.slice(0, 10)}</span>
         {/* <span>{item.node.scheduledFor.slice(11, 16)}</span> */}
       </div>)
     },
-    // { header: `${t("Type")}`, accessor: "node.notificationType", align: "left" },
 
     {
       header: "View", align: "center",
@@ -102,7 +106,7 @@ const List = (
         </div>
 
 
-        {/* <MyModal
+        <MyModal
           component={
             <ModalCUDNotification
               params={p}
@@ -119,7 +123,7 @@ const List = (
           onClose={() => setShowModal({ show: false, type: "create" })}
           title={showModal?.type || ""}
           classname=''
-        /> */}
+        />
 
 
       </div>

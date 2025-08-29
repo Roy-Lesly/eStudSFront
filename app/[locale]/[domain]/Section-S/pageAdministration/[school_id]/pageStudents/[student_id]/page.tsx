@@ -81,7 +81,9 @@ const GET_DATA = gql`
               paymentTwo
               paymentThree
               level
-              school { schoolName campus colors schoolIdentification { logo platformCharges idCharges } schoolfeesControl }
+              school { 
+                schoolName campus colors registrationSeperateTuition
+                schoolIdentification { logo platformCharges idCharges } schoolfeesControl }
             }
             programsec
           }

@@ -15,10 +15,11 @@ interface AccessGuardProps {
 const FeesCheck = ({ children, semester, fees, link, emptyComp }: AccessGuardProps) => {
   const schoolfeesControl = fees.node.userprofile.specialty.school.schoolfeesControl.split(",").map(Number);
   const tuition = fees.node.userprofile.specialty.tuition
+  const platform = fees.node.platformPaid
   const paidAmount = fees.node.userprofile.specialty.tuition - fees.node.balance
   const control = semester === "I" ? schoolfeesControl[1] : schoolfeesControl[4]
 
-  if (fees.node.balance == 0 || (tuition * control) < (paidAmount + 1)) {
+  if (platform && (fees.node.balance < 1 || (tuition * control) < (paidAmount + 1))) {
     return <>{children}</>;
   }
 

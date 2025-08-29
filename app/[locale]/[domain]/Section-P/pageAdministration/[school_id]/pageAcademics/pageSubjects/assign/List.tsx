@@ -8,12 +8,12 @@ import { useTranslation } from 'react-i18next';
 import { decodeUrlID } from '@/utils/functions';
 import { useRouter } from 'next/navigation';
 import { ArrowRightIcon } from 'lucide-react';
-import { EdgeClassRoomPrim, EdgeMainSubject, EdgeSubjectPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import { EdgeClassRoomPrim, EdgeMainSubjectPrim, EdgeSubjectPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
 
 const List = (
     { params, sp, allMainSubjects, dataAssignedSubjects, apiClassroom }:
-        { params: any, dataAssignedSubjects: EdgeSubjectPrim[], allMainSubjects: EdgeMainSubject[], sp: any, apiClassroom: EdgeClassRoomPrim }
+        { params: any, dataAssignedSubjects: EdgeSubjectPrim[], allMainSubjects: EdgeMainSubjectPrim[], sp: any, apiClassroom: EdgeClassRoomPrim }
 ) => {
 
     const router = useRouter();
@@ -21,7 +21,7 @@ const List = (
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
     const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
-    const [filteredSubjects, setFilteredSubjects] = useState<EdgeMainSubject[]>([]);
+    const [filteredSubjects, setFilteredSubjects] = useState<EdgeMainSubjectPrim[]>([]);
 
     useEffect(() => {
         const assignedMainSubjectIds = dataAssignedSubjects?.map(item =>

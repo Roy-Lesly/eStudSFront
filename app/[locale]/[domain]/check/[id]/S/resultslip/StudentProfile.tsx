@@ -5,21 +5,21 @@ import { Calendar, MapPin, GraduationCap, School } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import Footer from "../../../Footer";
+import { NodeUserProfileSec } from "@/utils/Domain/schemas/interfaceGraphqlSecondary";
 
 export default function StudentProfile(
   { data, p }:
-    { data: NodeUserProfile, p: any }
+    { data: NodeUserProfileSec, p: any }
 ) {
 
-  const schoolInfo: NodeSchoolHigherInfo = data?.specialty?.school
+  const schoolInfo: NodeSchoolHigherInfo = data?.classroomsec?.school
 
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("common");
 
   return (
     <div className="min-h-screen p-2 bg-teal-50 flex flex-col justify-between space-y-4 shadow">
 
       
-
       <div className="w-full p-4 md:p-6 md:mt-6 bg-white shadow-lg rounded-xl space-y-6">
         {schoolInfo && schoolInfo?.id ?
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-10">
@@ -73,15 +73,11 @@ export default function StudentProfile(
                 </div>
                 <div className="flex items-center gap-2">
                   <GraduationCap className="w-5 h-5 text-blue-500" />
-                  <span className="font-medium">{t("Specialty")}:</span> {data?.specialty?.mainSpecialty?.specialtyName}
-                </div>
-                <div className="flex items-center gap-2">
-                  <School className="w-5 h-5 text-blue-500" />
-                  <span className="font-medium">{t("Level")}:</span> {data?.specialty?.level?.level}
+                  <span className="font-medium">{t("Specialty")}:</span> {data?.classroomsec?.level}
                 </div>
                 <div className="flex items-center gap-2">
                   <GraduationCap className="w-5 h-5 text-blue-500" />
-                  <span className="font-medium">{t("Academic Year")}:</span> {data?.specialty?.academicYear}
+                  <span className="font-medium">{t("Academic Year")}:</span> {data?.classroomsec?.academicYear}
                 </div>
               </div>
             </div>

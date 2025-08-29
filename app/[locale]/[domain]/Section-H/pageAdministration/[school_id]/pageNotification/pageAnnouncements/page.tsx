@@ -72,7 +72,7 @@ const GET_DATA = gql`
       edges {
         node {
           id target message subject recipients academicYear
-          notificationType scheduledFor
+          notificationType scheduledFor sent
            specialties {
             edges {
               node {

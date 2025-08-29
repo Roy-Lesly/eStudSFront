@@ -52,6 +52,7 @@ const page = async ({
   return (
     <Display
       p={p}
+      sp={sp}
       dataUsers={dataCustomuser?.allCustomusers?.edges}
       dataH={dataHigher?.allSchoolFees?.edges}
       dataS={dataSecondary?.allSchoolFeesSec?.edges}

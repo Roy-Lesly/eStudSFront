@@ -8,11 +8,12 @@ import useAxios from './useAxios';
 import { jwtDecode } from "jwt-decode";
 
 
-
-//To be Deleted
-import { ApolloClient, InMemoryCache, HttpLink, NormalizedCacheObject } from '@apollo/client';
-import Cookies from "js-cookie"; // Only available on client
-import { protocol, RootApi } from "./config";
+type GradeResult = {
+    mark: number
+    grade: string
+    withResit: boolean
+    passed: boolean
+}
 
 export const isServer = () => typeof window === "undefined";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY
@@ -328,30 +329,88 @@ export const generateGrade = async (mark: any) => {
     }
 }
 
-export const calcTotalandGrade = (ca: any, ex: any, re: any) => {
-    var withResit = false
-    var passed = false
-    var mark = 0
-    var gd = "-"
-    if (!re || isNaN(re) || re < 0) {
-        mark = (ca ? isNaN(ca) ? 0 : parseInt(ca) : 0) + (ex ? isNaN(ex) ? 0 : parseInt(ex) : 0)
+export const calcTotalandGrade = (
+    ca: number | string | null | undefined,
+    ex: number | string | null | undefined,
+    re: number | string | null | undefined
+): GradeResult => {
+    let withResit = false
+    let passed = false
+    let mark = 0
+    let gd = "-"
+
+    const num = (val: number | string | null | undefined): number => {
+        if (val === null || val === undefined) return 0
+        const n = Number(val)
+        return isNaN(n) ? 0 : n
+    }
+
+    const caNum = num(ca)
+    const exNum = num(ex)
+    const reNum = num(re)
+
+    if (!re || isNaN(Number(re)) || reNum < 0) {
+        mark = caNum + exNum
     } else {
-        mark = (ca ? isNaN(ca) ? 0 : parseInt(ca) : 0) + (re ? isNaN(re) ? 0 : parseInt(re) : 0)
+        mark = caNum + reNum
         withResit = true
     }
-    if (mark) {
-        if (mark > 0.1) { gd = "F" }
-        if (mark > 39.99) { gd = "D" }
-        if (mark > 44.99) { gd = "D+" }
-        if (mark > 49.99) { gd = "C"; passed = true }
-        if (mark > 54.99) { gd = "C+"; passed = true }
-        if (mark > 59.99) { gd = "B"; passed = true }
-        if (mark > 69.99) { gd = "B+"; passed = true }
-        if (mark > 79.99) { gd = "A"; passed = true }
 
-    }
-    return { mark: mark, grade: gd, withResit: withResit, passed: passed }
+    if (mark > 0.1) gd = "F"
+    if (mark > 39.99) gd = "D"
+    if (mark > 44.99) gd = "D+"
+    if (mark > 49.99) { gd = "C"; passed = true }
+    if (mark > 54.99) { gd = "C+"; passed = true }
+    if (mark > 59.99) { gd = "B"; passed = true }
+    if (mark > 69.99) { gd = "B+"; passed = true }
+    if (mark > 79.99) { gd = "A"; passed = true }
+
+    return { mark, grade: gd, withResit, passed }
 }
+
+type Result = {
+  average: number;
+  grade: string;
+  status: boolean;
+};
+
+// export const calcTermAverage = (
+//   firstSeq: any,
+//   secondSeq: any,
+//   limit: number
+// ): Result => {
+
+//   let valid: number[] = [];
+
+//   // Collect valid numbers only
+//   if (firstSeq !== "-" && !isNaN(firstSeq)) {
+//     valid.push(parseFloat(firstSeq));
+//   }
+//   if (secondSeq !== "-" && !isNaN(secondSeq)) {
+//     valid.push(parseFloat(secondSeq));
+//   }
+
+//   // Compute average
+//   const average =
+//     valid.length > 0
+//       ? parseFloat((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1))
+//       : 0;
+
+//   // Grade logic (example, adjust as you need)
+//   let grade = "-";
+//   if (average > 0.1) grade = "F";
+//   if (average > 9.99) grade = "E";
+//   if (average > 11.99) grade = "D";
+//   if (average > 13.99) grade = "C";
+//   if (average > 15.99) grade = "B";
+//   if (average > 17.99) grade = "A";
+
+//   const status = average >= (limit/2);
+
+//   return { average, grade, status };
+// };
+
+
 
 export const addingTwoNumbers = async (ca: any, ex: any) => {
     var sum = (ca ? isNaN(ca) ? 0 : parseInt(ca) : 0) + (ex ? isNaN(ex) ? 0 : parseInt(ex) : 0)
@@ -621,9 +680,9 @@ export function getAcademicYearList(): string[] {
     let thisYearList = [];
 
     if (month < 7) {
-        thisYearList = [ `${year - 2}/${year - 1}`, `${year - 1}/${year}` ];
+        thisYearList = [`${year - 2}/${year - 1}`, `${year - 1}/${year}`];
     } else {
-        thisYearList = [ `${year - 1}/${year}` , `${year}/${year + 1}` ];
+        thisYearList = [`${year - 1}/${year}`, `${year}/${year + 1}`];
     }
     return thisYearList
 }

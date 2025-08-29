@@ -1,8 +1,5 @@
-import { EdgeSchoolFees, EdgeUserProfile } from "@/Domain/schemas/interfaceGraphql";
-import { decodeUrlID } from "@/functions";
-import Footer from "@/section-h/compStudent/components/Footer";
-import Navbar from "@/section-h/compStudent/components/Navbar";
-import getApolloClient from "@/utils/graphql/GetAppolloClient";
+import Footer from "@/app/[locale]/[domain]/SectionAll/Footer";
+import Navbar from "@/app/[locale]/[domain]/SectionAll/Navbar";
 import { queryServerGraphQL } from "@/utils/graphql/queryServerGraphQL";
 import { gql } from "@apollo/client";
 import type { Metadata } from "next";
@@ -12,6 +9,56 @@ export const metadata: Metadata = {
   title: "Student Page",
   description: "Student Home Page",
 };
+
+
+const page = async ({
+  params,
+  children
+}: {
+  params: any;
+  children: React.ReactNode;
+
+}) => {
+
+  const p = await params;
+
+  const data = await queryServerGraphQL({
+    domain: p?.domain,
+    query: GET_DATA,
+    variables: {
+      userprofileId: parseInt(p.userprofile_id),
+    },
+  });
+
+  return (
+    <div className="w-full">
+
+      {data ?
+        <Navbar
+          school={data?.allSchoolFees?.edges[0]?.node?.userprofile?.specialty?.school}
+        />
+        :
+        null
+      }
+
+      {children}
+
+      {data ?
+        <Footer
+          params={p}
+          section="H"
+          role="Student"
+        />
+        :
+        null
+      }
+
+    </div>
+  );
+}
+
+export default page;
+
 
 
 const GET_DATA = gql`
@@ -48,52 +95,3 @@ const GET_DATA = gql`
   }
 `;
 
-
-
-const page = async ({
-  params,
-  children
-}: {
-  params: any;
-  children: React.ReactNode;
-
-}) => {
-
-  const p = await params;
-
-  const data = await queryServerGraphQL({
-    domain: p?.domain,
-    query: GET_DATA,
-    variables: {
-      userprofileId: parseInt(p.userprofile_id),
-    },
-  });
-
-  return (
-    <div className="w-full">
-
-      {data ?
-        <Navbar
-          school={data?.allSchoolFeesSec.edges[0]?.node?.userprofile?.specialty?.school}
-        />
-        :
-        null
-      }
-
-      {children}
-
-      {data ?
-        <Footer
-          params={p}
-          feeInfo={data?.allSchoolFees.edges[0]}
-          source="S"
-        />
-        :
-        null
-      }
-
-    </div>
-  );
-}
-
-export default page;

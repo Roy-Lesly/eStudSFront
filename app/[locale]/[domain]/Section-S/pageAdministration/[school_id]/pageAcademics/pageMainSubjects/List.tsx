@@ -6,7 +6,7 @@ import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; 
 import ServerError from '@/ServerError';
 import DefaultLayout from '@/DefaultLayout';
 import MyTableComp from '@/components/Table/MyTableComp';
-import { EdgeMainSubject, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeMainSubjectSec, TableColumn } from '@/Domain/schemas/interfaceGraphqlSecondary';
 import MyModal from '@/MyModals/MyModal';
 import ButtonAction from '@/Buttons/ButtonAction';
 import ModalCUDMainSubject from '@/components/MyModals/ModalCUDMainSubject';
@@ -18,10 +18,10 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
   const { t } = useTranslation("common");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
-  const [selectedItem, setSelectedItem] = useState<EdgeMainSubject | null>(null);
+  const [selectedItem, setSelectedItem] = useState<EdgeMainSubjectSec | null>(null);
 
-  const Columns: TableColumn<EdgeMainSubject>[] = [
-    { header: "#", align: "center", render: (_item: EdgeMainSubject, index: number) => index + 1, },
+  const Columns: TableColumn<EdgeMainSubjectSec>[] = [
+    { header: "#", align: "center", render: (_item: EdgeMainSubjectSec, index: number) => index + 1, },
     { header: `${t("Subject Code")}`, accessor: "node.subjectCode", align: "left" },
     { header: `${t("Subject Name")}`, accessor: "node.subjectName", align: "left" },
 
@@ -68,7 +68,7 @@ const List = ({ p, data, sp }: { p: any; data: any, sp: any }) => {
           {data ?
             <MyTableComp
               data={
-                data.sort((a: EdgeMainSubject, b: EdgeMainSubject) => {
+                data.sort((a: EdgeMainSubjectSec, b: EdgeMainSubjectSec) => {
                   const subjectNameA = a.node.subjectName;
                   const subjectNameB = b.node.subjectName;
                   const codeA = a.node.subjectCode.toLowerCase();

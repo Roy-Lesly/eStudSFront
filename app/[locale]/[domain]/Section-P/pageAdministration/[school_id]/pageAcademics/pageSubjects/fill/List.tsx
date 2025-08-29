@@ -5,13 +5,13 @@ import { GetMenuAdministration } from '@/section-p/Sidebar/MenuAdministration';
 import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import EditableSubjectTable from './EditableSubjectTable';
-import { EdgeMainSubject } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import { EdgeMainSubjectPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
 
 
 const List = (
     { params, data, sp }:
-    { params: any, data: EdgeMainSubject[], sp: any }
+    { params: any, data: EdgeMainSubjectPrim[], sp: any }
 ) => {
 
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);

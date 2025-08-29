@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 
 const Fees = ({ data, p, schoolFeesSec }: { data: EdgeSchoolFeesSec, p: any, schoolFeesSec: NodeSchoolFeesSec }) => {
 
-  console.log(data);
   const { t } = useTranslation("common");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 

@@ -22,6 +22,7 @@ const EditPage = async ({
   paginationParams.level = sp?.level
   paginationParams.subjectName = sp?.subjectName
   paginationParams.academicYear = sp?.academicYear
+  paginationParams.hasSubSubjects = sp?.hasSubSubjects ? sp?.hasSubSubjects === "Yes" ? true : false : null
 
   const data = await queryServerGraphQL({
     domain: p.domain,
@@ -36,7 +37,7 @@ const EditPage = async ({
   return (
     <div>
       <List
-        params={p}
+        p={p}
         data={data?.allSubjectsSec?.edges}
         apiYears={data?.allAcademicYearsSec}
         apiLevels={data?.getLevelsSec}
@@ -66,6 +67,7 @@ const GET_DATA = gql`
    $level: String,
    $academicYear: String,
    $subjectName: String,
+   $hasSubSubjects: Boolean,
   ) {
     allSubjectsSec(
       last: 100,
@@ -73,13 +75,16 @@ const GET_DATA = gql`
       subjectName: $subjectName
       academicYear: $academicYear
       level: $level
+      hasSubSubjects: $hasSubSubjects
     ){
       edges {
         node {
-          id subjectCoefficient
+          id subjectCoefficient hasSubSubjects
+          subsubjectList { id name assignedTo { firstName } }
           mainsubject { id subjectName }
           classroomsec { id academicYear stream level tuition }
           assignedTo { firstName }
+          assignedToTwo { firstName }
         }
       }
     }

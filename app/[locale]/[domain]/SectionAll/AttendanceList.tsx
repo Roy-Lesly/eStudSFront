@@ -46,18 +46,38 @@ const AttendanceList: React.FC<AttendanceListProps> = ({ data, section, classroo
 
     useEffect(() => {
         if (instance?.infoData && !existing) {
-            const p = JSON.parse(instance.infoData)
+            const p = JSON.parse(instance.infoData);
+
             if (p[today]) {
                 setAttendance(p[today]);
-                setSetExisting(true)
+                setSetExisting(true);
             }
-            const diff = new Date().getTime() - new Date(instance?.updatedAt).getTime();
-            if ((diff / 1000) > 240) {
-                setCanEdit(false)
+
+            const updatedAt = new Date(instance?.updatedAt);
+            const now = new Date();
+
+            // Check if same day
+            const isSameDay =
+                updatedAt.getFullYear() === now.getFullYear() &&
+                updatedAt.getMonth() === now.getMonth() &&
+                updatedAt.getDate() === now.getDate();
+
+            const diff = now.getTime() - updatedAt.getTime();
+            console.log(isSameDay);
+            console.log((diff / 1000) > 300000);
+            console.log((diff / 1000));
+
+            if (!isSameDay) {
+                setCanEdit(true);
             }
+            if (isSameDay && ((diff / 1000) > 300)) {
+                setCanEdit(false);
+            }
+
             console.log(p);
         }
-    }, [instance])
+    }, [instance, today]);
+
 
     const toggleAttendance = (studentId: string, status: AttendanceStatus) => {
         setAttendance((prev) => ({

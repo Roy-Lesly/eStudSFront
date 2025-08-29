@@ -8,13 +8,13 @@ import { capitalizeFirstLetter, decodeUrlID } from '@/functions';
 import { useTranslation } from 'react-i18next';
 import { FaTimes } from 'react-icons/fa';
 import { ApiFactory } from '@/utils/graphql/ApiFactory';
-import { EdgeMainSubject } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
+import { EdgeMainSubjectPrim } from '@/utils/Domain/schemas/interfaceGraphqlPrimary';
 
 
 const ModalCUDMainSubject = ({
     actionType, selectedItem, setOpenModal, params, section
 }: {
-    params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeMainSubject | null, setOpenModal: any, section: "Secondary" | "Primary"
+    params: any, actionType: "update" | "create" | "delete", selectedItem: EdgeMainSubjectPrim | null, setOpenModal: any, section: "Secondary" | "Primary"
 }) => {
 
     const { t } = useTranslation();

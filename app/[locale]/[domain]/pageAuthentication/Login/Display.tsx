@@ -93,8 +93,10 @@ const Display = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], params:
         const redirectNextPage = () => {
             if (token && token?.school && token.school?.length == 1) {
                 if (token.role?.toLowerCase() == "student") {
-                    if (formData.parent) router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectChildProfile/?tel=${formData.matricle}&role=parent`);
-                    else router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectProfile/?user=${token.user_id}&role=student`);
+                    if (formData.parent) {
+                        localStorage.setItem("tel", formData.matricle);
+                        router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectChildProfile/?tel=${formData.matricle}&role=parent`);
+                    } else router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectProfile/?user=${token.user_id}&role=student`);
                     return
                 }
             }
@@ -118,6 +120,7 @@ const Display = ({ params, schools }: { schools: EdgeSchoolHigherInfo[], params:
                     }
                 }
                 if (token.role?.toLowerCase() == "student") {
+                    if (formData.parent) { localStorage.setItem("tel", formData.matricle);};
                     router.push(`/${params.locale}/${params.domain}/pageAuthentication/pageSelectProfile?role=${formData.parent ? "parent" : "student"}`);
                 }
             }

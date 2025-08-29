@@ -4,7 +4,7 @@ import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
 import { useTranslation } from 'react-i18next';
-import { EdgeMainSubject, NodeSeries, EdgeSubjectSec, EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeMainSubjectSec, NodeSeries, EdgeSubjectSec, EdgeSeries } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import { decodeUrlID } from '@/utils/functions';
 import { useRouter } from 'next/navigation';
 import { ArrowRightIcon, PlusCircle } from 'lucide-react';
@@ -28,7 +28,7 @@ const List = (
     const [showModal, setShowModal] = useState<{ show: boolean, type: "update" | "create" | "delete" }>();
 
     const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
-    const [filteredSubjects, setFilteredSubjects] = useState<EdgeMainSubject[]>([]);
+    const [filteredSubjects, setFilteredSubjects] = useState<EdgeMainSubjectSec[]>([]);
     const allMainSubjects = selectedSeries?.mainsubjects?.edges
 
     const [getClassSeries, { data: seriesData, loading: loadingSeries }] = useLazyQuery(GET_CLASS_SERIES);

@@ -17,8 +17,6 @@ const page = async (
     },
   });
 
-  console.log(data);
-
   return (
     <StudentProfile
       data={data?.allUserprofilesSec?.edges[0].node}
@@ -36,7 +34,7 @@ const GET_DATA = gql`
  query GetUserProfiles(
   $id: ID!
 ) {
-  allUserprofilesSec (
+  allUserprofilesSec(
     id: $id
   ) {
     edges {
@@ -45,13 +43,14 @@ const GET_DATA = gql`
         customuser {
           id photo fullName, matricle sex telephone dob pob email address
           fatherName motherName fatherTelephone motherTelephone parentAddress 
-          nationality
+          nationality highestCertificate yearObtained regionOfOrigin
         }
         classroomsec { 
-          academicYear level classType
+          academicYear, 
+          level
           school { 
             id campus schoolName town region email colors address telephone website logoCampus
-          }
+          } 
         }
         programsec
         infoData

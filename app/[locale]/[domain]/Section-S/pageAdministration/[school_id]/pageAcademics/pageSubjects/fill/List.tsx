@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Sidebar from '@/section-s/Sidebar/Sidebar';
 import { GetMenuAdministration } from '@/section-s/Sidebar/MenuAdministration'; import Header from '@/section-h/Header/Header';
 import DefaultLayout from '@/DefaultLayout';
-import { EdgeMainSubject } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
+import { EdgeMainSubjectSec } from '@/utils/Domain/schemas/interfaceGraphqlSecondary';
 import EditableSubjectTable from './EditableSubjectTable';
 import { EdgeCustomUser } from '@/utils/Domain/schemas/interfaceGraphql';
 
@@ -11,7 +11,7 @@ import { EdgeCustomUser } from '@/utils/Domain/schemas/interfaceGraphql';
 
 const List = (
     { params, data, sp, apiTeachers }:
-        { params: any, data: EdgeMainSubject[], sp: any , apiTeachers: EdgeCustomUser[]}
+        { params: any, data: EdgeMainSubjectSec[], sp: any , apiTeachers: EdgeCustomUser[]}
 ) => {
 
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);

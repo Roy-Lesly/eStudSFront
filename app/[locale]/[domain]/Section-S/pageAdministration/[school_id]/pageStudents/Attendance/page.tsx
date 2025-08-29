@@ -63,6 +63,7 @@ const GET_DATA_CLASSROOM_SEC = gql`
    $academicYear: String,
    $level: String,
   ) {
+    allAcademicYears
     allClassroomsSec(
       last: 100,
       id: $id

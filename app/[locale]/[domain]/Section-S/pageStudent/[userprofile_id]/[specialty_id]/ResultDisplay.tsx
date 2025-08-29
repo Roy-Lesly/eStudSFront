@@ -4,12 +4,10 @@ import { gql } from '@apollo/client';
 // import React, { useState } from 'react'
 import { FaMinus } from 'react-icons/fa';
 import { GrClose, GrStatusGood } from 'react-icons/gr';
-import EncouragementMessage from './EncouragementMessage';
 import initTranslations from '@/initTranslations';
-import ResultSlip from '../ResultSlip';
-import { FaArrowRightLong } from 'react-icons/fa6';
 import PaymentStatus from './PaymentStatus';
 import getApolloClient, { errorLog } from '@/utils/graphql/GetAppolloClient';
+import EncouragementMessage from '@/app/[locale]/[domain]/SectionAll/EncouragementMessage';
 
 
 
@@ -157,12 +155,12 @@ const ResultDisplay = async (
               ) : (
                 <div>{t("No Data")} {t("Results")}</div>
               )
-            ) : 
-            <PaymentStatus
-              params={params}
-              apiSchoolFees={data.allSchoolFees?.edges[0]}
-              school={schoolFees?.userprofile?.specialty?.school}
-            />
+            ) :
+              <PaymentStatus
+                params={params}
+                apiSchoolFees={data.allSchoolFees?.edges[0]}
+                school={schoolFees?.userprofile?.specialty?.school}
+              />
           ) : (
             <div className="flex flex-col items-center justify-center my-20 p-6 rounded-lg bg-red-100 border border-red-400 text-red-800 shadow-md max-w-lg mx-auto">
               <p className="text-2xl text-center">🚫 {t("No Data Available")}.</p>
@@ -170,7 +168,10 @@ const ResultDisplay = async (
           )}
         </div>
 
-        {data && <EncouragementMessage data={data.allSchoolFees.edges[0].node} />}
+        {data && <EncouragementMessage
+          profile={data.allSchoolFees.edges[0].node}
+          source="S"
+        />}
 
 
       </div>
@@ -194,7 +195,8 @@ const CaExamResit = async (
     data = data.filter(
       (item) => {
         const info = JSON.parse(item.node.infoData);
-        return (Math.round(+(parseFloat(info.ca) + parseFloat(info.exam)) * 10) / 10) < 50 || info.resit > 0;      }
+        return (Math.round(+(parseFloat(info.ca) + parseFloat(info.exam)) * 10) / 10) < 50 || info.resit > 0;
+      }
     );
   }
 
@@ -390,7 +392,6 @@ const GET_DATA = gql`
           userprofile {
             id
             session
-            code
             customuser { 
               id matricle firstName lastName fullName
             }

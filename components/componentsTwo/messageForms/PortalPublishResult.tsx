@@ -1,10 +1,9 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { NodePublish } from "@/utils/Domain/schemas/interfaceGraphql";
 import { decodeUrlID } from "@/utils/functions";
-import { gql, useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "@/utils/serverActions/interfaces";
 import { ApiFactory } from "@/utils/graphql/ApiFactory";

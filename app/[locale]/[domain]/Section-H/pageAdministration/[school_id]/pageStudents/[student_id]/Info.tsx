@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { EdgeSchoolFees } from '@/Domain/schemas/interfaceGraphql';
 import { gql } from '@apollo/client';
-import ButtonUpdate from '@/components/Buttons/ButtonUpdate';
 import { JwtPayload } from '@/serverActions/interfaces';
 import { jwtDecode } from 'jwt-decode';
 import { decodeUrlID } from '@/functions';
@@ -21,6 +20,7 @@ import { QrCodeBase64 } from '@/components/QrCodeBase64';
 import { protocol, RootApi } from '@/utils/config';
 import { mutationCreateUpdateCustomuser } from '@/utils/graphql/mutations/mutationCreateUpdateCustomuser';
 import { errorLog } from '@/utils/graphql/GetAppolloClient';
+import ButtonUpdate from '@/components/Buttons/ButtonUpdate';
 
 
 const Info = (
@@ -530,7 +530,7 @@ const Info = (
 
           {/* Submit Button */}
           <motion.div variants={sectionVariants} className="flex justify-end">
-            {/* <ButtonUpdate handleUpdate={handleSubmit} dataToSubmit={[student]} /> */}
+            <ButtonUpdate handleUpdate={handleSubmit} dataToSubmit={[student]} />
           </motion.div>
         </motion.form>}
 
